@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { activeStage, cardName, type Action, type Catalog, type GameState, type InstanceId } from "../../engine";
+import { activeStage, cardName, usableEffects, type Action, type Catalog, type GameState, type InstanceId } from "../../engine";
 import { stageFr } from "../../data/translations";
 import { IconText } from "../common/IconText";
 import styles from "./Game.module.css";
@@ -24,6 +24,8 @@ type Props = {
   onClose: () => void;
 };
 
+const ACTION_EFFECT_TYPES = ["activated", "destroy", "time"];
+
 export function CardActions({ catalog, state, card, anchor, options, engageLabel, engaged, onEngage, onRun, onInspect, onClose }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const [pos, setPos] = useState<{ top: number; left: number }>({ top: anchor.bottom + 8, left: anchor.left });
@@ -47,6 +49,8 @@ export function CardActions({ catalog, state, card, anchor, options, engageLabel
 
   const stage = activeStage(catalog, state, card);
   const fr = stage ? stageFr(state.cards[card]?.templateId ?? "", stage.id) : undefined;
+  const automated = new Set(usableEffects(catalog, state, card).map((e) => e.effect.id));
+  const manual = (stage?.effects ?? []).filter((e) => ACTION_EFFECT_TYPES.includes(e.type) && !automated.has(e.id));
 
   return (
     <>
@@ -81,6 +85,16 @@ export function CardActions({ catalog, state, card, anchor, options, engageLabel
                 </div>
               ),
             )}
+          </section>
+        )}
+        {manual.length > 0 && (
+          <section>
+            {manual.map((e) => (
+              <div key={e.id} className={styles.actionDisabled}>
+                <IconText text={e.text} />
+                <small>Non automatisé</small>
+              </div>
+            ))}
           </section>
         )}
         <section>

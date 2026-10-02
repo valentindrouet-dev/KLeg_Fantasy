@@ -3,8 +3,8 @@ import { applyAction, canUndo, current, isLegal, newSession, act, checkKey, comp
 import { loadCatalog } from "../helpers/catalog";
 import { arrange, fk, legal, run } from "../helpers/game";
 
-// Spec 5.1 (fallback manuel) : outils pour appliquer à la main ce que le moteur n'automatise pas.
-describe("résolution à la main", async () => {
+// Opérations « à la main » de la v0.17 : plus proposées (v0.18), mais encore rejouées pour les parties qui en contiennent.
+describe("opérations à la main (rejeu des parties v0.17)", async () => {
   const catalog = await loadCatalog();
   const manual = (op: ManualOp): Action => ({ type: "manual", op });
   const back0 = { side: "back", rotation: 0 } as const;
@@ -86,13 +86,11 @@ describe("résolution à la main", async () => {
     expect(isLegal(catalog, s, manual({ kind: "sticker", card: fk(1), sticker: "x", resource: "wood", fame: 2 }))).toBe(false);
   });
 
-  it("un effet non automatisé s'utilise à la main : la carte paie le coût de son type", () => {
+  it("un effet non automatisé n'est plus proposé, mais une partie qui l'a utilisé se rejoue", () => {
     const s = arrange(catalog, { play: [13, 1], orientation: { 13: back0 } });
-    const use = legal(catalog, s).find((a) => a.type === "manual" && a.op.kind === "effect");
-    expect(use).toEqual(manual({ kind: "effect", card: fk(13), effect: "e1" }));
-    const after = applyAction(catalog, s, use as Action);
+    expect(legal(catalog, s).some((a) => a.type === "manual")).toBe(false);
+    const after = applyAction(catalog, s, manual({ kind: "effect", card: fk(13), effect: "e1" }));
     expect(after.zones.discard).toContain(fk(13));
-    expect(after.turn).toBe(s.turn);
   });
 
   it("les effets automatisés ne sont pas proposés à la main", () => {

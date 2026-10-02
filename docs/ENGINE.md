@@ -28,19 +28,6 @@ Point d'entrée : `src/engine/index.ts`.
 | `scripts/parchments.ts` | Parchemins 30, 37, 47, 68 |
 | `score.ts` | Gloire du royaume + gloire purgée |
 | `describe.ts` | Libellés français des actions |
-| `manual.ts` | Résolution à la main (P3) : ressources, déplacer, orienter, découvrir, cocher, sticker, effet non automatisé |
-
-## Résolution à la main (spec 5.1, « fallback manuel »)
-
-Action `{ type: "manual", op }`, enregistrée et rejouée comme les autres :
-
-- `effect` : effet d'action (activated, destroy, time) sans automatisation. Énuméré par `getLegalActions` ; il paie le
-  coût de son type (défausser, détruire, rayer si usage unique, fin du tour pour « time ») et le joueur applique le reste.
-  Pour un effet « time », appliquer le corps avant : l'effet termine le tour.
-- `resource`, `move`, `orient`, `discover`, `check`, `sticker` : en nombre illimité, donc validés par `isManualOpValid`
-  au lieu d'être énumérés. Interdits pendant une décision ou après la fin de la partie.
-- Sortir une carte de la pioche ou de la boîte augmente `revealCount` (pas d'annulation stricte ensuite).
-- Cases cochées : `CardInstance.checkedBoxes`, clé `checkKey(stage, case)` (ex. `1/c3`).
 
 ## Couverture en fin de P1
 

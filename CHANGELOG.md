@@ -3,6 +3,11 @@
 Chaque mise à jour publiée change de version (`package.json`, affichée dans l'appli en bas de l'écran « Mes royaumes »
 et dans la barre de la partie). Convention : `0.5.0` s'affiche **v0.05** ; un correctif `0.5.1` s'affiche **v0.05.1**.
 
+## v0.18 (2 octobre 2026)
+
+- Retour sur la v0.17 : la résolution à la main est retirée (bouton ✋, outils de l'inspection). Toucher un effet pas encore automatisé ne fait plus rien, comme en v0.16, au lieu de défausser la carte.
+- Les parties jouées en v0.17 restent lisibles et annulables.
+
 ## v0.17 (2 octobre 2026)
 
 Début de la phase P3 : résolution à la main, pour que la partie ne soit jamais bloquée par un effet pas encore automatisé.

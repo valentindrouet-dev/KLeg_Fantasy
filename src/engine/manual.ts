@@ -5,8 +5,8 @@ import { activeStage, cardName, destroy, discard, instance, log, moveTo, stageId
 import { effectKey } from "./effects/registry";
 import { ZONES, type Catalog, type Draft, type GameState, type InstanceId, type ManualOp, type StickerPlacement, type Zone } from "./types";
 
-// Résolution à la main (spec 5, « fallback manuel ») : ce que le moteur n'automatise pas encore, le joueur l'applique
-// lui-même. Ces opérations sont des actions enregistrées comme les autres : annulables, rejouées à l'import.
+// Opérations « à la main » de la v0.17. Retirées de l'interface en v0.18 (demande du 2026-10-02 : tous les effets
+// doivent être automatisés) ; gardées dans le moteur pour rejouer les parties qui en contiennent.
 
 const ACTION_EFFECT_TYPES = ["activated", "destroy", "time"];
 

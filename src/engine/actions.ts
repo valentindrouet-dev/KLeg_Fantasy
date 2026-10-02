@@ -24,7 +24,7 @@ import {
   type InstanceId,
 } from "./types";
 import { applyArrow, cardCostOptions, upgradeOptions } from "./upgrade";
-import { executeManual, isManualOpValid, manualEffects } from "./manual";
+import { executeManual, isManualOpValid } from "./manual";
 
 // Les 5 actions du tour (spec 4.4) et les réponses aux décisions en attente.
 // `getLegalActions` est la seule source de vérité : `applyAction` refuse tout ce qui n'y figure pas.
@@ -79,8 +79,6 @@ export function getLegalActions(catalog: Catalog, s: GameState): Action[] {
         actions.push({ type: "useEffect", card, effect: effect.id, targets: p.targets, option: p.option });
       }
     }
-    // Effets non automatisés : on paie le coût du type (défausser, détruire, fin du tour), le reste à la main.
-    for (const effect of manualEffects(catalog, s, card)) actions.push({ type: "manual", op: { kind: "effect", card, effect } });
   }
   if (s.zones.deck.length > 0) actions.push({ type: "advance" });
   actions.push({ type: "pass" });
@@ -97,8 +95,9 @@ export function actionKey(a: Action): string {
 }
 
 export function isLegal(catalog: Catalog, s: GameState, a: Action): boolean {
-  // Opérations à la main en nombre illimité (ressources, déplacements…) : validées sans être énumérées.
-  if (a.type === "manual" && a.op.kind !== "effect") return isManualOpValid(catalog, s, a.op);
+  // Opérations « à la main » de la v0.17, retirées de l'interface : acceptées seulement pour rejouer
+  // les parties enregistrées avec cette version (annulation, import).
+  if (a.type === "manual") return isManualOpValid(catalog, s, a.op);
   const key = actionKey(a);
   return getLegalActions(catalog, s).some((l) => actionKey(l) === key);
 }

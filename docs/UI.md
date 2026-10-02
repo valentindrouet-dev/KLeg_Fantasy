@@ -46,10 +46,6 @@ Routage par hash (`src/ui/App.tsx`) : `#/` Mes royaumes, `#/partie/<id>` partie,
 - **Tri ⇅** : cartes en jeu par ressource (défaut), par type de terrain ou ordre d'arrivée (`sortCards.ts`, affichage seulement).
 - **Stats** : cartes par zone, par étape (1 à 4), production par ressource, gloire, types (en anglais), découvertes / détruites / boîte ; cases colorées (`engine/stats.ts`).
 - **Inspection** : face visible telle qu'elle est posée + autre face retournée de haut en bas (1 en haut ↔ 3 en haut).
-  Dessous, outils à la main : orientations (vignettes des étapes), zone, cases à cocher du stage actif, stickers
-  de ressource et de gloire (numéros pris dans `data/stickers.json`).
-- **✋ À la main** : ressources − / +, découvrir une carte par son numéro, 🔍 pour inspecter (et déplacer) n'importe quelle carte.
-- **Effet non automatisé** : toucher l'effet l'utilise (coût du type payé), le reste se fait avec les outils à la main.
 - **Réglages ⚙** : thème Auto / Clair / Sombre (data-theme sur <html>), zoom des cartes en jeu seulement (60 à 200 %, la zone défile au besoin) et grisage de la moitié basse des cartes.
 - **Mises à jour** : l'appli compare sa version à `version.json` (publié au build) au démarrage, au retour au premier plan
   et toutes les 15 min ; un bouton recharge la page en contournant le cache (utile pour l'appli installée sur l'iPad).
