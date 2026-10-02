@@ -8,6 +8,18 @@
   </head>
   <body>
     <div id="root"></div>
+    <script>
+      // Filet de sécurité : si l'appli ne démarre pas (page en cache après une mise à jour), proposer de recharger.
+      setTimeout(function () {
+        var root = document.getElementById("root");
+        if (root && root.childElementCount === 0) {
+          root.innerHTML =
+            '<div style="font-family:system-ui;padding:40px;text-align:center">' +
+            "<p>Le site vient d'être mis à jour.</p>" +
+            '<button style="font:inherit;padding:10px 20px" onclick="location.reload()">Recharger</button></div>';
+        }
+      }, 6000);
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

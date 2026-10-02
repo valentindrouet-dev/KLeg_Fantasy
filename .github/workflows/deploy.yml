@@ -32,4 +32,6 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
           publish_branch: gh-pages
-          force_orphan: true
+          # Garder les anciens fichiers : une page encore en cache dans le navigateur (10 min sur GitHub Pages)
+          # réclame les anciens noms de fichiers ; s'ils disparaissent, la page reste blanche.
+          keep_files: true
