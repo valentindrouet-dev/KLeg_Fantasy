@@ -1,0 +1,1982 @@
+{
+ "FeudalKingdom-000": {
+  "1": {
+   "name": "Bienvenue",
+   "text": "BIENVENUE dans Kingdom Legacy - Feudal Kingdom. Lis bien les règles avant d'ouvrir ce paquet de cartes, ou scanne le QR code ci-dessous pour regarder un tutoriel. Mémorise les règles d'or (voir {flip}) ! L'orientation des cartes est importante dans ce jeu : ne mélange pas, ne pivote pas et ne retourne pas les cartes, sauf si les règles te le demandent. Bonne chance pour bâtir ton royaume !"
+  }
+ },
+ "FeudalKingdom-001": {
+  "1": {
+   "name": "Herbes folles",
+   "text": ""
+  },
+  "2": {
+   "name": "Plaines",
+   "text": "{activated} Défausse une carte amie pour gagner {coin}{coin}."
+  },
+  "3": {
+   "name": "Terres agricoles",
+   "text": ""
+  },
+  "4": {
+   "name": "Greniers",
+   "text": "{passive} Reste en jeu."
+  }
+ },
+ "FeudalKingdom-002": {
+  "1": {
+   "name": "Herbes folles",
+   "text": ""
+  },
+  "2": {
+   "name": "Plaines",
+   "text": "{activated} Défausse une carte amie pour gagner {coin}{coin}."
+  },
+  "3": {
+   "name": "Terres agricoles",
+   "text": ""
+  },
+  "4": {
+   "name": "Greniers",
+   "text": "{passive} Reste en jeu."
+  }
+ },
+ "FeudalKingdom-003": {
+  "1": {
+   "name": "Herbes folles",
+   "text": ""
+  },
+  "2": {
+   "name": "Plaines",
+   "text": "{activated} Défausse une carte amie pour gagner {coin}{coin}."
+  },
+  "3": {
+   "name": "Terres agricoles",
+   "text": ""
+  },
+  "4": {
+   "name": "Greniers",
+   "text": "{passive} Reste en jeu."
+  }
+ },
+ "FeudalKingdom-004": {
+  "1": {
+   "name": "Herbes folles",
+   "text": ""
+  },
+  "2": {
+   "name": "Plaines",
+   "text": "{activated} Défausse une carte amie pour gagner {coin}{coin}."
+  },
+  "3": {
+   "name": "Terres agricoles",
+   "text": ""
+  },
+  "4": {
+   "name": "Greniers",
+   "text": "{passive} Reste en jeu."
+  }
+ },
+ "FeudalKingdom-005": {
+  "1": {
+   "name": "Montagne lointaine",
+   "text": ""
+  },
+  "2": {
+   "name": "Zone rocheuse",
+   "text": "{activated} Dépense {coin} pour gagner {stone}{stone}."
+  },
+  "3": {
+   "name": "Carrière",
+   "text": ""
+  },
+  "4": {
+   "name": "Mine peu profonde",
+   "text": "{destroy} Découvre Mine (84 / 85)."
+  }
+ },
+ "FeudalKingdom-006": {
+  "1": {
+   "name": "Montagne lointaine",
+   "text": ""
+  },
+  "2": {
+   "name": "Zone rocheuse",
+   "text": "{activated} Dépense {coin} pour gagner {stone}{stone}."
+  },
+  "3": {
+   "name": "Carrière",
+   "text": ""
+  },
+  "4": {
+   "name": "Mine peu profonde",
+   "text": "{destroy} Découvre Mine (84 / 85)."
+  }
+ },
+ "FeudalKingdom-007": {
+  "1": {
+   "name": "Forêt",
+   "text": "{activated} Gagne {wood}{wood}{wood}, puis {rotate}."
+  },
+  "2": {
+   "name": "Forêt abattue",
+   "text": ""
+  },
+  "3": {
+   "name": "Bûcheron",
+   "text": ""
+  },
+  "4": {
+   "name": "Puits sacré",
+   "text": "{destroy} Découvre Sanctuaire (82 / 83)."
+  }
+ },
+ "FeudalKingdom-008": {
+  "1": {
+   "name": "Forêt",
+   "text": "{activated} Gagne {wood}{wood}{wood}, puis {rotate}."
+  },
+  "2": {
+   "name": "Forêt abattue",
+   "text": ""
+  },
+  "3": {
+   "name": "Bûcheron",
+   "text": ""
+  },
+  "4": {
+   "name": "Puits sacré",
+   "text": "{destroy} Découvre Sanctuaire (82 / 83)."
+  }
+ },
+ "FeudalKingdom-009": {
+  "1": {
+   "name": "Quartier général",
+   "text": ""
+  },
+  "2": {
+   "name": "Hôtel de ville",
+   "text": "{activated} Joue 1 terre depuis ta défausse."
+  },
+  "3": {
+   "name": "Donjon",
+   "text": "{activated} Joue 1 terre ou 1 bâtiment depuis ta défausse."
+  },
+  "4": {
+   "name": "Château",
+   "text": "{activated} Joue 1 carte depuis ta défausse."
+  }
+ },
+ "FeudalKingdom-010": {
+  "1": {
+   "name": "Marchande",
+   "text": "{activated} Dépense {coin} pour gagner {wood}."
+  },
+  "2": {
+   "name": "Bazar",
+   "text": "{activated} Dépense {coin} pour gagner {wood}/{stone}."
+  },
+  "3": {
+   "name": "Marché",
+   "text": "{activated} Dépense {coin} pour gagner {wood}/{stone}/{metal}."
+  },
+  "4": {
+   "name": "Festival",
+   "text": ""
+  }
+ },
+ "FeudalKingdom-011": {
+  "1": {
+   "name": "Jungle",
+   "text": "{activated} Dépense {coin} pour gagner {wood}."
+  },
+  "2": {
+   "name": "Arbres géants",
+   "text": "{activated} Dépense {coin} pour gagner {wood}{wood}."
+  },
+  "3": {
+   "name": "Jungle profonde",
+   "text": ""
+  },
+  "4": {
+   "name": "Cabanes dans les arbres",
+   "text": "{passive} Reste en jeu."
+  }
+ },
+ "FeudalKingdom-012": {
+  "1": {
+   "name": "Rivière",
+   "text": ""
+  },
+  "2": {
+   "name": "Pont",
+   "text": ""
+  },
+  "3": {
+   "name": "Pont de pierre",
+   "text": ""
+  },
+  "4": {
+   "name": "Explorateurs",
+   "text": "{activated} Découvre une nouvelle région (71 / 72 / 73 / 74). Puis {rotate}."
+  }
+ },
+ "FeudalKingdom-013": {
+  "1": {
+   "name": "Ouvrière agricole",
+   "text": "{activated} Choisis une terre en jeu. Gagne sa production sous forme de ressources."
+  },
+  "4": {
+   "name": "Serviteur",
+   "text": "{activated} Gagne {coin} / {wood} / {stone}."
+  }
+ },
+ "FeudalKingdom-014": {
+  "1": {
+   "name": "Bandit",
+   "text": "{triggeredForced} Quand elle est jouée, bloque 1 carte ayant une production de {coin}. {activated} Dépense {sword} pour la vaincre ({destroy}) et gagner 2 ressources au choix. (Un Missionnaire peut la {flip})"
+  },
+  "4": {
+   "name": "Ouvrier",
+   "text": "{activated} Choisis un bâtiment en jeu. Gagne sa production sous forme de ressources."
+  }
+ },
+ "FeudalKingdom-015": {
+  "1": {
+   "name": "Montagne lointaine",
+   "text": ""
+  },
+  "2": {
+   "name": "Zone rocheuse",
+   "text": "{activated} Dépense {coin} pour gagner {stone}{stone}."
+  },
+  "3": {
+   "name": "Carrière",
+   "text": ""
+  },
+  "4": {
+   "name": "Mine peu profonde",
+   "text": "{destroy} Découvre Mine (84 / 85)."
+  }
+ },
+ "FeudalKingdom-016": {
+  "1": {
+   "name": "Bandit",
+   "text": "{triggeredForced} Quand elle est jouée, bloque 1 carte ayant une production de {coin}. {activated} Dépense {sword} pour la vaincre ({destroy}) et gagner 2 ressources au choix. (Un Missionnaire peut la {flip})"
+  },
+  "4": {
+   "name": "Ouvrière agricole",
+   "text": "{activated} Choisis une terre en jeu. Gagne sa production sous forme de ressources."
+  }
+ },
+ "FeudalKingdom-017": {
+  "1": {
+   "name": "Colline",
+   "text": ""
+  },
+  "2": {
+   "name": "Chapelle",
+   "text": "{activated} Dépense {coin}{coin}{coin} pour découvrir Missionnaire (103)."
+  },
+  "3": {
+   "name": "Église",
+   "text": "{activated} Dépense {coin}{coin}{coin}{coin} pour découvrir Prêtre (104)."
+  },
+  "4": {
+   "name": "Cathédrale",
+   "text": "{passive} Cette carte a +{coin} de production pour chaque personne en jeu."
+  }
+ },
+ "FeudalKingdom-018": {
+  "1": {
+   "name": "Falaises de l'Est",
+   "text": ""
+  },
+  "2": {
+   "name": "Forge",
+   "text": "{activated} Réinitialise pour découvrir Joaillerie (90)."
+  },
+  "3": {
+   "name": "Arsenal",
+   "text": "{activated} Gagne {sword} pour chaque personne en jeu."
+  },
+  "4": {
+   "name": "Muraille",
+   "text": "{passive} Reste en jeu."
+  }
+ },
+ "FeudalKingdom-019": {
+  "1": {
+   "name": "Forêt",
+   "text": "{activated} Gagne {wood}{wood}{wood}, puis {rotate}."
+  },
+  "2": {
+   "name": "Forêt abattue",
+   "text": ""
+  },
+  "3": {
+   "name": "Bûcheron",
+   "text": ""
+  },
+  "4": {
+   "name": "Puits sacré",
+   "text": "{destroy} Découvre Sanctuaire (82 / 83)."
+  }
+ },
+ "FeudalKingdom-020": {
+  "1": {
+   "name": "Marais",
+   "text": ""
+  },
+  "2": {
+   "name": "Marais accessible",
+   "text": ""
+  },
+  "3": {
+   "name": "Jardin des marais",
+   "text": ""
+  },
+  "4": {
+   "name": "Arbres fruitiers exotiques",
+   "text": ""
+  }
+ },
+ "FeudalKingdom-021": {
+  "1": {
+   "name": "Marais",
+   "text": ""
+  },
+  "2": {
+   "name": "Marais accessible",
+   "text": ""
+  },
+  "3": {
+   "name": "Jardin des marais",
+   "text": ""
+  },
+  "4": {
+   "name": "Arbres fruitiers exotiques",
+   "text": ""
+  }
+ },
+ "FeudalKingdom-022": {
+  "1": {
+   "name": "Lac",
+   "text": ""
+  },
+  "2": {
+   "name": "Cabane de pêcheur",
+   "text": ""
+  },
+  "3": {
+   "name": "Bateau de pêche",
+   "text": "{activated} Découvre Rivage (75)."
+  },
+  "4": {
+   "name": "Phare",
+   "text": "{passive} Reste en jeu. {passive} Défausse la carte du dessus de ton deck."
+  }
+ },
+ "FeudalKingdom-023": {
+  "1": {
+   "name": "STOP !",
+   "text": "STOP ! Maintenant que tu as compris le jeu, tu peux réinitialiser pour recommencer si tu veux donner le meilleur de toi-même. Si tu continues, tu découvriras 4 cartes, les cartes 24-27. Regarde-les maintenant et ENSUITE décide si tu veux recommencer ou continuer. Après cette carte commence la partie legacy du jeu, où certaines cartes changeront de façon permanente au fil de la partie. Une fois engagé sur cette voie, tu ne pourras plus réinitialiser la partie. Clarifications des règles au verso ({flip})."
+  },
+  "4": {
+   "name": "",
+   "text": "Les cartes 25, 26 et 27 sont des cartes permanentes : elles ne sont jamais mélangées dans ton deck et ne peuvent pas être défaussées. Elles sont toujours visibles et actives, mais ne comptent pas comme « en jeu ». L'Armée et le Trésor sont des cartes de piste. Elles te permettent de dépenser ton tour ({time}) et des ressources ({sword}/{coin}) pour gagner de la gloire {fame}. L'Exportation est une carte de décompte. Elle ne termine pas ton tour ({passive}) et te permet de dépenser des marchandises ({tradeGood}) pour gagner des stickers, de nouvelles cartes et d'autres effets sympas. Tu ne pourras pas compléter toutes les pistes avant la fin de la partie. Essaie d'aller le plus loin possible ! Nous te conseillons de relire les règles d'or pour éviter les erreurs."
+  }
+ },
+ "FeudalKingdom-024": {
+  "1": {
+   "name": "Sol fertile / Efficacité",
+   "text": "Sol fertile : ajoute le sticker 1 ({coin}) comme production à une terre. Efficacité : choisis 1 bâtiment et augmente sa production (ajoute-lui un sticker de ressource pour qu'il produise 1 de plus d'une ressource qu'il produit déjà. Les stickers de ressource sont numérotés de 1 à 6 sur la planche de stickers). (Rappel : quand tu découvres une carte parchemin comme celle-ci, suis toutes ses instructions, puis détruis-la.)"
+  }
+ },
+ "FeudalKingdom-025": {
+  "1": {
+   "name": "Armée",
+   "text": "Cette carte est permanente. {time} Dépense les {sword} ci-dessous pour améliorer ton armée : coche 1 {mark} de gauche à droite. Une fois la piste complète, découvre État vassal (135) et {flip}. Cette carte vaut le plus haut {fame} coché."
+  },
+  "4": {
+   "name": "Grande Armée",
+   "text": "Cette carte est permanente. {time} Dépense les {sword} ci-dessous pour améliorer ton armée : coche 1 {mark} de gauche à droite. Cette carte vaut 50{fame} + le plus haut {fame} coché."
+  }
+ },
+ "FeudalKingdom-026": {
+  "1": {
+   "name": "Trésor",
+   "text": "Cette carte est permanente. {time} Dépense les {coin} ci-dessous pour remplir ton trésor : coche 1 {mark} de gauche à droite. Cette carte vaut le plus haut {fame} coché."
+  },
+  "4": {
+   "name": "Trésor agrandi",
+   "text": "Cette carte est permanente. {time} Dépense les {coin} ci-dessous pour remplir ton trésor : coche 1 {mark} de gauche à droite. Cette carte vaut 50{fame} + le plus haut {fame} coché."
+  }
+ },
+ "FeudalKingdom-027": {
+  "1": {
+   "name": "Exportation",
+   "text": "Cette carte est permanente. {passive} Dépense des {tradeGood} ici et note combien tu en as dépensé. Entre les manches, tu peux utiliser les effets pour lesquels tu as atteint assez de {tradeGood} (coche {mark}) : 10 : sticker 1 / 2 / 3 sur 1 terre. 20 : sticker 7 sur 1 personne. 30 : découvre Adoubement (86). 40 : sticker 4 / 5 / 6 sur 1 bâtiment. 55 : sticker 2 / 3 / 4 / 5 sur 1 carte amie. 75 : sticker 10 sur une carte au choix. 100 : {flip}."
+  },
+  "4": {
+   "name": "Exportation de masse",
+   "text": "Cette carte est permanente. {passive} Dépense des {tradeGood} ici et note ci-dessous combien tu en as dépensé. Entre les manches, tu peux utiliser (et {mark}) les effets ci-dessous pour lesquels tu as atteint assez de {tradeGood} : 25 : sticker 8 sur 2 terres différentes. 50 : sticker 10 sur 1 personne. 75 : découvre Visite royale (107). 100 : sticker 10 sur 1 bâtiment. 150 : {mark} 1 autre carte permanente, en gagnant ses éventuels effets. 200 : {mark} toutes les autres cartes permanentes que tu veux. 250 : découvre Relations commerciales (117)."
+  }
+ },
+ "FeudalKingdom-028": {
+  "1": {
+   "name": "Éruption volcanique",
+   "text": "{triggeredForced} Tant que cette carte est en jeu, détruis la prochaine terre que tu joues. Quand tu le fais, {flip}."
+  },
+  "3": {
+   "name": "Jeune forêt",
+   "text": "{time} Coche 1 {mark} de haut en bas. Quand tu coches un {asterisk}, ajoute le sticker 2 comme production ici."
+  },
+  "4": {
+   "name": "Terres cendrées",
+   "text": ""
+  }
+ },
+ "FeudalKingdom-029": {
+  "1": {
+   "name": "Opportuniste",
+   "text": ""
+  },
+  "2": {
+   "name": "Recrue",
+   "text": ""
+  },
+  "3": {
+   "name": "Faux noble",
+   "text": "{activated} Réinitialise pour ajouter un sticker de ressource au choix comme production sur n'importe quelle étape de cette carte sans sticker."
+  },
+  "4": {
+   "name": "Manœuvre",
+   "text": ""
+  }
+ },
+ "FeudalKingdom-030": {
+  "1": {
+   "name": "STOP !",
+   "text": "STOP ! Cette manche, au lieu de découvrir les 2 prochaines cartes, regarde les 4 prochaines cartes de la boîte (cartes 31-34). Choisis-en 2 à découvrir et détruis les 2 autres."
+  }
+ },
+ "FeudalKingdom-031": {
+  "1": {
+   "name": "Entrepreneur",
+   "text": "{time} Découvre École (118)."
+  },
+  "2": {
+   "name": "Hôtel",
+   "text": "{activated} Gagne {coin} par personne en jeu."
+  },
+  "3": {
+   "name": "Pub douillet",
+   "text": "{activated} Défausse 1 personne pour découvrir Étranger (92)."
+  },
+  "4": {
+   "name": "Taverne",
+   "text": "{activated} Découvre Quêtes (87)."
+  }
+ },
+ "FeudalKingdom-032": {
+  "1": {
+   "name": "Scientifique",
+   "text": "{passive} Toutes les personnes, Scientifique compris, ont +1{coin} de production."
+  },
+  "3": {
+   "name": "Laboratoire",
+   "text": "{time} Découvre Alchimiste (96)."
+  },
+  "4": {
+   "name": "Observatoire",
+   "text": "{time} Découvre Astronome (95)."
+  }
+ },
+ "FeudalKingdom-033": {
+  "1": {
+   "name": "Ingénieur",
+   "text": "{activated} Détruis l'une des cartes suivantes en jeu pour découvrir sa version améliorée ; Bûcheron - découvre la carte 100 Greniers - découvre la carte 101 Bateau de pêche - découvre la carte 102"
+  },
+  "4": {
+   "name": "Trébuchet",
+   "text": "{destroy} Vaincs un ennemi en jeu, dans la défausse ou permanent. Puis coche le prochain {mark} sur l'Armée / la Grande Armée."
+  }
+ },
+ "FeudalKingdom-034": {
+  "1": {
+   "name": "Inventeur",
+   "text": "{asterisk}Vaut 5{fame} par {mark}."
+  },
+  "4": {
+   "name": "Inventeur inspiré",
+   "text": "{activated} Réinitialise et coche 1 {mark} sur cette face si possible. Puis découvre une invention (97 / 98 / 99) ou gagne 1 ressource au choix pour chaque {mark}. {asterisk}Vaut 5{fame} pour chaque {mark} sur l'autre face."
+  }
+ },
+ "FeudalKingdom-035": {
+  "1": {
+   "name": "Montagne lointaine",
+   "text": ""
+  },
+  "2": {
+   "name": "Zone rocheuse",
+   "text": "{activated} Dépense {coin} pour gagner {stone}{stone}."
+  },
+  "3": {
+   "name": "Carrière",
+   "text": ""
+  },
+  "4": {
+   "name": "Mine peu profonde",
+   "text": "{destroy} Découvre Mine (84 / 85)."
+  }
+ },
+ "FeudalKingdom-036": {
+  "1": {
+   "name": "Mercenaire",
+   "text": "{activated} Dépense {coin}{coin} pour cocher 1-2 {mark}."
+  },
+  "4": {
+   "name": "Sir ________",
+   "text": "{time} Dépense {metal}{metal}{metal} pour ajouter le sticker 5 ici. {oneTime} {time} Dépense {metal}{metal}{metal}{metal} pour ajouter le sticker 5 ici. {oneTime}"
+  }
+ },
+ "FeudalKingdom-037": {
+  "1": {
+   "name": "STOP !",
+   "text": "STOP ! Découvre 5 cartes cette manche, au lieu de 2 (cartes 38-42). Les 3 premières sont des cartes Objectif. Pour chaque carte, tu dois choisir l'une de ses faces maintenant ; ce choix ne pourra pas être changé plus tard."
+  }
+ },
+ "FeudalKingdom-038": {
+  "1": {
+   "name": "La force du nombre",
+   "text": "{asterisk}Vaut 2{fame} par personne."
+  },
+  "4": {
+   "name": "Domination militaire",
+   "text": "{asterisk}Vaut 2{fame} par production de {sword}."
+  }
+ },
+ "FeudalKingdom-039": {
+  "1": {
+   "name": "Frontières repoussées",
+   "text": "{asterisk}Tu veux 75 cartes ou plus dans ton royaume (sans compter les cartes permanentes). Cela vaut -2{fame} pour chaque carte manquante par rapport à 75."
+  },
+  "4": {
+   "name": "Maximiseur",
+   "text": "{asterisk}Vaut -1{fame} par carte valant exactement 0{fame} (hors cartes permanentes)."
+  }
+ },
+ "FeudalKingdom-040": {
+  "1": {
+   "name": "Loyauté",
+   "text": "{asterisk}Vaut 25{fame} s'il n'y a aucun ennemi dans ton royaume."
+  },
+  "4": {
+   "name": "Marchande",
+   "text": "{asterisk}Vaut 25{fame} si ta production de {tradeGood} est de 10 ou plus."
+  }
+ },
+ "FeudalKingdom-041": {
+  "1": {
+   "name": "Bouffon",
+   "text": "{passive} Reste en jeu. {activated} Défausse la carte du dessus de ton deck. {activated} Coche 1 {mark}."
+  },
+  "4": {
+   "name": "Négociant",
+   "text": "{activated} Coche 1-2 {mark}."
+  }
+ },
+ "FeudalKingdom-042": {
+  "1": {
+   "name": "Ouvrière agricole",
+   "text": "{activated} Choisis une terre en jeu. Gagne sa production sous forme de ressources."
+  },
+  "4": {
+   "name": "Entrepôt",
+   "text": "{passive} Reste en jeu. {triggeredOptional} Fin du tour : défausse cette carte pour qu'une autre carte reste en jeu."
+  }
+ },
+ "FeudalKingdom-043": {
+  "1": {
+   "name": "Maçon",
+   "text": "{activated} Dépense {coin}{coin} pour découvrir un projet de construction (88 / 89)."
+  },
+  "3": {
+   "name": "Rue pavée",
+   "text": "{time} Regarde les cartes 111 et 112. Détruis-en 1 et découvre l'autre."
+  },
+  "4": {
+   "name": "Route de briques",
+   "text": "{time} Regarde les cartes 109 et 110. Détruis-en 1 et découvre l'autre."
+  }
+ },
+ "FeudalKingdom-044": {
+  "1": {
+   "name": "Orage",
+   "text": "{triggeredForced} Quand elle est jouée, défausse les 3 prochaines cartes de ton deck, puis {flip}."
+  },
+  "4": {
+   "name": "Pluie",
+   "text": "{passive} Tes terres ont +{coin}{coin} de production. {passive} Tu ne peux pas avancer. {triggeredForced} Fin du tour : {flip}."
+  }
+ },
+ "FeudalKingdom-045": {
+  "1": {
+   "name": "Chevalier noir",
+   "text": "{passive} Tu ne peux pas avancer, améliorer ni utiliser d'effets {time}. {activated} Dépense {sword}{sword}{sword} pour le vaincre ({flip})."
+  },
+  "3": {
+   "name": "Écuyer",
+   "text": "{destroy} Gagne {sword}{sword}{sword}."
+  },
+  "4": {
+   "name": "Garçon enrôlé",
+   "text": "{destroy} Gagne {sword}{sword}."
+  }
+ },
+ "FeudalKingdom-046": {
+  "1": {
+   "name": "Camp",
+   "text": ""
+  },
+  "2": {
+   "name": "Terrain d'entraînement",
+   "text": "{activated} Dépense {coin} pour gagner {sword}."
+  },
+  "3": {
+   "name": "Sir ________",
+   "text": ""
+  }
+ },
+ "FeudalKingdom-047": {
+  "1": {
+   "name": "STOP !",
+   "text": "STOP ! Cette manche, au lieu de découvrir 2 cartes, regarde les 4 prochaines cartes (cartes 48-51). Découvre-en 2 et détruis les 2 autres."
+  }
+ },
+ "FeudalKingdom-048": {
+  "1": {
+   "name": "Envoyé",
+   "text": "{time} Dépense {coin}{coin}{coin} pour découvrir Marchande (119)."
+  },
+  "2": {
+   "name": "Émissaire",
+   "text": "{time} Dépense {coin}{coin}{coin} pour découvrir Investisseur (120)."
+  },
+  "3": {
+   "name": "Diplomate",
+   "text": "{time} Dépense {coin}{coin}{coin} pour découvrir Allié (121)."
+  },
+  "4": {
+   "name": "Ambassadeur",
+   "text": "{time} Dépense {coin}{coin}{coin} pour découvrir Consort (122)."
+  }
+ },
+ "FeudalKingdom-049": {
+  "1": {
+   "name": "Architecte royal",
+   "text": "{activated} Détruis l'une des cartes suivantes en jeu pour découvrir sa version améliorée ; Château - découvre la carte 123 Mine de diamants - découvre la carte 124 Temple - découvre la carte 125"
+  },
+  "4": {
+   "name": "Pont des merveilles",
+   "text": ""
+  }
+ },
+ "FeudalKingdom-050": {
+  "1": {
+   "name": "Voyageur",
+   "text": "{time} Découvre Terre (126)."
+  },
+  "2": {
+   "name": "Voyageur",
+   "text": "{time} Découvre Terre (127)."
+  },
+  "3": {
+   "name": "Voyageur",
+   "text": "{time} Découvre Terre (128)."
+  },
+  "4": {
+   "name": "Voyageur",
+   "text": "{time} Découvre Terre (129). {activated} Défausse une terre pour gagner 2 ressources au choix."
+  }
+ },
+ "FeudalKingdom-051": {
+  "1": {
+   "name": "Magistrat",
+   "text": "{time} Découvre Frontière (130)."
+  },
+  "2": {
+   "name": "Magistrat",
+   "text": "{time} Découvre Frontière (131)."
+  },
+  "3": {
+   "name": "Magistrat",
+   "text": "{time} Découvre Frontière (132)."
+  },
+  "4": {
+   "name": "Stratège",
+   "text": "{activated} Joue 1 Muraille ou 1 chevalier depuis la défausse."
+  }
+ },
+ "FeudalKingdom-052": {
+  "1": {
+   "name": "Butte imposante",
+   "text": ""
+  },
+  "2": {
+   "name": "Hameau des collines",
+   "text": ""
+  },
+  "3": {
+   "name": "Village des collines",
+   "text": ""
+  },
+  "4": {
+   "name": "Village des cimes",
+   "text": "{activated} Réinitialise pour découvrir Ville (105). (Remarque : Ville peut être découverte une seconde fois plus tard.)"
+  }
+ },
+ "FeudalKingdom-053": {
+  "1": {
+   "name": "Sorcière",
+   "text": "{activated} Dépense {sword}{sword}{sword}{sword} pour la vaincre ({destroy}). {activated} Défausse 3 personnes pour {flip}. {triggeredForced} Fin du tour : découvre les 2 prochaines cartes de ta boîte, puis {flip}."
+  },
+  "4": {
+   "name": "Cabane de la sorcière",
+   "text": "{activated} Dépense {sword}{sword}{sword} pour la vaincre ({destroy}). {activated} Détruis 1 personne pour {destroy}. {triggeredForced} Fin du tour : découvre les 2 prochaines cartes de ta boîte, puis {destroy}."
+  }
+ },
+ "FeudalKingdom-054": {
+  "1": {
+   "name": "Scribe",
+   "text": "{triggeredOptional} Fin du tour : défausse cette carte pour que jusqu'à 2 autres cartes restent en jeu."
+  },
+  "4": {
+   "name": "Architecte",
+   "text": "{time} Réinitialise pour découvrir 1 projet de construction (78 / 79)."
+  }
+ },
+ "FeudalKingdom-055": {
+  "1": {
+   "name": "Seigneur Aethan",
+   "text": "{activated} Découvre Coopération (80). {activated} Découvre Domaine (81). {passive} Coche 1 {mark}."
+  },
+  "4": {
+   "name": "Seigneur Nimrod",
+   "text": "{time} Découvre Rival et Raid (133 & 134). {activated} Coche 1 {mark}."
+  }
+ },
+ "FeudalKingdom-056": {
+  "1": {
+   "name": "Peste",
+   "text": "{passive} Reste en jeu. {triggeredForced} Fin de manche : détruis 2 personnes au choix dans ton royaume. Puis {flip}."
+  },
+  "4": {
+   "name": "Soldat ennemi",
+   "text": "{triggeredForced} Quand elle est jouée, bloque 1 bâtiment / terre en jeu. {passive} Reste en jeu. {triggeredForced} Fin de manche : détruis la carte bloquée, s'il y en a une. {activated} Dépense {sword}{sword} pour le vaincre ({destroy})."
+  }
+ },
+ "FeudalKingdom-057": {
+  "1": {
+   "name": "Assassin",
+   "text": "{triggeredForced} Détruis la prochaine personne que tu joues. Si tu le fais, {flip}. {activated} Dépense {sword}{sword}{sword} pour le vaincre ({flip})."
+  },
+  "4": {
+   "name": "Soldat ennemi",
+   "text": "{triggeredForced} Quand elle est jouée, bloque 1 bâtiment / terre en jeu. {passive} Reste en jeu. {triggeredForced} Fin de manche : détruis la carte bloquée, s'il y en a une. {activated} Dépense {sword}{sword} pour le vaincre ({destroy})."
+  }
+ },
+ "FeudalKingdom-058": {
+  "1": {
+   "name": "Incendie de la ville",
+   "text": "{passive} Reste en jeu. {triggeredForced} Fin de manche : détruis 1 bâtiment de ton royaume. Puis {flip}."
+  },
+  "3": {
+   "name": "Jeune forêt",
+   "text": "{time} Coche 1 {mark} de haut en bas. Quand tu coches un {asterisk}, ajoute le sticker 2 ici comme production."
+  },
+  "4": {
+   "name": "Terres cendrées",
+   "text": ""
+  }
+ },
+ "FeudalKingdom-059": {
+  "1": {
+   "name": "Grotte mystérieuse",
+   "text": ""
+  },
+  "2": {
+   "name": "Cachot",
+   "text": ""
+  },
+  "3": {
+   "name": "Civilisation perdue",
+   "text": "{activated} Défausse 6 cartes amies en jeu pour découvrir un artefact (108)."
+  },
+  "4": {
+   "name": "Trésors",
+   "text": "{passive} Reste en jeu."
+  }
+ },
+ "FeudalKingdom-060": {
+  "1": {
+   "name": "Bandit chevronné",
+   "text": "{triggeredForced} Quand elle est jouée, bloque 3 cartes ayant de la production. {activated} Dépense {sword}{sword}{sword} pour le vaincre ({destroy}) et gagne 3 ressources au choix. (Peut être {flip} par un Missionnaire)"
+  },
+  "4": {
+   "name": "Ouvrier",
+   "text": "{activated} Choisis un bâtiment en jeu. Gagne sa production sous forme de ressources."
+  }
+ },
+ "FeudalKingdom-061": {
+  "1": {
+   "name": "Prince noir",
+   "text": "{passive} Tu ne peux pas avancer, améliorer ni utiliser d'effets {time}. {activated} Dépense {sword}{sword}{sword}{sword}{sword} pour le vaincre ({flip})."
+  },
+  "3": {
+   "name": "Écuyer",
+   "text": "{destroy} Gagne {sword}{sword}{sword}."
+  },
+  "4": {
+   "name": "Garçon enrôlé",
+   "text": "{destroy} Gagne {sword}{sword}."
+  }
+ },
+ "FeudalKingdom-062": {
+  "1": {
+   "name": "Camp",
+   "text": ""
+  },
+  "2": {
+   "name": "Terrain d'entraînement",
+   "text": "{activated} Dépense {coin} pour gagner {sword}."
+  },
+  "3": {
+   "name": "Sir ________",
+   "text": ""
+  }
+ },
+ "FeudalKingdom-063": {
+  "1": {
+   "name": "Champs lointains",
+   "text": ""
+  },
+  "2": {
+   "name": "Auberge",
+   "text": ""
+  },
+  "3": {
+   "name": "Aubergiste",
+   "text": "{activated} Défausse une autre personne pour gagner 2 ressources au choix."
+  },
+  "4": {
+   "name": "Muraille",
+   "text": "{passive} Reste en jeu."
+  }
+ },
+ "FeudalKingdom-064": {
+  "1": {
+   "name": "Bandit chevronné",
+   "text": "{triggeredForced} Quand elle est jouée, bloque 3 cartes ayant de la production. {activated} Dépense {sword}{sword}{sword} pour le vaincre ({destroy}) et gagne 3 ressources au choix. (Peut être {flip} par un Missionnaire)"
+  },
+  "4": {
+   "name": "Ouvrière agricole",
+   "text": "{activated} Choisis une terre en jeu. Gagne sa production sous forme de ressources."
+  }
+ },
+ "FeudalKingdom-065": {
+  "1": {
+   "name": "Tornade",
+   "text": "{passive} Reste en jeu. {triggeredForced} Fin de manche : détruis 3 cartes amies non permanentes au choix dans ton royaume. Puis {flip}."
+  },
+  "4": {
+   "name": "Inondation",
+   "text": "{passive} Reste en jeu. {triggeredForced} Bloque tous les bâtiments (5 bâtiments bloqués max ici). {triggeredForced} Fin de manche : détruis cette carte et 1 bâtiment bloqué, ou 2 autres cartes amies non permanentes au choix."
+  }
+ },
+ "FeudalKingdom-066": {
+  "1": {
+   "name": "Jeune princesse",
+   "text": "{triggeredForced} Fin du tour : défausse 2 personnes ou {rotate}."
+  },
+  "2": {
+   "name": "Princesse gâtée",
+   "text": "{triggeredForced} Quand elle est jouée, défausse 2 cartes amies en jeu."
+  },
+  "4": {
+   "name": "Princesse instruite",
+   "text": "{activated} Gagne 1 ressource au choix."
+  }
+ },
+ "FeudalKingdom-067": {
+  "1": {
+   "name": "Maladie",
+   "text": "{triggeredForced} Quand elle est jouée, défausse les 2 prochaines cartes de ton deck."
+  },
+  "2": {
+   "name": "Estropié",
+   "text": "Cette carte est permanente."
+  },
+  "4": {
+   "name": "Festin",
+   "text": "{activated} Gagne 1 ressource au choix."
+  }
+ },
+ "FeudalKingdom-068": {
+  "1": {
+   "name": "STOP !",
+   "text": "STOP ! Découvre 2 cartes comme d'habitude (cartes 69-70). C'est ta dernière manche. Quand cette manche est terminée, compte ta gloire ({fame}) et inscris-la dans le premier {fame} sur le côté de la boîte. C'est le moment de te vanter auprès de tes amis ! Pourront-ils battre ton score et bâtir un meilleur royaume ? J'en doute ! Quand la manche est terminée, {flip}."
+  },
+  "4": {
+   "name": "",
+   "text": "Pour compter ta gloire, passe en revue toutes tes cartes, y compris tes cartes permanentes. Additionne tous les {fame} de leurs stades actifs. Note que certaines cartes, en particulier les cartes Objectif, peuvent nécessiter des calculs supplémentaires pour déterminer leur gloire {fame}. Es-tu prêt à poursuivre ton aventure ? Ce jeu comprend des extensions intégrées qui te permettent de jouer plus de manches, mais elles ne te donneront pas de nouvelles cartes. Lis la section sur les extensions intégrées dans la feuille de règles. Si tu veux des cartes toutes neuves, il existe d'autres extensions à explorer (visite www.fryxgames.se). Bon jeu !"
+  }
+ },
+ "FeudalKingdom-069": {
+  "1": {
+   "name": "Touche finale",
+   "text": "{destroy} Ajoute les stickers 6 et 10 à 1 carte amie en jeu."
+  },
+  "4": {
+   "name": "Banquet",
+   "text": "{destroy} Gagne 4 ressources au choix."
+  }
+ },
+ "FeudalKingdom-070": {
+  "1": {
+   "name": "Visite royale",
+   "text": "{activated} Raye 1 icône de ressource dans un coût d'amélioration sur 1 carte en jeu."
+  },
+  "4": {
+   "name": "Inquisiteur",
+   "text": "{destroy} Détruis 1 carte {negative} en jeu."
+  }
+ },
+ "FeudalKingdom-071": {
+  "1": {
+   "name": "Montagne lointaine",
+   "text": ""
+  },
+  "2": {
+   "name": "Zone rocheuse",
+   "text": "{activated} Dépense {coin} pour gagner {stone}{stone}."
+  },
+  "3": {
+   "name": "Carrière",
+   "text": ""
+  },
+  "4": {
+   "name": "Mine peu profonde",
+   "text": "{destroy} Découvre Mine (84 / 85)."
+  }
+ },
+ "FeudalKingdom-072": {
+  "1": {
+   "name": "Forêt",
+   "text": "{activated} Gagne {wood}{wood}{wood}, puis {rotate}."
+  },
+  "2": {
+   "name": "Forêt abattue",
+   "text": ""
+  },
+  "3": {
+   "name": "Bûcheron",
+   "text": ""
+  },
+  "4": {
+   "name": "Puits sacré",
+   "text": "{destroy} Découvre Autel (82 / 83)."
+  }
+ },
+ "FeudalKingdom-073": {
+  "1": {
+   "name": "Canyon de l'Ouest",
+   "text": ""
+  },
+  "2": {
+   "name": "Mineurs",
+   "text": "{asterisk}Peut compter comme 2 personnes."
+  },
+  "3": {
+   "name": "Travaux forcés",
+   "text": ""
+  },
+  "4": {
+   "name": "Muraille",
+   "text": "{passive} Reste en jeu."
+  }
+ },
+ "FeudalKingdom-074": {
+  "1": {
+   "name": "Rivage",
+   "text": ""
+  },
+  "2": {
+   "name": "Chantier naval",
+   "text": ""
+  },
+  "3": {
+   "name": "Navire marchand",
+   "text": ""
+  },
+  "4": {
+   "name": "Route commerciale",
+   "text": "{triggeredForced} Quand elle est jouée, découvre Pirate (76)."
+  }
+ },
+ "FeudalKingdom-075": {
+  "1": {
+   "name": "Rivage",
+   "text": ""
+  },
+  "2": {
+   "name": "Chantier naval",
+   "text": ""
+  },
+  "3": {
+   "name": "Navire marchand",
+   "text": ""
+  },
+  "4": {
+   "name": "Route commerciale",
+   "text": "{triggeredForced} Quand elle est jouée, découvre Pirate (76)."
+  }
+ },
+ "FeudalKingdom-076": {
+  "1": {
+   "name": "Pirate",
+   "text": "{passive} Reste en jeu. {passive} Toutes les cartes ont 1 {coin} de production en moins, et les effets donnent 1 {coin} de moins. {activated} Dépense {sword}{sword} pour vaincre ({destroy}), puis découvre Lagon (77)."
+  },
+  "4": {
+   "name": "Allié habile",
+   "text": "{activated} Découvre Chasse au trésor (93)."
+  }
+ },
+ "FeudalKingdom-077": {
+  "1": {
+   "name": "Lagon",
+   "text": ""
+  },
+  "2": {
+   "name": "Radeau",
+   "text": ""
+  },
+  "3": {
+   "name": "Île luxuriante",
+   "text": ""
+  },
+  "4": {
+   "name": "Muraille de la porte maritime",
+   "text": "{activated} Joue une carte Maritime depuis la défausse."
+  }
+ },
+ "FeudalKingdom-078": {
+  "1": {
+   "name": "Statue",
+   "text": ""
+  },
+  "2": {
+   "name": "Monument",
+   "text": ""
+  },
+  "3": {
+   "name": "Obélisque",
+   "text": ""
+  },
+  "4": {
+   "name": "Pilier doré",
+   "text": ""
+  }
+ },
+ "FeudalKingdom-079": {
+  "1": {
+   "name": "Villa",
+   "text": "{triggeredOptional} Fin du tour : défausse-la pour que 1 personne reste en jeu."
+  },
+  "2": {
+   "name": "Domaine",
+   "text": "{triggeredOptional} Fin du tour : défausse-la pour que 2 personnes restent en jeu."
+  },
+  "3": {
+   "name": "Manoir",
+   "text": "{triggeredOptional} Fin du tour : défausse-la pour que 1 autre carte reste en jeu."
+  },
+  "4": {
+   "name": "Palais",
+   "text": "{triggeredOptional} Fin du tour : défausse-la pour que 2 autres cartes restent en jeu."
+  }
+ },
+ "FeudalKingdom-080": {
+  "1": {
+   "name": "Coopération",
+   "text": "{activated} Défausse 2 personnes pour gagner 3 ressources au choix, puis {flip}."
+  },
+  "4": {
+   "name": "Faveur",
+   "text": "{passive} Reste en jeu. {activated} Gagne 1 ressource au choix, puis {flip}."
+  }
+ },
+ "FeudalKingdom-081": {
+  "1": {
+   "name": "Domaine d'Aethan",
+   "text": ""
+  },
+  "2": {
+   "name": "Domaine d'Aethan",
+   "text": "{triggeredForced} Quand tu purges cette carte, tu peux empêcher 1 autre carte d'être purgée."
+  },
+  "3": {
+   "name": "Domaine d'Aethan",
+   "text": "{triggeredForced} Quand tu purges cette carte, tu peux empêcher 2 autres cartes d'être purgées."
+  },
+  "4": {
+   "name": "Domaine d'Aethan",
+   "text": "{triggeredForced} Quand tu purges cette carte, tu peux empêcher 3 autres cartes d'être purgées."
+  }
+ },
+ "FeudalKingdom-082": {
+  "1": {
+   "name": "Autel",
+   "text": "{triggeredOptional} Fin du tour : défausse-la pour que 1 autre carte reste en jeu."
+  },
+  "2": {
+   "name": "Sanctuaire",
+   "text": "{triggeredOptional} Fin du tour : défausse-la pour que jusqu'à 2 autres cartes restent en jeu."
+  },
+  "3": {
+   "name": "Oratoire",
+   "text": "{triggeredOptional} Fin du tour : défausse-la pour que jusqu'à 3 autres cartes restent en jeu."
+  },
+  "4": {
+   "name": "Temple",
+   "text": "{triggeredOptional} Fin du tour : défausse-la pour que jusqu'à 4 autres cartes restent en jeu."
+  }
+ },
+ "FeudalKingdom-083": {
+  "1": {
+   "name": "Autel",
+   "text": "{triggeredOptional} Fin du tour : défausse-la pour que 1 autre carte reste en jeu."
+  },
+  "2": {
+   "name": "Sanctuaire",
+   "text": "{triggeredOptional} Fin du tour : défausse-la pour que jusqu'à 2 autres cartes restent en jeu."
+  },
+  "3": {
+   "name": "Oratoire",
+   "text": "{triggeredOptional} Fin du tour : défausse-la pour que jusqu'à 3 autres cartes restent en jeu."
+  },
+  "4": {
+   "name": "Temple",
+   "text": "{triggeredOptional} Fin du tour : défausse-la pour que jusqu'à 4 autres cartes restent en jeu."
+  }
+ },
+ "FeudalKingdom-084": {
+  "1": {
+   "name": "Mine",
+   "text": ""
+  },
+  "2": {
+   "name": "Mine profonde",
+   "text": ""
+  },
+  "3": {
+   "name": "Mine de rubis",
+   "text": ""
+  },
+  "4": {
+   "name": "Mine de diamants",
+   "text": ""
+  }
+ },
+ "FeudalKingdom-085": {
+  "1": {
+   "name": "Mine",
+   "text": ""
+  },
+  "2": {
+   "name": "Mine profonde",
+   "text": ""
+  },
+  "3": {
+   "name": "Mine de rubis",
+   "text": ""
+  },
+  "4": {
+   "name": "Mine de diamants",
+   "text": ""
+  }
+ },
+ "FeudalKingdom-086": {
+  "1": {
+   "name": "Adoubement",
+   "text": "{passive} Reste en jeu. {triggeredForced} Fin de manche : ajoute les stickers 1 & 5 & 11 à 1 personne. Puis {flip}."
+  },
+  "4": {
+   "name": "Rénovation",
+   "text": "{passive} Reste en jeu. {triggeredForced} Fin de manche : ajoute les stickers 2 / 3 et 4 / 6 à 1 bâtiment. Puis détruis cette carte."
+  }
+ },
+ "FeudalKingdom-087": {
+  "1": {
+   "name": "Quêtes",
+   "text": "Cette carte est permanente. {time} Défausse le nombre de personnes indiqué pour chaque case afin de cocher 1 {mark} de gauche à droite. Cette carte vaut la plus haute valeur de {fame} cochée."
+  }
+ },
+ "FeudalKingdom-088": {
+  "1": {
+   "name": "Une tour parfaite",
+   "text": "Cette carte est permanente. {time} Dépense les {stone} ci-dessous pour cocher 1 {mark} de gauche à droite. Cette carte vaut la plus haute valeur de {fame} cochée."
+  }
+ },
+ "FeudalKingdom-089": {
+  "1": {
+   "name": "Fosse profonde",
+   "text": ""
+  },
+  "2": {
+   "name": "Puits du village",
+   "text": "{passive} Les bâtiments ont +1{coin} de production."
+  },
+  "3": {
+   "name": "Prison",
+   "text": "{passive} Reste en jeu. {activated} Coche 1 {mark} au choix ci-dessous pour défausser 1 ennemi. {asterisk}Vaut 2{fame} par {mark}."
+  },
+  "4": {
+   "name": "Village de la fosse",
+   "text": "{activated} Coche 1 {mark}. Une fois complète, {rotate}."
+  }
+ },
+ "FeudalKingdom-090": {
+  "1": {
+   "name": "Joaillerie",
+   "text": "Cette carte est permanente. {time} Dépense les {metal} ci-dessous pour cocher 1 {mark} de gauche à droite et gagner 5{tradeGood}. Cette carte vaut la plus haute valeur de {fame} cochée. (5{tradeGood} chacune)"
+  }
+ },
+ "FeudalKingdom-091": {
+  "1": {
+   "name": "Construire une arche",
+   "text": "Cette carte est permanente. {time} Dépense les {wood} ci-dessous pour cocher 1 {mark} de gauche à droite. Une fois complète, {flip}."
+  },
+  "4": {
+   "name": "L'Arche",
+   "text": "{activated} Coche 1 {mark} par tranche de 2 personnes que tu as en jeu. {asterisk}Vaut +1{fame} par {mark}."
+  }
+ },
+ "FeudalKingdom-092": {
+  "1": {
+   "name": "________",
+   "text": "{triggeredForced} 1re fois jouée : donne-lui un nom ! {triggeredForced} 2e fois jouée : ajoute ici le sticker 5 / 10. {triggeredForced} 3e fois jouée : ajoute ici le sticker 6 / 10."
+  },
+  "4": {
+   "name": "________",
+   "text": "{passive} Reste en jeu. {triggeredForced} 1re fois jouée : donne-lui un nom ! {triggeredForced} 2e fois jouée : ajoute ici un sticker de production de ressource au choix (1-6). {triggeredForced} 3e fois jouée : ajoute ici un sticker de production de ressource au choix (1-6)."
+  }
+ },
+ "FeudalKingdom-093": {
+  "1": {
+   "name": "Chasse au trésor",
+   "text": ""
+  },
+  "2": {
+   "name": "Crique des pirates",
+   "text": "{triggeredForced} Fin du tour : malheureusement, découvre Traître (94)."
+  },
+  "3": {
+   "name": "Carte au trésor",
+   "text": ""
+  },
+  "4": {
+   "name": "Trésor des pirates",
+   "text": ""
+  }
+ },
+ "FeudalKingdom-094": {
+  "1": {
+   "name": "Traître",
+   "text": "{triggeredForced} Quand elle est jouée, défausse 2 personnes. {activated} Dépense {sword}{sword}{sword}{sword} pour vaincre ({destroy})."
+  },
+  "4": {
+   "name": "Malédiction du sang",
+   "text": "{triggeredForced} Quand tu avances, joue 2 cartes supplémentaires."
+  }
+ },
+ "FeudalKingdom-095": {
+  "1": {
+   "name": "Astronome",
+   "text": "{activated} Dépense {coin}{coin} pour cocher 1 {mark}. {asterisk}Vaut 2{fame} par {mark}."
+  },
+  "4": {
+   "name": "Astrologue",
+   "text": "{activated} Place jusqu'à 3 autres cartes en jeu sur le dessus ou le dessous de ton deck."
+  }
+ },
+ "FeudalKingdom-096": {
+  "1": {
+   "name": "Alchimiste",
+   "text": "{activated} Dépense {coin}{coin} pour tourner cette carte dans l'orientation de ton choix."
+  },
+  "2": {
+   "name": "Potion de force",
+   "text": "{activated} Réinitialise cette carte pour gagner {sword}{sword}{sword}."
+  },
+  "3": {
+   "name": "Potion de soin",
+   "text": "{triggeredOptional} Quand tu défausses une personne, tu peux réinitialiser cette carte à la place."
+  },
+  "4": {
+   "name": "Philtre d'amour",
+   "text": "{activated} Réinitialise cette carte pour gagner {tradeGood}{tradeGood}{tradeGood}{tradeGood}{tradeGood}."
+  }
+ },
+ "FeudalKingdom-097": {
+  "1": {
+   "name": "Rouet",
+   "text": ""
+  },
+  "2": {
+   "name": "Soie",
+   "text": ""
+  },
+  "3": {
+   "name": "Exportation de tissu",
+   "text": ""
+  },
+  "4": {
+   "name": "Mode",
+   "text": ""
+  }
+ },
+ "FeudalKingdom-098": {
+  "1": {
+   "name": "Boussole",
+   "text": "{activated} Coche 1 {mark} pour chaque carte Maritime en jeu, y compris celle-ci. Une fois complète, {rotate}."
+  },
+  "2": {
+   "name": "Navigation",
+   "text": "{activated} Coche 1 {mark} pour chaque carte Maritime en jeu, y compris celle-ci. Une fois complète, {flip}."
+  },
+  "3": {
+   "name": "Astrolabe",
+   "text": "{activated} Coche 1 {mark} pour chaque carte Maritime en jeu, y compris celle-ci. Une fois complète, {rotate}."
+  },
+  "4": {
+   "name": "Calendrier",
+   "text": "{activated} Coche 1 {mark} pour mélanger ta défausse (sans Calendrier) et placer ses 15 premières cartes au dessous de ton deck."
+  }
+ },
+ "FeudalKingdom-099": {
+  "1": {
+   "name": "Châtiment public",
+   "text": ""
+  },
+  "2": {
+   "name": "Instrument de torture",
+   "text": ""
+  },
+  "3": {
+   "name": "Chambre de torture",
+   "text": ""
+  },
+  "4": {
+   "name": "Post-barbare",
+   "text": ""
+  }
+ },
+ "FeudalKingdom-100": {
+  "1": {
+   "name": "Scierie",
+   "text": ""
+  },
+  "2": {
+   "name": "Industrie du bois",
+   "text": "{activated} Découvre Construire une arche (91)."
+  },
+  "3": {
+   "name": "Cargaison de bois",
+   "text": "{passive} {tradeGood} et {wood} sont interchangeables."
+  },
+  "4": {
+   "name": "Exportation de bois",
+   "text": ""
+  }
+ },
+ "FeudalKingdom-101": {
+  "1": {
+   "name": "Charrues",
+   "text": ""
+  },
+  "2": {
+   "name": "Machines agricoles",
+   "text": "{passive} Reste en jeu."
+  },
+  "3": {
+   "name": "Entrepôt royal",
+   "text": "{passive} Reste en jeu. {triggeredOptional} Fin du tour : fais en sorte qu'une autre carte reste en jeu."
+  },
+  "4": {
+   "name": "Granges agrandies",
+   "text": "{triggeredOptional} Fin du tour : fais en sorte que cette carte ou une autre reste en jeu."
+  }
+ },
+ "FeudalKingdom-102": {
+  "1": {
+   "name": "Bateaux de pêche",
+   "text": ""
+  },
+  "2": {
+   "name": "Fish n' Chips",
+   "text": ""
+  },
+  "3": {
+   "name": "Pêche d'excellence",
+   "text": "Cette carte est permanente. {passive} Chaque carte Maritime a +{coin} de production."
+  },
+  "4": {
+   "name": "Quota de pêche",
+   "text": "{activated} Coche 1 {mark}. Une fois complète, {rotate}."
+  }
+ },
+ "FeudalKingdom-103": {
+  "1": {
+   "name": "Missionnaire",
+   "text": "{activated} Dépense {coin}{coin}{coin} pour convertir ({flip}) un Bandit."
+  },
+  "4": {
+   "name": "Apiculteur",
+   "text": "{activated} Coche 1 {mark}. Une fois complète, ajoute ici le sticker 1 comme production."
+  }
+ },
+ "FeudalKingdom-104": {
+  "1": {
+   "name": "Prêtre",
+   "text": "{activated} Dépense {coin}{coin} pour améliorer 1 carte en jeu, en payant normalement. Cela ne termine PAS ton tour."
+  },
+  "4": {
+   "name": "Cardinal",
+   "text": "{activated} Améliore 1 carte en jeu, en payant normalement. Cela ne termine PAS ton tour."
+  }
+ },
+ "FeudalKingdom-105": {
+  "1": {
+   "name": "Petite ville des collines",
+   "text": "{activated} Dépense {coin}{coin} pour gagner 1 ressource au choix."
+  },
+  "2": {
+   "name": "Ville des collines",
+   "text": "{activated} Dépense {coin} pour gagner 1 ressource au choix."
+  },
+  "3": {
+   "name": "Grande ville",
+   "text": "{activated} Dépense 1 ressource au choix pour gagner 1 ressource au choix."
+  },
+  "4": {
+   "name": "Cité sur la colline",
+   "text": "{activated} Annule la découverte de cette carte pour découvrir Camelot (106). (Remets-la dans la boîte. Elle pourra être découverte à nouveau.) {activated} Gagne 1 ressource au choix."
+  }
+ },
+ "FeudalKingdom-106": {
+  "1": {
+   "name": "Camelot",
+   "text": ""
+  },
+  "2": {
+   "name": "Camelot",
+   "text": ""
+  },
+  "3": {
+   "name": "Camelot",
+   "text": ""
+  },
+  "4": {
+   "name": "Camelot",
+   "text": "{triggeredOptional} Fin du tour : si tu n'as aucune carte dans ton deck, coche 1 {mark}. {asterisk}Vaut +5{fame} par {mark}."
+  }
+ },
+ "FeudalKingdom-107": {
+  "1": {
+   "name": "Visite royale",
+   "text": "{activated} Raye 1 icône de ressource dans un coût d'amélioration sur 1 carte en jeu."
+  },
+  "4": {
+   "name": "Inquisiteur",
+   "text": "{destroy} Détruis 1 carte {negative} en jeu."
+  }
+ },
+ "FeudalKingdom-108": {
+  "1": {
+   "name": "Cristal d'éther",
+   "text": "Cette carte ne peut pas être détruite."
+  }
+ },
+ "FeudalKingdom-109": {
+  "1": {
+   "name": "Petite guilde",
+   "text": ""
+  },
+  "2": {
+   "name": "Guilde",
+   "text": ""
+  },
+  "3": {
+   "name": "Maison de la guilde",
+   "text": ""
+  },
+  "4": {
+   "name": "Grande maison de la guilde",
+   "text": "{activated} Défausse autant de Personnes que tu veux pour écrire ce nombre dans 1 {fame}."
+  }
+ },
+ "FeudalKingdom-110": {
+  "1": {
+   "name": "Grange",
+   "text": ""
+  },
+  "2": {
+   "name": "Grande grange",
+   "text": ""
+  },
+  "3": {
+   "name": "Campagne",
+   "text": "{activated} Place une carte en jeu en dessous de ton deck."
+  },
+  "4": {
+   "name": "Campagne florissante",
+   "text": "{activated} Choisis 1 carte en jeu ou dans la défausse. Place-la en dessous du deck."
+  }
+ },
+ "FeudalKingdom-111": {
+  "1": {
+   "name": "Manoir",
+   "text": "{triggeredForced} Après que cette carte a produit, raye 1 production ici."
+  },
+  "2": {
+   "name": "Grand manoir",
+   "text": "{triggeredForced} Après que cette carte a produit, raye 1 production ici."
+  },
+  "3": {
+   "name": "Résidence noble",
+   "text": "{triggeredForced} Après que cette carte a produit, raye 1 production ici."
+  },
+  "4": {
+   "name": "Grande résidence",
+   "text": "{time} Découvre un noble (116)."
+  }
+ },
+ "FeudalKingdom-112": {
+  "1": {
+   "name": "Écurie",
+   "text": "{time} Dépense {coin}{coin} pour découvrir un cheval (113)."
+  },
+  "2": {
+   "name": "Écurie",
+   "text": "{time} Dépense {coin}{coin} pour découvrir un cheval (114)."
+  },
+  "3": {
+   "name": "Grande écurie",
+   "text": "{time} Dépense {coin}{coin} pour découvrir un cheval (115)."
+  },
+  "4": {
+   "name": "Palefrenier",
+   "text": "{triggeredOptional} Quand elle est jouée, joue un cheval depuis la défausse. {activated} Choisis un cheval avec 0-3 production. Dépense {coin}{coin} pour lui ajouter 1 sticker de ressource au choix."
+  }
+ },
+ "FeudalKingdom-113": {
+  "1": {
+   "name": "Cheval",
+   "text": ""
+  }
+ },
+ "FeudalKingdom-114": {
+  "1": {
+   "name": "Cheval",
+   "text": ""
+  }
+ },
+ "FeudalKingdom-115": {
+  "1": {
+   "name": "Cheval",
+   "text": ""
+  }
+ },
+ "FeudalKingdom-116": {
+  "1": {
+   "name": "Aric Blackwood",
+   "text": "{passive} Reste en jeu. {triggeredForced} Quand elle est jouée, tu dois défausser 1 carte en jeu au choix."
+  },
+  "4": {
+   "name": "Eadric Shadowstrike",
+   "text": "{passive} Reste en jeu. {activated} Défausse 1 Personne pour gagner {sword}{sword}{sword}."
+  }
+ },
+ "FeudalKingdom-117": {
+  "1": {
+   "name": "Relations commerciales",
+   "text": "{passive} Dépense {tradeGood}{tradeGood}{tradeGood} pour gagner 1 ressource au choix."
+  }
+ },
+ "FeudalKingdom-118": {
+  "1": {
+   "name": "Petite école",
+   "text": "{time} Améliore gratuitement une Personne en jeu, puis {rotate}."
+  },
+  "2": {
+   "name": "École",
+   "text": "{time} Améliore gratuitement une Personne en jeu. Puis {flip}."
+  },
+  "3": {
+   "name": "École éminente",
+   "text": "{time} Ajoute 1 sticker de ressource (1-6) à une Personne en jeu, puis {rotate}."
+  },
+  "4": {
+   "name": "École renommée",
+   "text": "{time} Ajoute 1 sticker de ressource (1-6) à une Personne en jeu. {oneTime}"
+  }
+ },
+ "FeudalKingdom-119": {
+  "1": {
+   "name": "Marchande",
+   "text": "{activated} Dépense {coin} pour gagner {wood}."
+  },
+  "2": {
+   "name": "Bazar",
+   "text": "{activated} Dépense {coin} pour gagner {wood}/{stone}."
+  },
+  "3": {
+   "name": "Marché",
+   "text": "{activated} Dépense {coin} pour gagner {wood}/{stone}/{metal}."
+  },
+  "4": {
+   "name": "Festival",
+   "text": ""
+  }
+ },
+ "FeudalKingdom-120": {
+  "1": {
+   "name": "Investisseur",
+   "text": "{activated} Gagne 3 ressources au choix, puis {rotate}."
+  },
+  "2": {
+   "name": "Investisseur",
+   "text": "{activated} Gagne 3 ressources au choix, puis {flip}."
+  },
+  "3": {
+   "name": "Investisseur",
+   "text": "{activated} Gagne 3 ressources au choix, puis {rotate}."
+  },
+  "4": {
+   "name": "Investisseur",
+   "text": "{activated} Gagne 1 ressource au choix."
+  }
+ },
+ "FeudalKingdom-121": {
+  "1": {
+   "name": "Roi Alahar",
+   "text": "{passive} Reste en jeu."
+  },
+  "4": {
+   "name": "Reine Jemimah",
+   "text": "{activated} Défausse 1 Personne avec 5 {fame} ou plus pour cocher 1 {mark} ci-dessous. {asterisk}Vaut 3{fame} par {mark}."
+  }
+ },
+ "FeudalKingdom-122": {
+  "1": {
+   "name": "Consort royal",
+   "text": ""
+  },
+  "4": {
+   "name": "Consort royal",
+   "text": ""
+  }
+ },
+ "FeudalKingdom-123": {
+  "1": {
+   "name": "Grand château",
+   "text": "{activated} Joue 1 carte depuis la défausse."
+  },
+  "2": {
+   "name": "Château immense",
+   "text": "{activated} Joue 1 carte depuis la défausse."
+  },
+  "3": {
+   "name": "Forteresse",
+   "text": "{activated} Joue 1 carte depuis la défausse."
+  },
+  "4": {
+   "name": "Forteresse imprenable",
+   "text": "{activated} Joue 1 carte depuis la défausse. {triggeredOptional} Tu peux défausser 2 Murailles à la place de celle-ci."
+  }
+ },
+ "FeudalKingdom-124": {
+  "1": {
+   "name": "Extraction de joyaux",
+   "text": ""
+  },
+  "2": {
+   "name": "Taille de joyaux",
+   "text": ""
+  },
+  "3": {
+   "name": "Polissage de joyaux",
+   "text": ""
+  },
+  "4": {
+   "name": "Exposition de joyaux",
+   "text": ""
+  }
+ },
+ "FeudalKingdom-125": {
+  "1": {
+   "name": "Grand temple",
+   "text": "{triggeredOptional} Fin du tour : défausse cette carte pour que jusqu'à 5 autres cartes restent en jeu."
+  },
+  "2": {
+   "name": "Temple orné",
+   "text": "{triggeredOptional} Fin du tour : défausse cette carte pour que jusqu'à 5 autres cartes restent en jeu."
+  },
+  "3": {
+   "name": "Temple légendaire",
+   "text": "{triggeredOptional} Fin du tour : défausse cette carte pour que jusqu'à 5 autres cartes restent en jeu."
+  },
+  "4": {
+   "name": "Temple de lumière",
+   "text": "{triggeredOptional} Fin du tour : défausse cette carte pour que jusqu'à 5 autres cartes restent en jeu. {time} Dépense {tradeGood}{tradeGood}{tradeGood}{tradeGood} pour cocher {mark}. {asterisk}Quand tu purges cette carte, elle vaut +10{fame} par {mark}."
+  }
+ },
+ "FeudalKingdom-126": {
+  "1": {
+   "name": "Pinède",
+   "text": ""
+  },
+  "2": {
+   "name": "Pinède",
+   "text": ""
+  },
+  "3": {
+   "name": "Vivier",
+   "text": ""
+  },
+  "4": {
+   "name": "Étang",
+   "text": ""
+  }
+ },
+ "FeudalKingdom-127": {
+  "1": {
+   "name": "Rochers",
+   "text": ""
+  },
+  "2": {
+   "name": "Rochers",
+   "text": ""
+  },
+  "3": {
+   "name": "Champignons",
+   "text": "{passive} Défausse 1 Personne pour gagner {tradeGood}{tradeGood}."
+  },
+  "4": {
+   "name": "Champignons",
+   "text": ""
+  }
+ },
+ "FeudalKingdom-128": {
+  "1": {
+   "name": "Ravin",
+   "text": ""
+  },
+  "2": {
+   "name": "Gouffre",
+   "text": ""
+  },
+  "3": {
+   "name": "Ruines antiques",
+   "text": ""
+  },
+  "4": {
+   "name": "Site de fouilles",
+   "text": "{asterisk}Vaut 7{fame} par {mark}. {time} Défausse 1 Personne et dépense {stone}{stone}{stone} pour cocher {mark}."
+  }
+ },
+ "FeudalKingdom-129": {
+  "1": {
+   "name": "Sources chaudes",
+   "text": "{triggeredOptional} Quand tu améliores cette carte, ajoute le sticker 1 à 1 Terre en jeu."
+  },
+  "2": {
+   "name": "Fontaine",
+   "text": "{triggeredOptional} Quand tu améliores cette carte, augmente 1 production en jeu."
+  },
+  "3": {
+   "name": "Canaux",
+   "text": "{triggeredOptional} Quand tu améliores cette carte, ajoute le sticker 7 à 1 Terre en jeu."
+  },
+  "4": {
+   "name": "Rivière d'eau douce",
+   "text": ""
+  }
+ },
+ "FeudalKingdom-130": {
+  "1": {
+   "name": "Limite de la ville",
+   "text": ""
+  },
+  "2": {
+   "name": "Tour de guet",
+   "text": "{passive} Tu peux regarder les 2 cartes du dessus de ton deck."
+  },
+  "3": {
+   "name": "Double muraille",
+   "text": "{asterisk}Vaut 4{fame} pour chaque Muraille, y compris celle-ci. {passive} Reste en jeu."
+  },
+  "4": {
+   "name": "Muraille intérieure",
+   "text": "{passive} Reste en jeu."
+  }
+ },
+ "FeudalKingdom-131": {
+  "1": {
+   "name": "Plaines du Nord",
+   "text": ""
+  },
+  "2": {
+   "name": "Douves",
+   "text": "{activated} Défausse une autre carte pour gagner {sword}{sword}."
+  },
+  "3": {
+   "name": "Pont des douves",
+   "text": "{activated} Dépense {coin} pour jouer une Personne depuis la défausse."
+  },
+  "4": {
+   "name": "Muraille",
+   "text": "{passive} Reste en jeu."
+  }
+ },
+ "FeudalKingdom-132": {
+  "1": {
+   "name": "Collines du Sud",
+   "text": ""
+  },
+  "2": {
+   "name": "Terres en terrasses",
+   "text": ""
+  },
+  "3": {
+   "name": "Muraille",
+   "text": "{passive} Reste en jeu."
+  },
+  "4": {
+   "name": "Moulin à vent",
+   "text": ""
+  }
+ },
+ "FeudalKingdom-133": {
+  "1": {
+   "name": "Razzia",
+   "text": "{activated} Gagne 1 ressource au choix."
+  },
+  "2": {
+   "name": "Rapine",
+   "text": "{activated} Gagne 2 ressources au choix."
+  },
+  "3": {
+   "name": "Pillage",
+   "text": "{activated} Gagne 2 ressources au choix."
+  },
+  "4": {
+   "name": "Mise à sac",
+   "text": "{activated} Gagne 3 ressources au choix."
+  }
+ },
+ "FeudalKingdom-134": {
+  "1": {
+   "name": "Beau rival",
+   "text": "{passive} Ne peut pas être détruite tant que Lord Nimrod n'a pas été détruit. {activated} Défausse Lord Nimrod et dépense les ressources d'1 case ci-dessous pour la cocher {mark}. Une fois tout complété, {flip}. {asterisk}Vaut -5{fame} pour chaque case non cochée."
+  },
+  "4": {
+   "name": "Noble allié",
+   "text": "{activated} Choisis une Personne en jeu et gagne sa production sous forme de ressources."
+  }
+ },
+ "FeudalKingdom-135": {
+  "1": {
+   "name": "Terres frontalières",
+   "text": "{passive} Dépense {sword}{sword}{sword}{sword} pour rayer 1 coût {sword} ici. {asterisk}Tous les stades de cette carte valent autant que le dernier stade."
+  },
+  "2": {
+   "name": "Occupation",
+   "text": "{passive} Dépense {sword}{sword}{sword}{sword} pour rayer 1 coût {sword} ici."
+  },
+  "3": {
+   "name": "Villes rebelles",
+   "text": "{passive} Dépense {sword}{sword}{sword}{sword} pour rayer 1 coût {sword} ici. {triggeredForced} Quand elle est améliorée, écris « 20 » dans un {fame} vide de ce stade."
+  },
+  "4": {
+   "name": "États vassaux",
+   "text": "{activated} Réinitialise cette carte."
+  }
+ },
+ "FeudalKingdom-136": {
+  "1": {
+   "name": "Prospérité (extension)",
+   "text": "Joue 1 manche où toutes les cartes amies ont +{coin} de production. Puis {rotate}."
+  },
+  "2": {
+   "name": "Thésaurisation",
+   "text": "Joue 1 manche où tu peux faire rester 1 carte en jeu à chaque tour. Puis {flip}."
+  },
+  "3": {
+   "name": "Soulèvement",
+   "text": "Joue 1 manche où tu dois cocher 1 {mark} chaque fois qu'une Personne est jouée alors qu'il y a déjà une Personne en jeu. Puis {rotate}."
+  },
+  "4": {
+   "name": "Décret royal",
+   "text": "Joue 1 manche. Puis, pour chaque {mark} sur Soulèvement, tu dois rayer 1 production sur 1 carte. Puis détruis cette carte."
+  }
+ },
+ "FeudalKingdom-137": {
+  "1": {
+   "name": "Le moulin à eau (extension)",
+   "text": "Joue 1 manche où tu peux gagner {coin}{coin}{coin} une fois par tour. Puis {rotate}."
+  },
+  "2": {
+   "name": "Agriculture efficace",
+   "text": "Joue 1 manche. {time} Défausse 2 Bâtiments pour ajouter le sticker 1 à 1 Terre en jeu. Puis {flip}."
+  },
+  "3": {
+   "name": "Excédent",
+   "text": "Joue 1 manche où les Terres qui produisent {coin} peuvent produire {tradeGood} à la place. Puis {rotate}."
+  },
+  "4": {
+   "name": "Fermes obsolètes",
+   "text": "Joue 1 manche. Puis détruis cette carte et 1 carte avec une production de {coin}."
+  }
+ },
+ "FeudalKingdom-138": {
+  "1": {
+   "name": "Litige frontalier (extension)",
+   "text": "Joue 1 manche où toutes les Terres restent en jeu. Puis {rotate}."
+  },
+  "2": {
+   "name": "Espionnage",
+   "text": "Joue 1 manche. Puis {flip}. {triggeredForced} Quand une Personne est jouée, coche 1 {mark} ou défausse 2 cartes amies. Si c'est complet, défausse toutes les cartes de ton deck."
+  },
+  "3": {
+   "name": "Attaque",
+   "text": "Joue 1 manche. {triggeredForced} Fin du tour : si tu n'as aucune {sword}, raye 1 production sur 1 carte en jeu. {triggeredForced} Fin de manche : ajoute 1 sticker de ressource au choix (1-6) à 1 carte amie, puis {rotate}."
+  },
+  "4": {
+   "name": "Résistance",
+   "text": "Joue 1 manche où tu peux dépenser autant de {sword} que tu veux en comptant combien tu en as dépensé. Après la manche, écris ce nombre (max 100) sur le sticker 16 et ajoute ce sticker à 1 Terre. Puis détruis cette carte."
+  }
+ },
+ "FeudalKingdom-139": {
+  "1": {
+   "name": "STOP !",
+   "text": "STOP ! Ceci est la dernière carte du deck. Elle n'existe que pour marquer le dos du deck."
+  },
+  "4": {
+   "name": "STOP !",
+   "text": "STOP ! Ceci est le dos du deck."
+  }
+ }
+}
