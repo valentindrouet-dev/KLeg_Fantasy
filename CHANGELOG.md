@@ -3,6 +3,16 @@
 Chaque mise à jour publiée change de version (`package.json`, affichée dans l'appli en bas de l'écran « Mes royaumes »
 et dans la barre de la partie). Convention : `0.5.0` s'affiche **v0.05** ; un correctif `0.5.1` s'affiche **v0.05.1**.
 
+## v0.17 (2 octobre 2026)
+
+Début de la phase P3 : résolution à la main, pour que la partie ne soit jamais bloquée par un effet pas encore automatisé.
+
+- Effet non automatisé : toucher l'effet l'utilise (la carte est défaussée, détruite ou finit le tour selon son type) ; on applique le reste à la main.
+- Bouton ✋ dans la barre du haut : ajouter ou retirer des ressources, découvrir une carte par son numéro, retrouver n'importe quelle carte.
+- Inspection (appui long) : changer l'orientation, déplacer la carte (en jeu, défausse, dessus ou dessous de la pioche, permanentes, détruite, boîte), cocher les cases, poser un sticker de ressource ou de gloire.
+- Toutes ces opérations s'annulent comme les autres actions et sont gardées dans la sauvegarde.
+- Les stickers posés s'affichent en pastille sur la carte.
+
 ## v0.16 (2 octobre 2026)
 
 - Pioche et défausse en bas de l'écran en paysage aussi (même disposition qu'en portrait).

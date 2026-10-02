@@ -12,3 +12,4 @@ export { activeStage, cardName, zoneOf, formatCounts, totalResources, instance, 
 export { randomSeed } from "./rng";
 export { planWithEngaged, candidateActions, engagedPotential, actionCost } from "./payment";
 export { kingdomStats, type KingdomStats } from "./stats";
+export { manualEffects, validOrientations, checkKey, isManualOpValid } from "./manual";

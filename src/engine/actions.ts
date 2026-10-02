@@ -24,6 +24,7 @@ import {
   type InstanceId,
 } from "./types";
 import { applyArrow, cardCostOptions, upgradeOptions } from "./upgrade";
+import { executeManual, isManualOpValid, manualEffects } from "./manual";
 
 // Les 5 actions du tour (spec 4.4) et les réponses aux décisions en attente.
 // `getLegalActions` est la seule source de vérité : `applyAction` refuse tout ce qui n'y figure pas.
@@ -78,6 +79,8 @@ export function getLegalActions(catalog: Catalog, s: GameState): Action[] {
         actions.push({ type: "useEffect", card, effect: effect.id, targets: p.targets, option: p.option });
       }
     }
+    // Effets non automatisés : on paie le coût du type (défausser, détruire, fin du tour), le reste à la main.
+    for (const effect of manualEffects(catalog, s, card)) actions.push({ type: "manual", op: { kind: "effect", card, effect } });
   }
   if (s.zones.deck.length > 0) actions.push({ type: "advance" });
   actions.push({ type: "pass" });
@@ -86,6 +89,7 @@ export function getLegalActions(catalog: Catalog, s: GameState): Action[] {
 
 /** Clé canonique d'une action (ordre des clés et des cibles indifférent). */
 export function actionKey(a: Action): string {
+  if (a.type === "manual") return JSON.stringify(["manual", Object.entries(a.op).sort(([x], [y]) => x.localeCompare(y))]);
   const norm: Record<string, unknown> = { ...a };
   if ("targets" in a) norm.targets = [...a.targets].sort();
   if ("discard" in a) norm.discard = [...a.discard].sort();
@@ -93,6 +97,8 @@ export function actionKey(a: Action): string {
 }
 
 export function isLegal(catalog: Catalog, s: GameState, a: Action): boolean {
+  // Opérations à la main en nombre illimité (ressources, déplacements…) : validées sans être énumérées.
+  if (a.type === "manual" && a.op.kind !== "effect") return isManualOpValid(catalog, s, a.op);
   const key = actionKey(a);
   return getLegalActions(catalog, s).some((l) => actionKey(l) === key);
 }
@@ -165,5 +171,8 @@ function execute(d: Draft, a: Action): void {
       resolveParchment(d, s.pending.card);
       return;
     }
+    case "manual":
+      executeManual(d, a.op);
+      return;
   }
 }

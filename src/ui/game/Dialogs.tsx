@@ -1,6 +1,12 @@
 import { Fragment, useState, type ReactNode } from "react";
 import {
+  activeStage,
   canRestartKingdom,
+  checkKey,
+  isManualOpValid,
+  printedStage,
+  validOrientations,
+  zoneOf,
   cardName,
   computeScore,
   instance,
@@ -11,7 +17,11 @@ import {
   type Catalog,
   type GameState,
   type InstanceId,
+  type ManualOp,
+  type Zone,
 } from "../../engine";
+import type { Checkbox } from "../../data/schema";
+import { STICKERS } from "../../data/stickers";
 import { stageFr } from "../../data/translations";
 import { Dialog } from "../common/Dialog";
 import { Icon, IconText } from "../common/IconText";
@@ -26,29 +36,198 @@ function listCard(): number {
 }
 
 /** Largeur d'une grande carte dans une fenêtre : `count` cartes côte à côte, la plus grande qui tient. */
-function bigCard(count = 1): number {
-  const byHeight = (window.innerHeight - 200) * (373 / 520);
+function bigCard(count = 1, reserved = 0): number {
+  const byHeight = (window.innerHeight - 200 - reserved) * (373 / 520);
   const byWidth = (Math.min(window.innerWidth, 1500) - 120 - (count - 1) * 16) / count;
   return Math.floor(Math.max(150, Math.min(520, byHeight, byWidth)));
+}
+
+const ZONE_BUTTONS: readonly { label: string; to: Zone; position: "top" | "bottom" }[] = [
+  { label: "En jeu", to: "play", position: "bottom" },
+  { label: "Défausse", to: "discard", position: "bottom" },
+  { label: "Pioche ↑", to: "deck", position: "top" },
+  { label: "Pioche ↓", to: "deck", position: "bottom" },
+  { label: "Permanentes", to: "permanent", position: "bottom" },
+  { label: "Détruite", to: "destroyed", position: "bottom" },
+  { label: "Boîte", to: "box", position: "bottom" },
+];
+
+/** Contenu d'une case à cocher : coût, gain, gloire ou marqueur imprimés. */
+function checkboxText(b: Checkbox): string {
+  // Longues suites d'une même ressource : « 7{sword} » plutôt que 7 icônes.
+  const list = (rs: readonly string[]) => (rs.length > 2 && rs.every((r) => r === rs[0]) ? `${rs.length}{${rs[0] ?? ""}}` : rs.map((r) => `{${r}}`).join(""));
+  const parts = [
+    ...(b.cost?.length ? [list(b.cost)] : []),
+    ...(b.gain?.length ? [`+${list(b.gain)}`] : []),
+    ...(b.fame !== undefined ? [`{fame}${b.fame}`] : []),
+    ...(b.icon ? [`{${b.icon}}`] : []),
+  ];
+  return parts.length ? parts.join(" ") : b.id;
+}
+
+/** Outils de résolution à la main d'une carte (spec 5.1) : orientation, zone, cases, stickers. */
+function ManualTools({ catalog, state, card, onManual }: { catalog: Catalog; state: GameState; card: InstanceId; onManual: (op: ManualOp) => void }) {
+  const c = instance(state, card);
+  const t = template(catalog, c.templateId);
+  const zone = zoneOf(state, card);
+  const stage = activeStage(catalog, state, card);
+  const valid = (op: ManualOp) => isManualOpValid(catalog, state, op);
+  const stickers = STICKERS.filter((x) => x.expansion === t.expansion && (x.type === "resource" || x.type === "fame"));
+  const onStage = stage ? c.stickers.filter((x) => x.stage === stage.id) : [];
+  return (
+    <div className={styles.manualTools}>
+      <div className={styles.orientations}>
+        {validOrientations(catalog, state, card).map((o) => {
+          const sid = stageIdAt(t, o);
+          const op: ManualOp = { kind: "orient", card, orientation: o };
+          return (
+            <CardView
+              key={`${o.side}${o.rotation}`}
+              template={t}
+              orientation={o}
+              label={`Étape ${sid === null ? "?" : printedStage(t, sid)}`}
+              width={84}
+              selected={o.side === c.orientation.side && o.rotation === c.orientation.rotation}
+              onTap={valid(op) ? () => onManual(op) : undefined}
+            />
+          );
+        })}
+      </div>
+      <div className={`${styles.segmented} ${styles.wrapSegmented}`}>
+        {ZONE_BUTTONS.map((b) => {
+          const op: ManualOp = { kind: "move", card, to: b.to, position: b.position };
+          const here = zone === b.to && (b.to !== "deck" || state.zones.deck[b.position === "top" ? 0 : state.zones.deck.length - 1] === card);
+          return (
+            <button key={b.label} aria-pressed={here} disabled={here || !valid(op)} onClick={() => onManual(op)}>
+              {b.label}
+            </button>
+          );
+        })}
+      </div>
+      {stage && stage.checkboxes.length > 0 && (
+        <div className={styles.toolRow}>
+          {stage.checkboxes.map((b) => {
+            const checked = c.checkedBoxes.includes(checkKey(stage.id, b.id));
+            return (
+              <button key={b.id} className={styles.checkbox} aria-pressed={checked} onClick={() => onManual({ kind: "check", card, box: b.id })}>
+                <span>{checked ? "☑" : "☐"}</span> <IconText text={checkboxText(b)} />
+              </button>
+            );
+          })}
+        </div>
+      )}
+      {stage && (
+        <div className={styles.toolRow}>
+          {stickers.map((x) => {
+            const op: ManualOp = { kind: "sticker", card, sticker: x.id, resource: x.resource ?? null, fame: x.type === "fame" ? (x.fame ?? 0) : null };
+            return (
+              <button key={x.id} className={styles.stickerBtn} disabled={!valid(op)} onClick={() => onManual(op)} title={`Sticker ${x.id}`}>
+                <IconText text={x.resource ? `+{${x.resource}}` : `+{fame}${x.fame ?? 0}`} />
+              </button>
+            );
+          })}
+          {onStage.length > 0 && (
+            <span className={styles.stickersOn}>
+              <IconText text={onStage.map((x) => (x.resource ? `{${x.resource}}` : `{fame}${x.fame ?? 0}`)).join(" ")} />
+            </span>
+          )}
+        </div>
+      )}
+    </div>
+  );
 }
 
 /**
  * Inspection : à gauche la carte telle qu'elle est posée, à droite l'autre face telle qu'on la voit en retournant
  * la carte de haut en bas (autre face, rotation inversée) : stage 1 en haut au recto ↔ stage 3 en haut au verso.
+ * Avec `onManual`, les outils de résolution à la main s'affichent dessous.
  */
-export function Inspector({ catalog, state, card, onClose }: { catalog: Catalog; state: GameState; card: InstanceId; onClose: () => void }) {
+export function Inspector({
+  catalog,
+  state,
+  card,
+  onClose,
+  onManual,
+}: {
+  catalog: Catalog;
+  state: GameState;
+  card: InstanceId;
+  onClose: () => void;
+  onManual?: (op: ManualOp) => void;
+}) {
   const c = instance(state, card);
   const t = template(catalog, c.templateId);
   const other = { side: c.orientation.side === "front" ? "back" : "front", rotation: c.orientation.rotation === 0 ? 180 : 0 } as const;
   return (
     <Dialog title={cardName(catalog, state, card)} onClose={onClose} wide>
       <div className={styles.inspector}>
-        <CardView template={t} orientation={c.orientation} label="Face visible" width={bigCard(2)} />
-        <CardView template={t} orientation={other} label="Autre face" width={bigCard(2)} />
+        <CardView template={t} orientation={c.orientation} label="Face visible" width={bigCard(2, onManual ? 300 : 0)} />
+        <CardView template={t} orientation={other} label="Autre face" width={bigCard(2, onManual ? 300 : 0)} />
+      </div>
+      {onManual && <ManualTools catalog={catalog} state={state} card={card} onManual={onManual} />}
+    </Dialog>
+  );
+}
+
+/** Outils généraux à la main : ressources, découvrir ou retrouver une carte par son numéro. */
+export function ManualDialog({
+  catalog,
+  state,
+  onManual,
+  onInspect,
+  onClose,
+}: {
+  catalog: Catalog;
+  state: GameState;
+  onManual: (op: ManualOp) => void;
+  onInspect: (card: InstanceId) => void;
+  onClose: () => void;
+}) {
+  const [serialText, setSerialText] = useState("");
+  const serial = serialText === "" ? null : Number.parseInt(serialText, 10);
+  const found = serial === null ? undefined : Object.values(state.cards).find((x) => x.serial === serial);
+  const discoverOp: ManualOp | null = found ? { kind: "discover", card: found.instanceId } : null;
+  return (
+    <Dialog title="À la main" onClose={onClose}>
+      <div className={styles.manualResources}>
+        {catalog.resources.map((r) => {
+          const n = state.resources[r] ?? 0;
+          return (
+            <div key={r} className={styles.manualResource}>
+              <Icon id={r} />
+              <button className={styles.iconBtn} disabled={n === 0} onClick={() => onManual({ kind: "resource", resource: r, delta: -1 })} aria-label={`Retirer ${r}`}>
+                −
+              </button>
+              <span className={styles.zoneValue}>{n}</span>
+              <button className={styles.iconBtn} onClick={() => onManual({ kind: "resource", resource: r, delta: 1 })} aria-label={`Ajouter ${r}`}>
+                +
+              </button>
+            </div>
+          );
+        })}
+      </div>
+      <div className={styles.manualFind}>
+        <input inputMode="numeric" placeholder="N°" value={serialText} onChange={(e) => setSerialText(e.target.value.replace(/\D/g, "").slice(0, 3))} aria-label="Numéro de carte" />
+        <button className="btn btn-primary" disabled={!discoverOp || !isManualOpValid(catalog, state, discoverOp)} onClick={() => discoverOp && onManual(discoverOp)}>
+          Découvrir
+        </button>
+        <button className="btn" disabled={!found} onClick={() => found && onInspect(found.instanceId)}>
+          🔍
+        </button>
+        {found && <span className={styles.zoneValue}>{ZONE_NAMES[zoneOf(state, found.instanceId)]}</span>}
       </div>
     </Dialog>
   );
 }
+
+const ZONE_NAMES: Record<Zone, string> = {
+  box: "Boîte",
+  deck: "Pioche",
+  play: "En jeu",
+  discard: "Défausse",
+  permanent: "Permanentes",
+  destroyed: "Détruite",
+};
 
 export function DecisionDialog({
   catalog,

@@ -22,11 +22,12 @@ import {
   type Catalog,
   type GameState,
   type InstanceId,
+  type ManualOp,
 } from "../../engine";
 import type { Orientation } from "../../data/schema";
 import { APP_VERSION } from "../../version";
 import { Icon, IconText } from "../common/IconText";
-import { AdvanceIcon, CastleIcon, PassIcon, SaveIcon, SettingsIcon, SortIcon, StatsIcon, TranslateIcon, UndoIcon } from "../common/UiIcons";
+import { AdvanceIcon, CastleIcon, HandIcon, PassIcon, SaveIcon, SettingsIcon, SortIcon, StatsIcon, TranslateIcon, UndoIcon } from "../common/UiIcons";
 import { downloadText } from "../common/download";
 import { feedbackUrl } from "../common/feedback";
 import { backupFileName, exportKingdom } from "../../persistence/backup";
@@ -35,7 +36,7 @@ import type { TapPoint } from "../common/usePress";
 import { CardActions, type CardOption } from "./CardActions";
 import { zoneAt, type ZoneKind } from "./cardZones";
 import { ANIM_MS, CardView } from "./CardView";
-import { CardListDialog, ConfirmDialog, DecisionDialog, EndDialog, Inspector, StatsDialog, TranslationBubble } from "./Dialogs";
+import { CardListDialog, ConfirmDialog, DecisionDialog, EndDialog, Inspector, ManualDialog, StatsDialog, TranslationBubble } from "./Dialogs";
 import { useGame } from "./store";
 import { useFitCards } from "./useFitCards";
 import { useCardMotion } from "./useCardMotion";
@@ -142,6 +143,7 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [sortOpen, setSortOpen] = useState(false);
   const [statsOpen, setStatsOpen] = useState(false);
+  const [manualOpen, setManualOpen] = useState(false);
   const playEl = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
@@ -209,7 +211,7 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
         setTargeting(null);
         return;
       }
-      if (e.target instanceof HTMLInputElement || pending || inspect || discardOpen || state?.pending || anim || targeting) return;
+      if (e.target instanceof HTMLInputElement || pending || inspect || discardOpen || manualOpen || state?.pending || anim || targeting) return;
       const key = e.key.toLowerCase();
       const mod = e.metaKey || e.ctrlKey;
       if ((key === "z" && mod) || (key === "u" && !mod)) {
@@ -220,7 +222,7 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [advance, pass, run, undo, pending, inspect, discardOpen, state?.pending, anim, targeting]);
+  }, [advance, pass, run, undo, pending, inspect, discardOpen, manualOpen, state?.pending, anim, targeting]);
 
   // Bulle de traduction : se ferme au toucher suivant ou après quelques secondes.
   useEffect(() => {
@@ -277,7 +279,7 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
       const ups = stage.upgrades.length === 1 ? stage.upgrades : stage.upgrades.filter((u) => u.arrow === arrow);
       return all.filter((o) => o.action.type === "upgrade" && ups.some((u) => u.id === (o.action.type === "upgrade" ? o.action.upgrade : "")));
     }
-    if (zone === "effect") return all.filter((o) => o.action.type === "useEffect");
+    if (zone === "effect") return all.filter((o) => o.action.type === "useEffect" || (o.action.type === "manual" && o.action.op.kind === "effect"));
     return [];
   };
 
@@ -363,13 +365,25 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
       dimBottom={dimBottom && extra?.zones !== false}
       targetable={targeting ? targetOptions.has(id) : undefined}
       dimmed={targeting ? !targetOptions.has(id) && id !== targeting.source : undefined}
-      badge={extra?.engaged ? <IconText text={`engagée ${productionLabel(catalog, state, id) ?? ""}`} /> : undefined}
+      badge={badgeFor(id, extra?.engaged ?? false)}
       onTap={onTap}
       onLongPress={inspectable ? () => setInspect(id) : undefined}
       zoneLabel={extra?.zones ? zoneLabel(id) : undefined}
       anim={anim?.card === id ? { kind: anim.kind, to: anim.to } : undefined}
     />
   );
+
+  /** Pastille d'une carte : ressource engagée, stickers posés sur le stage actif. */
+  const badgeFor = (id: InstanceId, isEngaged: boolean) => {
+    const stage = activeStage(catalog, state, id);
+    const stickers = stage ? instance(state, id).stickers.filter((x) => x.stage === stage.id) : [];
+    const parts = [
+      ...(isEngaged ? [`engagée ${productionLabel(catalog, state, id) ?? ""}`] : []),
+      ...(stickers.length ? [stickers.map((x) => (x.resource ? `+{${x.resource}}` : `{fame}${x.fame ?? 0}`)).join(" ")] : []),
+    ];
+    return parts.length ? <IconText text={parts.join(" · ")} /> : undefined;
+  };
+  const manual = playing ? (op: ManualOp) => perform([{ type: "manual", op }]) : undefined;
 
   const fame = computeScore(catalog, state).total;
   const top = state.zones.deck[0];
@@ -442,6 +456,9 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
           title="Sauvegarder le royaume"
         >
           <SaveIcon />
+        </button>
+        <button className={styles.iconBtn} disabled={!playing} onClick={() => setManualOpen(true)} aria-label="À la main" title="À la main">
+          <HandIcon />
         </button>
         <button className={styles.iconBtn} onClick={() => setStatsOpen(true)} aria-label="Stats" title="Stats">
           <StatsIcon />
@@ -617,7 +634,10 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
         />
       )}
       {statsOpen && <StatsDialog catalog={catalog} state={state} onClose={() => setStatsOpen(false)} />}
-      {inspect && <Inspector catalog={catalog} state={state} card={inspect} onClose={() => setInspect(null)} />}
+      {manualOpen && playing && (
+        <ManualDialog catalog={catalog} state={state} onManual={(op) => perform([{ type: "manual", op }])} onInspect={setInspect} onClose={() => setManualOpen(false)} />
+      )}
+      {inspect && <Inspector catalog={catalog} state={state} card={inspect} onManual={manual} onClose={() => setInspect(null)} />}
       {targeting && targetsInDiscard.length > 0 && (
         <CardListDialog
           catalog={catalog}

@@ -150,3 +150,15 @@ export function ImportIcon() {
     </svg>
   );
 }
+
+/** Résolution à la main : main ouverte. */
+export function HandIcon() {
+  return (
+    <svg {...base} aria-hidden="true">
+      <path d="M8 13V5.5a1.5 1.5 0 0 1 3 0V12" />
+      <path d="M11 11.5v-7a1.5 1.5 0 0 1 3 0v7" />
+      <path d="M14 11.5V6a1.5 1.5 0 0 1 3 0v7.5" />
+      <path d="M17 9.5a1.5 1.5 0 0 1 3 0V14a7 7 0 0 1-7 7h-1.2a6 6 0 0 1-4.6-2.2L4 15a1.6 1.6 0 0 1 2.4-2.1L8 14.5" />
+    </svg>
+  );
+}

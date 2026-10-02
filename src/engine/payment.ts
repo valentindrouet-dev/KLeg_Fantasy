@@ -77,7 +77,9 @@ export function planWithEngaged(
  */
 export function candidateActions(catalog: Catalog, s: GameState, card: InstanceId): Action[] {
   const rich: GameState = { ...s, resources: Object.fromEntries(catalog.resources.map((r) => [r, 99])) };
-  return getLegalActions(catalog, rich).filter((a) => "card" in a && a.card === card && a.type !== "produce");
+  return getLegalActions(catalog, rich).filter((a) =>
+    a.type === "manual" ? a.op.kind === "effect" && a.op.card === card : "card" in a && a.card === card && a.type !== "produce",
+  );
 }
 
 /** Ressources que représentent les cartes engagées (une option par groupe ; les « / » sont listés à part). */

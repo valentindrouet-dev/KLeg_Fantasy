@@ -1,7 +1,7 @@
 import { usableEffects } from "./actions";
 import { producedIcons, productionGroups } from "./production";
 import { activeStage, cardName, formatIcons, instance, template } from "./state";
-import type { Action, Catalog, GameState } from "./types";
+import type { Action, Catalog, GameState, ManualOp } from "./types";
 import { applyArrow } from "./upgrade";
 
 // Libellés français des actions (CLI, puis interface en P2).
@@ -40,5 +40,37 @@ export function describeAction(catalog: Catalog, s: GameState, a: Action): strin
       return a.side === "front" ? "Garder le recto visible" : "Garder le verso visible";
     case "acknowledgeParchment":
       return "J'ai lu le parchemin";
+    case "manual":
+      return describeManual(catalog, s, a.op);
+  }
+}
+
+const ZONE_LABELS = {
+  box: "Boîte",
+  deck: "Pioche",
+  play: "En jeu",
+  discard: "Défausse",
+  permanent: "Permanentes",
+  destroyed: "Détruite",
+} as const;
+
+function describeManual(catalog: Catalog, s: GameState, op: ManualOp): string {
+  switch (op.kind) {
+    case "resource":
+      return `${op.delta > 0 ? "+" : ""}${op.delta} {${op.resource}}`;
+    case "move":
+      return `${cardName(catalog, s, op.card)} → ${ZONE_LABELS[op.to]}${op.to === "deck" ? (op.position === "top" ? " (dessus)" : " (dessous)") : ""}`;
+    case "orient":
+      return `Réorienter ${cardName(catalog, s, op.card)}`;
+    case "discover":
+      return `Découvrir #${instance(s, op.card).serial}`;
+    case "check":
+      return `Cocher ${op.box} sur ${cardName(catalog, s, op.card)}`;
+    case "sticker":
+      return `Sticker ${op.resource !== null ? `{${op.resource}}` : `{fame} ${op.fame ?? 0}`} sur ${cardName(catalog, s, op.card)}`;
+    case "effect": {
+      const e = activeStage(catalog, s, op.card)?.effects.find((x) => x.id === op.effect);
+      return `${e?.text ?? op.effect} (à la main)`;
+    }
   }
 }

@@ -77,7 +77,7 @@ de la section 5 de docs/HANDOFF.md.
 
 ## 3. État du code
 
-Phases P0 (données), P1 (moteur) et P2 (interface jouable) terminées. Phases P3 à P6 non commencées (spec section 12). Détails du moteur : `docs/ENGINE.md`, de l'interface : `docs/UI.md`.
+Phases P0 (données), P1 (moteur) et P2 (interface jouable) terminées. P3 en cours : résolution à la main faite (v0.17) ; restent les mécaniques (effets déclenchés, cases, stickers, parchemin 24, Army/Treasury/Export), les effets des cartes 11 à 135 et ennemis, blocage, équipement, objectifs. P4 à P6 non commencées (spec section 12). Détails du moteur : `docs/ENGINE.md`, de l'interface : `docs/UI.md`.
 
 | Élément | Emplacement | État |
 |---|---|---|
@@ -100,7 +100,9 @@ Phases P0 (données), P1 (moteur) et P2 (interface jouable) terminées. Phases P
 | Déploiement | `.github/workflows/deploy.yml` | fait (GitHub Actions, voir `docs/DEPLOY.md`) |
 | Royaumes et sauvegarde (IndexedDB, Dexie) | `src/persistence/` | fait : créer, continuer, renommer, dupliquer, recommencer avant #23, supprimer ; autosave après chaque action |
 | Interface de jeu (P2) | `src/ui/kingdoms`, `src/ui/game` | fait : plateau paysage et portrait, feuille d'actions, inspection, décisions, confirmations, journal, fin de partie |
-| Export/import, points de sauvegarde, PWA | | non commencé (P3 et P5) |
+| Résolution à la main (P3) | `src/engine/manual.ts`, `src/ui/game/Dialogs.tsx` | fait (v0.17) |
+| Export/import, PWA | `src/persistence/backup.ts`, `public/manifest.webmanifest` | fait |
+| Points de sauvegarde | | non commencé (P3) |
 
 Versions installées : Node 24, Vite 8, React 19, TypeScript 7, Zod 4, Vitest 5.
 
