@@ -45,13 +45,17 @@ Routage par hash (`src/ui/App.tsx`) : `#/` Mes royaumes, `#/partie/<id>` partie,
 - **Appli iPad** : `public/manifest.webmanifest`, icônes pièce sur fond noir (`scripts/make-app-icons.ts`).
 - **Tri ⇅** : cartes en jeu par ressource (défaut), par type de terrain ou ordre d'arrivée (`sortCards.ts`, affichage seulement).
 - **Stats** : cartes par zone, par étape (1 à 4), production par ressource, gloire, types (en anglais), découvertes / détruites / boîte ; cases colorées (`engine/stats.ts`).
-- **Inspection** : face visible telle qu'elle est posée + autre face retournée de haut en bas (1 en haut ↔ 3 en haut).
+- **Inspection** : face visible telle qu'elle est posée + autre face dans le même sens (1 à côté de 4, 2 à côté de 3 à l'envers).
 - **Questions des effets** (`ChoiceDialog`) : la carte source, la question, puis des cartes à toucher, des ressources
   à choisir (une par toucher, retirer en touchant la sélection) ou des boutons d'option ; « Valider » quand plusieurs
   éléments ; « Annuler » tant que l'effet n'a rien coûté.
 - **Cartes permanentes** : toucher ouvre leurs effets utilisables (Army, Treasury, Export…), sinon l'inspection.
 - **Pastilles** (`engine/badges.ts`) : cartes bloquées, cases cochées, marchandises dépensées, gloire écrite, stickers.
 - **Watchtower** en jeu : la deuxième carte de la pioche est montrée sous la pioche.
+- **Nouvelles cartes** (début de manche) : fenêtre avec les cartes découvertes, « Mélanger dans le deck » (décision `newCards`).
+- **Mélange animé** (`useCardMotion.ts`, `reshuffle`) : défausse → pioche, pioche battue, puis les cartes du tour.
+- **Cartes bloquées** : sous leur bloquante, le haut dépasse de 18 % (`BLOCKED_PEEK`) ; la place est comptée par `fitSlots`.
+- **Ennemis** : ligne à eux en haut de la zone de jeu si les cartes y gardent au moins 75 % de leur taille, sinon en tête.
 - **Réglages ⚙** : thème Auto / Clair / Sombre (data-theme sur <html>), zoom des cartes en jeu seulement (60 à 200 %, la zone défile au besoin) et grisage de la moitié basse des cartes.
 - **Mises à jour** : l'appli compare sa version à `version.json` (publié au build) au démarrage, au retour au premier plan
   et toutes les 15 min ; un bouton recharge la page en contournant le cache (utile pour l'appli installée sur l'iPad).

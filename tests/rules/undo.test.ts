@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { act, canUndo, current, newSession, replay, undo } from "../../src/engine";
+import { act, canUndo, current, getLegalActions, newSession, replay, undo } from "../../src/engine";
 import { loadCatalog } from "../helpers/catalog";
 import { fk } from "../helpers/game";
 
@@ -66,5 +66,18 @@ describe("annulation au-delà de la fenêtre gardée en mémoire", async () => {
     const { resumeSession } = await import("../../src/engine");
     const s = act(newSession(catalog, { expansion: "FeudalKingdom", seed: 3, undoMode: "strict" }), { type: "pass" });
     expect(canUndo(resumeSession(catalog, s.record, current(s)))).toBe(false);
+  });
+});
+
+describe("parties enregistrées avant la fenêtre « Nouvelles cartes »", async () => {
+  const catalog = await loadCatalog();
+  it("se rejouent : la fenêtre est fermée d'office", () => {
+    let session = newSession(catalog, { expansion: "FeudalKingdom", seed: 5, undoMode: "free" });
+    for (let i = 0; i < 40 && current(session).round < 3; i++) {
+      const a = getLegalActions(catalog, current(session)).find((x) => x.type === "pass" || x.type === "acknowledgeDiscoveries") ?? getLegalActions(catalog, current(session))[0];
+      if (a) session = act(session, a);
+    }
+    const old = { ...session.record, actions: session.record.actions.filter((a) => a.type !== "acknowledgeDiscoveries") };
+    expect(current(replay(catalog, old))).toEqual(current(session));
   });
 });

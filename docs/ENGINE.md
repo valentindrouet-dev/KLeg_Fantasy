@@ -47,7 +47,8 @@ Point d'entrée : `src/engine/index.ts`.
 - **Déclencheurs** (`TriggerTiming`) : `played`, `otherPlayed`, `endTurn`, `endRound`, `upgraded`, `produced`,
   `betweenRounds`, `manual` (lancé par un autre effet). Mis en file (`FlowStep` « trigger ») dans l'ordre des cartes.
 - **Fin de tour et de manche** en étapes : `endTurn` (effets) → `cleanupTurn` (défausse, ressources) → `endRound`
-  (défausse, effets « End of Round ») → `nextRound`.
+  (défausse, effets « End of Round ») → `nextRound` → découverte → `reviewDiscoveries` (décision `newCards`, à valider
+  par `acknowledgeDiscoveries`) → mélange → premier tour. `replay` ajoute la validation aux parties enregistrées avant v0.20.
 - **Blocage** : zone `blocked` et `GameState.blocks` (bloquante → cartes) ; une bloquante qui quitte le jeu pendant
   le tour libère ses cartes (`moveTo`), en fin de tour ou de manche elles partent avec elle.
 - **Couverture** : `tests/rules/coverage.test.ts` vérifie que chaque effet des cartes 1 à 135 est pris en charge ;

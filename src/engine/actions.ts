@@ -75,6 +75,8 @@ export function getLegalActions(catalog: Catalog, s: GameState): Action[] {
         ];
       case "parchment":
         return [{ type: "acknowledgeParchment" }];
+      case "newCards":
+        return [{ type: "acknowledgeDiscoveries" }];
       case "choice":
         return [
           ...enumerateAnswers(p.request).map((answer): Action => ({ type: "choose", answer })),
@@ -256,6 +258,9 @@ function execute(d: Draft, a: Action): void {
     }
     case "manual":
       executeManual(d, a.op);
+      return;
+    case "acknowledgeDiscoveries":
+      s.pending = null;
       return;
   }
 }

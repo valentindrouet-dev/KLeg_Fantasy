@@ -40,6 +40,8 @@ export function describeAction(catalog: Catalog, s: GameState, a: Action): strin
       return a.side === "front" ? "Garder le recto visible" : "Garder le verso visible";
     case "acknowledgeParchment":
       return "J'ai lu le parchemin";
+    case "acknowledgeDiscoveries":
+      return "J'ai vu les nouvelles cartes";
     case "manual":
       return describeManual(catalog, s, a.op);
     case "choose":

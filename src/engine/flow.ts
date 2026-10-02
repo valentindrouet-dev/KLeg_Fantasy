@@ -14,6 +14,7 @@ import {
   log,
   moveTo,
   template,
+  zoneOf,
   totalResources,
 } from "./state";
 import type { Answer, Draft, FlowStep, InstanceId, TriggerCtx, TriggerTiming } from "./types";
@@ -66,6 +67,8 @@ function runStep(d: Draft, step: FlowStep): void {
       return endRound(d);
     case "nextRound":
       return nextRound(d);
+    case "reviewDiscoveries":
+      return reviewDiscoveries(d, step.since);
   }
 }
 
@@ -255,8 +258,18 @@ function nextRound(d: Draft): void {
   d.s.round += 1;
   d.s.turn = 0;
   log(d.s, `Manche ${d.s.round}`);
-  pushFront(d, { kind: "roundDiscovery" }, { kind: "shuffle" }, { kind: "startTurn" });
+  pushFront(d, { kind: "roundDiscovery" }, { kind: "reviewDiscoveries", since: d.s.discoveries.length }, { kind: "shuffle" }, { kind: "startTurn" });
   queueTriggers(d, "betweenRounds", [...d.s.zones.permanent]);
+}
+
+/** Avant le mélange, le joueur voit les cartes découvertes depuis la fin de la manche (hors parchemins). */
+function reviewDiscoveries(d: Draft, since: number): void {
+  const serials = new Set(d.s.discoveries.slice(since));
+  const cards = Object.values(d.s.cards)
+    .filter((c) => serials.has(c.serial) && !template(d.catalog, c.templateId).isParchment)
+    .map((c) => c.instanceId)
+    .filter((id) => !["box", "destroyed"].includes(zoneOf(d.s, id)));
+  if (cards.length) d.s.pending = { kind: "newCards", cards };
 }
 
 /** Mélange toutes les cartes du royaume hors permanentes en un nouveau deck, sans changer leur orientation. */

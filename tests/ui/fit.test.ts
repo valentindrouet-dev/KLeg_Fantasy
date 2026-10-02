@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { CARD_ASPECT, fitCardWidth } from "../../src/ui/game/fitCards";
+import { BLOCKED_PEEK, CARD_ASPECT, fitCardWidth, fitSlots } from "../../src/ui/game/fitCards";
 
 // Spec 7.3 : la zone de jeu affiche toutes les cartes sans défilement.
 describe("taille des cartes en jeu", () => {
@@ -13,5 +13,21 @@ describe("taille des cartes en jeu", () => {
 
   it("peu de cartes : taille plafonnée", () => {
     expect(fitCardWidth(1200, 800, 2, 12, 300)).toBe(300);
+  });
+});
+
+describe("emplacements de la zone de jeu", () => {
+  it("sans ennemi ni blocage : même résultat qu'en comptant les cartes", () => {
+    const slots = Array.from({ length: 10 }, () => ({ h: 1 }));
+    const w = fitSlots(880, 560, slots, 12, 300);
+    expect(Math.abs(w - fitCardWidth(880, 560, 10, 12, 300))).toBeLessThanOrEqual(1);
+  });
+
+  it("une ligne d'ennemis et une carte bloquée réduisent la taille, et tout tient", () => {
+    const plain = fitSlots(880, 560, Array.from({ length: 6 }, () => ({ h: 1 })), 12, 300);
+    const slots = [{ h: 1 }, { h: 1 + BLOCKED_PEEK, breakBefore: true }, { h: 1 }, { h: 1 }, { h: 1 }, { h: 1 }];
+    const w = fitSlots(880, 560, slots, 12, 300);
+    expect(w).toBeLessThan(plain);
+    expect(w).toBeGreaterThan(120);
   });
 });

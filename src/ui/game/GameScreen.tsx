@@ -32,14 +32,15 @@ import { AdvanceIcon, CastleIcon, PassIcon, SaveIcon, SettingsIcon, SortIcon, St
 import { downloadText } from "../common/download";
 import { feedbackUrl } from "../common/feedback";
 import { backupFileName, exportKingdom } from "../../persistence/backup";
-import { sortPlay } from "./sortCards";
+import { playLayout } from "./sortCards";
+import { BLOCKED_PEEK, CARD_ASPECT, type Slot } from "./fitCards";
 import type { TapPoint } from "../common/usePress";
 import { CardActions, type CardOption } from "./CardActions";
 import { zoneAt, type ZoneKind } from "./cardZones";
 import { ANIM_MS, CardView } from "./CardView";
 import { CardListDialog, ConfirmDialog, DecisionDialog, EndDialog, Inspector, StatsDialog, TranslationBubble } from "./Dialogs";
 import { useGame } from "./store";
-import { useFitCards } from "./useFitCards";
+import { cardWidthFor, useFitArea } from "./useFitCards";
 import { useCardMotion } from "./useCardMotion";
 import { usePrefs, ZOOM_MAX, ZOOM_MIN } from "../common/prefs";
 import styles from "./Game.module.css";
@@ -154,7 +155,21 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
   const state = session && kingdom?.id === kingdomId ? current(session) : null;
   const legal = useMemo(() => (state ? getLegalActions(catalog, state) : []), [catalog, state]);
   const engagedNow = useMemo(() => (state ? engaged.filter((id) => state.zones.play.includes(id)) : []), [engaged, state]);
-  const [fitRef, cardWidth] = useFitCards(state?.zones.play.length ?? 0, zoom);
+  // Ennemis en premier ; sur une ligne à eux en haut si les cartes gardent au moins 75 % de leur taille.
+  // Une carte qui en bloque d'autres est plus haute (le haut des cartes bloquées dépasse).
+  const layout = useMemo(() => (state ? playLayout(catalog, state, state.zones.play, sortMode) : { enemies: [], others: [] }), [catalog, state, sortMode]);
+  const [fitRef, area] = useFitArea();
+  const { cardWidth, enemyRow } = useMemo(() => {
+    const slots = (withBreak: boolean): Slot[] =>
+      [...layout.enemies, ...layout.others].map((id, i) => ({
+        h: 1 + BLOCKED_PEEK * (state?.blocks?.[id]?.length ?? 0),
+        breakBefore: withBreak && i === layout.enemies.length,
+      }));
+    const flat = cardWidthFor(area, slots(false), zoom);
+    if (layout.enemies.length === 0 || layout.others.length === 0) return { cardWidth: flat, enemyRow: false };
+    const split = cardWidthFor(area, slots(true), zoom);
+    return split >= 0.75 * flat ? { cardWidth: split, enemyRow: true } : { cardWidth: flat, enemyRow: false };
+  }, [layout, state, area, zoom]);
   useCardMotion(catalog, state, playEl);
   const playing = state?.phase === "playing" && !state.pending && !anim;
 
@@ -398,7 +413,9 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
       {top ? (
         <div data-pile="deck">{card(top, undefined, playing && advance ? () => run([advance]) : undefined, false)}</div>
       ) : (
-        <div className={styles.emptyPile}>Vide</div>
+        <div className={styles.emptyPile} data-pile="deck">
+          Vide
+        </div>
       )}
     </div>
   );
@@ -408,7 +425,7 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
       {lastDiscard ? (
         <div data-pile="discard">{card(lastDiscard, undefined, () => setDiscardOpen(true))}</div>
       ) : (
-        <button className={styles.emptyPile} onClick={() => setDiscardOpen(true)}>
+        <button className={styles.emptyPile} data-pile="discard" onClick={() => setDiscardOpen(true)}>
           Vide
         </button>
       )}
@@ -600,9 +617,25 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
         }}
         aria-label="Zone de jeu"
       >
-        {sortPlay(catalog, state, state.zones.play, sortMode).map((id) =>
-          card(id, cardWidth || undefined, (p) => tapCard(id, p), true, { engaged: engagedNow.includes(id), zones: true }),
-        )}
+        {[...layout.enemies, ...layout.others].map((id, i) => {
+          const held = state.blocks?.[id] ?? [];
+          const peek = Math.round((cardWidth / CARD_ASPECT) * BLOCKED_PEEK);
+          const main = card(id, cardWidth || undefined, (p) => tapCard(id, p), true, { engaged: engagedNow.includes(id), zones: true });
+          const row = enemyRow && i === layout.enemies.length ? <div key="enemy-break" className={styles.rowBreak} /> : null;
+          if (held.length === 0) return row ? [row, main] : main;
+          // Cartes bloquées : posées sous la bloquante, le haut dépasse (nom et bandeau lisibles).
+          const stack = (
+            <div key={id} className={styles.stack} style={{ paddingTop: peek * held.length }}>
+              {held.map((b, j) => (
+                <div key={b} className={styles.under} style={{ top: peek * j }}>
+                  {card(b, cardWidth || undefined, undefined, true)}
+                </div>
+              ))}
+              <div className={styles.over}>{main}</div>
+            </div>
+          );
+          return row ? [row, stack] : stack;
+        })}
       </main>
 
       <aside className={styles.discardSlot}>{discard}</aside>

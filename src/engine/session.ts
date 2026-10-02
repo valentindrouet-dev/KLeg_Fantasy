@@ -63,7 +63,14 @@ export function undo(session: Session): Session {
   return replay(session.catalog, { ...session.record, actions });
 }
 
-/** Rejoue une partie enregistrée (import, annulation au-delà de la fenêtre). */
+/**
+ * Rejoue une partie enregistrée (import, annulation au-delà de la fenêtre). Les parties enregistrées avant la
+ * fenêtre « Nouvelles cartes » (v0.20) n'ont pas l'action qui la ferme : elle est ajoutée au passage.
+ */
 export function replay(catalog: Catalog, record: GameRecord): Session {
-  return record.actions.reduce((s, a) => act(s, a), newSession(catalog, record.config));
+  return record.actions.reduce((s, a) => {
+    const pending = current(s).pending;
+    const next = pending?.kind === "newCards" && a.type !== "acknowledgeDiscoveries" ? act(s, { type: "acknowledgeDiscoveries" }) : s;
+    return act(next, a);
+  }, newSession(catalog, record.config));
 }

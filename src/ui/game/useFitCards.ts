@@ -1,14 +1,14 @@
 import { useCallback, useEffect, useState } from "react";
-import { fitCardWidth } from "./fitCards";
+import { fitSlots, type Slot } from "./fitCards";
 
 // Taille des cartes de la zone de jeu : la plus grande qui fait tenir toutes les cartes sans défilement (spec 7.3).
 // Renvoie une ref à poser sur la zone (ref de rappel : la zone peut apparaître après le chargement).
 
 /**
- * `zoom` : taille des cartes en jeu. On calcule la taille qui tient (en réservant la largeur), puis on la multiplie :
- * au-delà de 100 %, les cartes passent sur plus de rangées et la zone de jeu défile verticalement.
+ * Taille de la zone de jeu (ref de rappel : la zone peut apparaître après le chargement). La taille des cartes se calcule
+ * ensuite avec `fitSlots` ; au-delà de 100 % de zoom, les cartes passent sur plus de rangées et la zone défile.
  */
-export function useFitCards(count: number, zoom = 1, gap = 12, max = 300): [(el: HTMLElement | null) => void, number] {
+export function useFitArea(): [(el: HTMLElement | null) => void, { width: number; height: number }] {
   const [el, setEl] = useState<HTMLElement | null>(null);
   const [size, setSize] = useState({ width: 0, height: 0 });
   useEffect(() => {
@@ -20,6 +20,11 @@ export function useFitCards(count: number, zoom = 1, gap = 12, max = 300): [(el:
     return () => observer.disconnect();
   }, [el]);
   const ref = useCallback((node: HTMLElement | null) => setEl(node), []);
-  if (size.width <= 0) return [ref, 0];
-  return [ref, Math.floor(fitCardWidth(size.width / zoom, size.height, count, gap, max) * zoom)];
+  return [ref, size];
+}
+
+/** Largeur des cartes pour ces emplacements, zoom compris (0 tant que la zone n'est pas mesurée). */
+export function cardWidthFor(area: { width: number; height: number }, slots: readonly Slot[], zoom = 1, gap = 12, max = 300): number {
+  if (area.width <= 0) return 0;
+  return Math.floor(fitSlots(area.width / zoom, area.height, slots, gap, max) * zoom);
 }

@@ -20,6 +20,14 @@ function typeKey(catalog: Catalog, s: GameState, id: InstanceId): number {
   return i >= 0 ? i : CATEGORY_ORDER.length;
 }
 
+const isEnemy = (catalog: Catalog, s: GameState, id: InstanceId): boolean => activeStage(catalog, s, id)?.keywords.includes("Enemy") ?? false;
+
+/** Disposition de la zone de jeu : les ennemis sur la ligne du haut, puis les autres cartes triées. */
+export function playLayout(catalog: Catalog, s: GameState, ids: readonly InstanceId[], mode: SortMode): { enemies: InstanceId[]; others: InstanceId[] } {
+  const sorted = sortPlay(catalog, s, ids, mode);
+  return { enemies: sorted.filter((id) => isEnemy(catalog, s, id)), others: sorted.filter((id) => !isEnemy(catalog, s, id)) };
+}
+
 export function sortPlay(catalog: Catalog, s: GameState, ids: readonly InstanceId[], mode: SortMode): InstanceId[] {
   if (mode === "arrival") return [...ids];
   const keys = (id: InstanceId): number[] => {

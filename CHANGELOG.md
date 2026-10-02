@@ -3,6 +3,14 @@
 Chaque mise à jour publiée change de version (`package.json`, affichée dans l'appli en bas de l'écran « Mes royaumes »
 et dans la barre de la partie). Convention : `0.5.0` s'affiche **v0.05** ; un correctif `0.5.1` s'affiche **v0.05.1**.
 
+## v0.20 (2 octobre 2026)
+
+- Début de manche : les cartes découvertes s'affichent dans une fenêtre ; « Mélanger dans le deck » les ajoute au deck.
+- Mélange animé : les cartes de la défausse volent vers la pioche, la pioche est battue, puis les 4 cartes du tour arrivent.
+- Carte bloquée : posée sous la carte qui la bloque, le haut (nom et bandeau) dépasse.
+- Ennemis sur une ligne à eux, en haut de la zone de jeu, quand la place le permet (sinon en tête de rangée).
+- Inspection : l'autre face dans le même sens (1 à côté de 4, 2 à côté de 3 à l'envers).
+
 ## v0.19 (2 octobre 2026)
 
 Phase P3 : les effets de toutes les cartes de la partie de base (1 à 135) sont automatisés.

@@ -27,22 +27,22 @@ function moveFrom(from: DOMRect, to: DOMRect): string {
   return `translate(${dx}px, ${dy}px) scale(${from.width / Math.max(1, to.width)})`;
 }
 
-/** Copie volante d'une carte qui a quitté la zone de jeu. */
-function ghost(catalog: Catalog, state: GameState, id: InstanceId, from: DOMRect, to: DOMRect | null, delay: number): void {
+/** Élément volant à l'image d'une carte, posé sur `rect` (retiré quand son animation se termine). */
+function flyer(catalog: Catalog, state: GameState, id: InstanceId, rect: DOMRect, z = 20): HTMLElement | null {
   const c = instance(state, id);
   const t = template(catalog, c.templateId);
   const url = cardImageUrl(c.orientation.side === "front" ? t.images.front : t.images.back);
-  if (!url) return;
+  if (!url) return null;
   // Le conteneur se déplace, l'image à l'intérieur porte la rotation de la carte : une rotation posée sur
   // l'élément animé inverserait le sens du déplacement (carte tournée qui partait à l'opposé de la défausse).
   const el = document.createElement("div");
   Object.assign(el.style, {
     position: "fixed",
-    left: `${from.left}px`,
-    top: `${from.top}px`,
-    width: `${from.width}px`,
-    height: `${from.height}px`,
-    zIndex: "20",
+    left: `${rect.left}px`,
+    top: `${rect.top}px`,
+    width: `${rect.width}px`,
+    height: `${rect.height}px`,
+    zIndex: String(z),
     pointerEvents: "none",
   });
   const img = document.createElement("img");
@@ -58,14 +58,81 @@ function ghost(catalog: Catalog, state: GameState, id: InstanceId, from: DOMRect
   el.appendChild(img);
   document.body.appendChild(el);
   ghosts.add(el);
-  const end = to ? { transform: moveFrom(to, from), opacity: 0.9 } : { transform: "scale(0.6)", opacity: 0 };
-  const anim = el.animate([{ transform: "none", opacity: 1 }, end], { duration: DURATION, delay, easing: EASING, fill: "forwards" });
+  return el;
+}
+
+function animateAndRemove(el: HTMLElement, keyframes: Keyframe[], options: KeyframeAnimationOptions): void {
+  const anim = el.animate(keyframes, { fill: "both", ...options });
   const remove = () => {
     el.remove();
     ghosts.delete(el);
   };
   anim.onfinish = remove;
   anim.oncancel = remove;
+}
+
+/** Copie volante d'une carte qui a quitté la zone de jeu. */
+function ghost(catalog: Catalog, state: GameState, id: InstanceId, from: DOMRect, to: DOMRect | null, delay: number): void {
+  const el = flyer(catalog, state, id, from);
+  if (!el) return;
+  const end = to ? { transform: moveFrom(to, from), opacity: 0.9 } : { transform: "scale(0.6)", opacity: 0 };
+  animateAndRemove(el, [{ transform: "none", opacity: 1 }, end], { duration: DURATION, delay, easing: EASING });
+}
+
+const GATHER_MAX = 12; // cartes montrées en vol de la défausse vers la pioche
+const GATHER_STAGGER = 55;
+const RIFFLE = 820;
+
+/**
+ * Nouveau deck (début de manche) : les cartes de la défausse (et celles restées en jeu) volent vers la pioche,
+ * la pioche est battue, puis le tour commence. Renvoie la durée de la séquence, pour retarder les cartes jouées.
+ */
+function reshuffle(catalog: Catalog, before: Snapshot, state: GameState, deck: DOMRect, discard: DOMRect | null): number {
+  const fromPlay = [...before.rects].filter(([id]) => !state.zones.play.includes(id));
+  const fromDiscard = before.state.zones.discard.slice(-Math.max(0, GATHER_MAX - fromPlay.length));
+  let n = 0;
+  for (const [id, rect] of fromPlay) ghostTo(catalog, state, id, rect, deck, n++ * GATHER_STAGGER);
+  if (discard) for (const id of fromDiscard) ghostTo(catalog, state, id, discard, deck, n++ * GATHER_STAGGER);
+  const gathered = Math.max(0, n - 1) * GATHER_STAGGER + DURATION;
+
+  // Pioche cachée jusqu'à l'arrivée des cartes, puis battue (deux paquets qui s'écartent et se rejoignent).
+  const pile = document.querySelector<HTMLElement>('[data-pile="deck"]');
+  pile?.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 120, delay: gathered - 120, fill: "backwards" });
+  pile?.animate(
+    [
+      { transform: "none" },
+      { transform: "translateX(-6px) rotate(-3deg)" },
+      { transform: "translateX(6px) rotate(3deg)" },
+      { transform: "translateX(-4px) rotate(-2deg)" },
+      { transform: "translateX(4px) rotate(2deg)" },
+      { transform: "none" },
+    ],
+    { duration: RIFFLE, delay: gathered, easing: "ease-in-out" },
+  );
+  const halves = state.zones.deck.slice(0, 2);
+  halves.forEach((id, i) => {
+    const el = flyer(catalog, state, id, deck, 21);
+    if (!el) return;
+    const dir = i === 0 ? -1 : 1;
+    const out = `translateX(${dir * deck.width * 0.55}px) rotate(${dir * 9}deg)`;
+    animateAndRemove(el, [{ transform: "none", opacity: 0 }, { transform: out, opacity: 1, offset: 0.25 }, { transform: "none", opacity: 1, offset: 0.5 }, { transform: out, opacity: 1, offset: 0.75 }, { transform: "none", opacity: 0 }], {
+      duration: RIFFLE,
+      delay: gathered,
+      easing: "ease-in-out",
+    });
+  });
+  return gathered + RIFFLE;
+}
+
+/** Copie volante vers la pioche, qui disparaît en s'y posant. */
+function ghostTo(catalog: Catalog, state: GameState, id: InstanceId, from: DOMRect, to: DOMRect, delay: number): void {
+  const el = flyer(catalog, state, id, from);
+  if (!el) return;
+  animateAndRemove(el, [{ transform: "none", opacity: 1 }, { transform: moveFrom(to, from), opacity: 1, offset: 0.9 }, { transform: moveFrom(to, from), opacity: 0 }], {
+    duration: DURATION + 80,
+    delay,
+    easing: EASING,
+  });
 }
 
 export function useCardMotion(catalog: Catalog, state: GameState | null, play: RefObject<HTMLElement | null>): void {
@@ -94,9 +161,13 @@ export function useCardMotion(catalog: Catalog, state: GameState | null, play: R
     const deck = pileRect("deck");
     const discard = pileRect("discard");
 
+    // Nouveau deck : la pioche était vide et ne l'est plus (seul le mélange de début de manche fait ça).
+    const shuffled = before.state.zones.deck.length === 0 && state.zones.deck.length > 0;
+    const shuffleTime = shuffled && deck ? reshuffle(catalog, before, state, deck, discard) : 0;
+
     // Cartes parties : vers la défausse, vers la pioche, ou effacées (détruites, permanentes…).
     let out = 0;
-    for (const [id, from] of before.rects) {
+    for (const [id, from] of shuffled ? [] : before.rects) {
       if (els.has(id)) continue;
       const where = zoneOf(state, id);
       const to = where === "discard" ? discard : where === "deck" ? deck : null;
@@ -111,11 +182,11 @@ export function useCardMotion(catalog: Catalog, state: GameState | null, play: R
       const old = before.rects.get(id);
       if (!old) {
         const fromZone = zoneOf(before.state, id);
-        const from = fromZone === "discard" ? discard : deck;
+        const from = fromZone === "discard" && !shuffled ? discard : deck;
         if (!from) continue;
         el.animate([{ transform: moveFrom(from, to), opacity: 0.4 }, { transform: "none", opacity: 1 }], {
           duration: DURATION,
-          delay: (out > 0 ? 180 : 0) + i++ * STAGGER,
+          delay: shuffleTime + (out > 0 ? 180 : 0) + i++ * STAGGER,
           easing: EASING,
           fill: "backwards",
         });

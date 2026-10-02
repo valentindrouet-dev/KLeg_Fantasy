@@ -56,6 +56,7 @@ export type PendingDecision =
     }
   | { kind: "chooseSide"; card: InstanceId }
   | { kind: "parchment"; card: InstanceId }
+  | { kind: "newCards"; cards: InstanceId[] } // cartes découvertes en début de manche, à voir avant le mélange
   | {
       kind: "choice";
       source: InstanceId; // carte dont l'effet demande le choix
@@ -89,7 +90,8 @@ export type FlowStep =
   | { kind: "endTurn" } // effets « End of Turn », puis cleanupTurn
   | { kind: "cleanupTurn" }
   | { kind: "endRound" }
-  | { kind: "nextRound" };
+  | { kind: "nextRound" }
+  | { kind: "reviewDiscoveries"; since: number }; // montre les cartes découvertes depuis discoveries[since]
 
 export type LogEntry = { round: number; turn: number; text: string };
 
@@ -123,6 +125,7 @@ export type Action =
   | { type: "chooseDiscovery"; card: InstanceId }
   | { type: "chooseSide"; side: Side }
   | { type: "acknowledgeParchment" }
+  | { type: "acknowledgeDiscoveries" }
   | { type: "manual"; op: ManualOp }
   | { type: "choose"; answer: Answer }
   | { type: "cancelChoice" };

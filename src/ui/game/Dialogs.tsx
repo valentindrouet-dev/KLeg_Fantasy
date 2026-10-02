@@ -34,13 +34,13 @@ function bigCard(count = 1): number {
 }
 
 /**
- * Inspection : à gauche la carte telle qu'elle est posée, à droite l'autre face telle qu'on la voit en retournant
- * la carte de haut en bas (autre face, rotation inversée) : stage 1 en haut au recto ↔ stage 3 en haut au verso.
+ * Inspection : à gauche la carte telle qu'elle est posée, à droite l'autre face, même sens : stage 1 à côté du 4,
+ * stage 2 à côté du 3, à l'envers (demande du 2026-10-02, qui remplace la rotation inversée).
  */
 export function Inspector({ catalog, state, card, onClose }: { catalog: Catalog; state: GameState; card: InstanceId; onClose: () => void }) {
   const c = instance(state, card);
   const t = template(catalog, c.templateId);
-  const other = { side: c.orientation.side === "front" ? "back" : "front", rotation: c.orientation.rotation === 0 ? 180 : 0 } as const;
+  const other = { side: c.orientation.side === "front" ? "back" : "front", rotation: c.orientation.rotation } as const;
   return (
     <Dialog title={cardName(catalog, state, card)} onClose={onClose} wide>
       <div className={styles.inspector}>
@@ -112,6 +112,27 @@ export function DecisionDialog({
                 {side === "front" ? "Recto" : "Verso"}
               </button>
             </figure>
+          ))}
+        </div>
+      </Dialog>
+    );
+  }
+
+  if (p.kind === "newCards") {
+    const width = bigCard(p.cards.length);
+    return (
+      <Dialog
+        title={p.cards.length > 1 ? "Nouvelles cartes" : "Nouvelle carte"}
+        wide
+        actions={
+          <button className="btn btn-primary" onClick={() => onAction({ type: "acknowledgeDiscoveries" })}>
+            Mélanger dans le deck
+          </button>
+        }
+      >
+        <div className={styles.decisionRow}>
+          {p.cards.map((id) => (
+            <CardView key={id} template={tOf(id)} orientation={instance(state, id).orientation} label={cardName(catalog, state, id)} width={width} />
           ))}
         </div>
       </Dialog>

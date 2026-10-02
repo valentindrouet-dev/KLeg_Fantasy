@@ -106,6 +106,7 @@
   display: flex;
   flex-wrap: wrap;
   align-content: center;
+  align-items: flex-end; /* une pile (carte bloquée dessous) est plus haute : les autres cartes ne s'étirent pas */
   justify-content: center;
   gap: 12px;
   min-width: 0;
@@ -970,4 +971,26 @@
   justify-content: center;
   margin-top: var(--space-1);
   opacity: 0.85;
+}
+
+/* Ennemis sur la ligne du haut ; cartes bloquées sous leur bloquante, le haut qui dépasse. */
+.rowBreak {
+  flex-basis: 100%;
+  height: 0;
+}
+
+.stack {
+  position: relative;
+}
+
+.under {
+  position: absolute;
+  left: 0;
+  z-index: 0;
+  filter: brightness(0.8);
+}
+
+.over {
+  position: relative;
+  z-index: 1;
 }

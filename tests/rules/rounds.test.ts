@@ -9,7 +9,7 @@ describe("manches et découvertes", async () => {
 
   it("deck vide : fin de manche après le tour, découverte des 2 cartes suivantes, nouveau deck", () => {
     let s = newGame(catalog);
-    s = passUntil(catalog, s, (x) => x.round === 2);
+    s = passUntil(catalog, s, (x) => x.round === 2 && x.turn === 1);
     expect(s.round).toBe(2);
     expect(s.turn).toBe(1);
     const kingdom = [...s.zones.deck, ...s.zones.play, ...s.zones.discard];
@@ -22,6 +22,10 @@ describe("manches et découvertes", async () => {
     let s = arrange(catalog, { play: [1, 2], orientation: { 1: { side: "back", rotation: 0 } } });
     s = run(catalog, s, { type: "pass" });
     expect(s.round).toBe(2);
+    // Les cartes découvertes sont montrées avant le mélange.
+    expect(s.pending).toEqual({ kind: "newCards", cards: [fk(3), fk(4)] });
+    expect(s.zones.deck).toEqual([]);
+    s = run(catalog, s, { type: "acknowledgeDiscoveries" });
     expect([...s.zones.deck, ...s.zones.play]).toContain(fk(1));
   });
 
@@ -35,6 +39,8 @@ describe("manches et découvertes", async () => {
     expect(s.zones.destroyed).toEqual([fk(30)]);
     expect(s.pending).toMatchObject({ kind: "discoverChoice", options: [31, 32, 33, 34].map(fk), remaining: 2 });
     s = run(catalog, s, { type: "chooseDiscovery", card: fk(32) }, { type: "chooseDiscovery", card: fk(34) });
+    expect(s.pending).toEqual({ kind: "newCards", cards: [fk(32), fk(34)] });
+    s = run(catalog, s, { type: "acknowledgeDiscoveries" });
     expect(s.zones.destroyed.sort()).toEqual([30, 31, 33].map(fk).sort());
     const kingdom = [...s.zones.deck, ...s.zones.play, ...s.zones.discard];
     expect(kingdom).toContain(fk(32));
@@ -52,6 +58,8 @@ describe("manches et découvertes", async () => {
       s = run(catalog, s, { type: "chooseSide", side });
     }
     expect(s.cards[fk(39)]?.orientation).toEqual({ side: "back", rotation: 0 });
+    expect(s.pending).toMatchObject({ kind: "newCards", cards: [38, 39, 40, 41, 42].map(fk) });
+    s = run(catalog, s, { type: "acknowledgeDiscoveries" });
     expect(s.pending).toBeNull();
     expect(s.zones.box).not.toContain(fk(42));
   });
