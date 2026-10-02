@@ -49,8 +49,8 @@ card(68, [
       text="STOP! Discover 2 cards as normal (cards 69-70). This is your last round. When this round is over, count your fame ({fame}) and write it in the first {fame} on the side of the box. It's time to brag to your friends! Can they beat your score and make a better kingdom? I doubt it! When the round is over, {flip}."),
     S(4, "", cat="none",
       text="To count your fame, look through all your cards, including your permanent cards. Sum up all {fame} on their active stages. Note that some cards, especially the Goal cards, might require some additional calculations to determine their fame {fame}. Are you ready to continue your adventure? This game includes built-in expansions that let you play more rounds, but they will not give new cards. Read the section about built-in expansions on the rule sheet. If you want brand new cards, there are other expansions to explore (visit www.fryxgames.se). Happy gaming!")],
-    conf=0.9, parchment=True,
-    verify=[PARCH, "La carte 68 annonce la dernière manche (« This is your last round ») ; la spec place le marqueur de dernière manche sur la carte 70 : à trancher avant le moteur (isFinalRoundMarker est posé sur 70, conformément à la spec)."])
+    conf=0.9, parchment=True, isFinalRoundMarker=True,  # décision du 2026-10-02 (docs/RULES_DECISIONS.md)
+    verify=[PARCH])
 card(69, [
     S(1, "Finishing Touch", "Event", cat="other", effects=[(D, "Add sticker 6 and 10 to 1 friendly card in play.")]),
     S(4, "Banquet", "Event", cat="other", effects=[(D, "Gain any 4 resources.")])], choose=True)
@@ -58,6 +58,6 @@ card(70, [
     S(1, "Royal Visit", "Event", cat="other", fame=2,
       effects=[(A, "Cross out 1 resource icon in an upgrade cost on 1 card in play.")]),
     S(4, "Inquisitor", "Person", prod_="coin", effects=[(D, "Destroy 1 {negative} card in play.")])],
-    conf=0.9, choose=True, isFinalRoundMarker=True)
+    conf=0.9, choose=True)
 distant_mountain(71)
 forest(72)

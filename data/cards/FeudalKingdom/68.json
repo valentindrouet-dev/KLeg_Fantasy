@@ -15,6 +15,7 @@
   },
   "isParchment": true,
   "chooseSideOnDiscover": false,
+  "isFinalRoundMarker": true,
   "stages": {
     "1": {
       "id": 1,
@@ -62,7 +63,6 @@
   },
   "confidence": 0.9,
   "to_verify": [
-    "Instructions de parchemin : classées triggeredForced (à appliquer à la découverte, puis détruire la carte) ; le site ne donne pas de type d'effet.",
-    "La carte 68 annonce la dernière manche (« This is your last round ») ; la spec place le marqueur de dernière manche sur la carte 70 : à trancher avant le moteur (isFinalRoundMarker est posé sur 70, conformément à la spec)."
+    "Instructions de parchemin : classées triggeredForced (à appliquer à la découverte, puis détruire la carte) ; le site ne donne pas de type d'effet."
   ]
 }

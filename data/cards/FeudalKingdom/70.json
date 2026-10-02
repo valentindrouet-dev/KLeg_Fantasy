@@ -15,7 +15,6 @@
   },
   "isParchment": false,
   "chooseSideOnDiscover": true,
-  "isFinalRoundMarker": true,
   "stages": {
     "1": {
       "id": 1,

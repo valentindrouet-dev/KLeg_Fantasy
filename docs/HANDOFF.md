@@ -114,10 +114,10 @@ Versions installées : Node 24, Vite 8, React 19, TypeScript 7, Zod 4, Vitest 5.
 
 ## 5. Questions ouvertes
 
-1. **Dernière manche** : la carte 68 dit « This is your last round » et fait découvrir 69 et 70 ; la spec place le déclencheur sur la carte 70. `isFinalRoundMarker` est posé sur 70. Lequel fait foi ?
-2. **Coûts « N Persons »** (cartes 59, 66, 74, 75, 93, 109, 127, 128) : faut-il défausser ces personnes depuis la zone de jeu pour payer l'amélioration ?
-3. **Sticker 16** : la carte 138 l'utilise pour une gloire posée sur un terrain ; la spec le réserve à la gloire purgée. Le catalogue de stickers tranchera.
-4. **GitHub Pages est public**, même depuis un dépôt privé, et un compte gratuit exige un dépôt public : les images des cartes (FryxGames) seraient accessibles à tous. À décider avant P2.
+1. ~~**Dernière manche**~~ : tranché le 2026-10-02, c'est la carte 68 (`docs/RULES_DECISIONS.md`).
+2. ~~**Coûts « N Persons »**~~ : tranché le 2026-10-02, on défausse les personnes depuis la zone de jeu (`docs/RULES_DECISIONS.md`).
+3. **Sticker 16** : la carte 138 l'utilise pour une gloire posée sur un terrain ; la spec le réserve à la gloire purgée. Le catalogue de stickers tranchera. Piste donnée le 2026-10-02 : construire le catalogue en relevant les stickers cités sur les cartes ; sinon il sera fourni (avant P3).
+4. ~~**GitHub Pages est public**~~ : accepté le 2026-10-02, le dépôt et le site sont publics (`docs/DEPLOY.md`).
 5. **Carte 0 et carte 139** : marquées parchemin par analogie visuelle ; elles ne sont jamais découvertes en jeu.
 
 ## 6. Ce qui n'est pas dans le dépôt

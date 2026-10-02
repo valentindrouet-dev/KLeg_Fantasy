@@ -108,7 +108,7 @@ CardTemplate {
   orientationToStage: {...};
   isParchment: boolean;          // carte parchemin : instructions puis destruction
   chooseSideOnDiscover: boolean; // flèches en haut : choisir la face à la découverte
-  isFinalRoundMarker?: boolean;  // ex. #70
+  isFinalRoundMarker?: boolean;  // #68 (voir docs/RULES_DECISIONS.md)
   stages: Record<StageId, Stage>;
   description?: string;          // texte d'aide du site
   source: { url: string; scrapedAt: string };
@@ -210,7 +210,7 @@ Une **rotation/retournement par effet** n'est PAS une amélioration et ne termin
 
 **Fin de manche** : défausser tout (y compris "stay in play"), appliquer les effets "End of Round" des cartes défaussées.
 
-**Fin de partie** : la découverte de la carte **#70** lance la dernière manche. Ensuite, score = somme de la gloire du royaume + gloire purgée cumulée. Les cartes au-delà de #70 ne se découvrent que par effets.
+**Fin de partie** : la découverte de la carte **#68** (parchemin qui fait découvrir 69 et 70) lance la dernière manche (décision du 2026-10-02, `docs/RULES_DECISIONS.md`). Ensuite, score = somme de la gloire du royaume + gloire purgée cumulée. Les cartes au-delà de #70 ne se découvrent que par effets.
 
 ### 4.5 Ressources
 
@@ -460,7 +460,7 @@ Chaque action en une ligne lisible avec icônes ("Tour 3 : Wild Grass produit {c
   - Équipement : 3 + 5 = 8 gloire ; production cumulée ; défausse si le porteur change d'orientation.
   - Sticker refusé à 9+ de production.
   - Parchemin en début de manche.
-  - Découverte de #70 → dernière manche → score.
+  - Découverte de #68 → dernière manche → score.
   - Purge 12 avec exclusions, gloire purgée comptée dans le score.
   - Mini-extension : pas de découverte de 2 cartes par manche, 4 manches.
 - **Scénarios** : parties scriptées (graine fixe + liste d'actions) rejouées et vérifiées.
