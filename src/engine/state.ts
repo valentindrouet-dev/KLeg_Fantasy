@@ -36,6 +36,16 @@ export function stageIdAt(t: CardTemplate, o: Orientation): StageId | null {
   return t.orientationToStage[orientationKey(o)];
 }
 
+/**
+ * Numéro d'étape à afficher. Les cartes à une seule étape par face (image pleine : flèches rouges, objectifs,
+ * parchemins…) ont les étapes 1 et 2 ; le site les numérote 1 et 4, numéro gardé dans les fiches.
+ */
+export function printedStage(t: CardTemplate, id: StageId): StageId {
+  const used = Object.values(t.orientationToStage);
+  const onePerFace = !used.includes(2) && !used.includes(3);
+  return onePerFace && id === 4 ? 2 : id;
+}
+
 /** Stage actif d'une carte (celui qui est lisible en haut). */
 export function activeStage(catalog: Catalog, s: GameState, id: InstanceId): Stage | null {
   const c = instance(s, id);

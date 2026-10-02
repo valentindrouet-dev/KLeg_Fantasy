@@ -7,11 +7,11 @@ import { arrange, fk, run } from "../helpers/game";
 describe("ressources", async () => {
   const catalog = await loadCatalog();
 
-  it("perdues quand une nouvelle carte entre en jeu (Avancer)", () => {
+  it("conservées quand on avance (décision du 2026-10-02)", () => {
     let s = arrange(catalog, { play: [1], deck: [2, 3], resources: { coin: 2, wood: 1 } });
     s = run(catalog, s, { type: "advance" });
-    expect(s.resources).toMatchObject({ coin: 0, wood: 0 });
-    expect(s.lostResources).toEqual({ coin: 2, wood: 1 });
+    expect(s.resources).toMatchObject({ coin: 2, wood: 1 });
+    expect(s.lostResources).toEqual({});
   });
 
   it("perdues à la fin du tour", () => {

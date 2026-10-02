@@ -2,7 +2,7 @@ import { useState, type ReactNode } from "react";
 import { cardImageUrl } from "../../data/loadCards";
 import type { CardTemplate, Orientation, StageId } from "../../data/schema";
 import { stageFr } from "../../data/translations";
-import { stageIdAt } from "../../engine";
+import { printedStage, stageIdAt } from "../../engine";
 import { IconText } from "../common/IconText";
 import { usePrefs } from "../common/prefs";
 import { usePress, type TapPoint } from "../common/usePress";
@@ -59,8 +59,10 @@ function Face({
   dimBottom?: boolean;
 }) {
   const url = cardImageUrl(orientation.side === "front" ? template.images.front : template.images.back);
-  const top = stageInHalf(template, orientation, "top");
-  const bottom = stageInHalf(template, orientation, "bottom");
+  const topId = stageInHalf(template, orientation, "top");
+  const bottomId = stageInHalf(template, orientation, "bottom");
+  const top = topId === null ? null : printedStage(template, topId);
+  const bottom = bottomId === null ? null : printedStage(template, bottomId);
   return (
     <div className={`${styles.face} ${className ?? ""}`}>
       {url ? (

@@ -18,5 +18,11 @@ Une entrée par décision : date, question, décision, cartes concernées.
 ## 2026-10-02 : jouer une carte depuis la défausse
 
 - **Question** : Town Hall, Keep et Castle se défaussent pour jouer une carte de la défausse. Castle (« any card ») peut-il se rejouer lui-même ?
-- **Décision** : non, la carte qui active l'effet est exclue des choix. Se rejouer ne rapporterait rien et permettrait une boucle infinie. La carte jouée entre en jeu : les ressources en cours sont perdues (spec 4.5).
+- **Décision** : non, la carte qui active l'effet est exclue des choix. Se rejouer ne rapporterait rien et permettrait une boucle infinie. La carte jouée entre en jeu (les ressources en cours restent, voir ci-dessous).
 - **Cartes** : 9.
+
+## 2026-10-02 : ressources quand de nouvelles cartes entrent en jeu
+
+- **Question** : la spec (4.5) disait les ressources perdues dès qu'une nouvelle carte entre en jeu (Avancer).
+- **Décision** : non. Les ressources gagnées restent jusqu'à la fin du tour, même en avançant ou en jouant une carte depuis la défausse. Elles sont perdues à la fin du tour. Spec 4.5 et 10 corrigées.
+- **Cartes** : toutes (règle générale).

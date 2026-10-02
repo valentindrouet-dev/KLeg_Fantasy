@@ -14,8 +14,8 @@ Routage par hash (`src/ui/App.tsx`) : `#/` Mes royaumes, `#/partie/<id>` partie,
 
 - **Engager une carte** : toucher la zone de ressource d'une carte en jeu (sous le bandeau, à gauche) la marque « engagée ».
   Elle reste en jeu et ne produit qu'au moment de payer (amélioration, effet) : `planWithEngaged` choisit les cartes
-  à produire (le moins possible, l'option du « / » qui convient). Avancer ne fait donc rien perdre des cartes engagées ;
-  seules les ressources déjà gagnées (ex. les 3 bois de Forest) se perdent quand de nouvelles cartes entrent en jeu.
+  à produire (le moins possible, l'option du « / » qui convient). Les ressources, engagées ou déjà gagnées, ne se perdent
+  qu'à la fin du tour (décision du 2026-10-02).
   La barre du bas affiche « 0 +2 » : ressources en cours + ressources des cartes engagées.
 - **Zones cliquables** (`cardZones.ts`) : boîte d'amélioration → en haut à droite, boîte ↓ à droite contre la ligne
   du milieu, texte d'effet au centre ; toucher la zone fait l'action si elle est unique et payable. Au survol (souris,

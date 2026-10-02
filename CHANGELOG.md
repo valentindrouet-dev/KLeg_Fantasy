@@ -3,6 +3,12 @@
 Chaque mise à jour publiée change de version (`package.json`, affichée dans l'appli en bas de l'écran « Mes royaumes »
 et dans la barre de la partie). Convention : `0.5.0` s'affiche **v0.05** ; un correctif `0.5.1` s'affiche **v0.05.1**.
 
+## v0.15 (2 octobre 2026)
+
+- Règle : les ressources gagnées restent quand on avance (ou qu'une carte est jouée depuis la défausse) ; elles ne se perdent qu'à la fin du tour.
+- Cartes à image pleine (une étape par face) : étapes 1 et 2 au lieu de 1 et 4 (pastilles et Stats).
+- « Manche X » fixé juste sous la barre du haut, sur iPad comme ailleurs.
+
 ## v0.14 (2 octobre 2026)
 
 - Réglages (⚙) : thème Auto (selon l'appareil), Clair ou Sombre.

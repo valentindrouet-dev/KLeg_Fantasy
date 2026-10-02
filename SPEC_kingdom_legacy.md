@@ -214,7 +214,7 @@ Une **rotation/retournement par effet** n'est PAS une amélioration et ne termin
 
 ### 4.5 Ressources
 
-- Invisibles et éphémères : **toutes perdues dès qu'une nouvelle carte entre en zone de jeu ou à la fin du tour**.
+- Invisibles et éphémères : **toutes perdues à la fin du tour**. Elles restent quand de nouvelles cartes entrent en jeu (Avancer, carte jouée depuis la défausse) : décision du 2026-10-02, `docs/RULES_DECISIONS.md`.
 - L'UI doit prévenir avant une action qui ferait perdre des ressources (ex. Avancer avec des ressources non dépensées).
 
 ### 4.6 Concepts clés
@@ -454,7 +454,7 @@ Chaque action en une ligne lisible avec icônes ("Tour 3 : Wild Grass produit {c
 - Cas à couvrir au minimum :
   - Une rotation par effet (ex. Forest) ne termine pas le tour mais défausse la carte.
   - Une amélioration termine le tour.
-  - Ressources perdues quand une carte entre en jeu (Avancer).
+  - Ressources conservées quand on avance, perdues à la fin du tour.
   - "When played" : toutes les cartes jouées ensemble sont en jeu à la résolution.
   - Blocage : bloquée défaussée avec la bloquante en fin de tour, libérée si défausse en cours de tour, sans déclencher "when played".
   - Équipement : 3 + 5 = 8 gloire ; production cumulée ; défausse si le porteur change d'orientation.

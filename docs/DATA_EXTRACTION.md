@@ -13,6 +13,7 @@ Chaîne : `npm run scrape` → `data/raw/` (HTML en cache, JSON brut, images JPE
 
 - Rotation 0 = image du site à l'endroit, sceau (numéro) en haut.
 - Recto : stage 1 en haut, stage 2 tête en bas. Verso : stage 4 en haut, stage 3 tête en bas.
+- Cartes à une seule étape par face (image pleine) : le site numérote le verso « 4 » et les fiches gardent ce numéro ; l'appli l'affiche « 2 » (`printedStage`, décision du 2026-10-02).
 - Flèche verticale = `rotate` (même face, rotation 180°). Flèche horizontale = `flip` (autre face, même rotation). Le `toStage` de chaque amélioration est écrit explicitement dans la fiche.
 
 ## Conventions des fiches

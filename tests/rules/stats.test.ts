@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { kingdomStats } from "../../src/engine";
+import { kingdomStats, printedStage } from "../../src/engine";
 import { loadCatalog } from "../helpers/catalog";
 import { newGame } from "../helpers/game";
 
@@ -17,5 +17,14 @@ describe("statistiques du royaume", async () => {
     expect(st.fame).toBe(0);
     expect(st.stages).toEqual({ 1: 10, 2: 0, 3: 0, 4: 0 });
     expect(st.inBox).toBe(130);
+  });
+
+  it("cartes à une étape par face : verso numéroté 2 (le site dit 4)", () => {
+    const fieldWorker = catalog.templates.get("FeudalKingdom-013");
+    const wildGrass = catalog.templates.get("FeudalKingdom-001");
+    if (!fieldWorker || !wildGrass) throw new Error("cartes manquantes");
+    expect(printedStage(fieldWorker, 1)).toBe(1);
+    expect(printedStage(fieldWorker, 4)).toBe(2);
+    expect(printedStage(wildGrass, 4)).toBe(4);
   });
 });

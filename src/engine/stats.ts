@@ -1,7 +1,7 @@
 import type { Category, ResourceId } from "../data/schema";
 import { productionGroups } from "./production";
 import { computeScore, kingdomCards } from "./score";
-import { activeStage } from "./state";
+import { activeStage, instance, printedStage, template } from "./state";
 import type { Catalog, GameState } from "./types";
 
 // Statistiques du royaume (fenêtre « Stats ») : cartes par zone, production, gloire, mots-clés, catégories.
@@ -39,7 +39,7 @@ export function kingdomStats(catalog: Catalog, s: GameState): KingdomStats {
     }
     const stage = activeStage(catalog, s, id);
     if (!stage) continue;
-    stages[stage.id] += 1;
+    stages[printedStage(template(catalog, instance(s, id).templateId), stage.id)] += 1;
     keywords.push(...stage.keywords);
     categories.push(stage.category);
   }

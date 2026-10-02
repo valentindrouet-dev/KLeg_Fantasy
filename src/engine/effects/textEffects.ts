@@ -91,7 +91,7 @@ const matchers: Matcher[] = [
     };
   },
 
-  // « Play 1 land or building from discard pile. » : la carte jouée entre en jeu (ressources perdues).
+  // « Play 1 land or building from discard pile. » : la carte jouée entre en jeu.
   (text) => {
     const m = /^Play 1 (.+) from discard pile\.$/.exec(text);
     if (!m) return null;

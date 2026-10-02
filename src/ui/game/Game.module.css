@@ -717,8 +717,9 @@
 
 /* --- Passage de manche : message flottant central --- */
 .roundBanner {
-  position: absolute;
-  top: 2.2rem;
+  /* Fixé à l'écran, juste sous la barre du haut (même place sur tous les navigateurs, iPad compris). */
+  position: fixed;
+  top: calc(env(safe-area-inset-top) + 5.4rem);
   left: 50%;
   z-index: 70;
   padding: var(--space-2) var(--space-6);

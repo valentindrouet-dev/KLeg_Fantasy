@@ -51,15 +51,15 @@ describe("effets des cartes de départ", async () => {
     expect(s.resources.stone).toBe(2);
   });
 
-  it("Town Hall : jouer une terre depuis la défausse, les ressources en cours sont perdues", () => {
+  it("Town Hall : jouer une terre depuis la défausse, les ressources en cours restent", () => {
     let s = arrange(catalog, { play: [9], discard: [1, 10], resources: { coin: 2 }, orientation: { 9: front180 } });
     const targets = legal(catalog, s).flatMap((a) => (a.type === "useEffect" ? a.targets : []));
     expect(targets).toEqual([fk(1)]); // Trader (personne) exclu
     s = run(catalog, s, { type: "useEffect", card: fk(9), effect: "e1", targets: [fk(1)], option: null });
     expect(s.zones.play).toEqual([fk(1)]);
     expect(s.zones.discard).toEqual([fk(10), fk(9)]);
-    expect(s.resources.coin).toBe(0);
-    expect(s.lostResources.coin).toBe(2);
+    expect(s.resources.coin).toBe(2);
+    expect(s.lostResources).toEqual({});
   });
 
   it("Keep : une terre ou un bâtiment", () => {

@@ -64,8 +64,9 @@ export function playFromDeck(d: Draft, n: number): void {
     moveTo(d.s, id, "play");
     d.s.revealCount += 1;
   }
+  // Les ressources gagnées restent jusqu'à la fin du tour, même quand de nouvelles cartes arrivent
+  // (décision du 2026-10-02, docs/RULES_DECISIONS.md).
   if (drawn.length) {
-    clearResources(d.s);
     log(d.s, `Cartes jouées : ${drawn.map((id) => cardName(d.catalog, d.s, id)).join(", ")}`);
   }
   // Les effets « when played » arrivent en P3 : toutes les cartes jouées ensemble sont déjà en jeu ici.
@@ -79,7 +80,6 @@ export function advance(d: Draft): void {
 /** Joue une carte qui n'est pas prise du deck (ex. depuis la défausse) : pas de « when played » en P1. */
 export function playCard(d: Draft, id: InstanceId): void {
   moveTo(d.s, id, "play");
-  clearResources(d.s);
 }
 
 /** Fin de tour : défausse les cartes en jeu sauf « stay in play », puis tour ou manche suivante. */
