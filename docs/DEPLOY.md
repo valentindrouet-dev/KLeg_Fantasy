@@ -1,18 +1,20 @@
 # Déploiement
 
-Le site est publié sur GitHub Pages par GitHub Actions (`.github/workflows/deploy.yml`) :
-à chaque push, le workflow installe, lance les tests, construit `dist/` et le publie.
-Aucune commande à lancer depuis le Mac, il suffit de pousser.
+Le site est publié sur GitHub Pages depuis la branche `gh-pages` (spec section 13.1).
+À chaque push, GitHub Actions (`.github/workflows/deploy.yml`) installe, lance les tests,
+construit `dist/` et le pousse sur `gh-pages`. Aucune commande à lancer depuis le Mac.
 
 Adresse : https://valentindrouet-dev.github.io/KLeg_Fantasy/
 
-## Activation (une seule fois)
+## Réglage (une seule fois)
 
-Settings > Pages > Build and deployment > Source : **GitHub Actions**.
-Puis onglet Actions > « Déploiement GitHub Pages » > Run workflow (ou un nouveau push).
+Settings > Pages > Build and deployment :
+- Source : **Deploy from a branch**
+- Branch : **gh-pages**, dossier **/ (root)**, puis **Save**.
 
-## Écart par rapport à la spec (section 13.1)
+Si la branche choisie est celle du code source, GitHub publie les fichiers bruts et la page reste blanche.
 
-La spec prévoyait `npm run deploy` vers une branche `gh-pages`. Ce mode exige de pouvoir
-pousser depuis le Mac, ce qui n'était pas configuré ; le déploiement par Actions publie
-directement ce qui est poussé. `base: "/KLeg_Fantasy/"` dans `vite.config.ts` reste valable.
+## Écart par rapport à la spec
+
+La spec prévoyait `npm run deploy` depuis le Mac. Le Mac ne pouvant pas pousser sur GitHub, c'est
+GitHub Actions qui construit et pousse `gh-pages`. `base: "/KLeg_Fantasy/"` dans `vite.config.ts` reste valable.

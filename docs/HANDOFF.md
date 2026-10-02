@@ -71,7 +71,7 @@ section 5 de docs/HANDOFF.md.
 | Git | Petits commits locaux, push sur `main` à la fin de chaque phase |
 | Styles | CSS modules + variables CSS centralisées (`src/ui/theme.css`) |
 | Données | Extraction visuelle des images du site, par lots ; fiches et WebP versionnés ; `data/raw` hors dépôt |
-| Déploiement | GitHub Pages via GitHub Actions à chaque push (`docs/DEPLOY.md`), au lieu de `gh-pages` + `npm run deploy` ; `base: "/KLeg_Fantasy/"` réglé dans `vite.config.ts` |
+| Déploiement | GitHub Pages depuis la branche `gh-pages`, construite et poussée par GitHub Actions à chaque push (`docs/DEPLOY.md`) au lieu de `npm run deploy` ; `base: "/KLeg_Fantasy/"` réglé dans `vite.config.ts` |
 | Copies de cartes | Une fiche par numéro, même pour les cartes identiques |
 
 ## 3. État du code
