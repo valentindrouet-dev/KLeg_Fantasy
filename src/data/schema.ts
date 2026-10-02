@@ -165,16 +165,24 @@ export const ResourceDefSchema = z.strictObject({
 export type ResourceDef = z.infer<typeof ResourceDefSchema>;
 export const ResourcesFileSchema = z.strictObject({ resources: z.array(ResourceDefSchema) });
 
+// Catalogue des stickers (spec 3.6), relevé sur la planche officielle (data/stickers.json).
 export const StickerDefSchema = z.strictObject({
   id: z.string().min(1), // numéro imprimé, ex. "16", "13k"
-  type: z.enum(["resource", "fame", "tab", "scorePath", "purgedFame", "other"]),
+  expansion: z.string().min(1), // planche d'origine
+  type: z.enum(["resource", "fame", "writtenFame", "effect", "keyword", "scorePath", "tab", "other"]),
   label: z.string(),
   quantity: z.number().int().min(0),
-  resource: ResourceIdSchema.optional(),
-  fame: z.number().int().optional(),
+  resource: ResourceIdSchema.optional(), // type resource : +1 production de cette ressource
+  fame: z.number().int().optional(), // type fame : gloire imprimée
+  text: z.string().optional(), // type effect : texte imprimé sur le sticker
+  keyword: KeywordSchema.optional(), // type keyword : mot-clé ajouté à la carte
 });
 export type StickerDef = z.infer<typeof StickerDefSchema>;
-export const StickersFileSchema = z.strictObject({ stickers: z.array(StickerDefSchema) });
+export const StickersFileSchema = z.strictObject({
+  source: z.string().min(1),
+  to_verify: z.array(z.string()),
+  stickers: z.array(StickerDefSchema),
+});
 
 export const ExpansionDefSchema = z.strictObject({
   id: z.string().min(1),

@@ -92,7 +92,7 @@ Phases P0 (données) et P1 (moteur) terminées. Phases P2 à P6 non commencées 
 | Fiches de cartes | `data/cards/FeudalKingdom/0.json` à `139.json` | 140 fiches, 0 invalide |
 | Images | `data/images/FeudalKingdom/*.webp` | 280 images, 16 Mo |
 | Tests des fiches | `tests/data/cards.test.ts` | 142 tests |
-| Catalogue de stickers | `data/stickers.json` | squelette vide, à fournir |
+| Catalogue de stickers | `data/stickers.json` | fait (planche Feudal Kingdom v4.1, 12 stickers) |
 | Moteur de règles (P1) | `src/engine/` | fait : tours, manches, actions, découvertes, annulation, score ; effets des cartes 1 à 10 |
 | Partie en ligne de commande | `scripts/play.ts` (`npm run play`) | fait |
 | Tests du moteur | `tests/rules/`, `tests/scenarios/` | 56 tests |
@@ -122,7 +122,7 @@ Versions installées : Node 24, Vite 8, React 19, TypeScript 7, Zod 4, Vitest 5.
 
 1. ~~**Dernière manche**~~ : tranché le 2026-10-02, c'est la carte 68 (`docs/RULES_DECISIONS.md`).
 2. ~~**Coûts « N Persons »**~~ : tranché le 2026-10-02, on défausse les personnes depuis la zone de jeu (`docs/RULES_DECISIONS.md`).
-3. **Sticker 16** : la carte 138 l'utilise pour une gloire posée sur un terrain ; la spec le réserve à la gloire purgée. Le catalogue de stickers tranchera. Piste donnée le 2026-10-02 : construire le catalogue en relevant les stickers cités sur les cartes ; sinon il sera fourni (avant P3).
+3. ~~**Sticker 16**~~ : réglé le 2026-10-02 avec la planche officielle : c'est un ruban de gloire vierge où l'on écrit le nombre, utilisé pour la gloire purgée comme pour la carte 138. Catalogue dans `data/stickers.json`.
 4. ~~**GitHub Pages est public**~~ : accepté le 2026-10-02, le dépôt et le site sont publics (`docs/DEPLOY.md`).
 5. **Carte 0 et carte 139** : marquées parchemin par analogie visuelle ; elles ne sont jamais découvertes en jeu.
 

@@ -1,3 +1,22 @@
 {
-  "stickers": []
+  "source": "Planche officielle « Kingdom Legacy - Stickers v4.1 » (PDF fourni le 2026-10-02), page 1, deux premiers panneaux (icône en anneau de Feudal Kingdom). Les autres panneaux appartiennent à d'autres extensions.",
+  "to_verify": [
+    "Planche Feudal Kingdom identifiée par son icône (anneau), commune aux deux premiers panneaux de la page 1, et recoupée avec les numéros cités par les cartes 24 à 138.",
+    "Sticker 11 « Knight » : mot-clé ajouté à une personne (carte 86, Dubbing) ; sa forme d'étiquette laisse penser qu'il dépasse aussi de la carte comme un tab.",
+    "Sticker 13k : 3 exemplaires « FK » pour le chemin de score (mini-extensions 136 à 138, spec 4.7)."
+  ],
+  "stickers": [
+    { "id": "1", "expansion": "FeudalKingdom", "type": "resource", "label": "Production : pièce", "quantity": 10, "resource": "coin" },
+    { "id": "2", "expansion": "FeudalKingdom", "type": "resource", "label": "Production : bois", "quantity": 10, "resource": "wood" },
+    { "id": "3", "expansion": "FeudalKingdom", "type": "resource", "label": "Production : pierre", "quantity": 5, "resource": "stone" },
+    { "id": "4", "expansion": "FeudalKingdom", "type": "resource", "label": "Production : métal", "quantity": 5, "resource": "metal" },
+    { "id": "5", "expansion": "FeudalKingdom", "type": "resource", "label": "Production : épée", "quantity": 5, "resource": "sword" },
+    { "id": "6", "expansion": "FeudalKingdom", "type": "resource", "label": "Production : marchandise", "quantity": 5, "resource": "tradeGood" },
+    { "id": "7", "expansion": "FeudalKingdom", "type": "effect", "label": "Stays in play", "quantity": 2, "text": "Stays in play." },
+    { "id": "8", "expansion": "FeudalKingdom", "type": "fame", "label": "Gloire 2", "quantity": 5, "fame": 2 },
+    { "id": "10", "expansion": "FeudalKingdom", "type": "fame", "label": "Gloire 5", "quantity": 5, "fame": 5 },
+    { "id": "11", "expansion": "FeudalKingdom", "type": "keyword", "label": "Knight", "quantity": 1, "keyword": "Knight" },
+    { "id": "13k", "expansion": "FeudalKingdom", "type": "scorePath", "label": "Chemin de score FK", "quantity": 3 },
+    { "id": "16", "expansion": "FeudalKingdom", "type": "writtenFame", "label": "Gloire écrite (gloire purgée, Resistance)", "quantity": 5 }
+  ]
 }
