@@ -169,6 +169,7 @@ function markFinalRound(d: Draft, id: InstanceId): void {
 
 function revealParchment(d: Draft, id: InstanceId): void {
   d.s.revealCount += 1;
+  d.s.discoveries.push(instance(d.s, id).serial);
   markFinalRound(d, id);
   log(d.s, `Parchemin découvert : ${cardName(d.catalog, d.s, id)}`);
   d.s.pending = { kind: "parchment", card: id };
@@ -210,6 +211,7 @@ export function resolveSide(d: Draft, id: InstanceId, side: Side): void {
 
 function placeDiscovered(d: Draft, id: InstanceId): void {
   discard(d, id);
+  d.s.discoveries.push(instance(d.s, id).serial);
   log(d.s, `Carte découverte : ${cardName(d.catalog, d.s, id)}`);
 }
 

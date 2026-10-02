@@ -44,3 +44,27 @@ describe("annulation", async () => {
     expect(current(again)).toEqual(current(s));
   });
 });
+
+describe("annulation au-delà de la fenêtre gardée en mémoire", async () => {
+  const catalog = await loadCatalog();
+
+  it("Libre : rejoue l'enregistrement quand l'état précédent n'est plus en mémoire", async () => {
+    const { UNDO_WINDOW, getLegalActions, resumeSession } = await import("../../src/engine");
+    let s = newSession(catalog, { expansion: "FeudalKingdom", seed: 3, undoMode: "free" });
+    for (let i = 0; i < UNDO_WINDOW + 5; i++) {
+      const pass = getLegalActions(catalog, current(s)).find((a) => a.type === "pass") ?? getLegalActions(catalog, current(s))[0];
+      if (!pass) break;
+      s = act(s, pass);
+    }
+    expect(s.states.length).toBe(UNDO_WINDOW + 1);
+    const expected = replay(catalog, { ...s.record, actions: s.record.actions.slice(0, -1) });
+    const resumed = resumeSession(catalog, s.record, current(s));
+    expect(current(undo(resumed))).toEqual(current(expected));
+  });
+
+  it("Strict : après une reprise, pas d'annulation", async () => {
+    const { resumeSession } = await import("../../src/engine");
+    const s = act(newSession(catalog, { expansion: "FeudalKingdom", seed: 3, undoMode: "strict" }), { type: "pass" });
+    expect(canUndo(resumeSession(catalog, s.record, current(s)))).toBe(false);
+  });
+});

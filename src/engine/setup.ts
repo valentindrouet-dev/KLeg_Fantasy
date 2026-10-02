@@ -53,6 +53,7 @@ export function createGame(catalog: Catalog, config: GameConfig): GameState {
     pending: null,
     queue: [{ kind: "shuffle" }, { kind: "startTurn" }],
     purgedFame: 0,
+    discoveries: [],
     revealCount: 0,
     lostResources: {},
     log: [],

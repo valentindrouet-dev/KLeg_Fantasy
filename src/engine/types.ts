@@ -67,6 +67,7 @@ export type GameState = {
   pending: PendingDecision | null;
   queue: FlowStep[];
   purgedFame: number;
+  discoveries: number[]; // numéros des cartes découvertes, dans l'ordre (parchemins compris)
   revealCount: number; // augmente à chaque information nouvelle (carte du deck, découverte, mélange)
   lostResources: ResourceCounts; // ressources perdues pendant la dernière action
   log: LogEntry[];

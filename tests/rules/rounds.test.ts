@@ -15,6 +15,7 @@ describe("manches et découvertes", async () => {
     const kingdom = [...s.zones.deck, ...s.zones.play, ...s.zones.discard];
     expect(kingdom.sort()).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(fk).sort());
     expect(s.zones.box).not.toContain(fk(11));
+    expect(s.discoveries).toEqual([11, 12]);
   });
 
   it("fin de manche : même les cartes « stay in play » sont défaussées puis remélangées", () => {
