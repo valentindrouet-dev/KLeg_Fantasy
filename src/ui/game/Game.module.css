@@ -1,0 +1,502 @@
+/* Plateau (spec 7.3). Paysage = référence ; portrait iPad en variante. Aucun défilement du plateau. */
+.game {
+  display: grid;
+  grid-template-columns: 160px minmax(0, 1fr) 160px;
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
+  grid-template-areas:
+    "top top top"
+    "perm perm perm"
+    "deck play discard"
+    "bottom bottom bottom";
+  height: 100dvh;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  overflow: hidden;
+  touch-action: manipulation;
+  overscroll-behavior: none;
+}
+
+.withJournal {
+  grid-template-columns: 160px minmax(0, 1fr) 160px 300px;
+  grid-template-areas:
+    "top top top top"
+    "perm perm perm journal"
+    "deck play discard journal"
+    "bottom bottom bottom journal";
+}
+
+.topbar {
+  grid-area: top;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.topbar h1 {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-1) var(--space-3);
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.topbar h1 span {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  font-weight: 400;
+}
+
+.permanents {
+  grid-area: perm;
+  display: flex;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  overflow-x: auto;
+  border-bottom: 1px solid var(--border);
+}
+
+.deckSlot {
+  grid-area: deck;
+}
+
+.discardSlot {
+  grid-area: discard;
+}
+
+.deckSlot,
+.discardSlot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-3);
+  min-height: 0;
+}
+
+.pile {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  width: 100%;
+  max-width: 140px;
+}
+
+.pile .card {
+  width: 100%;
+}
+
+.pileTitle {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+.emptyPile {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 373 / 520;
+  width: 100%;
+  border: 2px dashed var(--border);
+  border-radius: var(--radius);
+  background: none;
+  color: var(--text-muted);
+  font: inherit;
+}
+
+.play {
+  grid-area: play;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: center;
+  justify-content: center;
+  gap: 12px;
+  min-width: 0;
+  min-height: 0;
+  padding: var(--space-3);
+  overflow: hidden;
+}
+
+.bottombar {
+  grid-area: bottom;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-4);
+  padding: var(--space-2) var(--space-3);
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.resources {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.resource {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-height: 36px;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface-2);
+  font-size: 1.05rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.zero {
+  opacity: 0.4;
+  font-weight: 400;
+}
+
+.turnButtons {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.turnButtons kbd {
+  padding: 0 4px;
+  border: 1px solid currentColor;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  opacity: 0.7;
+}
+
+.journal {
+  grid-area: journal;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  border-left: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.journal h2 {
+  margin: 0;
+  padding: var(--space-2) var(--space-3);
+  font-size: 1rem;
+}
+
+.journal ol {
+  flex: 1;
+  margin: 0;
+  padding: 0 var(--space-3) var(--space-3);
+  overflow-y: auto;
+  list-style: none;
+  font-size: 0.85rem;
+}
+
+.journal li {
+  padding: 3px 0;
+  border-bottom: 1px solid var(--surface-2);
+}
+
+.journal small {
+  color: var(--text-muted);
+}
+
+/* --- Cartes --- */
+.card {
+  position: relative;
+  flex: none;
+  aspect-ratio: 373 / 520;
+  overflow: hidden;
+  border-radius: 4.5% / 3.2%;
+  background: var(--surface-2);
+  box-shadow: 0 2px 6px rgb(0 0 0 / 0.25);
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  touch-action: manipulation;
+}
+
+.card img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+.rotated {
+  transform: rotate(180deg);
+}
+
+.interactive {
+  cursor: pointer;
+}
+
+.interactive:focus-visible,
+.selected {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.cardFallback {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  padding: var(--space-2);
+  text-align: center;
+  font-size: 0.85rem;
+}
+
+/* --- Feuille d'actions --- */
+.popoverBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 39;
+}
+
+.popover {
+  position: fixed;
+  z-index: 40;
+  width: min(380px, calc(100vw - 16px));
+  max-height: 70dvh;
+  overflow-y: auto;
+  padding: var(--space-2);
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) * 1.5);
+  background: var(--surface);
+  box-shadow: 0 10px 30px rgb(0 0 0 / 0.3);
+}
+
+.popover h3 {
+  margin: var(--space-1) var(--space-2) var(--space-2);
+  font-size: 1rem;
+}
+
+.popover section {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--space-1) 0;
+  border-top: 1px solid var(--surface-2);
+}
+
+.actionItem {
+  min-height: var(--tap-min);
+  padding: var(--space-2) var(--space-3);
+  border: none;
+  border-radius: var(--radius);
+  background: none;
+  color: var(--text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.actionItem:hover,
+.actionItem:focus-visible {
+  background: var(--surface-2);
+}
+
+.actionDisabled {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--space-2) var(--space-3);
+  color: var(--text-muted);
+}
+
+.actionDisabled small {
+  color: var(--warn);
+}
+
+.muted {
+  color: var(--text-muted);
+}
+
+.warning {
+  color: var(--warn);
+  font-weight: 600;
+}
+
+/* --- Fenêtres --- */
+.inspector {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-4);
+  touch-action: pinch-zoom;
+}
+
+.inspector figure {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  width: min(420px, 100%);
+  margin: 0;
+}
+
+.inspector .card {
+  width: 100%;
+}
+
+.inspector figcaption {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.decisionRow {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-4);
+}
+
+.choice {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0;
+}
+
+.bothSides {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.parchmentText {
+  flex: 1 1 280px;
+  max-width: 520px;
+  line-height: 1.5;
+}
+
+.cardList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.bigScore {
+  margin: 0 0 var(--space-3);
+  font-size: 2.2rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.scoreTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.scoreTable td {
+  padding: var(--space-1) var(--space-2);
+  border-bottom: 1px solid var(--surface-2);
+}
+
+.scoreTable td:nth-child(2) {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(80px + env(safe-area-inset-bottom));
+  z-index: 45;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-2) var(--space-2) var(--space-4);
+  border-radius: 999px;
+  background: var(--text);
+  color: var(--bg);
+  transform: translateX(-50%);
+  box-shadow: 0 6px 20px rgb(0 0 0 / 0.3);
+}
+
+.center {
+  display: grid;
+  place-content: center;
+  gap: var(--space-3);
+  height: 100dvh;
+  text-align: center;
+}
+
+.tooNarrow {
+  display: none;
+}
+
+/* Portrait iPad : zone de jeu au centre, deck / ressources / défausse dans la bande du bas. */
+@media (orientation: portrait) {
+  .game,
+  .withJournal {
+    grid-template-columns: 120px minmax(0, 1fr) 120px;
+    grid-template-rows: auto auto minmax(0, 1fr) auto;
+    grid-template-areas:
+      "top top top"
+      "perm perm perm"
+      "play play play"
+      "deck bottom discard";
+  }
+
+  .bottombar {
+    flex-direction: column;
+    justify-content: center;
+    border-top: 1px solid var(--border);
+  }
+
+  .deckSlot,
+  .discardSlot {
+    border-top: 1px solid var(--border);
+    background: var(--surface);
+  }
+
+  .pile {
+    max-width: 96px;
+  }
+
+  .journal {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 30;
+    height: 45dvh;
+    border-top: 1px solid var(--border);
+    border-left: none;
+    box-shadow: 0 -8px 24px rgb(0 0 0 / 0.2);
+  }
+}
+
+@media (max-width: 743px) {
+  .tooNarrow {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: grid;
+    place-items: center;
+    padding: var(--space-6);
+    background: var(--bg);
+    text-align: center;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .toast {
+    animation: rise 160ms ease-out;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 8px);
+  }
+}
+
+/* Avant la mesure de la zone de jeu */
+.play .card {
+  width: 120px;
+}

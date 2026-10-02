@@ -49,8 +49,8 @@ npm run play -- --strict     # annulation stricte
 npm run play -- --auto       # partie jouée au hasard jusqu'au bout
 ```
 
-## Pour P2
+## Notes pour l'interface
 
-`Session` garde un état complet par action (journal compris) : prévoir des points d'état espacés ou un journal hors état
-si la mémoire devient un problème sur iPad. `state.lostResources` permet d'avertir avant une action qui ferait perdre
-des ressources (simuler l'action, regarder ce champ).
+`Session` garde les 40 derniers états (`UNDO_WINDOW`) ; `resumeSession` reprend une partie sauvegardée sans la rejouer.
+`state.lostResources` permet d'avertir avant une action qui ferait perdre des ressources (simuler l'action, regarder ce champ).
+`state.discoveries` liste les cartes découvertes dans l'ordre.

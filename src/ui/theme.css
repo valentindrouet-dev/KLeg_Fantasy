@@ -63,3 +63,38 @@ body {
   font-family: var(--font-ui);
   font-size: calc(16px * var(--text-scale));
 }
+
+/* Boutons communs (cibles tactiles ≥ 44 px, spec 7.6) */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: var(--tap-min);
+  padding: 0 var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+  color: var(--text);
+  font: inherit;
+  text-decoration: none;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.btn-primary {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--surface);
+  font-weight: 600;
+}
+
+.btn-danger {
+  border-color: var(--danger);
+  color: var(--danger);
+}

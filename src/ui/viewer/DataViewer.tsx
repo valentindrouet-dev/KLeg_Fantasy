@@ -275,7 +275,9 @@ export function DataViewer() {
   return (
     <div className={styles.viewer}>
       <aside className={styles.sidebar}>
-        <h1>Visionneuse de données</h1>
+        <h1>
+          <a href="#/" aria-label="Retour aux royaumes">←</a> Visionneuse de données
+        </h1>
         <select value={expansion} onChange={(e) => setExpansion(e.target.value)} aria-label="Extension">
           {expansionIds.map((id) => (
             <option key={id}>{id}</option>
