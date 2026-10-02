@@ -3,6 +3,12 @@
 Chaque mise à jour publiée change de version (`package.json`, affichée dans l'appli en bas de l'écran « Mes royaumes »
 et dans la barre de la partie). Convention : `0.5.0` s'affiche **v0.05** ; un correctif `0.5.1` s'affiche **v0.05.1**.
 
+## v0.14 (2 octobre 2026)
+
+- Réglages (⚙) : thème Auto (selon l'appareil), Clair ou Sombre.
+- « Manche X » un peu plus bas.
+- Pioche et défausse de la même taille en paysage qu'en portrait.
+
 ## v0.13 (2 octobre 2026)
 
 - Le zoom (⚙) ne change plus que la taille des cartes en jeu (60 à 200 %) ; interface, boutons, pioche et défausse restent à 100 %.

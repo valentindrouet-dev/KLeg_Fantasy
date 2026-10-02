@@ -1,7 +1,7 @@
 /* Plateau (spec 7.3). Paysage = référence ; portrait iPad en variante. Aucun défilement du plateau. */
 .game {
   display: grid;
-  grid-template-columns: clamp(13rem, 24vw, 22rem) minmax(0, 1fr) clamp(13rem, 24vw, 22rem);
+  grid-template-columns: 12.5rem minmax(0, 1fr) 12.5rem; /* même taille en paysage et en portrait */
   grid-template-rows: auto auto auto minmax(0, 1fr) auto;
   grid-template-areas:
     "top top top"
@@ -74,7 +74,7 @@
   flex-direction: column;
   gap: var(--space-2);
   width: 100%;
-  max-width: 21rem;
+  max-width: 11rem;
 }
 
 .pile .card {
@@ -342,7 +342,7 @@
 /* Portrait iPad : ressources et cartes au centre, deck / boutons / défausse dans la bande du bas. */
 @media (orientation: portrait) {
   .game {
-    grid-template-columns: clamp(9rem, 24vw, 14rem) minmax(0, 1fr) clamp(9rem, 24vw, 14rem);
+    grid-template-columns: 12.5rem minmax(0, 1fr) 12.5rem;
     grid-template-rows: auto auto auto minmax(0, 1fr) auto;
     grid-template-areas:
       "top top top"
@@ -353,7 +353,7 @@
   }
 
   .pile {
-    max-width: 14rem;
+    max-width: 11rem;
   }
 
   .turnBtn {
@@ -718,7 +718,7 @@
 /* --- Passage de manche : message flottant central --- */
 .roundBanner {
   position: absolute;
-  top: var(--space-2);
+  top: 2.2rem;
   left: 50%;
   z-index: 70;
   padding: var(--space-2) var(--space-6);
@@ -876,4 +876,32 @@
 .playZoomed {
   align-content: flex-start;
   overflow-y: auto;
+}
+
+/* Choix segmenté (thème) */
+.segmented {
+  display: inline-flex;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 0.6rem;
+}
+
+.segmented button {
+  min-height: 2.4rem;
+  padding: 0 0.7rem;
+  border: none;
+  background: var(--surface-2);
+  color: var(--text);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.segmented button + button {
+  border-left: 1px solid var(--border);
+}
+
+.segmented button[aria-pressed="true"] {
+  background: var(--accent);
+  color: var(--surface);
 }

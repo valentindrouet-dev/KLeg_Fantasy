@@ -137,7 +137,7 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
   const [endClosed, setEndClosed] = useState(false);
   const [anim, setAnim] = useState<Anim | null>(null);
   const [targeting, setTargeting] = useState<{ source: InstanceId; options: CardOption[] } | null>(null);
-  const { tooltipsFr, toggleTooltipsFr, zoom, setZoom, dimBottom, toggleDimBottom, sortPlay: sortMode, setSortPlay } = usePrefs();
+  const { tooltipsFr, toggleTooltipsFr, zoom, setZoom, dimBottom, toggleDimBottom, sortPlay: sortMode, setSortPlay, theme, setTheme } = usePrefs();
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [sortOpen, setSortOpen] = useState(false);
   const [statsOpen, setStatsOpen] = useState(false);
@@ -517,6 +517,22 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
                 <button className={styles.iconBtn} onClick={() => setZoom(zoom + 0.1)} disabled={zoom >= ZOOM_MAX} aria-label="Zoomer">
                   +
                 </button>
+              </span>
+            </div>
+            <div className={styles.settingsRow}>
+              <span>Thème</span>
+              <span className={styles.segmented}>
+                {(
+                  [
+                    ["auto", "Auto"],
+                    ["light", "Clair"],
+                    ["dark", "Sombre"],
+                  ] as const
+                ).map(([t, label]) => (
+                  <button key={t} aria-pressed={theme === t} onClick={() => setTheme(t)}>
+                    {label}
+                  </button>
+                ))}
               </span>
             </div>
             <label className={styles.settingsRow}>

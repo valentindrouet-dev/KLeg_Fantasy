@@ -37,8 +37,9 @@
   --cat-none: #c9b58a;
 }
 
+/* Thème : automatique (système), ou forcé par les réglages (data-theme sur <html>, voir prefs.ts). */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     --bg: #1b1814;
     --surface: #26221c;
     --surface-2: #322c24;
@@ -50,6 +51,24 @@
     --warn: #e2b34d;
     --ok: #7fc586;
   }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #1b1814;
+  --surface: #26221c;
+  --surface-2: #322c24;
+  --border: #4a4236;
+  --text: #efe6d4;
+  --text-muted: #b3a78f;
+  --accent: #e0a75a;
+  --danger: #f0776c;
+  --warn: #e2b34d;
+  --ok: #7fc586;
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
 }
 
 * {
