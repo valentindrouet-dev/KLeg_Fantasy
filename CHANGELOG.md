@@ -3,6 +3,10 @@
 Chaque mise à jour publiée change de version (`package.json`, affichée dans l'appli en bas de l'écran « Mes royaumes »
 et dans la barre de la partie). Convention : `0.5.0` s'affiche **v0.05** ; un correctif `0.5.1` s'affiche **v0.05.1**.
 
+## v0.22 (2 octobre 2026)
+
+- Ligne du haut de la zone de jeu : les ennemis, puis, un peu à l'écart, les cartes qui restent en jeu (« Stays in play »). Seules sur leur ligne quand la place le permet, sinon en tête de rangée.
+
 ## v0.21 (2 octobre 2026)
 
 - Effets et améliorations dans les deux sens : toucher l'effet (ou l'amélioration) sans assez de ressources fait briller les cartes qui peuvent payer ; on les touche, l'action part dès que le coût est couvert. Toucher ailleurs ou Échap annule.

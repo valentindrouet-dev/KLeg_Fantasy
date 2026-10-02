@@ -14,4 +14,5 @@ export { planWithEngaged, candidateActions, engagedPotential, actionCost, paymen
 export { kingdomStats, type KingdomStats } from "./stats";
 export { manualEffects, validOrientations, checkKey, isManualOpValid } from "./manual";
 export { cardBadges } from "./badges";
+export { staysInPlay } from "./flow";
 export { canPeekSecond, restrictions } from "./passives";

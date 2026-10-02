@@ -17,7 +17,7 @@ export function fitCardWidth(width: number, height: number, count: number, gap: 
 export const BLOCKED_PEEK = 0.18;
 
 /** Emplacement de la zone de jeu : `h` hauteurs de carte, `breakBefore` = commence une nouvelle ligne (ennemis en haut). */
-export type Slot = { h: number; breakBefore?: boolean };
+export type Slot = { h: number; breakBefore?: boolean; space?: number }; // space : écart en plus devant (px)
 
 /**
  * Plus grande largeur de carte qui fait tenir les emplacements, rangés comme le fait flex-wrap (de gauche à droite,
@@ -43,8 +43,9 @@ export function fitSlots(width: number, height: number, slots: readonly Slot[], 
         close();
         rows.push(0);
       }
-      if (open && used + gap + cw > width) close();
-      used += (open ? gap : 0) + cw;
+      const extra = open ? gap + (s.space ?? 0) : 0;
+      if (open && used + extra + cw > width) close();
+      used += (open ? gap + (s.space ?? 0) : 0) + cw;
       rowH = Math.max(rowH, s.h * ch);
       open = true;
     }

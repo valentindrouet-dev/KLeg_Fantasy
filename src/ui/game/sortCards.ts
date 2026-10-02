@@ -1,5 +1,5 @@
 import type { Category } from "../../data/schema";
-import { activeStage, instance, productionGroups, type Catalog, type GameState, type InstanceId } from "../../engine";
+import { activeStage, instance, productionGroups, staysInPlay, type Catalog, type GameState, type InstanceId } from "../../engine";
 
 // Ordre d'affichage des cartes en jeu (demande du 2026-10-02) : par ressource produite, ou par type de carte.
 // Purement visuel : l'ordre du moteur (ordre d'arrivée) ne change pas.
@@ -22,10 +22,17 @@ function typeKey(catalog: Catalog, s: GameState, id: InstanceId): number {
 
 const isEnemy = (catalog: Catalog, s: GameState, id: InstanceId): boolean => activeStage(catalog, s, id)?.keywords.includes("Enemy") ?? false;
 
-/** Disposition de la zone de jeu : les ennemis sur la ligne du haut, puis les autres cartes triées. */
-export function playLayout(catalog: Catalog, s: GameState, ids: readonly InstanceId[], mode: SortMode): { enemies: InstanceId[]; others: InstanceId[] } {
+/**
+ * Disposition de la zone de jeu : en haut les ennemis, puis (un peu à l'écart) les cartes qui restent en jeu ;
+ * dessous les autres cartes, triées.
+ */
+export type PlayLayout = { enemies: InstanceId[]; stays: InstanceId[]; others: InstanceId[] };
+
+export function playLayout(catalog: Catalog, s: GameState, ids: readonly InstanceId[], mode: SortMode): PlayLayout {
   const sorted = sortPlay(catalog, s, ids, mode);
-  return { enemies: sorted.filter((id) => isEnemy(catalog, s, id)), others: sorted.filter((id) => !isEnemy(catalog, s, id)) };
+  const enemies = sorted.filter((id) => isEnemy(catalog, s, id));
+  const stays = sorted.filter((id) => !isEnemy(catalog, s, id) && staysInPlay({ catalog, s }, id));
+  return { enemies, stays, others: sorted.filter((id) => !enemies.includes(id) && !stays.includes(id)) };
 }
 
 export function sortPlay(catalog: Catalog, s: GameState, ids: readonly InstanceId[], mode: SortMode): InstanceId[] {

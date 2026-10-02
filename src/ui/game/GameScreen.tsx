@@ -35,6 +35,9 @@ import { feedbackUrl } from "../common/feedback";
 import { backupFileName, exportKingdom } from "../../persistence/backup";
 import { playLayout } from "./sortCards";
 import { BLOCKED_PEEK, CARD_ASPECT, type Slot } from "./fitCards";
+
+/** Écart entre les ennemis et les cartes « stays in play » de la ligne du haut (px, écart des cartes compris). */
+const TOP_SPACER = 40;
 import type { TapPoint } from "../common/usePress";
 import { CardActions, type CardOption } from "./CardActions";
 import { zoneAt, type ZoneKind } from "./cardZones";
@@ -158,21 +161,28 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
   const state = session && kingdom?.id === kingdomId ? current(session) : null;
   const legal = useMemo(() => (state ? getLegalActions(catalog, state) : []), [catalog, state]);
   const engagedNow = useMemo(() => (state ? engaged.filter((id) => state.zones.play.includes(id)) : []), [engaged, state]);
-  // Ennemis en premier ; sur une ligne à eux en haut si les cartes gardent au moins 75 % de leur taille.
-  // Une carte qui en bloque d'autres est plus haute (le haut des cartes bloquées dépasse).
-  const layout = useMemo(() => (state ? playLayout(catalog, state, state.zones.play, sortMode) : { enemies: [], others: [] }), [catalog, state, sortMode]);
+  // Ligne du haut : ennemis, puis (un peu à l'écart) les cartes « stays in play » ; seules sur leur ligne si les cartes
+  // gardent au moins 75 % de leur taille, sinon simplement en tête. Une carte qui en bloque d'autres est plus haute.
+  const layout = useMemo(
+    () => (state ? playLayout(catalog, state, state.zones.play, sortMode) : { enemies: [], stays: [], others: [] }),
+    [catalog, state, sortMode],
+  );
+  const ordered = useMemo(() => [...layout.enemies, ...layout.stays, ...layout.others], [layout]);
+  const topCount = layout.enemies.length + layout.stays.length;
+  const spacerAt = layout.enemies.length > 0 && layout.stays.length > 0 ? layout.enemies.length : -1;
   const [fitRef, area] = useFitArea();
   const { cardWidth, enemyRow } = useMemo(() => {
     const slots = (withBreak: boolean): Slot[] =>
-      [...layout.enemies, ...layout.others].map((id, i) => ({
+      ordered.map((id, i) => ({
         h: 1 + BLOCKED_PEEK * (state?.blocks?.[id]?.length ?? 0),
-        breakBefore: withBreak && i === layout.enemies.length,
+        breakBefore: withBreak && i === topCount,
+        space: i === spacerAt ? TOP_SPACER : 0,
       }));
     const flat = cardWidthFor(area, slots(false), zoom);
-    if (layout.enemies.length === 0 || layout.others.length === 0) return { cardWidth: flat, enemyRow: false };
+    if (topCount === 0 || topCount === ordered.length) return { cardWidth: flat, enemyRow: false };
     const split = cardWidthFor(area, slots(true), zoom);
     return split >= 0.75 * flat ? { cardWidth: split, enemyRow: true } : { cardWidth: flat, enemyRow: false };
-  }, [layout, state, area, zoom]);
+  }, [ordered, topCount, spacerAt, state, area, zoom]);
   useCardMotion(catalog, state, playEl);
   const playing = state?.phase === "playing" && !state.pending && !anim;
 
@@ -674,11 +684,16 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
         }}
         aria-label="Zone de jeu"
       >
-        {[...layout.enemies, ...layout.others].map((id, i) => {
+        {ordered.map((id, i) => {
           const held = state.blocks?.[id] ?? [];
           const peek = Math.round((cardWidth / CARD_ASPECT) * BLOCKED_PEEK);
           const main = card(id, cardWidth || undefined, (p) => tapCard(id, p), true, { engaged: engagedNow.includes(id), zones: true });
-          const row = enemyRow && i === layout.enemies.length ? <div key="enemy-break" className={styles.rowBreak} /> : null;
+          const row =
+            enemyRow && i === topCount ? (
+              <div key="top-break" className={styles.rowBreak} />
+            ) : i === spacerAt ? (
+              <div key="top-spacer" style={{ width: TOP_SPACER - 12 }} />
+            ) : null;
           if (held.length === 0) return row ? [row, main] : main;
           // Cartes bloquées : posées sous la bloquante, le haut dépasse (nom et bandeau lisibles).
           const stack = (

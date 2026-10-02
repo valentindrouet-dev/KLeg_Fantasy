@@ -59,7 +59,8 @@ Routage par hash (`src/ui/App.tsx`) : `#/` Mes royaumes, `#/partie/<id>` partie,
   ce qui manque brillent (`paymentCandidates`), les toucher les engage, l'action part dès que `planWithEngaged` la couvre.
 - **Compteurs de ressources** : vert = engrangé (ressources en cours + cartes engagées), gris = production des autres cartes en jeu.
 - **Nouvelles cartes** : appui long sur une carte = inspection recto verso (l'inspection s'ouvre par-dessus les fenêtres).
-- **Ennemis** : ligne à eux en haut de la zone de jeu si les cartes y gardent au moins 75 % de leur taille, sinon en tête.
+- **Ligne du haut** (`playLayout`) : ennemis, puis à 40 px d'écart les cartes « stays in play » ; seules sur leur ligne si
+  les cartes y gardent au moins 75 % de leur taille, sinon en tête de rangée.
 - **Réglages ⚙** : thème Auto / Clair / Sombre (data-theme sur <html>), zoom des cartes en jeu seulement (60 à 200 %, la zone défile au besoin) et grisage de la moitié basse des cartes.
 - **Mises à jour** : l'appli compare sa version à `version.json` (publié au build) au démarrage, au retour au premier plan
   et toutes les 15 min ; un bouton recharge la page en contournant le cache (utile pour l'appli installée sur l'iPad).
