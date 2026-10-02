@@ -11,6 +11,7 @@ export type KingdomStats = {
   production: Record<ResourceId, number>; // icônes de production fixes (sans « / »)
   flexible: number; // productions au choix (« / »)
   fame: number;
+  stages: Record<1 | 2 | 3 | 4, number>; // cartes par étape (stage actif)
   keywords: [string, number][]; // du plus fréquent au moins fréquent
   categories: [Category, number][];
   discovered: number;
@@ -30,6 +31,7 @@ export function kingdomStats(catalog: Catalog, s: GameState): KingdomStats {
   let flexible = 0;
   const keywords: string[] = [];
   const categories: Category[] = [];
+  const stages: Record<1 | 2 | 3 | 4, number> = { 1: 0, 2: 0, 3: 0, 4: 0 };
   for (const id of kingdom) {
     for (const g of productionGroups(catalog, s, id)) {
       if (g.options.length === 1) for (const r of g.options[0] ?? []) production[r] = (production[r] ?? 0) + 1;
@@ -37,6 +39,7 @@ export function kingdomStats(catalog: Catalog, s: GameState): KingdomStats {
     }
     const stage = activeStage(catalog, s, id);
     if (!stage) continue;
+    stages[stage.id] += 1;
     keywords.push(...stage.keywords);
     categories.push(stage.category);
   }
@@ -51,6 +54,7 @@ export function kingdomStats(catalog: Catalog, s: GameState): KingdomStats {
     production,
     flexible,
     fame: computeScore(catalog, s).total,
+    stages,
     keywords: counted(keywords),
     categories: counted(categories),
     discovered: s.discoveries.length,

@@ -3,6 +3,14 @@
 Chaque mise à jour publiée change de version (`package.json`, affichée dans l'appli en bas de l'écran « Mes royaumes »
 et dans la barre de la partie). Convention : `0.5.0` s'affiche **v0.05** ; un correctif `0.5.1` s'affiche **v0.05.1**.
 
+## v0.12 (2 octobre 2026)
+
+- Plus de message « Annuler » après une amélioration.
+- « Manche X » s'affiche en haut, au-dessus de la zone des cartes.
+- Stats : nombre de cartes à l'étape 1, 2, 3 et 4 ; cases colorées selon ce qu'elles comptent ; types en anglais (Land, Building…).
+- Toucher une carte hors des zones d'action : bulle avec la traduction de la moitié touchée (seulement si FR est activé).
+- Une carte grisée perd son grisage juste avant sa rotation d'amélioration.
+
 ## v0.11 (2 octobre 2026)
 
 - Le zoom agrandit aussi les cartes en jeu (au-delà de 100 %, la zone de jeu défile si besoin).

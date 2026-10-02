@@ -137,11 +137,12 @@ export function CardView(props: Props) {
       {anim?.kind === "flip" ? (
         // Retournement : deux faces dos à dos, la carte pivote d'un seul mouvement.
         <div className={styles.flipInner}>
-          <Face template={template} orientation={orientation} label={label} dimBottom={dimBottom} />
-          <Face template={template} orientation={anim.to} label={label} className={styles.backFace} dimBottom={dimBottom} />
+          <Face template={template} orientation={orientation} label={label} />
+          <Face template={template} orientation={anim.to} label={label} className={styles.backFace} />
         </div>
       ) : (
-        <Face template={template} orientation={orientation} label={label} dimBottom={dimBottom} />
+        // Pendant une rotation, la carte n'est plus grisée (sinon la moitié grisée passe en haut).
+        <Face template={template} orientation={orientation} label={label} dimBottom={dimBottom && !anim} />
       )}
       {rect && !anim && (
         <span

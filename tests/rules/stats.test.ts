@@ -15,6 +15,7 @@ describe("statistiques du royaume", async () => {
     expect(st.flexible).toBe(0);
     expect(Object.fromEntries(st.keywords)).toEqual({ Land: 8, Building: 1, Person: 1 });
     expect(st.fame).toBe(0);
+    expect(st.stages).toEqual({ 1: 10, 2: 0, 3: 0, 4: 0 });
     expect(st.inBox).toBe(130);
   });
 });

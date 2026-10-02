@@ -5,12 +5,14 @@ import {
   computeScore,
   instance,
   kingdomStats,
+  stageIdAt,
   template,
   type Action,
   type Catalog,
   type GameState,
   type InstanceId,
 } from "../../engine";
+import { stageFr } from "../../data/translations";
 import { Dialog } from "../common/Dialog";
 import { Icon, IconText } from "../common/IconText";
 import { CardView } from "./CardView";
@@ -250,24 +252,12 @@ export function ConfirmDialog({ message, confirm, onConfirm, onCancel }: { messa
   );
 }
 
-const KEYWORDS_FR: Record<string, string> = {
-  Land: "Terres",
-  Building: "Bâtiments",
-  Person: "Personnes",
-  Livestock: "Bétail",
-  Seafaring: "Maritime",
-  Event: "Événements",
-  Enemy: "Ennemis",
-  Goal: "Objectifs",
-  State: "États",
-  Knight: "Chevaliers",
-};
-
 /** Fenêtre « Stats » : composition et production du royaume. */
 export function StatsDialog({ catalog, state, onClose }: { catalog: Catalog; state: GameState; onClose: () => void }) {
   const st = kingdomStats(catalog, state);
-  const cell = (label: ReactNode, value: number) => (
-    <div className={styles.statCell}>
+  // Couleur de chaque case selon ce qu'elle compte (ressource, étape, type de carte).
+  const cell = (label: ReactNode, value: number, tone?: string) => (
+    <div className={styles.statCell} style={tone ? { background: `color-mix(in srgb, ${tone} 22%, var(--surface))`, borderColor: tone } : undefined}>
       <span className={styles.statValue}>{value}</span>
       <span className={styles.statLabel}>{label}</span>
     </div>
@@ -278,7 +268,7 @@ export function StatsDialog({ catalog, state, onClose }: { catalog: Catalog; sta
         <section>
           <h3>Cartes</h3>
           <div className={styles.statGrid}>
-            {cell("Total", st.cards.total)}
+            {cell("Total", st.cards.total, "var(--accent)")}
             {cell("Deck", st.cards.deck)}
             {cell("En jeu", st.cards.play)}
             {cell("Défausse", st.cards.discard)}
@@ -286,23 +276,31 @@ export function StatsDialog({ catalog, state, onClose }: { catalog: Catalog; sta
           </div>
         </section>
         <section>
+          <h3>Étapes</h3>
+          <div className={styles.statGrid}>
+            {([1, 2, 3, 4] as const).map((n) => (
+              <Fragment key={n}>{cell(`Étape ${n}`, st.stages[n], STAGE_TONES[n])}</Fragment>
+            ))}
+          </div>
+        </section>
+        <section>
           <h3>Production</h3>
           <div className={styles.statGrid}>
             {catalog.resources.map((r) => (
-              <Fragment key={r}>{cell(<Icon id={r} />, st.production[r] ?? 0)}</Fragment>
+              <Fragment key={r}>{cell(<Icon id={r} />, st.production[r] ?? 0, RESOURCE_TONES[r])}</Fragment>
             ))}
             {st.flexible > 0 && cell("Au choix", st.flexible)}
           </div>
         </section>
         <section>
           <h3>Gloire</h3>
-          <div className={styles.statGrid}>{cell(<Icon id="fame" />, st.fame)}</div>
+          <div className={styles.statGrid}>{cell(<Icon id="fame" />, st.fame, "#e3b505")}</div>
         </section>
         <section>
           <h3>Types</h3>
           <div className={styles.statGrid}>
             {st.keywords.map(([k, n]) => (
-              <Fragment key={k}>{cell(KEYWORDS_FR[k] ?? k, n)}</Fragment>
+              <Fragment key={k}>{cell(k, n, KEYWORD_TONES[k])}</Fragment>
             ))}
           </div>
         </section>
@@ -316,5 +314,66 @@ export function StatsDialog({ catalog, state, onClose }: { catalog: Catalog; sta
         </section>
       </div>
     </Dialog>
+  );
+}
+
+const STAGE_TONES: Record<1 | 2 | 3 | 4, string> = { 1: "#2e8b3d", 2: "#e3b505", 3: "#e07b1a", 4: "#c62828" };
+
+const RESOURCE_TONES: Record<string, string> = {
+  coin: "#e3b505",
+  wood: "#8b5a2b",
+  stone: "#6f8f80",
+  metal: "#9aa3ad",
+  sword: "#5f6b78",
+  tradeGood: "#b5651d",
+};
+
+// Types en anglais (texte des cartes), couleur du bandeau (spec 7.4).
+const KEYWORD_TONES: Record<string, string> = {
+  Land: "var(--cat-land)",
+  Building: "var(--cat-building)",
+  Person: "var(--cat-person)",
+  Livestock: "var(--cat-livestock)",
+  Seafaring: "var(--cat-seafaring)",
+  Event: "var(--cat-other)",
+  Enemy: "var(--cat-negative)",
+  Goal: "var(--cat-goal)",
+};
+
+/** Bulle de traduction d'une moitié de carte (toucher hors des zones d'action, infobulles FR activées). */
+export function TranslationBubble({
+  catalog,
+  state,
+  card,
+  half,
+  x,
+  y,
+}: {
+  catalog: Catalog;
+  state: GameState;
+  card: InstanceId;
+  half: "top" | "bottom";
+  x: number;
+  y: number;
+}) {
+  const c = instance(state, card);
+  const t = template(catalog, c.templateId);
+  const o = half === "top" ? c.orientation : { side: c.orientation.side, rotation: c.orientation.rotation === 0 ? 180 : 0 } as const;
+  const stageId = stageIdAt(t, o);
+  const fr = stageId ? stageFr(t.id, stageId) : undefined;
+  if (!fr) return null;
+  const stage = stageId ? t.stages[String(stageId) as "1" | "2" | "3" | "4"] : undefined;
+  return (
+    <div className={styles.tooltip} style={{ left: Math.min(x + 12, window.innerWidth - 336), top: Math.min(y + 12, window.innerHeight - 180) }} role="tooltip">
+      <strong>
+        {fr.name || stage?.name}
+        {stage?.name && fr.name !== stage.name ? <small> ({stage.name})</small> : null}
+      </strong>
+      {fr.text && (
+        <p>
+          <IconText text={fr.text} />
+        </p>
+      )}
+    </div>
   );
 }

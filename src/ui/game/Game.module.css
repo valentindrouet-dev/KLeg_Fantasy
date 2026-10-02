@@ -620,6 +620,7 @@
 /* --- Ressources au-dessus des cartes (seulement celles qu'on a) --- */
 .resourceRow {
   grid-area: res;
+  position: relative;
   display: flex;
   justify-content: center;
   min-height: 4.4rem;
@@ -716,38 +717,38 @@
 
 /* --- Passage de manche : message flottant central --- */
 .roundBanner {
-  position: fixed;
-  top: 50%;
+  position: absolute;
+  top: var(--space-2);
   left: 50%;
   z-index: 70;
-  padding: var(--space-4) var(--space-6);
+  padding: var(--space-2) var(--space-6);
   border: 2px solid var(--accent);
   border-radius: 18px;
-  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  background: color-mix(in srgb, var(--surface) 94%, transparent);
   color: var(--accent);
-  box-shadow: 0 16px 40px rgb(0 0 0 / 0.35);
-  font-size: 2.4rem;
+  box-shadow: 0 12px 30px rgb(0 0 0 / 0.3);
+  font-size: 2.2rem;
   font-weight: 800;
   letter-spacing: 0.02em;
   white-space: nowrap;
   pointer-events: none;
-  transform: translate(-50%, -50%);
+  transform: translateX(-50%);
   animation: round-banner 2200ms ease forwards;
 }
 
 @keyframes round-banner {
   0% {
     opacity: 0;
-    transform: translate(-50%, -50%) scale(0.85);
+    transform: translate(-50%, -0.6rem) scale(0.9);
   }
   15%,
   75% {
     opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
+    transform: translate(-50%, 0) scale(1);
   }
   100% {
     opacity: 0;
-    transform: translate(-50%, -50%) scale(1.04);
+    transform: translate(-50%, 0) scale(1.03);
   }
 }
 

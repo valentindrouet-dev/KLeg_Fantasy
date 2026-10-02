@@ -32,7 +32,7 @@ import type { TapPoint } from "../common/usePress";
 import { CardActions, type CardOption } from "./CardActions";
 import { zoneAt, type ZoneKind } from "./cardZones";
 import { ANIM_MS, CardView } from "./CardView";
-import { CardListDialog, ConfirmDialog, DecisionDialog, EndDialog, Inspector, StatsDialog } from "./Dialogs";
+import { CardListDialog, ConfirmDialog, DecisionDialog, EndDialog, Inspector, StatsDialog, TranslationBubble } from "./Dialogs";
 import { useGame } from "./store";
 import { useFitCards } from "./useFitCards";
 import { useCardMotion } from "./useCardMotion";
@@ -122,7 +122,7 @@ function toastFor(action: Action | undefined): string {
   const extra = "";
   switch (action?.type) {
     case "upgrade":
-      return `Carte améliorée, fin du tour${extra}`;
+      return ""; // pas de message après une amélioration (demande du 2026-10-02)
     case "useEffect":
       return `Effet appliqué${extra}`;
     case "advance":
@@ -140,6 +140,7 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
   const [inspect, setInspect] = useState<InstanceId | null>(null);
   const [discardOpen, setDiscardOpen] = useState(false);
   const [roundBanner, setRoundBanner] = useState<{ key: number; text: string } | null>(null);
+  const [bubble, setBubble] = useState<{ card: InstanceId; half: "top" | "bottom"; x: number; y: number } | null>(null);
   const lastRound = useRef<number | null>(null);
   const [pending, setPending] = useState<Pending | null>(null);
   const [endClosed, setEndClosed] = useState(false);
@@ -234,6 +235,18 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
     return () => window.removeEventListener("keydown", onKey);
   }, [advance, pass, run, undo, pending, inspect, discardOpen, state?.pending, anim, targeting]);
 
+  // Bulle de traduction : se ferme au toucher suivant ou après quelques secondes.
+  useEffect(() => {
+    if (!bubble) return;
+    const close = () => setBubble(null);
+    const t = window.setTimeout(close, 6000);
+    window.addEventListener("pointerdown", close, { capture: true, once: true });
+    return () => {
+      window.clearTimeout(t);
+      window.removeEventListener("pointerdown", close, { capture: true });
+    };
+  }, [bubble]);
+
   // Nouvelle manche : message central qui apparaît puis disparaît.
   const round = state?.round ?? null;
   const finalRound = state?.finalRound ?? false;
@@ -306,6 +319,13 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
   );
   const targetsInDiscard = [...targetOptions.keys()].filter((id) => state.zones.discard.includes(id));
 
+  const showTranslation = (card: InstanceId, p: TapPoint) => {
+    if (!tooltipsFr) return;
+    const r = playEl.current?.querySelector(`[data-card="${card}"]`)?.getBoundingClientRect();
+    if (!r) return;
+    setBubble({ card, half: p.y < 0.5 ? "top" : "bottom", x: r.left + p.x * r.width, y: r.top + p.y * r.height });
+  };
+
   const tapCard = (card: InstanceId, p: TapPoint) => {
     if (targeting) {
       const o = targetOptions.get(card);
@@ -341,7 +361,8 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
       // Plusieurs choix sans cible (ex. Bazaar : bois ou pierre) : petit menu de choix.
       if (opts.length > 1) openMenu(card);
     }
-    // Zone neutre : rien (demande du 2026-10-02 : pas de fenêtre au toucher d'une carte).
+    // Zone neutre : bulle de traduction de la moitié touchée, si les infobulles FR sont activées.
+    showTranslation(card, p);
   };
 
   const card = (id: InstanceId, width: number | undefined, onTap?: (p: TapPoint) => void, inspectable = true, extra?: { engaged?: boolean; zones?: boolean }) => (
@@ -524,7 +545,14 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
 
       <aside className={styles.deckSlot}>{deck}</aside>
 
-      <div className={styles.resourceRow}>{resources}</div>
+      <div className={styles.resourceRow}>
+        {resources}
+        {roundBanner && (
+          <div className={styles.roundBanner} key={roundBanner.key} role="status">
+            {roundBanner.text}
+          </div>
+        )}
+      </div>
 
       <main
         className={`${styles.play} ${zoom > 1 ? styles.playZoomed : ""}`}
@@ -550,11 +578,7 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
         </button>
       </div>
 
-      {roundBanner && (
-        <div className={styles.roundBanner} key={roundBanner.key} role="status">
-          {roundBanner.text}
-        </div>
-      )}
+      {bubble && <TranslationBubble catalog={catalog} state={state} {...bubble} />}
 
       {selected && playing && (
         <CardActions

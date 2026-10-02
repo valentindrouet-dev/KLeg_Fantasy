@@ -39,10 +39,10 @@ Routage par hash (`src/ui/App.tsx`) : `#/` Mes royaumes, `#/partie/<id>` partie,
 - **Fin de tour animée** (`useCardMotion.ts`) : cartes vers la défausse, nouvelles cartes depuis la pioche.
 - **Bouton FR** : active ou coupe les infobulles en français (mémorisé dans le navigateur).
 - **Drapeau** : toucher une carte en jeu avec deux doigts (Alt + clic sur ordinateur) ; il tombe quand la carte quitte le jeu.
-- **Zone neutre** d'une carte : toucher ne fait rien (pas de fenêtre). La feuille d'actions ne s'ouvre que pour un choix (ex. Bazaar).
+- **Zone neutre** d'une carte : bulle de traduction de la moitié touchée, si FR est activé (sinon rien). La feuille d'actions ne s'ouvre que pour un choix (ex. Bazaar).
 - **Appli iPad** : `public/manifest.webmanifest`, icônes pièce sur fond noir (`scripts/make-app-icons.ts`).
 - **Tri ⇅** : cartes en jeu par ressource (défaut), par type de terrain ou ordre d'arrivée (`sortCards.ts`, affichage seulement).
-- **Stats** : cartes par zone, production par ressource, gloire, types, découvertes / détruites / boîte (`engine/stats.ts`).
+- **Stats** : cartes par zone, par étape (1 à 4), production par ressource, gloire, types (en anglais), découvertes / détruites / boîte ; cases colorées (`engine/stats.ts`).
 - **Inspection** : face visible telle qu'elle est posée + autre face retournée de haut en bas (1 en haut ↔ 3 en haut).
 - **Réglages ⚙** : zoom de toute l'interface (variable CSS `--zoom`, tailles en rem) et grisage de la moitié basse des cartes.
 - **Mises à jour** : l'appli compare sa version à `version.json` (publié au build) au démarrage, au retour au premier plan
