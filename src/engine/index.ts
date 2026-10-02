@@ -13,3 +13,5 @@ export { randomSeed } from "./rng";
 export { planWithEngaged, candidateActions, engagedPotential, actionCost } from "./payment";
 export { kingdomStats, type KingdomStats } from "./stats";
 export { manualEffects, validOrientations, checkKey, isManualOpValid } from "./manual";
+export { cardBadges } from "./badges";
+export { canPeekSecond, restrictions } from "./passives";

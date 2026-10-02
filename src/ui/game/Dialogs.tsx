@@ -8,6 +8,7 @@ import {
   stageIdAt,
   template,
   type Action,
+  type Answer,
   type Catalog,
   type GameState,
   type InstanceId,
@@ -117,6 +118,8 @@ export function DecisionDialog({
     );
   }
 
+  if (p.kind === "choice") return <ChoiceDialog key={`${p.source}/${p.script}/${p.answers.length}`} catalog={catalog} state={state} onAction={onAction} />;
+
   return (
     <Dialog title={`Découvrir ${p.remaining} carte${p.remaining > 1 ? "s" : ""}`} wide>
       <div className={styles.decisionRow}>
@@ -178,6 +181,126 @@ export function CardListDialog({
   );
 }
 
+/** Question posée par un effet (spec 4.1) : cartes, ressources ou option. */
+function ChoiceDialog({ catalog, state, onAction }: { catalog: Catalog; state: GameState; onAction: (a: Action) => void }) {
+  const p = state.pending;
+  const [cards, setCards] = useState<InstanceId[]>([]);
+  const [resources, setResources] = useState<string[]>([]);
+  if (p?.kind !== "choice") return null;
+  const req = p.request;
+  const answer = (a: Answer) => {
+    setCards([]);
+    setResources([]);
+    onAction({ type: "choose", answer: a });
+  };
+  const source = state.cards[p.source];
+  const sourceView = source && (
+    <CardView template={template(catalog, source.templateId)} orientation={source.orientation} label={cardName(catalog, state, p.source)} width={150} />
+  );
+  const cancel = p.cancellable && (
+    <button className="btn" onClick={() => onAction({ type: "cancelChoice" })}>
+      Annuler
+    </button>
+  );
+  const one = req.type === "cards" && req.min === 1 && req.max === 1;
+  const ok =
+    req.type === "cards" ? cards.length >= req.min && cards.length <= req.max : req.type === "resources" ? resources.length === req.count : false;
+  const actions = (
+    <>
+      {cancel}
+      {(req.type === "resources" || (req.type === "cards" && !one)) && (
+        <button
+          className="btn btn-primary"
+          disabled={!ok}
+          onClick={() => answer(req.type === "cards" ? { cards } : { resources })}
+        >
+          Valider
+        </button>
+      )}
+    </>
+  );
+  return (
+    <Dialog title={cardName(catalog, state, p.source)} wide actions={actions}>
+      <div className={styles.choiceHead}>
+        {sourceView}
+        <p className={styles.choicePrompt}>
+          <IconText text={req.prompt} />
+          {req.type === "cards" && !one && (
+            <small>
+              {" "}
+              ({cards.length} / {req.min === req.max ? req.max : `${req.min}–${req.max}`})
+            </small>
+          )}
+        </p>
+      </div>
+      {req.type === "option" && (
+        <div className={styles.choiceOptions}>
+          {req.labels.map((label, i) => (
+            <button key={i} className="btn btn-primary" onClick={() => answer({ option: i })}>
+              <IconText text={label} />
+            </button>
+          ))}
+        </div>
+      )}
+      {req.type === "resources" && (
+        <>
+          <div className={styles.choiceOptions}>
+            {req.options.map((r) => (
+              <button
+                key={r}
+                className={styles.resourcePick}
+                disabled={resources.length >= req.count}
+                onClick={() => {
+                  const next = [...resources, r];
+                  if (req.count === 1) answer({ resources: next });
+                  else setResources(next);
+                }}
+                aria-label={r}
+              >
+                <Icon id={r} />
+              </button>
+            ))}
+          </div>
+          {req.count > 1 && (
+            <div className={styles.choiceOptions}>
+              {resources.map((r, i) => (
+                <button key={i} className={styles.resourcePicked} onClick={() => setResources(resources.filter((_, j) => j !== i))} aria-label={`Retirer ${r}`}>
+                  <Icon id={r} />
+                </button>
+              ))}
+              {Array.from({ length: req.count - resources.length }, (_, i) => (
+                <span key={`e${i}`} className={styles.resourceSlot} />
+              ))}
+            </div>
+          )}
+        </>
+      )}
+      {req.type === "cards" && (
+        <div className={styles.cardList}>
+          {req.options.map((id) => {
+            const picked = cards.includes(id);
+            return (
+              <CardView
+                key={id}
+                template={template(catalog, instance(state, id).templateId)}
+                orientation={instance(state, id).orientation}
+                label={cardName(catalog, state, id)}
+                width={listCard()}
+                selected={picked}
+                onTap={() => {
+                  if (one) return answer({ cards: [id] });
+                  if (picked) setCards(cards.filter((c) => c !== id));
+                  else if (cards.length < req.max) setCards([...cards, id]);
+                }}
+              />
+            );
+          })}
+        </div>
+      )}
+    </Dialog>
+  );
+}
+
 export function EndDialog({ catalog, state, onBack, onClose }: { catalog: Catalog; state: GameState; onBack: () => void; onClose: () => void }) {
   const score = computeScore(catalog, state);
   const lines = score.lines.filter((l) => l.fame !== 0 || l.variable).sort((a, b) => b.fame - a.fame);
@@ -205,7 +328,6 @@ export function EndDialog({ catalog, state, onBack, onClose }: { catalog: Catalo
             <tr key={l.card}>
               <td>{l.name}</td>
               <td>{l.fame}</td>
-              <td>{l.variable ? "+ ?" : ""}</td>
             </tr>
           ))}
           {score.purgedFame > 0 && (

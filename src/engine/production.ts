@@ -1,5 +1,6 @@
 import type { ProductionGroup, ResourceId } from "../data/schema";
 import { activeStage, instance, stageIdAt, template } from "./state";
+import { coinMalus, productionBonus } from "./passives";
 import type { Catalog, GameState, InstanceId, StickerPlacement } from "./types";
 
 // Production d'une carte : groupes imprimés non rayés + stickers de ressource du stage actif.
@@ -10,11 +11,53 @@ export function productionGroups(catalog: Catalog, s: GameState, id: InstanceId)
   const stage = activeStage(catalog, s, id);
   if (!stage) return [];
   const c = instance(s, id);
-  const printed = stage.production.filter((g) => !c.crossedOutProduction.includes(g.id));
+  // Icônes rayées (Manor, Attack…) : clé `${stage}/${groupe}/${indice}`, retirées de chaque option du groupe.
+  const printed = stage.production.flatMap((g): ProductionGroup[] => {
+    const crossed = c.crossedOutProduction.filter((k) => k.startsWith(`${stage.id}/${g.id}/`)).length;
+    if (crossed === 0) return [g];
+    const options = g.options.map((o) => o.slice(0, Math.max(0, o.length - crossed))).filter((o) => o.length > 0);
+    return options.length ? [{ id: g.id, options }] : [];
+  });
   const stickers = c.stickers
     .filter((st) => st.stage === stage.id && st.resource !== undefined)
     .map((st, i): ProductionGroup => ({ id: `sticker${i}`, options: [[st.resource as ResourceId]] }));
-  return [...printed, ...stickers];
+  const bonus = productionBonus(catalog, s, id).map((o, i): ProductionGroup => ({ id: `bonus${i}`, options: [o] }));
+  return withoutCoins([...printed, ...stickers, ...bonus], coinMalus(catalog, s));
+}
+
+/** Retire `n` icônes {coin} de la production (Pirate) : une par passage, dans le premier groupe qui en a. */
+function withoutCoins(groups: ProductionGroup[], n: number): ProductionGroup[] {
+  let out = groups;
+  for (let k = 0; k < n; k++) {
+    const i = out.findIndex((g) => g.options.some((o) => o.includes("coin")));
+    if (i < 0) break;
+    const g = out[i] as ProductionGroup;
+    const options = g.options
+      .map((o) => {
+        const j = o.indexOf("coin");
+        return j < 0 ? o : [...o.slice(0, j), ...o.slice(j + 1)];
+      })
+      .filter((o) => o.length > 0);
+    out = options.length ? out.map((x, idx) => (idx === i ? { id: g.id, options } : x)) : out.filter((_, idx) => idx !== i);
+  }
+  return out;
+}
+
+/** Raye une icône de production du stage actif (« cross out 1 production ») ; false s'il n'y en a plus. */
+export function crossOutProduction(catalog: Catalog, s: GameState, id: InstanceId, groupId?: string): boolean {
+  const stage = activeStage(catalog, s, id);
+  if (!stage) return false;
+  const c = instance(s, id);
+  const groups = stage.production.filter((g) => groupId === undefined || g.id === groupId);
+  for (const g of groups) {
+    const crossed = c.crossedOutProduction.filter((k) => k.startsWith(`${stage.id}/${g.id}/`)).length;
+    const size = Math.max(...g.options.map((o) => o.length));
+    if (crossed < size) {
+      c.crossedOutProduction.push(`${stage.id}/${g.id}/${crossed}`);
+      return true;
+    }
+  }
+  return false;
 }
 
 /** Nombre de ressources produites (pour un « / », l'option la plus fournie). */

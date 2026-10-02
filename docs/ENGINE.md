@@ -29,16 +29,31 @@ Point d'entrée : `src/engine/index.ts`.
 | `score.ts` | Gloire du royaume + gloire purgée |
 | `describe.ts` | Libellés français des actions |
 
-## Couverture en fin de P1
+## Effets des cartes (P3, v0.19)
 
-- Règles : mise en place, tours, 5 actions, ressources éphémères, stay in play, fin de manche, découverte de 2 cartes,
-  parchemins, cartes à flèches (choix de la face), cartes permanentes, dernière manche (carte 68) et score.
-- Règles d'or : 1 (pas de changement d'orientation sans règle), 3 (carte tournée = défaussée), 4 (amélioration = fin du tour),
-  5 (pas de sticker à 9 de production). La règle 2 (ne jamais montrer la boîte) relève de l'interface (P2).
-- Effets automatisés : tous ceux des cartes 1 à 10, et les cartes qui portent exactement le même texte
-  (ex. Jungle, Distant Mountain et Forest supplémentaires). Les autres effets ne sont pas encore proposés : DSL et fallback manuel en P3.
-- Pas encore traités : effets déclenchés (« when played », fin de tour, fin de manche), blocage, équipement, cases à cocher,
-  stickers posés par les effets, parchemins 23 et 24, purge.
+| Fichier | Rôle |
+|---|---|
+| `effects/textEffects.ts` | Effets des cartes 1 à 10 et leurs copies (texte exact) |
+| `effects/cards.ts` | Tous les autres effets, par texte exact ou par motif : actions (`effect`) et déclencheurs (`trigger`) |
+| `passives.ts` | Passifs qui changent les règles : bonus de production, Pirate, interdictions, Blood Curse, Wood Shipment, Watchtower |
+| `choice.ts` | Questions au joueur (`ChoiceRequest` : cartes, ressources, option) et réponses (`Answer`) |
+| `ops.ts` | Opérations des effets : gains, blocage, reset, stickers, cases à cocher, pioche |
+| `score.ts` | Gloire variable (pistes, objectifs, Double Wall, cases écrites) |
+| `badges.ts` | Ce que l'interface affiche sur une carte (cartes bloquées, cases, compteur, stickers) |
+
+- **Questions** : `EffectImpl.ask` / `TriggerImpl.ask` posent une question à la fois (décision en attente `choice`) ;
+  rien n'est payé avant la dernière réponse, donc un effet lancé par le joueur s'annule (`cancelChoice`).
+  Les questions sans vrai choix sont répondues d'office (`nextQuestion`).
+- **Déclencheurs** (`TriggerTiming`) : `played`, `otherPlayed`, `endTurn`, `endRound`, `upgraded`, `produced`,
+  `betweenRounds`, `manual` (lancé par un autre effet). Mis en file (`FlowStep` « trigger ») dans l'ordre des cartes.
+- **Fin de tour et de manche** en étapes : `endTurn` (effets) → `cleanupTurn` (défausse, ressources) → `endRound`
+  (défausse, effets « End of Round ») → `nextRound`.
+- **Blocage** : zone `blocked` et `GameState.blocks` (bloquante → cartes) ; une bloquante qui quitte le jeu pendant
+  le tour libère ses cartes (`moveTo`), en fin de tour ou de manche elles partent avec elle.
+- **Couverture** : `tests/rules/coverage.test.ts` vérifie que chaque effet des cartes 1 à 135 est pris en charge ;
+  `tests/scenarios/fuzz.test.ts` joue des parties entières au hasard.
+- **Hors partie de base (P4)** : purge (Aethan Estate) et mini-extensions 136 à 138.
+- Décisions de règles : `docs/RULES_DECISIONS.md` (entrée « effets de toutes les cartes »).
 
 ## Jouer en ligne de commande
 

@@ -66,9 +66,17 @@ export function cardName(catalog: Catalog, s: GameState, id: InstanceId): string
   return st?.name ? `${st.name} (#${serial})` : `#${serial}`;
 }
 
+/** Mots-clés du stage actif, y compris ceux des stickers (sticker 11 : Knight). */
+export function keywordsOf(catalog: Catalog, s: GameState, id: InstanceId): string[] {
+  const stage = activeStage(catalog, s, id);
+  if (!stage) return [];
+  const stickers = instance(s, id).stickers.flatMap((st) => (st.stage === stage.id && st.keyword ? [st.keyword] : []));
+  return [...stage.keywords, ...stickers];
+}
+
 export function hasKeyword(catalog: Catalog, s: GameState, id: InstanceId, keyword: string): boolean {
   const k = keyword.toLowerCase();
-  return activeStage(catalog, s, id)?.keywords.some((w) => w.toLowerCase() === k) ?? false;
+  return keywordsOf(catalog, s, id).some((w) => w.toLowerCase() === k);
 }
 
 /** Amie = non négative (spec 4.6 : purge, cibles « friendly »). */
@@ -77,22 +85,39 @@ export function isFriendly(catalog: Catalog, s: GameState, id: InstanceId): bool
 }
 
 export function zoneOf(s: GameState, id: InstanceId): Zone {
-  for (const z of ZONES) if (s.zones[z].includes(id)) return z;
+  for (const z of ZONES) if ((s.zones[z] ?? []).includes(id)) return z;
   throw new Error(`Carte hors de toute zone : ${id}`);
 }
 
 export function removeFromZones(s: GameState, id: InstanceId): void {
   for (const z of ZONES) {
-    const i = s.zones[z].indexOf(id);
-    if (i >= 0) s.zones[z].splice(i, 1);
+    const list = s.zones[z] ?? [];
+    const i = list.indexOf(id);
+    if (i >= 0) list.splice(i, 1);
   }
 }
 
-/** Déplace une carte. Deck : `top` place la carte dessus. Défausse : toujours dessus. */
+/**
+ * Déplace une carte. Deck : `top` place la carte dessus. Défausse : toujours dessus.
+ * Une bloquante qui quitte le jeu pendant le tour libère ses cartes bloquées en zone de jeu (spec 4.6),
+ * sans qu'elles soient « jouées ». Une carte bloquée qui sort de sous sa bloquante n'est plus bloquée.
+ */
 export function moveTo(s: GameState, id: InstanceId, zone: Zone, position: "top" | "bottom" = "bottom"): void {
+  const blocks = s.blocks ?? {};
+  for (const [blocker, list] of Object.entries(blocks)) {
+    if (list.includes(id)) blocks[blocker] = list.filter((x) => x !== id);
+  }
+  const held = blocks[id];
+  if (held?.length && zone !== "play") {
+    delete blocks[id];
+    for (const b of held) {
+      removeFromZones(s, b);
+      s.zones.play.push(b);
+    }
+  }
   removeFromZones(s, id);
   if (zone === "deck" && position === "top") s.zones.deck.unshift(id);
-  else s.zones[zone].push(id);
+  else (s.zones[zone] ??= []).push(id);
 }
 
 /** Défausse une carte ; une carte dont le stage actif est permanent rejoint les permanentes (spec 4.6). */
@@ -121,23 +146,42 @@ export function countIcons(icons: readonly ResourceId[]): ResourceCounts {
   return out;
 }
 
-export function canPay(s: GameState, cost: readonly ResourceId[]): boolean {
-  return missingFor(s, cost).length === 0;
+/**
+ * Ressources interchangeables pour payer (Wood Shipment : {tradeGood} et {wood}), ou null.
+ * Calculé par passives.ts (interchangeable) et passé aux fonctions de paiement.
+ */
+export type Pool = readonly ResourceId[] | null;
+
+export function canPay(s: GameState, cost: readonly ResourceId[], pool: Pool = null): boolean {
+  return missingFor(s, cost, pool).length === 0;
 }
 
 /** Ressources qui manquent pour payer `cost` (une entrée par icône manquante). */
-export function missingFor(s: GameState, cost: readonly ResourceId[]): ResourceId[] {
+export function missingFor(s: GameState, cost: readonly ResourceId[], pool: Pool = null): ResourceId[] {
   const missing: ResourceId[] = [];
-  for (const [r, n] of Object.entries(countIcons(cost))) {
+  let spare = 0; // surplus des ressources interchangeables, utilisable pour les autres du groupe
+  const counts = countIcons(cost);
+  if (pool) for (const r of pool) spare += Math.max(0, (s.resources[r] ?? 0) - (counts[r] ?? 0));
+  for (const [r, n] of Object.entries(counts)) {
     const have = s.resources[r] ?? 0;
-    for (let i = have; i < n; i++) missing.push(r);
+    for (let i = have; i < n; i++) {
+      if (pool?.includes(r) && spare > 0) spare -= 1;
+      else missing.push(r);
+    }
   }
   return missing;
 }
 
-export function pay(s: GameState, cost: readonly ResourceId[]): void {
-  if (!canPay(s, cost)) throw new Error(`Ressources insuffisantes pour ${cost.join(", ")}`);
-  for (const r of cost) s.resources[r] = (s.resources[r] ?? 0) - 1;
+export function pay(s: GameState, cost: readonly ResourceId[], pool: Pool = null): void {
+  if (!canPay(s, cost, pool)) throw new Error(`Ressources insuffisantes pour ${cost.join(", ")}`);
+  for (const r of cost) {
+    if ((s.resources[r] ?? 0) > 0) s.resources[r] = (s.resources[r] ?? 0) - 1;
+    else {
+      const other = pool?.find((x) => x !== r && (s.resources[x] ?? 0) > 0);
+      if (other === undefined) throw new Error(`Ressources insuffisantes pour ${cost.join(", ")}`);
+      s.resources[other] = (s.resources[other] ?? 0) - 1;
+    }
+  }
 }
 
 export function gain(s: GameState, icons: readonly ResourceId[]): void {

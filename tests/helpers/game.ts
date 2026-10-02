@@ -35,7 +35,7 @@ export type Arrangement = {
 export function arrange(catalog: Catalog, a: Arrangement, seed = 1): GameState {
   const s = structuredClone(newGame(catalog, seed));
   const all = Object.keys(s.cards);
-  const zones: Record<Zone, InstanceId[]> = { box: [], deck: [], play: [], discard: [], permanent: [], destroyed: [] };
+  const zones: Record<Zone, InstanceId[]> = { box: [], deck: [], play: [], discard: [], permanent: [], destroyed: [], blocked: [] };
   const placed = new Set<number>();
   for (const [zone, serials] of [
     ["play", a.play],

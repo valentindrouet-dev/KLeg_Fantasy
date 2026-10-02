@@ -5,6 +5,8 @@ import {
   activeStage,
   applyAction,
   candidateActions,
+  canPeekSecond,
+  cardBadges,
   canUndo,
   cardName,
   computeScore,
@@ -296,7 +298,7 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
   };
 
   const openMenu = (card: InstanceId) => {
-    const el = document.querySelector(`main [data-card="${card}"]`);
+    const el = document.querySelector(`[data-card="${card}"]`);
     setSelected({ card, anchor: el?.getBoundingClientRect() ?? new DOMRect() });
   };
 
@@ -363,7 +365,7 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
       dimBottom={dimBottom && extra?.zones !== false}
       targetable={targeting ? targetOptions.has(id) : undefined}
       dimmed={targeting ? !targetOptions.has(id) && id !== targeting.source : undefined}
-      badge={extra?.engaged ? <IconText text={`engagée ${productionLabel(catalog, state, id) ?? ""}`} /> : undefined}
+      badge={badgeFor(id, extra?.engaged ?? false)}
       onTap={onTap}
       onLongPress={inspectable ? () => setInspect(id) : undefined}
       zoneLabel={extra?.zones ? zoneLabel(id) : undefined}
@@ -371,8 +373,22 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
     />
   );
 
+  /** Pastille : ressource engagée, cartes bloquées, cases cochées, compteur, stickers du stage visible. */
+  const badgeFor = (id: InstanceId, isEngaged: boolean) => {
+    const parts = cardBadges(catalog, state, id);
+    if (isEngaged) parts.unshift(`engagée ${productionLabel(catalog, state, id) ?? ""}`);
+    return parts.length ? <IconText text={parts.join(" · ")} /> : undefined;
+  };
+
+  /** Carte permanente touchée : ses effets utilisables (Army, Export…), sinon l'inspection. */
+  const tapPermanent = (id: InstanceId) => {
+    if (playing && optionsFor(id).some((o) => o.plan)) openMenu(id);
+    else setInspect(id);
+  };
+
   const fame = computeScore(catalog, state).total;
   const top = state.zones.deck[0];
+  const second = canPeekSecond(catalog, state) ? state.zones.deck[1] : undefined;
   const lastDiscard = state.zones.discard.at(-1);
   const potential = engagedPotential(catalog, state, engagedNow);
 
@@ -554,11 +570,18 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
 
       {state.zones.permanent.length > 0 && (
         <section className={styles.permanents} aria-label="Cartes permanentes">
-          {state.zones.permanent.map((id) => card(id, 72, () => setInspect(id)))}
+          {state.zones.permanent.map((id) => card(id, 72, () => tapPermanent(id)))}
         </section>
       )}
 
-      <aside className={styles.deckSlot}>{deck}</aside>
+      <aside className={styles.deckSlot}>
+        {deck}
+        {second && (
+          <div className={styles.peek} aria-label="Deuxième carte de la pioche (Watchtower)">
+            {card(second, 64, undefined, false)}
+          </div>
+        )}
+      </aside>
 
       <div className={styles.resourceRow}>
         {resources}

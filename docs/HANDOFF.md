@@ -78,7 +78,7 @@ de la section 5 de docs/HANDOFF.md.
 
 ## 3. État du code
 
-Phases P0 (données), P1 (moteur) et P2 (interface jouable) terminées. Phases P3 à P6 non commencées (spec section 12). Détails du moteur : `docs/ENGINE.md`, de l'interface : `docs/UI.md`.
+Phases P0 (données), P1 (moteur) et P2 (interface jouable) terminées. P3 en grande partie faite (v0.19) : effets de toutes les cartes 1 à 135 automatisés (actions, passifs, déclencheurs, choix du joueur, blocage, pistes, stickers, objectifs) ; reste les points de sauvegarde (aucune carte de Feudal Kingdom n'utilise l'équipement). P4 à P6 non commencées (spec section 12). Détails du moteur : `docs/ENGINE.md`, de l'interface : `docs/UI.md`.
 
 | Élément | Emplacement | État |
 |---|---|---|
@@ -95,7 +95,7 @@ Phases P0 (données), P1 (moteur) et P2 (interface jouable) terminées. Phases P
 | Images | `data/images/FeudalKingdom/*.webp` | 280 images, 16 Mo |
 | Tests des fiches | `tests/data/cards.test.ts` | 142 tests |
 | Catalogue de stickers | `data/stickers.json` | fait (planche Feudal Kingdom v4.1, 12 stickers) |
-| Moteur de règles (P1) | `src/engine/` | fait : tours, manches, actions, découvertes, annulation, score ; effets des cartes 1 à 10 |
+| Moteur de règles (P1) | `src/engine/` | fait : tours, manches, actions, découvertes, annulation, score ; effets de toutes les cartes 1 à 135 (v0.19) |
 | Partie en ligne de commande | `scripts/play.ts` (`npm run play`) | fait |
 | Tests du moteur | `tests/rules/`, `tests/scenarios/` | 56 tests |
 | Déploiement | `.github/workflows/deploy.yml` | fait (GitHub Actions, voir `docs/DEPLOY.md`) |

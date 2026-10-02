@@ -87,10 +87,10 @@ describe("opérations à la main (rejeu des parties v0.17)", async () => {
   });
 
   it("un effet non automatisé n'est plus proposé, mais une partie qui l'a utilisé se rejoue", () => {
-    const s = arrange(catalog, { play: [13, 1], orientation: { 13: back0 } });
+    const s = arrange(catalog, { play: [18, 1], orientation: { 18: { side: "front", rotation: 180 } } });
     expect(legal(catalog, s).some((a) => a.type === "manual")).toBe(false);
-    const after = applyAction(catalog, s, manual({ kind: "effect", card: fk(13), effect: "e1" }));
-    expect(after.zones.discard).toContain(fk(13));
+    const after = applyAction(catalog, s, manual({ kind: "effect", card: fk(18), effect: "e1" }));
+    expect(after.zones.discard).toContain(fk(18));
   });
 
   it("les effets automatisés ne sont pas proposés à la main", () => {

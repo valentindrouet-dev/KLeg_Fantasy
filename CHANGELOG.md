@@ -3,6 +3,19 @@
 Chaque mise à jour publiée change de version (`package.json`, affichée dans l'appli en bas de l'écran « Mes royaumes »
 et dans la barre de la partie). Convention : `0.5.0` s'affiche **v0.05** ; un correctif `0.5.1` s'affiche **v0.05.1**.
 
+## v0.19 (2 octobre 2026)
+
+Phase P3 : les effets de toutes les cartes de la partie de base (1 à 135) sont automatisés.
+
+- Effets d'action, de temps et de destruction de chaque carte, effets passifs et effets déclenchés (quand la carte est jouée, fin de tour, fin de manche, après une amélioration, après une production, entre deux manches).
+- Quand un effet demande un choix, une fenêtre le pose : cartes à choisir, ressources « au choix », option. « Annuler » tant que rien n'est payé.
+- Ennemis : blocage des cartes, défaite en dépensant des épées, interdictions (Dark Knight, Rain…).
+- Pistes à cocher (Army, Treasury, Export, Quests…), stickers posés par les effets, parchemin 24, gloire variable (objectifs, pistes, Double Wall…).
+- Cartes permanentes : toucher Army, Treasury… propose leur effet.
+- Pastilles sur les cartes : cartes bloquées, cases cochées, marchandises dépensées, stickers.
+- Watchtower : la 2e carte de la pioche est visible.
+- Décisions de règles prises pour les cas ambigus : `docs/RULES_DECISIONS.md`.
+
 ## v0.18 (2 octobre 2026)
 
 - Retour sur la v0.17 : la résolution à la main est retirée (bouton ✋, outils de l'inspection). Toucher un effet pas encore automatisé ne fait plus rien, comme en v0.16, au lieu de défausser la carte.

@@ -5,11 +5,19 @@ import type { CardTemplate, Orientation, ResourceId, Side, StageId } from "../da
 
 export type InstanceId = string;
 
-// Zones gérées en P1. Blocage, équipement et purge arrivent en P3/P4.
-export type Zone = "box" | "deck" | "play" | "discard" | "permanent" | "destroyed";
-export const ZONES: readonly Zone[] = ["box", "deck", "play", "discard", "permanent", "destroyed"];
+// « blocked » : cartes bloquées, posées sous leur bloquante (GameState.blocks) ; elles n'existent plus pour le jeu.
+export type Zone = "box" | "deck" | "play" | "discard" | "permanent" | "destroyed" | "blocked";
+export const ZONES: readonly Zone[] = ["box", "deck", "play", "discard", "permanent", "destroyed", "blocked"];
 
-export type StickerPlacement = { sticker: string; stage: StageId; resource?: ResourceId; fame?: number };
+/** Sticker posé : ressource (production), gloire, mot-clé (Knight) ou effet « Stays in play » (sticker 7). */
+export type StickerPlacement = {
+  sticker: string;
+  stage: StageId;
+  resource?: ResourceId;
+  fame?: number;
+  keyword?: string;
+  staysInPlay?: boolean;
+};
 
 export type CardInstance = {
   instanceId: InstanceId;
@@ -19,7 +27,11 @@ export type CardInstance = {
   stickers: StickerPlacement[];
   checkedBoxes: string[];
   crossedOutEffects: string[];
-  crossedOutProduction: string[];
+  crossedOutProduction: string[]; // `${stage}/${groupe}/${indice d'icône}`
+  crossedOutCosts?: string[]; // icônes rayées d'un coût d'amélioration : `${stage}/${amélioration}/${indice}`
+  written?: Record<string, number>; // gloire écrite dans une case : clé checkKey(stage, case)
+  plays?: number; // nombre de fois où la carte est entrée en jeu (Stranger : « 2nd play »)
+  tallies?: Record<string, number>; // compteurs (Export : marchandises dépensées), par stage
 };
 
 export type ResourceCounts = Record<ResourceId, number>;
@@ -43,14 +55,41 @@ export type PendingDecision =
       leftovers: "box" | "destroy"; // sort des cartes non choisies
     }
   | { kind: "chooseSide"; card: InstanceId }
-  | { kind: "parchment"; card: InstanceId };
+  | { kind: "parchment"; card: InstanceId }
+  | {
+      kind: "choice";
+      source: InstanceId; // carte dont l'effet demande le choix
+      script: string; // clé de l'effet (catalog.effects) ou du déclencheur (catalog.triggers)
+      mode: "effect" | "trigger";
+      effect: string; // id de l'effet sur le stage actif (mode effect)
+      answers: Answer[]; // réponses déjà données
+      request: ChoiceRequest;
+      cancellable: boolean; // effet lancé par le joueur, rien n'est encore payé
+      ctx: TriggerCtx;
+    };
+
+/** Question posée au joueur au cours d'un effet. */
+export type ChoiceRequest =
+  | { type: "cards"; prompt: string; options: InstanceId[]; min: number; max: number }
+  | { type: "resources"; prompt: string; options: ResourceId[]; count: number } // `count` ressources, répétitions permises
+  | { type: "option"; prompt: string; labels: string[] };
+
+export type Answer = { cards: InstanceId[] } | { resources: ResourceId[] } | { option: number };
+
+/** Contexte d'un déclencheur : cartes jouées ensemble, cartes bloquées par la source… */
+export type TriggerCtx = { cards?: InstanceId[] };
 
 /** Étapes de déroulement en attente : elles reprennent dès qu'aucune décision n'est en cours. */
 export type FlowStep =
   | { kind: "roundDiscovery" }
   | { kind: "discover"; card: InstanceId }
   | { kind: "shuffle" }
-  | { kind: "startTurn" };
+  | { kind: "startTurn" }
+  | { kind: "trigger"; card: InstanceId; script: string; ctx: TriggerCtx }
+  | { kind: "endTurn" } // effets « End of Turn », puis cleanupTurn
+  | { kind: "cleanupTurn" }
+  | { kind: "endRound" }
+  | { kind: "nextRound" };
 
 export type LogEntry = { round: number; turn: number; text: string };
 
@@ -71,6 +110,8 @@ export type GameState = {
   revealCount: number; // augmente à chaque information nouvelle (carte du deck, découverte, mélange)
   lostResources: ResourceCounts; // ressources perdues pendant la dernière action
   log: LogEntry[];
+  blocks?: Record<InstanceId, InstanceId[]>; // bloquante → cartes bloquées
+  keepInPlay?: InstanceId[]; // cartes qu'un effet « make … stay in play » garde jusqu'au prochain tour
 };
 
 export type Action =
@@ -82,7 +123,9 @@ export type Action =
   | { type: "chooseDiscovery"; card: InstanceId }
   | { type: "chooseSide"; side: Side }
   | { type: "acknowledgeParchment" }
-  | { type: "manual"; op: ManualOp };
+  | { type: "manual"; op: ManualOp }
+  | { type: "choose"; answer: Answer }
+  | { type: "cancelChoice" };
 
 /** Résolution à la main (voir manual.ts) : ce que le moteur n'automatise pas encore. */
 export type ManualOp =
@@ -94,7 +137,7 @@ export type ManualOp =
   | { kind: "sticker"; card: InstanceId; sticker: string; resource: ResourceId | null; fame: number | null }
   | { kind: "effect"; card: InstanceId; effect: string };
 
-export type EffectParams = { targets: InstanceId[]; option: number | null };
+export type EffectParams = { targets: InstanceId[]; option: number | null; answers?: Answer[] };
 
 /** Contexte de travail : le catalogue (statique) et un brouillon d'état qu'on peut muter. */
 export type Draft = { catalog: Catalog; s: GameState };
@@ -106,6 +149,32 @@ export type EffectImpl = {
   apply: (d: Draft, card: InstanceId, p: EffectParams) => void;
   /** Ressources que l'effet dépense (pour payer avec des cartes engagées). */
   cost?: readonly string[];
+  /** Questions au joueur, une à la fois, avant tout paiement ; null quand tout est choisi (réponses dans p.answers). */
+  ask?: (d: Draft, card: InstanceId, answers: Answer[]) => ChoiceRequest | null;
+};
+
+export type TriggerTiming =
+  | "played" // quand la carte entre en jeu (avec celles jouées en même temps)
+  | "otherPlayed" // une autre carte entre en jeu alors que celle-ci y est déjà (ctx.cards)
+  | "endTurn"
+  | "endRound" // ctx.cards : cartes que la source bloquait
+  | "upgraded" // la carte vient d'être améliorée
+  | "produced" // la carte vient de produire
+  | "betweenRounds" // cartes permanentes, avant la découverte de la manche
+  | "manual"; // lancé explicitement par un autre effet (queueScript)
+
+/** Effet déclenché (types triggeredForced / triggeredOptional). */
+export type TriggerImpl = {
+  timing: TriggerTiming | readonly TriggerTiming[];
+  optional: boolean;
+  /** Le déclencheur s'applique-t-il ? (sinon il est ignoré sans question) */
+  when?: (d: Draft, card: InstanceId, ctx: TriggerCtx) => boolean;
+  ask?: (d: Draft, card: InstanceId, answers: Answer[], ctx: TriggerCtx) => ChoiceRequest | null;
+  run: (d: Draft, card: InstanceId, answers: Answer[], ctx: TriggerCtx) => void;
+  /** Effet optionnel refusé (ex. Impregnable Fortress : elle est alors défaussée normalement). */
+  decline?: (d: Draft, card: InstanceId, ctx: TriggerCtx) => void;
+  /** Question posée pour un effet optionnel (sinon le texte imprimé de l'effet). */
+  prompt?: string;
 };
 
 /** Instructions d'un parchemin, appliquées après lecture, avant sa destruction. */
@@ -116,6 +185,7 @@ export type Catalog = {
   resources: readonly ResourceId[];
   effects: ReadonlyMap<string, EffectImpl>; // clé : effectKey(templateId, stage, effectId)
   parchments: ReadonlyMap<string, ParchmentImpl>; // clé : templateId
+  triggers: ReadonlyMap<string, TriggerImpl>; // clé : effectKey(templateId, stage, effectId) ou clé de script
 };
 
 export class IllegalActionError extends Error {

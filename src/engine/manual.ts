@@ -17,6 +17,7 @@ const ZONE_FR: Record<Zone, string> = {
   discard: "la défausse",
   permanent: "les permanentes",
   destroyed: "les cartes détruites",
+  blocked: "les cartes bloquées",
 };
 
 /** Clé d'une case cochée dans CardInstance.checkedBoxes. */
@@ -77,8 +78,11 @@ export function isManualOpValid(catalog: Catalog, s: GameState, op: ManualOp): b
       if (op.resource !== null) return catalog.resources.includes(op.resource) && canAddResourceSticker(catalog, s, op.card);
       return Number.isInteger(op.fame);
     }
-    case "effect":
-      return manualEffects(catalog, s, op.card).includes(op.effect);
+    case "effect": {
+      // Rejeu : tout effet d'action du stage actif, automatisé depuis ou non.
+      const stage = s.zones.play.includes(op.card) ? activeStage(catalog, s, op.card) : null;
+      return stage?.effects.some((e) => e.id === op.effect && ACTION_EFFECT_TYPES.includes(e.type)) ?? false;
+    }
   }
 }
 

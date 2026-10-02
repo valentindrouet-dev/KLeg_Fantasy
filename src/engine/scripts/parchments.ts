@@ -1,9 +1,9 @@
 import { cardId } from "../../data/schema";
 import { boxCardsBySerial, discoverNormally, offerDiscovery, pushFront } from "../flow";
+import { effectKey } from "../effects/registry";
 import type { FlowStep, ParchmentImpl } from "../types";
 
-// Instructions des parchemins de Feudal Kingdom qui ne font que régler la découverte de la manche.
-// Le parchemin 24 (stickers) arrive en P3. Pour le 23, le choix « recommencer » est proposé par l'interface
+// Instructions des parchemins de Feudal Kingdom : découvertes de la manche, stickers du 24. Pour le 23, le choix « recommencer » est proposé par l'interface
 // avant de confirmer la lecture (canRestartKingdom) ; continuer applique ce script.
 
 const range = (from: number, to: number): number[] => Array.from({ length: to - from + 1 }, (_, i) => from + i);
@@ -20,7 +20,15 @@ const discoverSerials =
   (d) =>
     pushFront(d, ...boxCardsBySerial(d, serials).map((card): FlowStep => ({ kind: "discover", card })));
 
+/** Parchemin 24 : « Fertile Soil » puis « Efficiency », deux stickers à poser (effects/cards.ts). */
+const stickers24: ParchmentImpl = (d, card) =>
+  pushFront(
+    d,
+    ...["e1", "e2"].map((e): FlowStep => ({ kind: "trigger", card, script: effectKey(cardId("FeudalKingdom", 24), 1, e), ctx: {} })),
+  );
+
 export const feudalKingdomParchments: ReadonlyMap<string, ParchmentImpl> = new Map([
+  [cardId("FeudalKingdom", 24), stickers24],
   // « If you continue, you will discover 4 cards, cards 24-27. »
   [cardId("FeudalKingdom", 23), discoverSerials(24, 25, 26, 27)],
   // « Instead of discovering the next 2 cards, look at the 4 next cards (31-34). Choose 2 to discover and destroy the other 2. »

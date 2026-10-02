@@ -115,7 +115,12 @@ export const useGame = create<GameStore>((set, get) => ({
     if (!session || !kingdom || !canUndo(session)) return;
     let next = session;
     const count = groups.at(-1) ?? 1;
-    for (let i = 0; i < count && canUndo(next); i++) next = undoSession(next);
+    try {
+      for (let i = 0; i < count && canUndo(next); i++) next = undoSession(next);
+    } catch {
+      // Partie commencée avec une version aux règles différentes : la rejouer n'est plus possible.
+      return;
+    }
     set({
       session: next,
       kingdom: persist(session.catalog, kingdom, next),

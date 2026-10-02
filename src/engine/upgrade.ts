@@ -1,5 +1,6 @@
 import type { Orientation, ResourceId, Upgrade } from "../data/schema";
-import { activeStage, hasKeyword, missingFor } from "./state";
+import { payPool } from "./passives";
+import { activeStage, hasKeyword, instance, missingFor } from "./state";
 import type { Catalog, GameState, InstanceId } from "./types";
 
 // Améliorations (spec 4.4) : coût de la boîte marron, flèche, carte défaussée, fin du tour.
@@ -64,6 +65,13 @@ export function cardCostOptions(
   );
 }
 
+/** Coût en ressources d'une amélioration, sans les icônes rayées (Royal Visit, Bordering Lands). */
+export function upgradeCost(catalog: Catalog, s: GameState, id: InstanceId, u: Upgrade): ResourceId[] {
+  const stage = activeStage(catalog, s, id);
+  const crossed = new Set(instance(s, id).crossedOutCosts ?? []);
+  return u.cost.filter((_, i) => !crossed.has(`${stage?.id ?? 0}/${u.id}/${i}`));
+}
+
 export type UpgradeOption = {
   upgrade: Upgrade;
   affordable: boolean;
@@ -77,7 +85,7 @@ export function upgradeOptions(catalog: Catalog, s: GameState, id: InstanceId): 
   const stage = activeStage(catalog, s, id);
   if (!stage) return [];
   return stage.upgrades.map((u): UpgradeOption => {
-    const missing = missingFor(s, u.cost);
+    const missing = missingFor(s, upgradeCost(catalog, s, id, u), payPool(catalog, s));
     const cardCost = parseOtherCost(u.otherCost);
     let reason: string | null = null;
     if (!s.zones.play.includes(id)) reason = "La carte n'est pas en jeu";

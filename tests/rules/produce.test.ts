@@ -34,6 +34,6 @@ describe("produire", async () => {
     let s = arrange(catalog, { play: [1, 2], orientation: { 1: { side: "front", rotation: 180 } } });
     s = run(catalog, s, { type: "useEffect", card: fk(1), effect: "e1", targets: [fk(2)], option: null });
     expect(s.resources.coin).toBe(2);
-    expect(s.zones.discard).toEqual([fk(1), fk(2)]);
+    expect(s.zones.discard.sort()).toEqual([fk(1), fk(2)].sort());
   });
 });

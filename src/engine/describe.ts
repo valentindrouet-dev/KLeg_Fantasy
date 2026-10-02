@@ -1,7 +1,7 @@
 import { usableEffects } from "./actions";
 import { producedIcons, productionGroups } from "./production";
 import { activeStage, cardName, formatIcons, instance, template } from "./state";
-import type { Action, Catalog, GameState, ManualOp } from "./types";
+import type { Action, Answer, Catalog, GameState, ManualOp } from "./types";
 import { applyArrow } from "./upgrade";
 
 // Libellés français des actions (CLI, puis interface en P2).
@@ -42,6 +42,10 @@ export function describeAction(catalog: Catalog, s: GameState, a: Action): strin
       return "J'ai lu le parchemin";
     case "manual":
       return describeManual(catalog, s, a.op);
+    case "choose":
+      return describeAnswer(catalog, s, a.answer);
+    case "cancelChoice":
+      return "Annuler l'effet";
   }
 }
 
@@ -52,7 +56,15 @@ const ZONE_LABELS = {
   discard: "Défausse",
   permanent: "Permanentes",
   destroyed: "Détruite",
+  blocked: "Bloquée",
 } as const;
+
+function describeAnswer(catalog: Catalog, s: GameState, a: Answer): string {
+  if ("cards" in a) return a.cards.length ? a.cards.map((id) => cardName(catalog, s, id)).join(", ") : "Aucune carte";
+  if ("resources" in a) return formatIcons(a.resources);
+  const p = s.pending;
+  return p?.kind === "choice" && p.request.type === "option" ? (p.request.labels[a.option] ?? String(a.option)) : String(a.option);
+}
 
 function describeManual(catalog: Catalog, s: GameState, op: ManualOp): string {
   switch (op.kind) {
