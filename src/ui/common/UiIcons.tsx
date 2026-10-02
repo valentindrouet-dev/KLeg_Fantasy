@@ -118,3 +118,19 @@ export function SettingsIcon() {
     </svg>
   );
 }
+
+export function SortIcon() {
+  return (
+    <svg {...base} aria-hidden="true">
+      <path d="M7 4v16M3 16l4 4 4-4M17 20V4M13 8l4-4 4 4" />
+    </svg>
+  );
+}
+
+export function StatsIcon() {
+  return (
+    <svg {...base} aria-hidden="true">
+      <path d="M4 20V10M10 20V4M16 20v-7M22 20H2" />
+    </svg>
+  );
+}

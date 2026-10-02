@@ -1,16 +1,20 @@
 import { create } from "zustand";
+import type { SortMode } from "../game/sortCards";
 
 // Préférences d'affichage, gardées dans le navigateur.
 
 const KEY = "kleg-prefs";
 
+export type { SortMode };
+
 export type Prefs = {
   tooltipsFr: boolean; // infobulles en français
+  sortPlay: SortMode; // ordre des cartes en jeu
   zoom: number; // échelle de l'interface (0.8 à 1.6)
   dimBottom: boolean; // griser la moitié basse des cartes (stage suivant)
 };
 
-const DEFAULTS: Prefs = { tooltipsFr: true, zoom: 1, dimBottom: false };
+const DEFAULTS: Prefs = { tooltipsFr: true, sortPlay: "resources", zoom: 1, dimBottom: false };
 export const ZOOM_MIN = 0.8;
 export const ZOOM_MAX = 1.6;
 
@@ -41,12 +45,13 @@ type Store = Prefs & {
   toggleTooltipsFr: () => void;
   toggleDimBottom: () => void;
   setZoom: (z: number) => void;
+  setSortPlay: (m: SortMode) => void;
 };
 
 export const usePrefs = create<Store>((set, get) => {
   const update = (patch: Partial<Prefs>) => {
-    const { tooltipsFr, zoom, dimBottom } = { ...get(), ...patch };
-    const next = { tooltipsFr, zoom, dimBottom };
+    const { tooltipsFr, sortPlay, zoom, dimBottom } = { ...get(), ...patch };
+    const next = { tooltipsFr, sortPlay, zoom, dimBottom };
     set(next);
     save(next);
     applyZoom(next.zoom);
@@ -55,6 +60,7 @@ export const usePrefs = create<Store>((set, get) => {
     ...read(),
     toggleTooltipsFr: () => update({ tooltipsFr: !get().tooltipsFr }),
     toggleDimBottom: () => update({ dimBottom: !get().dimBottom }),
+    setSortPlay: (m) => update({ sortPlay: m }),
     setZoom: (z) => update({ zoom: Math.round(Math.min(ZOOM_MAX, Math.max(ZOOM_MIN, z)) * 10) / 10 }),
   };
 });

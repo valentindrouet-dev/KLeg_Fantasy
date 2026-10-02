@@ -26,12 +26,13 @@ import {
 import type { Orientation } from "../../data/schema";
 import { APP_VERSION } from "../../version";
 import { Icon, IconText } from "../common/IconText";
-import { AdvanceIcon, CastleIcon, PassIcon, SettingsIcon, TranslateIcon, UndoIcon } from "../common/UiIcons";
+import { AdvanceIcon, CastleIcon, PassIcon, SettingsIcon, SortIcon, StatsIcon, TranslateIcon, UndoIcon } from "../common/UiIcons";
+import { sortPlay } from "./sortCards";
 import type { TapPoint } from "../common/usePress";
 import { CardActions, type CardOption } from "./CardActions";
 import { zoneAt, type ZoneKind } from "./cardZones";
 import { ANIM_MS, CardView } from "./CardView";
-import { CardListDialog, ConfirmDialog, DecisionDialog, EndDialog, Inspector } from "./Dialogs";
+import { CardListDialog, ConfirmDialog, DecisionDialog, EndDialog, Inspector, StatsDialog } from "./Dialogs";
 import { useGame } from "./store";
 import { useFitCards } from "./useFitCards";
 import { useCardMotion } from "./useCardMotion";
@@ -145,8 +146,10 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
   const [notice, setNotice] = useState<string | null>(null);
   const [anim, setAnim] = useState<Anim | null>(null);
   const [targeting, setTargeting] = useState<{ source: InstanceId; options: CardOption[] } | null>(null);
-  const { tooltipsFr, toggleTooltipsFr, zoom, setZoom, dimBottom, toggleDimBottom } = usePrefs();
+  const { tooltipsFr, toggleTooltipsFr, zoom, setZoom, dimBottom, toggleDimBottom, sortPlay: sortMode, setSortPlay } = usePrefs();
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [sortOpen, setSortOpen] = useState(false);
+  const [statsOpen, setStatsOpen] = useState(false);
   const playEl = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
@@ -428,6 +431,45 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
           </span>
           <small className={styles.version}>{APP_VERSION}</small>
         </h1>
+        <button className={styles.iconBtn} onClick={() => setStatsOpen(true)} aria-label="Stats" title="Stats">
+          <StatsIcon />
+        </button>
+        <button
+          className={styles.iconBtn}
+          aria-pressed={sortOpen}
+          onClick={() => {
+            setSortOpen((o) => !o);
+            setSettingsOpen(false);
+          }}
+          aria-label="Trier les cartes"
+          title="Trier les cartes"
+        >
+          <SortIcon />
+        </button>
+        {sortOpen && (
+          <div className={`${styles.settings} ${styles.sortMenu}`} role="dialog" aria-label="Trier les cartes">
+            {(
+              [
+                ["resources", "Ressources"],
+                ["type", "Type de terrain"],
+                ["arrival", "Ordre d'arrivée"],
+              ] as const
+            ).map(([mode, label]) => (
+              <label key={mode} className={styles.sortChoice}>
+                <input
+                  type="radio"
+                  name="sort"
+                  checked={sortMode === mode}
+                  onChange={() => {
+                    setSortPlay(mode);
+                    setSortOpen(false);
+                  }}
+                />
+                {label}
+              </label>
+            ))}
+          </div>
+        )}
         <button className={styles.iconBtn} disabled={!canUndo(session)} onClick={undo} aria-label="Annuler" title="Annuler (U)">
           <UndoIcon />
         </button>
@@ -440,7 +482,16 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
         >
           <TranslateIcon />
         </button>
-        <button className={styles.iconBtn} aria-pressed={settingsOpen} onClick={() => setSettingsOpen((o) => !o)} aria-label="Réglages" title="Réglages">
+        <button
+          className={styles.iconBtn}
+          aria-pressed={settingsOpen}
+          onClick={() => {
+            setSettingsOpen((o) => !o);
+            setSortOpen(false);
+          }}
+          aria-label="Réglages"
+          title="Réglages"
+        >
           <SettingsIcon />
         </button>
         {settingsOpen && (
@@ -483,7 +534,7 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
         }}
         aria-label="Zone de jeu"
       >
-        {state.zones.play.map((id) =>
+        {sortPlay(catalog, state, state.zones.play, sortMode).map((id) =>
           card(id, cardWidth || undefined, (p) => tapCard(id, p), true, { engaged: engagedNow.includes(id), zones: true }),
         )}
       </main>
@@ -526,6 +577,7 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
           onClose={() => setSelected(null)}
         />
       )}
+      {statsOpen && <StatsDialog catalog={catalog} state={state} onClose={() => setStatsOpen(false)} />}
       {inspect && <Inspector catalog={catalog} state={state} card={inspect} onClose={() => setInspect(null)} />}
       {targeting && targetsInDiscard.length > 0 && (
         <CardListDialog

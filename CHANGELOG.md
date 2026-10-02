@@ -3,6 +3,14 @@
 Chaque mise à jour publiée change de version (`package.json`, affichée dans l'appli en bas de l'écran « Mes royaumes »
 et dans la barre de la partie). Convention : `0.5.0` s'affiche **v0.05** ; un correctif `0.5.1` s'affiche **v0.05.1**.
 
+## v0.10 (2 octobre 2026)
+
+- Correctif : une carte tournée (Plains, Felled Forest…) partait vers le haut à gauche au lieu d'aller à la défausse (fin de tour, effet).
+- « Manche X » centré à l'écran.
+- Inspection : la face visible telle qu'elle est posée, et l'autre face retournée de haut en bas (1 en haut ↔ 3 en haut).
+- Cartes en jeu triées par ressource (par défaut), par type de terrain ou dans l'ordre d'arrivée : bouton ⇅.
+- Bouton Stats : cartes par zone, production par ressource, gloire, types de cartes, découvertes, détruites, boîte.
+
 ## v0.09 (2 octobre 2026)
 
 - Réglages (⚙) : zoom de l'interface (80 à 160 %) et option pour griser la moitié basse des cartes.

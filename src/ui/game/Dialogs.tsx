@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { Fragment, useState, type ReactNode } from "react";
 import {
   canRestartKingdom,
   cardName,
   computeScore,
   instance,
+  kingdomStats,
   template,
   type Action,
   type Catalog,
@@ -11,7 +12,7 @@ import {
   type InstanceId,
 } from "../../engine";
 import { Dialog } from "../common/Dialog";
-import { IconText } from "../common/IconText";
+import { Icon, IconText } from "../common/IconText";
 import { CardView } from "./CardView";
 import styles from "./Game.module.css";
 
@@ -29,14 +30,19 @@ function bigCard(count = 1): number {
   return Math.floor(Math.max(150, Math.min(520, byHeight, byWidth)));
 }
 
+/**
+ * Inspection : à gauche la carte telle qu'elle est posée, à droite l'autre face telle qu'on la voit en retournant
+ * la carte de haut en bas (autre face, rotation inversée) : stage 1 en haut au recto ↔ stage 3 en haut au verso.
+ */
 export function Inspector({ catalog, state, card, onClose }: { catalog: Catalog; state: GameState; card: InstanceId; onClose: () => void }) {
-  const t = template(catalog, instance(state, card).templateId);
+  const c = instance(state, card);
+  const t = template(catalog, c.templateId);
+  const other = { side: c.orientation.side === "front" ? "back" : "front", rotation: c.orientation.rotation === 0 ? 180 : 0 } as const;
   return (
-    <Dialog title={`Inspection : ${cardName(catalog, state, card)}`} onClose={onClose} wide>
+    <Dialog title={cardName(catalog, state, card)} onClose={onClose} wide>
       <div className={styles.inspector}>
-        {(["front", "back"] as const).map((side) => (
-          <CardView key={side} template={t} orientation={{ side, rotation: 0 }} label={side === "front" ? "Recto" : "Verso"} width={bigCard(2)} />
-        ))}
+        <CardView template={t} orientation={c.orientation} label="Face visible" width={bigCard(2)} />
+        <CardView template={t} orientation={other} label="Autre face" width={bigCard(2)} />
       </div>
     </Dialog>
   );
@@ -240,6 +246,75 @@ export function ConfirmDialog({ message, confirm, onConfirm, onCancel }: { messa
       <p>
         <IconText text={message} />
       </p>
+    </Dialog>
+  );
+}
+
+const KEYWORDS_FR: Record<string, string> = {
+  Land: "Terres",
+  Building: "Bâtiments",
+  Person: "Personnes",
+  Livestock: "Bétail",
+  Seafaring: "Maritime",
+  Event: "Événements",
+  Enemy: "Ennemis",
+  Goal: "Objectifs",
+  State: "États",
+  Knight: "Chevaliers",
+};
+
+/** Fenêtre « Stats » : composition et production du royaume. */
+export function StatsDialog({ catalog, state, onClose }: { catalog: Catalog; state: GameState; onClose: () => void }) {
+  const st = kingdomStats(catalog, state);
+  const cell = (label: ReactNode, value: number) => (
+    <div className={styles.statCell}>
+      <span className={styles.statValue}>{value}</span>
+      <span className={styles.statLabel}>{label}</span>
+    </div>
+  );
+  return (
+    <Dialog title="Stats du royaume" onClose={onClose} wide>
+      <div className={styles.stats}>
+        <section>
+          <h3>Cartes</h3>
+          <div className={styles.statGrid}>
+            {cell("Total", st.cards.total)}
+            {cell("Deck", st.cards.deck)}
+            {cell("En jeu", st.cards.play)}
+            {cell("Défausse", st.cards.discard)}
+            {cell("Permanentes", st.cards.permanent)}
+          </div>
+        </section>
+        <section>
+          <h3>Production</h3>
+          <div className={styles.statGrid}>
+            {catalog.resources.map((r) => (
+              <Fragment key={r}>{cell(<Icon id={r} />, st.production[r] ?? 0)}</Fragment>
+            ))}
+            {st.flexible > 0 && cell("Au choix", st.flexible)}
+          </div>
+        </section>
+        <section>
+          <h3>Gloire</h3>
+          <div className={styles.statGrid}>{cell(<Icon id="fame" />, st.fame)}</div>
+        </section>
+        <section>
+          <h3>Types</h3>
+          <div className={styles.statGrid}>
+            {st.keywords.map(([k, n]) => (
+              <Fragment key={k}>{cell(KEYWORDS_FR[k] ?? k, n)}</Fragment>
+            ))}
+          </div>
+        </section>
+        <section>
+          <h3>Boîte</h3>
+          <div className={styles.statGrid}>
+            {cell("Découvertes", st.discovered)}
+            {cell("Détruites", st.destroyed)}
+            {cell("Dans la boîte", st.inBox)}
+          </div>
+        </section>
+      </div>
     </Dialog>
   );
 }

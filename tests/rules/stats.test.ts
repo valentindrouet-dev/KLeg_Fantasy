@@ -1,0 +1,20 @@
+import { describe, expect, it } from "vitest";
+import { kingdomStats } from "../../src/engine";
+import { loadCatalog } from "../helpers/catalog";
+import { newGame } from "../helpers/game";
+
+// Fenêtre « Stats » : comptes du royaume.
+describe("statistiques du royaume", async () => {
+  const catalog = await loadCatalog();
+
+  it("royaume de départ : 10 cartes, production et mots-clés", () => {
+    const st = kingdomStats(catalog, newGame(catalog));
+    expect(st.cards).toMatchObject({ total: 10, play: 4, deck: 6, discard: 0, permanent: 0 });
+    // 4 Wild Grass + 2 Distant Mountain + Headquarters = 7 pièces ; 2 Forest = 2 bois.
+    expect(st.production).toMatchObject({ coin: 7, wood: 2, stone: 0 });
+    expect(st.flexible).toBe(0);
+    expect(Object.fromEntries(st.keywords)).toEqual({ Land: 8, Building: 1, Person: 1 });
+    expect(st.fame).toBe(0);
+    expect(st.inBox).toBe(130);
+  });
+});

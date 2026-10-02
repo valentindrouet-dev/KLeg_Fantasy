@@ -33,20 +33,29 @@ function ghost(catalog: Catalog, state: GameState, id: InstanceId, from: DOMRect
   const t = template(catalog, c.templateId);
   const url = cardImageUrl(c.orientation.side === "front" ? t.images.front : t.images.back);
   if (!url) return;
-  const el = document.createElement("img");
-  el.src = url;
+  // Le conteneur se déplace, l'image à l'intérieur porte la rotation de la carte : une rotation posée sur
+  // l'élément animé inverserait le sens du déplacement (carte tournée qui partait à l'opposé de la défausse).
+  const el = document.createElement("div");
   Object.assign(el.style, {
     position: "fixed",
     left: `${from.left}px`,
     top: `${from.top}px`,
     width: `${from.width}px`,
     height: `${from.height}px`,
-    borderRadius: "4.5% / 3.2%",
-    boxShadow: "0 6px 16px rgb(0 0 0 / 0.35)",
     zIndex: "20",
     pointerEvents: "none",
-    rotate: c.orientation.rotation === 180 ? "180deg" : "0deg",
   });
+  const img = document.createElement("img");
+  img.src = url;
+  Object.assign(img.style, {
+    display: "block",
+    width: "100%",
+    height: "100%",
+    borderRadius: "4.5% / 3.2%",
+    boxShadow: "0 6px 16px rgb(0 0 0 / 0.35)",
+    transform: c.orientation.rotation === 180 ? "rotate(180deg)" : "none",
+  });
+  el.appendChild(img);
   document.body.appendChild(el);
   ghosts.add(el);
   const end = to ? { transform: moveFrom(to, from), opacity: 0.9 } : { transform: "scale(0.6)", opacity: 0 };
