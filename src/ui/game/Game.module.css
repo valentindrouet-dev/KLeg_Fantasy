@@ -1,13 +1,14 @@
 /* Plateau (spec 7.3). Paysage = référence ; portrait iPad en variante. Aucun défilement du plateau. */
 .game {
+  /* Même disposition en paysage et en portrait : cartes au centre, pioche / boutons / défausse en bas. */
   display: grid;
-  grid-template-columns: 12.5rem minmax(0, 1fr) 12.5rem; /* même taille en paysage et en portrait */
+  grid-template-columns: 12.5rem minmax(0, 1fr) 12.5rem;
   grid-template-rows: auto auto auto minmax(0, 1fr) auto;
   grid-template-areas:
     "top top top"
     "perm perm perm"
-    "deck res discard"
-    "deck play discard"
+    "res res res"
+    "play play play"
     "deck actions discard";
   height: 100dvh;
   padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
@@ -63,7 +64,7 @@
 .deckSlot,
 .discardSlot {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
   padding: var(--space-3);
   min-height: 0;
@@ -339,23 +340,8 @@
   display: none;
 }
 
-/* Portrait iPad : ressources et cartes au centre, deck / boutons / défausse dans la bande du bas. */
+/* Portrait : boutons un peu plus étroits */
 @media (orientation: portrait) {
-  .game {
-    grid-template-columns: 12.5rem minmax(0, 1fr) 12.5rem;
-    grid-template-rows: auto auto auto minmax(0, 1fr) auto;
-    grid-template-areas:
-      "top top top"
-      "perm perm perm"
-      "res res res"
-      "play play play"
-      "deck actions discard";
-  }
-
-  .pile {
-    max-width: 11rem;
-  }
-
   .turnBtn {
     min-width: 9.5rem;
     padding: 0 var(--space-4);
@@ -905,4 +891,16 @@
 .segmented button[aria-pressed="true"] {
   background: var(--accent);
   color: var(--surface);
+}
+
+.feedback {
+  display: grid;
+  place-items: center;
+  min-height: var(--tap-min);
+  border: 1px solid var(--border);
+  border-radius: 0.6rem;
+  background: var(--surface-2);
+  color: var(--text);
+  font-weight: 700;
+  text-decoration: none;
 }

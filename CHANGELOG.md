@@ -3,6 +3,11 @@
 Chaque mise à jour publiée change de version (`package.json`, affichée dans l'appli en bas de l'écran « Mes royaumes »
 et dans la barre de la partie). Convention : `0.5.0` s'affiche **v0.05** ; un correctif `0.5.1` s'affiche **v0.05.1**.
 
+## v0.16 (2 octobre 2026)
+
+- Pioche et défausse en bas de l'écran en paysage aussi (même disposition qu'en portrait).
+- « Signaler un bug ou une idée » (⚙ dans la partie, et en bas de l'accueil) : ouvre un ticket GitHub pré-rempli.
+
 ## v0.15 (2 octobre 2026)
 
 - Règle : les ressources gagnées restent quand on avance (ou qu'une carte est jouée depuis la défausse) ; elles ne se perdent qu'à la fin du tour.

@@ -5,6 +5,7 @@ import { KINGDOM_EMOJIS, newKingdomId, randomKingdomName, summarize, type Kingdo
 import { Dialog } from "../common/Dialog";
 import { IconText } from "../common/IconText";
 import { APP_VERSION } from "../../version";
+import { feedbackUrl } from "../common/feedback";
 import { CardsIcon, CopyIcon, EditIcon, ImportIcon, PlayIcon, PlusIcon, RestartIcon, TrashIcon } from "../common/UiIcons";
 import { importKingdom } from "../../persistence/backup";
 import styles from "./Kingdoms.module.css";
@@ -227,6 +228,10 @@ export function KingdomsScreen({ catalog }: { catalog: Catalog }) {
         Kingdom Legacy Digital {APP_VERSION} ·{" "}
         <a href="https://github.com/valentindrouet-dev/KLeg_Fantasy/blob/claude/sharp-curie-b9evuk/CHANGELOG.md" target="_blank" rel="noreferrer">
           nouveautés
+        </a>{" "}
+        ·{" "}
+        <a href={feedbackUrl()} target="_blank" rel="noreferrer">
+          signaler un bug ou une idée
         </a>
       </footer>
 

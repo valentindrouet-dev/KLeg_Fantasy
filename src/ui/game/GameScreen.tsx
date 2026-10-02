@@ -28,6 +28,7 @@ import { APP_VERSION } from "../../version";
 import { Icon, IconText } from "../common/IconText";
 import { AdvanceIcon, CastleIcon, PassIcon, SaveIcon, SettingsIcon, SortIcon, StatsIcon, TranslateIcon, UndoIcon } from "../common/UiIcons";
 import { downloadText } from "../common/download";
+import { feedbackUrl } from "../common/feedback";
 import { backupFileName, exportKingdom } from "../../persistence/backup";
 import { sortPlay } from "./sortCards";
 import type { TapPoint } from "../common/usePress";
@@ -539,6 +540,14 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
               <span>Griser le bas des cartes</span>
               <input type="checkbox" checked={dimBottom} onChange={toggleDimBottom} />
             </label>
+            <a
+              className={styles.feedback}
+              href={feedbackUrl(`${kingdom.name}, manche ${state.round}, tour ${state.turn}, graine ${state.config.seed}`)}
+              target="_blank"
+              rel="noreferrer"
+            >
+              Signaler un bug ou une idée
+            </a>
           </div>
         )}
       </header>

@@ -54,7 +54,8 @@ Routage par hash (`src/ui/App.tsx`) : `#/` Mes royaumes, `#/partie/<id>` partie,
 - **Version** affichée en bas de « Mes royaumes » et dans la barre de la partie (`src/version.ts`, `CHANGELOG.md`).
 - **Clavier** : A = Avancer, P = Passer, U ou Cmd+Z = Annuler, Échap = fermer.
 - Zone de jeu sans défilement : la taille des cartes s'adapte au nombre de cartes (`fitCards.ts`).
-- Portrait iPad : deck, boutons et défausse dans la bande du bas.
+- Paysage et portrait : même disposition, deck, boutons et défausse dans la bande du bas.
+- **Signaler un bug ou une idée** (⚙, et bas de l'accueil) : ticket GitHub pré-rempli (`common/feedback.ts`).
 - En dessous de 744 px de large : message « Agrandis la fenêtre ».
 
 ## Sauvegarde
