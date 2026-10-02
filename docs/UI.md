@@ -7,7 +7,7 @@ Routage par hash (`src/ui/App.tsx`) : `#/` Mes royaumes, `#/partie/<id>` partie,
 | Écran | Fichiers | Contenu |
 |---|---|---|
 | Mes royaumes | `src/ui/kingdoms/` | Liste triée par dernière partie (recherche au-delà de 6), nouveau royaume (nom aléatoire, blason, annulation Stricte/Libre, graine), continuer, renommer, dupliquer, recommencer (avant la carte 23), supprimer |
-| Partie | `src/ui/game/GameScreen.tsx` | Barre du haut (royaume, manche, tour, gloire, annuler, journal), permanentes, deck (carte du dessus visible), zone de jeu, défausse, ressources, Avancer / Passer |
+| Partie | `src/ui/game/GameScreen.tsx` | Barre du haut (royaumes, manche, tour, gloire, annuler, infobulles FR), permanentes, deck (carte du dessus visible), ressources non nulles au-dessus des cartes, zone de jeu, gros boutons Avancer / Passer centrés dessous, défausse ; message central à chaque nouvelle manche ; pas de journal |
 | Visionneuse | `src/ui/viewer/` | Vérification des fiches (P0) |
 
 ## Interactions (spec 7.5 et 7.6, demandes du 2026-10-02)
@@ -43,7 +43,7 @@ Routage par hash (`src/ui/App.tsx`) : `#/` Mes royaumes, `#/partie/<id>` partie,
 - **Version** affichée en bas de « Mes royaumes » et dans la barre de la partie (`src/version.ts`, `CHANGELOG.md`).
 - **Clavier** : A = Avancer, P = Passer, U ou Cmd+Z = Annuler, Échap = fermer.
 - Zone de jeu sans défilement : la taille des cartes s'adapte au nombre de cartes (`fitCards.ts`).
-- Portrait iPad : deck, ressources et défausse passent dans la bande du bas ; journal en panneau qui monte du bas.
+- Portrait iPad : deck, boutons et défausse dans la bande du bas.
 - En dessous de 744 px de large : message « Agrandis la fenêtre ».
 
 ## Sauvegarde

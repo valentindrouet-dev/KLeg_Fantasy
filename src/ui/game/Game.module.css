@@ -1,27 +1,19 @@
 /* Plateau (spec 7.3). Paysage = référence ; portrait iPad en variante. Aucun défilement du plateau. */
 .game {
   display: grid;
-  grid-template-columns: 160px minmax(0, 1fr) 160px;
-  grid-template-rows: auto auto minmax(0, 1fr) auto;
+  grid-template-columns: 220px minmax(0, 1fr) 220px;
+  grid-template-rows: auto auto auto minmax(0, 1fr) auto;
   grid-template-areas:
     "top top top"
     "perm perm perm"
+    "deck res discard"
     "deck play discard"
-    "bottom bottom bottom";
+    "deck actions discard";
   height: 100dvh;
   padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
   overflow: hidden;
   touch-action: manipulation;
   overscroll-behavior: none;
-}
-
-.withJournal {
-  grid-template-columns: 160px minmax(0, 1fr) 160px 300px;
-  grid-template-areas:
-    "top top top top"
-    "perm perm perm journal"
-    "deck play discard journal"
-    "bottom bottom bottom journal";
 }
 
 .topbar {
@@ -81,7 +73,7 @@
   flex-direction: column;
   gap: var(--space-2);
   width: 100%;
-  max-width: 140px;
+  max-width: 196px;
 }
 
 .pile .card {
@@ -117,89 +109,6 @@
   min-height: 0;
   padding: var(--space-3);
   overflow: hidden;
-}
-
-.bottombar {
-  grid-area: bottom;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-2) var(--space-4);
-  padding: var(--space-2) var(--space-3);
-  border-top: 1px solid var(--border);
-  background: var(--surface);
-}
-
-.resources {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2);
-}
-
-.resource {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-1);
-  min-height: 36px;
-  padding: 0 var(--space-3);
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  background: var(--surface-2);
-  font-size: 1.05rem;
-  font-weight: 600;
-  font-variant-numeric: tabular-nums;
-}
-
-.zero {
-  opacity: 0.4;
-  font-weight: 400;
-}
-
-.turnButtons {
-  display: flex;
-  gap: var(--space-2);
-}
-
-.turnButtons kbd {
-  padding: 0 4px;
-  border: 1px solid currentColor;
-  border-radius: 4px;
-  font-size: 0.7rem;
-  opacity: 0.7;
-}
-
-.journal {
-  grid-area: journal;
-  display: flex;
-  flex-direction: column;
-  min-height: 0;
-  border-left: 1px solid var(--border);
-  background: var(--surface);
-}
-
-.journal h2 {
-  margin: 0;
-  padding: var(--space-2) var(--space-3);
-  font-size: 1rem;
-}
-
-.journal ol {
-  flex: 1;
-  margin: 0;
-  padding: 0 var(--space-3) var(--space-3);
-  overflow-y: auto;
-  list-style: none;
-  font-size: 0.85rem;
-}
-
-.journal li {
-  padding: 3px 0;
-  border-bottom: 1px solid var(--surface-2);
-}
-
-.journal small {
-  color: var(--text-muted);
 }
 
 /* --- Cartes --- */
@@ -403,7 +312,7 @@
 .toast {
   position: fixed;
   left: 50%;
-  bottom: calc(80px + env(safe-area-inset-bottom));
+  bottom: calc(110px + env(safe-area-inset-bottom));
   z-index: 45;
   display: flex;
   align-items: center;
@@ -428,45 +337,26 @@
   display: none;
 }
 
-/* Portrait iPad : zone de jeu au centre, deck / ressources / défausse dans la bande du bas. */
+/* Portrait iPad : ressources et cartes au centre, deck / boutons / défausse dans la bande du bas. */
 @media (orientation: portrait) {
-  .game,
-  .withJournal {
-    grid-template-columns: 120px minmax(0, 1fr) 120px;
-    grid-template-rows: auto auto minmax(0, 1fr) auto;
+  .game {
+    grid-template-columns: 150px minmax(0, 1fr) 150px;
+    grid-template-rows: auto auto auto minmax(0, 1fr) auto;
     grid-template-areas:
       "top top top"
       "perm perm perm"
+      "res res res"
       "play play play"
-      "deck bottom discard";
-  }
-
-  .bottombar {
-    flex-direction: column;
-    justify-content: center;
-    border-top: 1px solid var(--border);
-  }
-
-  .deckSlot,
-  .discardSlot {
-    border-top: 1px solid var(--border);
-    background: var(--surface);
+      "deck actions discard";
   }
 
   .pile {
-    max-width: 96px;
+    max-width: 130px;
   }
 
-  .journal {
-    position: fixed;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    z-index: 30;
-    height: 45dvh;
-    border-top: 1px solid var(--border);
-    border-left: none;
-    box-shadow: 0 -8px 24px rgb(0 0 0 / 0.2);
+  .turnBtn {
+    min-width: 150px;
+    padding: 0 var(--space-4);
   }
 }
 
@@ -705,4 +595,138 @@
 .animFlip {
   background: transparent;
   box-shadow: none;
+}
+
+/* --- Ressources au-dessus des cartes (seulement celles qu'on a) --- */
+.resourceRow {
+  grid-area: res;
+  display: flex;
+  justify-content: center;
+  min-height: 60px;
+  padding: var(--space-2) var(--space-3) 0;
+}
+
+.resources {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-2);
+}
+
+.resource {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-height: 48px;
+  padding: 0 var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  box-shadow: 0 2px 6px rgb(0 0 0 / 0.12);
+  font-size: 1.35rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+/* --- Avancer / Passer : gros, centrés, sous les cartes --- */
+.turnButtons {
+  grid-area: actions;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  padding: var(--space-2) var(--space-3) var(--space-4);
+}
+
+.turnBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-width: 200px;
+  min-height: 60px;
+  padding: 0 var(--space-6);
+  border: 2px solid var(--accent);
+  border-radius: 14px;
+  background: var(--surface);
+  color: var(--accent);
+  font: inherit;
+  font-size: 1.25rem;
+  font-weight: 700;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.turnBtnPrimary {
+  background: var(--accent);
+  color: var(--surface);
+}
+
+.turnBtn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+/* --- Boutons-icônes de la barre du haut : même carré, même rayon --- */
+.iconBtn {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface-2);
+  color: var(--text);
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.iconBtn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.iconBtn[aria-pressed="true"] {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--surface);
+}
+
+/* --- Passage de manche : message flottant central --- */
+.roundBanner {
+  position: fixed;
+  top: 42%;
+  left: 50%;
+  z-index: 70;
+  padding: var(--space-4) var(--space-6);
+  border: 2px solid var(--accent);
+  border-radius: 18px;
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  color: var(--accent);
+  box-shadow: 0 16px 40px rgb(0 0 0 / 0.35);
+  font-size: 2.4rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  animation: round-banner 2200ms ease forwards;
+}
+
+@keyframes round-banner {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.85);
+  }
+  15%,
+  75% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1.04);
+  }
 }

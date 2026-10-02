@@ -3,6 +3,15 @@
 Chaque mise à jour publiée change de version (`package.json`, affichée dans l'appli en bas de l'écran « Mes royaumes »
 et dans la barre de la partie). Convention : `0.5.0` s'affiche **v0.05** ; un correctif `0.5.1` s'affiche **v0.05.1**.
 
+## v0.07 (2 octobre 2026)
+
+- Pioche et défausse plus grandes.
+- Ressources affichées au-dessus des cartes, seulement celles que tu as (en cours + cartes engagées).
+- Barre du haut : boutons carrés identiques avec icônes (royaumes, annuler, infobulles FR).
+- Avancer et Passer : gros boutons centrés sous les cartes.
+- Journal retiré.
+- Nouvelle manche annoncée par un message central qui apparaît puis disparaît.
+
 ## v0.06 (2 octobre 2026)
 
 - Bouton « FR » dans la barre de la partie pour activer ou couper les infobulles en français (mémorisé).

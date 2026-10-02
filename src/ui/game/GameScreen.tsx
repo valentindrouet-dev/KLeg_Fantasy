@@ -26,6 +26,7 @@ import {
 import type { Orientation } from "../../data/schema";
 import { APP_VERSION } from "../../version";
 import { Icon, IconText } from "../common/IconText";
+import { AdvanceIcon, CastleIcon, PassIcon, TranslateIcon, UndoIcon } from "../common/UiIcons";
 import type { TapPoint } from "../common/usePress";
 import { CardActions, type CardOption } from "./CardActions";
 import { zoneAt, type ZoneKind } from "./cardZones";
@@ -137,7 +138,8 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
   const [selected, setSelected] = useState<Selected | null>(null);
   const [inspect, setInspect] = useState<InstanceId | null>(null);
   const [discardOpen, setDiscardOpen] = useState(false);
-  const [journalOpen, setJournalOpen] = useState(() => window.innerWidth >= 1440);
+  const [roundBanner, setRoundBanner] = useState<{ key: number; text: string } | null>(null);
+  const lastRound = useRef<number | null>(null);
   const [pending, setPending] = useState<Pending | null>(null);
   const [endClosed, setEndClosed] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
@@ -227,6 +229,19 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [advance, pass, run, undo, pending, inspect, discardOpen, state?.pending, anim, targeting]);
+
+  // Nouvelle manche : message central qui apparaît puis disparaît.
+  const round = state?.round ?? null;
+  const finalRound = state?.finalRound ?? false;
+  useEffect(() => {
+    if (round === null) return;
+    const before = lastRound.current;
+    lastRound.current = round;
+    if (before === null || round <= before) return;
+    setRoundBanner({ key: round, text: finalRound ? `Manche ${round} · dernière manche` : `Manche ${round}` });
+    const t = window.setTimeout(() => setRoundBanner(null), 2200);
+    return () => window.clearTimeout(t);
+  }, [round, finalRound]);
 
   useEffect(() => {
     if (!toast) return;
@@ -379,8 +394,9 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
       {catalog.resources.map((r) => {
         const have = state.resources[r] ?? 0;
         const more = potential.fixed[r] ?? 0;
+        if (have + more === 0) return null;
         return (
-          <span key={r} className={`${styles.resource} ${have + more === 0 ? styles.zero : ""}`}>
+          <span key={r} className={styles.resource}>
             <Icon id={r} /> {have}
             {more > 0 && <span className={styles.engagedCount}>+{more}</span>}
           </span>
@@ -397,12 +413,12 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
   );
 
   return (
-    <div className={`${styles.game} ${journalOpen ? styles.withJournal : ""}`}>
+    <div className={styles.game}>
       <div className={styles.tooNarrow}>Agrandis la fenêtre pour jouer (744 px de large au minimum).</div>
 
       <header className={styles.topbar}>
-        <a className="btn" href="#/" aria-label="Retour aux royaumes">
-          ☰
+        <a className={styles.iconBtn} href="#/" aria-label="Mes royaumes" title="Mes royaumes">
+          <CastleIcon />
         </a>
         <h1>
           {kingdom.emoji} {kingdom.name}
@@ -413,14 +429,17 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
           </span>
           <small className={styles.version}>{APP_VERSION}</small>
         </h1>
-        <button className="btn" disabled={!canUndo(session)} onClick={undo} title="Annuler (U)">
-          ⟲ Annuler
+        <button className={styles.iconBtn} disabled={!canUndo(session)} onClick={undo} aria-label="Annuler" title="Annuler (U)">
+          <UndoIcon />
         </button>
-        <button className="btn" aria-pressed={tooltipsFr} onClick={toggleTooltipsFr} title="Infobulles en français">
-          FR {tooltipsFr ? "✓" : "✕"}
-        </button>
-        <button className="btn" aria-pressed={journalOpen} onClick={() => setJournalOpen((o) => !o)}>
-          Journal
+        <button
+          className={styles.iconBtn}
+          aria-pressed={tooltipsFr}
+          onClick={toggleTooltipsFr}
+          aria-label="Infobulles en français"
+          title="Infobulles en français"
+        >
+          <TranslateIcon />
         </button>
       </header>
 
@@ -431,6 +450,8 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
       )}
 
       <aside className={styles.deckSlot}>{deck}</aside>
+
+      <div className={styles.resourceRow}>{resources}</div>
 
       <main
         className={styles.play}
@@ -443,40 +464,23 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
         {state.zones.play.map((id) =>
           card(id, cardWidth || undefined, (p) => tapCard(id, p), true, { engaged: engagedNow.includes(id), zones: true }),
         )}
-        {state.zones.play.length === 0 && <p className={styles.muted}>Aucune carte en jeu.</p>}
       </main>
 
       <aside className={styles.discardSlot}>{discard}</aside>
 
-      <footer className={styles.bottombar}>
-        {resources}
-        <div className={styles.turnButtons}>
-          <button className="btn" disabled={!playing || !advance} onClick={() => advance && run([advance])}>
-            Avancer <kbd>A</kbd>
-          </button>
-          <button className="btn btn-primary" disabled={!playing || !pass} onClick={() => pass && run([pass])}>
-            Passer <kbd>P</kbd>
-          </button>
-        </div>
-      </footer>
+      <div className={styles.turnButtons}>
+        <button className={styles.turnBtn} disabled={!playing || !advance} onClick={() => advance && run([advance])} title="Avancer (A)">
+          <AdvanceIcon /> Avancer
+        </button>
+        <button className={`${styles.turnBtn} ${styles.turnBtnPrimary}`} disabled={!playing || !pass} onClick={() => pass && run([pass])} title="Passer (P)">
+          Passer <PassIcon />
+        </button>
+      </div>
 
-      {journalOpen && (
-        <aside className={styles.journal} aria-label="Journal">
-          <h2>Journal</h2>
-          <ol reversed>
-            {[...state.log]
-              .reverse()
-              .slice(0, 200)
-              .map((e, i) => (
-                <li key={state.log.length - i}>
-                  <small>
-                    M{e.round}·T{e.turn}
-                  </small>{" "}
-                  <IconText text={e.text} />
-                </li>
-              ))}
-          </ol>
-        </aside>
+      {roundBanner && (
+        <div className={styles.roundBanner} key={roundBanner.key} role="status">
+          {roundBanner.text}
+        </div>
       )}
 
       {selected && playing && (
