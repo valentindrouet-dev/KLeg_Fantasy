@@ -26,7 +26,9 @@ import {
 import type { Orientation } from "../../data/schema";
 import { APP_VERSION } from "../../version";
 import { Icon, IconText } from "../common/IconText";
-import { AdvanceIcon, CastleIcon, PassIcon, SettingsIcon, SortIcon, StatsIcon, TranslateIcon, UndoIcon } from "../common/UiIcons";
+import { AdvanceIcon, CastleIcon, PassIcon, SaveIcon, SettingsIcon, SortIcon, StatsIcon, TranslateIcon, UndoIcon } from "../common/UiIcons";
+import { downloadText } from "../common/download";
+import { backupFileName, exportKingdom } from "../../persistence/backup";
 import { sortPlay } from "./sortCards";
 import type { TapPoint } from "../common/usePress";
 import { CardActions, type CardOption } from "./CardActions";
@@ -118,20 +120,9 @@ function confirmationFor(catalog: Catalog, state: GameState, plan: Action[]): st
   return parts.length ? parts.join(" ") : null;
 }
 
-function toastFor(action: Action | undefined): string {
-  const extra = "";
-  switch (action?.type) {
-    case "upgrade":
-      return ""; // pas de message après une amélioration (demande du 2026-10-02)
-    case "useEffect":
-      return `Effet appliqué${extra}`;
-    case "advance":
-      return "2 cartes de plus en jeu";
-    case "pass":
-      return "Tour terminé";
-    default:
-      return "";
-  }
+/** Pas de message après une action (demandes du 2026-10-02) : l'annulation reste dans la barre du haut. */
+function toastFor(_action: Action | undefined): string {
+  return "";
 }
 
 export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId: string }) {
@@ -144,7 +135,6 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
   const lastRound = useRef<number | null>(null);
   const [pending, setPending] = useState<Pending | null>(null);
   const [endClosed, setEndClosed] = useState(false);
-  const [notice, setNotice] = useState<string | null>(null);
   const [anim, setAnim] = useState<Anim | null>(null);
   const [targeting, setTargeting] = useState<{ source: InstanceId; options: CardOption[] } | null>(null);
   const { tooltipsFr, toggleTooltipsFr, zoom, setZoom, dimBottom, toggleDimBottom, sortPlay: sortMode, setSortPlay } = usePrefs();
@@ -207,10 +197,6 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
     [catalog, state, commit],
   );
 
-  const flash = useCallback((text: string) => {
-    setNotice(text);
-    window.setTimeout(() => setNotice((n) => (n === text ? null : n)), 3500);
-  }, []);
 
   const advance = legal.find((a) => a.type === "advance");
   const pass = legal.find((a) => a.type === "pass");
@@ -344,17 +330,13 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
       const only = opts[0];
       if (opts.length === 1 && only) {
         if (only.plan) run(only.plan);
-        else flash(`${only.label} : ${only.reason ?? "impossible"}`);
         return;
       }
       // Effet à cible unique (ex. « Discard a friendly card ») : toucher l'effet, puis la carte visée.
       const targeted = opts.filter((o) => o.action.type === "useEffect" && o.action.targets.length === 1);
       if (zone === "effect" && opts.length > 1 && targeted.length === opts.length) {
         const playable = targeted.filter((o) => o.plan);
-        if (playable.length === 0) {
-          flash(`${targeted[0]?.label.replace(/ \[.*$/, "") ?? ""} : ${targeted[0]?.reason ?? "impossible"}`);
-          return;
-        }
+        if (playable.length === 0) return;
         setTargeting({ source: card, options: playable });
         return;
       }
@@ -452,6 +434,14 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
           </span>
           <small className={styles.version}>{APP_VERSION}</small>
         </h1>
+        <button
+          className={styles.iconBtn}
+          onClick={() => downloadText(backupFileName(kingdom), exportKingdom(kingdom, APP_VERSION))}
+          aria-label="Sauvegarder le royaume"
+          title="Sauvegarder le royaume"
+        >
+          <SaveIcon />
+        </button>
         <button className={styles.iconBtn} onClick={() => setStatsOpen(true)} aria-label="Stats" title="Stats">
           <StatsIcon />
         </button>
@@ -634,16 +624,6 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
             setPending(null);
           }}
         />
-      )}
-      {(toast || notice) && (
-        <div className={styles.toast} role="status" key={toast?.id ?? notice}>
-          <IconText text={notice ?? toast?.text ?? ""} />
-          {!notice && canUndo(session) && (
-            <button className="btn" onClick={undo}>
-              Annuler
-            </button>
-          )}
-        </div>
       )}
     </div>
   );

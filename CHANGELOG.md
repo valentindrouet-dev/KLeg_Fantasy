@@ -3,6 +3,14 @@
 Chaque mise à jour publiée change de version (`package.json`, affichée dans l'appli en bas de l'écran « Mes royaumes »
 et dans la barre de la partie). Convention : `0.5.0` s'affiche **v0.05** ; un correctif `0.5.1` s'affiche **v0.05.1**.
 
+## v0.13 (2 octobre 2026)
+
+- Le zoom (⚙) ne change plus que la taille des cartes en jeu (60 à 200 %) ; interface, boutons, pioche et défausse restent à 100 %.
+- Bouton « Sauvegarder le royaume » dans la partie : télécharge un fichier de sauvegarde.
+- Bouton « Importer une sauvegarde » sur l'accueil : la partie est rejouée depuis le fichier (fichier abîmé refusé).
+- Toucher à deux doigts : contour bleu épais au lieu du drapeau.
+- Plus aucun message en bas après une action ou quand une action est impossible.
+
 ## v0.12 (2 octobre 2026)
 
 - Plus de message « Annuler » après une amélioration.

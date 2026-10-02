@@ -5,7 +5,8 @@ import { KINGDOM_EMOJIS, newKingdomId, randomKingdomName, summarize, type Kingdo
 import { Dialog } from "../common/Dialog";
 import { IconText } from "../common/IconText";
 import { APP_VERSION } from "../../version";
-import { CardsIcon, CopyIcon, EditIcon, PlayIcon, PlusIcon, RestartIcon, TrashIcon } from "../common/UiIcons";
+import { CardsIcon, CopyIcon, EditIcon, ImportIcon, PlayIcon, PlusIcon, RestartIcon, TrashIcon } from "../common/UiIcons";
+import { importKingdom } from "../../persistence/backup";
 import styles from "./Kingdoms.module.css";
 
 // Écran « Mes royaumes » (spec 6.1) : premier écran de l'appli.
@@ -129,6 +130,7 @@ export function KingdomsScreen({ catalog }: { catalog: Catalog }) {
   const [creating, setCreating] = useState(false);
   const [menu, setMenu] = useState<Menu | null>(null);
   const [search, setSearch] = useState("");
+  const [importError, setImportError] = useState<string | null>(null);
 
   const refresh = useCallback(() => void listKingdoms().then(setKingdoms), []);
   useEffect(refresh, [refresh]);
@@ -142,6 +144,28 @@ export function KingdomsScreen({ catalog }: { catalog: Catalog }) {
         {(kingdoms?.length ?? 0) > 6 && (
           <input className={styles.search} placeholder="Rechercher" value={search} onChange={(e) => setSearch(e.target.value)} />
         )}
+        <label className={styles.tool} aria-label="Importer une sauvegarde" title="Importer une sauvegarde">
+          <ImportIcon />
+          <input
+            type="file"
+            accept="application/json,.json"
+            hidden
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              e.target.value = "";
+              if (!file) return;
+              void file.text().then(async (text) => {
+                try {
+                  const k = importKingdom(catalog, text, (kingdoms ?? []).map((x) => x.id));
+                  await saveKingdom(k);
+                  refresh();
+                } catch (err) {
+                  setImportError(err instanceof Error ? err.message : "Import impossible.");
+                }
+              });
+            }}
+          />
+        </label>
         <a className={styles.tool} href="#/cartes" aria-label="Visionneuse des cartes" title="Visionneuse des cartes">
           <CardsIcon />
         </a>
@@ -206,6 +230,11 @@ export function KingdomsScreen({ catalog }: { catalog: Catalog }) {
         </a>
       </footer>
 
+      {importError && (
+        <Dialog title="Import impossible" onClose={() => setImportError(null)}>
+          <p>{importError}</p>
+        </Dialog>
+      )}
       {creating && <NewKingdomDialog catalog={catalog} onClose={() => setCreating(false)} />}
       {menu?.kind === "rename" && (
         <RenameDialog

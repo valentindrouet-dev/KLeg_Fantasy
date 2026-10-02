@@ -10,13 +10,13 @@ export type { SortMode };
 export type Prefs = {
   tooltipsFr: boolean; // infobulles en français
   sortPlay: SortMode; // ordre des cartes en jeu
-  zoom: number; // échelle de l'interface (0.8 à 1.6)
+  zoom: number; // taille des cartes en jeu (0.6 à 2), l'interface ne change pas
   dimBottom: boolean; // griser la moitié basse des cartes (stage suivant)
 };
 
 const DEFAULTS: Prefs = { tooltipsFr: true, sortPlay: "resources", zoom: 1, dimBottom: false };
-export const ZOOM_MIN = 0.8;
-export const ZOOM_MAX = 1.6;
+export const ZOOM_MIN = 0.6;
+export const ZOOM_MAX = 2;
 
 function read(): Prefs {
   try {
@@ -36,11 +36,6 @@ function save(p: Prefs): void {
   }
 }
 
-/** Applique l'échelle à toute l'appli (tailles en rem et variables de thème). */
-export function applyZoom(zoom: number): void {
-  document.documentElement.style.setProperty("--zoom", String(zoom));
-}
-
 type Store = Prefs & {
   toggleTooltipsFr: () => void;
   toggleDimBottom: () => void;
@@ -54,7 +49,6 @@ export const usePrefs = create<Store>((set, get) => {
     const next = { tooltipsFr, sortPlay, zoom, dimBottom };
     set(next);
     save(next);
-    applyZoom(next.zoom);
   };
   return {
     ...read(),

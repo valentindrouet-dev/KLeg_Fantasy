@@ -23,7 +23,7 @@ type Props = {
   engaged?: boolean;
   targetable?: boolean; // cible possible de l'effet en cours
   dimBottom?: boolean; // griser la moitié basse (stage suivant)
-  flagged?: boolean; // petit drapeau posé par un toucher à deux doigts
+  flagged?: boolean; // contour bleu posé par un toucher à deux doigts
   onTwoFinger?: () => void;
   dimmed?: boolean;
   badge?: ReactNode;
@@ -95,6 +95,7 @@ export function CardView(props: Props) {
     selected && styles.selected,
     engaged && styles.engaged,
     targetable && styles.targetable,
+    flagged && styles.marked,
     dimmed && styles.dimmed,
     interactive && styles.interactive,
     anim && (anim.kind === "rotate" ? styles.animRotate : styles.animFlip),
@@ -151,14 +152,6 @@ export function CardView(props: Props) {
         />
       )}
       {badge && <span className={styles.badge}>{badge}</span>}
-      {flagged && (
-        <span className={styles.flag} aria-label="Carte marquée">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M5 21V4" stroke="#3a2a14" strokeWidth="2" strokeLinecap="round" />
-            <path d="M6 4h12l-3 4 3 4H6z" fill="#d32f2f" stroke="#7f1d1d" strokeWidth="1" strokeLinejoin="round" />
-          </svg>
-        </span>
-      )}
       {hover && !anim && (fr || (action && tooltipsFr)) && (
         <div
           className={styles.tooltip}

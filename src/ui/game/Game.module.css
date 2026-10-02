@@ -109,7 +109,7 @@
   gap: 12px;
   min-width: 0;
   min-height: 0;
-  padding: 1.8rem var(--space-3) var(--space-3);
+  padding: var(--space-3);
   overflow: hidden;
 }
 
@@ -861,22 +861,10 @@
   height: 1.3rem;
 }
 
-/* Drapeau (toucher à deux doigts) */
-.flag {
-  position: absolute;
-  top: -1.6rem;
-  left: 50%;
-  z-index: 6;
-  width: 2.2rem;
-  height: 2.2rem;
-  filter: drop-shadow(0 2px 3px rgb(0 0 0 / 0.4));
-  transform: translateX(-50%);
-  pointer-events: none;
-}
-
-.flag svg {
-  width: 100%;
-  height: 100%;
+/* Carte marquée (toucher à deux doigts) : contour bleu épais */
+.marked {
+  outline: 5px solid #1e6fd9;
+  outline-offset: 3px;
 }
 
 /* Cartes en jeu : pas de zoom de page au pincement (deux doigts = drapeau) */
@@ -888,5 +876,4 @@
 .playZoomed {
   align-content: flex-start;
   overflow-y: auto;
-  padding-top: 1.8rem;
 }

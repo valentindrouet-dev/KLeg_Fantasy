@@ -134,3 +134,19 @@ export function StatsIcon() {
     </svg>
   );
 }
+
+export function SaveIcon() {
+  return (
+    <svg {...base} aria-hidden="true">
+      <path d="M12 4v11M7 10l5 5 5-5M5 20h14" />
+    </svg>
+  );
+}
+
+export function ImportIcon() {
+  return (
+    <svg {...base} aria-hidden="true">
+      <path d="M12 20V9M7 14l5-5 5 5M5 4h14" />
+    </svg>
+  );
+}

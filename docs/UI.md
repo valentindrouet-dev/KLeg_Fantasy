@@ -38,13 +38,15 @@ Routage par hash (`src/ui/App.tsx`) : `#/` Mes royaumes, `#/partie/<id>` partie,
   cible dans la défausse : choix dans la défausse. Échap annule.
 - **Fin de tour animée** (`useCardMotion.ts`) : cartes vers la défausse, nouvelles cartes depuis la pioche.
 - **Bouton FR** : active ou coupe les infobulles en français (mémorisé dans le navigateur).
-- **Drapeau** : toucher une carte en jeu avec deux doigts (Alt + clic sur ordinateur) ; il tombe quand la carte quitte le jeu.
+- **Marque** : toucher une carte en jeu avec deux doigts (Alt + clic sur ordinateur) pose un contour bleu ; il tombe quand la carte quitte le jeu.
+- **Sauvegarde** : bouton ⤓ dans la partie (fichier JSON) ; « Importer » ⤒ sur l'accueil (`persistence/backup.ts`, partie rejouée à l'import).
+- **Messages** : aucun message après une action ni quand une action est impossible.
 - **Zone neutre** d'une carte : bulle de traduction de la moitié touchée, si FR est activé (sinon rien). La feuille d'actions ne s'ouvre que pour un choix (ex. Bazaar).
 - **Appli iPad** : `public/manifest.webmanifest`, icônes pièce sur fond noir (`scripts/make-app-icons.ts`).
 - **Tri ⇅** : cartes en jeu par ressource (défaut), par type de terrain ou ordre d'arrivée (`sortCards.ts`, affichage seulement).
 - **Stats** : cartes par zone, par étape (1 à 4), production par ressource, gloire, types (en anglais), découvertes / détruites / boîte ; cases colorées (`engine/stats.ts`).
 - **Inspection** : face visible telle qu'elle est posée + autre face retournée de haut en bas (1 en haut ↔ 3 en haut).
-- **Réglages ⚙** : zoom de toute l'interface (variable CSS `--zoom`, tailles en rem) et grisage de la moitié basse des cartes.
+- **Réglages ⚙** : zoom des cartes en jeu seulement (60 à 200 %, la zone défile au besoin) et grisage de la moitié basse des cartes.
 - **Mises à jour** : l'appli compare sa version à `version.json` (publié au build) au démarrage, au retour au premier plan
   et toutes les 15 min ; un bouton recharge la page en contournant le cache (utile pour l'appli installée sur l'iPad).
 - **Icônes** : ressources, gloire et stickers détourés de la planche fournie (`data/icons/stickers-sheet.webp`, `scripts/extract-sheet-icons.ts`) ; types d'effet découpés dans les cartes (`scripts/extract-icons.ts`).
