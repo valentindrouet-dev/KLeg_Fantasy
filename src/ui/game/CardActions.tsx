@@ -72,7 +72,8 @@ export function CardActions({ catalog, state, card, anchor, options, engageLabel
         {options.length > 0 && (
           <section>
             {options.map((o, i) =>
-              o.plan ? (
+              o.plan || (o.reason ?? "").startsWith("Il manque") ? (
+                // Impayable faute de ressources : le toucher fait choisir les cartes qui paient.
                 <button key={i} className={styles.actionItem} onClick={() => onRun(o)}>
                   <IconText text={o.label} />
                 </button>

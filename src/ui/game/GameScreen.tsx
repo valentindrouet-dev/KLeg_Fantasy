@@ -5,6 +5,7 @@ import {
   activeStage,
   applyAction,
   candidateActions,
+  paymentCandidates,
   canPeekSecond,
   cardBadges,
   canUndo,
@@ -27,7 +28,7 @@ import {
 } from "../../engine";
 import type { Orientation } from "../../data/schema";
 import { APP_VERSION } from "../../version";
-import { Icon, IconText } from "../common/IconText";
+import { IconText } from "../common/IconText";
 import { AdvanceIcon, CastleIcon, PassIcon, SaveIcon, SettingsIcon, SortIcon, StatsIcon, TranslateIcon, UndoIcon } from "../common/UiIcons";
 import { downloadText } from "../common/download";
 import { feedbackUrl } from "../common/feedback";
@@ -141,6 +142,8 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
   const [endClosed, setEndClosed] = useState(false);
   const [anim, setAnim] = useState<Anim | null>(null);
   const [targeting, setTargeting] = useState<{ source: InstanceId; options: CardOption[] } | null>(null);
+  /** Effet ou amélioration touché sans assez de ressources : on touche ensuite les cartes qui paient. */
+  const [paying, setPaying] = useState<{ source: InstanceId; action: Action } | null>(null);
   const { tooltipsFr, toggleTooltipsFr, zoom, setZoom, dimBottom, toggleDimBottom, sortPlay: sortMode, setSortPlay, theme, setTheme } = usePrefs();
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [sortOpen, setSortOpen] = useState(false);
@@ -222,11 +225,15 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
   // Clavier (spec 7.6) : A = Avancer, P = Passer, U ou Cmd+Z = Annuler.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && paying) {
+        setPaying(null);
+        return;
+      }
       if (e.key === "Escape" && targeting) {
         setTargeting(null);
         return;
       }
-      if (e.target instanceof HTMLInputElement || pending || inspect || discardOpen || state?.pending || anim || targeting) return;
+      if (e.target instanceof HTMLInputElement || pending || inspect || discardOpen || state?.pending || anim || targeting || paying) return;
       const key = e.key.toLowerCase();
       const mod = e.metaKey || e.ctrlKey;
       if ((key === "z" && mod) || (key === "u" && !mod)) {
@@ -237,7 +244,7 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [advance, pass, run, undo, pending, inspect, discardOpen, state?.pending, anim, targeting]);
+  }, [advance, pass, run, undo, pending, inspect, discardOpen, state?.pending, anim, targeting, paying]);
 
   // Bulle de traduction : se ferme au toucher suivant ou après quelques secondes.
   useEffect(() => {
@@ -330,7 +337,34 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
     setBubble({ card, half: p.y < 0.5 ? "top" : "bottom", x: r.left + p.x * r.width, y: r.top + p.y * r.height });
   };
 
+  /** Cartes qui peuvent payer l'action en attente de paiement. */
+  const payers = new Set(paying ? paymentCandidates(catalog, state, paying.action, engagedNow) : []);
+
+  /** Option impayable : si des cartes en jeu peuvent fournir ce qui manque, on passe au choix des cartes qui paient. */
+  const startPaying = (source: InstanceId, o: CardOption): boolean => {
+    if (o.plan || !(o.reason ?? "").startsWith("Il manque")) return false;
+    if (paymentCandidates(catalog, state, o.action, engagedNow).length === 0) return false;
+    setSelected(null);
+    setPaying({ source, action: o.action });
+    return true;
+  };
+
   const tapCard = (card: InstanceId, p: TapPoint) => {
+    if (paying) {
+      if (!payers.has(card)) {
+        setPaying(null);
+        return;
+      }
+      // La carte touchée est engagée ; dès que les cartes engagées couvrent le coût, l'action part.
+      const nextEngaged = [...engagedNow, card];
+      toggleEngaged(card);
+      const plan = planWithEngaged(catalog, state, paying.action, nextEngaged);
+      if (plan) {
+        setPaying(null);
+        run(plan);
+      }
+      return;
+    }
     if (targeting) {
       const o = targetOptions.get(card);
       setTargeting(null);
@@ -348,6 +382,7 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
       const only = opts[0];
       if (opts.length === 1 && only) {
         if (only.plan) run(only.plan);
+        else startPaying(card, only);
         return;
       }
       // Effet à cible unique (ex. « Discard a friendly card ») : toucher l'effet, puis la carte visée.
@@ -378,8 +413,8 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
       flagged={extra?.zones ? flagged.includes(id) : undefined}
       onTwoFinger={extra?.zones ? () => toggleFlag(id) : undefined}
       dimBottom={dimBottom && extra?.zones !== false}
-      targetable={targeting ? targetOptions.has(id) : undefined}
-      dimmed={targeting ? !targetOptions.has(id) && id !== targeting.source : undefined}
+      targetable={targeting ? targetOptions.has(id) : paying ? payers.has(id) : undefined}
+      dimmed={targeting ? !targetOptions.has(id) && id !== targeting.source : paying ? !payers.has(id) && id !== paying.source : undefined}
       badge={badgeFor(id, extra?.engaged ?? false)}
       onTap={onTap}
       onLongPress={inspectable ? () => setInspect(id) : undefined}
@@ -432,22 +467,44 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
     </div>
   );
   // Ressources : icône + total (en cours + cartes engagées), seulement celles qu'on a.
+  // Deux compteurs (demande du 2026-10-02) : en vert, ce qui est engrangé (ressources en cours + cartes engagées) ;
+  // en gris, ce que les autres cartes en jeu peuvent encore produire.
+  const available = engagedPotential(
+    catalog,
+    state,
+    state.zones.play.filter((id) => !engagedNow.includes(id)),
+  );
+  const counters = (fixed: Record<string, number>, choices: ResourceId[][][], extra: Record<string, number> = {}) => [
+    ...catalog.resources.flatMap((r) => {
+      const total = (extra[r] ?? 0) + (fixed[r] ?? 0);
+      return total ? [{ key: r, text: `{${r}}`, n: total }] : [];
+    }),
+    ...choices.map((opts, i) => ({ key: `c${i}`, text: opts.map((o) => icons(o)).join("/"), n: 1 })),
+  ];
+  const banked = counters(potential.fixed, potential.choices, state.resources);
+  const reachable = counters(available.fixed, available.choices);
   const resources = (
     <div className={styles.resources} aria-label="Ressources">
-      {catalog.resources.map((r) => {
-        const total = (state.resources[r] ?? 0) + (potential.fixed[r] ?? 0);
-        if (total === 0) return null;
-        return (
-          <span key={r} className={styles.resource}>
-            <Icon id={r} /> {total}
-          </span>
-        );
-      })}
-      {potential.choices.map((opts, i) => (
-        <span key={`c${i}`} className={styles.resource}>
-          <IconText text={opts.map((o) => icons(o)).join("/")} /> 1
-        </span>
-      ))}
+      <div className={styles.banked} aria-label="Ressources engrangées">
+        {banked.length === 0 ? (
+          <span className={styles.counter}>0</span>
+        ) : (
+          banked.map((c) => (
+            <span key={c.key} className={styles.counter}>
+              <IconText text={c.text} /> {c.n}
+            </span>
+          ))
+        )}
+      </div>
+      {reachable.length > 0 && (
+        <div className={styles.reachable} aria-label="Ressources disponibles sur les cartes en jeu">
+          {reachable.map((c) => (
+            <span key={c.key} className={styles.counter}>
+              <IconText text={c.text} /> {c.n}
+            </span>
+          ))}
+        </div>
+      )}
     </div>
   );
 
@@ -664,7 +721,7 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
             toggleEngaged(selected.card);
             setSelected(null);
           }}
-          onRun={(o) => o.plan && run(o.plan)}
+          onRun={(o) => (o.plan ? run(o.plan) : startPaying(selected.card, o))}
           onInspect={() => {
             setInspect(selected.card);
             setSelected(null);
@@ -673,7 +730,6 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
         />
       )}
       {statsOpen && <StatsDialog catalog={catalog} state={state} onClose={() => setStatsOpen(false)} />}
-      {inspect && <Inspector catalog={catalog} state={state} card={inspect} onClose={() => setInspect(null)} />}
       {targeting && targetsInDiscard.length > 0 && (
         <CardListDialog
           catalog={catalog}
@@ -691,7 +747,8 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
       {discardOpen && (
         <CardListDialog catalog={catalog} state={state} title="Défausse" cards={state.zones.discard} onInspect={setInspect} onClose={() => setDiscardOpen(false)} />
       )}
-      {state.pending && <DecisionDialog catalog={catalog} state={state} onAction={(a) => perform([a])} onRestart={restart} />}
+      {state.pending && <DecisionDialog catalog={catalog} state={state} onAction={(a) => perform([a])} onRestart={restart} onInspect={setInspect} />}
+      {inspect && <Inspector catalog={catalog} state={state} card={inspect} onClose={() => setInspect(null)} />}
       {state.phase === "gameOver" && !endClosed && (
         <EndDialog catalog={catalog} state={state} onBack={() => (window.location.hash = "#/")} onClose={() => setEndClosed(true)} />
       )}

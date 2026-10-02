@@ -3,7 +3,7 @@ import { applyAction, getLegalActions, isLegal, usableEffects } from "./actions"
 import { producedIcons, productionChoices, productionGroups } from "./production";
 import { activeStage, countIcons } from "./state";
 import type { Action, Catalog, GameState, InstanceId } from "./types";
-import { combinations } from "./upgrade";
+import { combinations, upgradeCost } from "./upgrade";
 
 // Paiement avec des cartes « engagées » (interface) : le joueur marque les cartes dont il compte utiliser
 // la ressource ; elles ne produisent (et ne sont défaussées) qu'au moment de payer. Produire à n'importe quel
@@ -11,7 +11,10 @@ import { combinations } from "./upgrade";
 
 /** Ressources dépensées par une action (coût d'amélioration, coût d'un effet), ou null. */
 export function actionCost(catalog: Catalog, s: GameState, a: Action): readonly ResourceId[] | null {
-  if (a.type === "upgrade") return activeStage(catalog, s, a.card)?.upgrades.find((u) => u.id === a.upgrade)?.cost ?? null;
+  if (a.type === "upgrade") {
+    const u = activeStage(catalog, s, a.card)?.upgrades.find((x) => x.id === a.upgrade);
+    return u ? upgradeCost(catalog, s, a.card, u) : null;
+  }
   if (a.type === "useEffect") return usableEffects(catalog, s, a.card).find((e) => e.effect.id === a.effect)?.impl.cost ?? null;
   return null;
 }
@@ -78,6 +81,24 @@ export function planWithEngaged(
 export function candidateActions(catalog: Catalog, s: GameState, card: InstanceId): Action[] {
   const rich: GameState = { ...s, resources: Object.fromEntries(catalog.resources.map((r) => [r, 99])) };
   return getLegalActions(catalog, rich).filter((a) => "card" in a && a.card === card && a.type !== "produce");
+}
+
+/**
+ * Cartes en jeu qui peuvent aider à payer `action` (effet ou amélioration touché sans assez de ressources) :
+ * elles produisent une ressource du coût et ne sont ni la carte de l'action, ni une de ses cibles, ni déjà engagées.
+ */
+export function paymentCandidates(catalog: Catalog, s: GameState, action: Action, engaged: readonly InstanceId[]): InstanceId[] {
+  const cost = actionCost(catalog, s, action);
+  if (!cost?.length) return [];
+  const excluded = new Set<InstanceId>([
+    ...engaged,
+    ...("card" in action ? [action.card] : []),
+    ...("targets" in action ? action.targets : []),
+    ...("discard" in action ? action.discard : []),
+  ]);
+  return s.zones.play.filter(
+    (id) => !excluded.has(id) && productionGroups(catalog, s, id).some((g) => g.options.some((o) => o.some((r) => cost.includes(r)))),
+  );
 }
 
 /** Ressources que représentent les cartes engagées (une option par groupe ; les « / » sont listés à part). */

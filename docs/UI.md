@@ -55,6 +55,10 @@ Routage par hash (`src/ui/App.tsx`) : `#/` Mes royaumes, `#/partie/<id>` partie,
 - **Nouvelles cartes** (début de manche) : fenêtre avec les cartes découvertes, « Mélanger dans le deck » (décision `newCards`).
 - **Mélange animé** (`useCardMotion.ts`, `reshuffle`) : défausse → pioche, pioche battue, puis les cartes du tour.
 - **Cartes bloquées** : sous leur bloquante, le haut dépasse de 18 % (`BLOCKED_PEEK`) ; la place est comptée par `fitSlots`.
+- **Payer après coup** : effet ou amélioration touché sans assez de ressources → les cartes en jeu qui peuvent fournir
+  ce qui manque brillent (`paymentCandidates`), les toucher les engage, l'action part dès que `planWithEngaged` la couvre.
+- **Compteurs de ressources** : vert = engrangé (ressources en cours + cartes engagées), gris = production des autres cartes en jeu.
+- **Nouvelles cartes** : appui long sur une carte = inspection recto verso (l'inspection s'ouvre par-dessus les fenêtres).
 - **Ennemis** : ligne à eux en haut de la zone de jeu si les cartes y gardent au moins 75 % de leur taille, sinon en tête.
 - **Réglages ⚙** : thème Auto / Clair / Sombre (data-theme sur <html>), zoom des cartes en jeu seulement (60 à 200 %, la zone défile au besoin) et grisage de la moitié basse des cartes.
 - **Mises à jour** : l'appli compare sa version à `version.json` (publié au build) au démarrage, au retour au premier plan

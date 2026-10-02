@@ -10,7 +10,7 @@ export { productionGroups, productionCount, canAddResourceSticker, addResourceSt
 export { describeAction } from "./describe";
 export { activeStage, cardName, zoneOf, formatCounts, totalResources, instance, template, stageIdAt, printedStage } from "./state";
 export { randomSeed } from "./rng";
-export { planWithEngaged, candidateActions, engagedPotential, actionCost } from "./payment";
+export { planWithEngaged, candidateActions, engagedPotential, actionCost, paymentCandidates } from "./payment";
 export { kingdomStats, type KingdomStats } from "./stats";
 export { manualEffects, validOrientations, checkKey, isManualOpValid } from "./manual";
 export { cardBadges } from "./badges";

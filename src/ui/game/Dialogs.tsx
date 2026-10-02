@@ -56,11 +56,13 @@ export function DecisionDialog({
   state,
   onAction,
   onRestart,
+  onInspect,
 }: {
   catalog: Catalog;
   state: GameState;
   onAction: (a: Action) => void;
   onRestart: () => void;
+  onInspect: (card: InstanceId) => void;
 }) {
   const p = state.pending;
   if (!p) return null;
@@ -132,7 +134,14 @@ export function DecisionDialog({
       >
         <div className={styles.decisionRow}>
           {p.cards.map((id) => (
-            <CardView key={id} template={tOf(id)} orientation={instance(state, id).orientation} label={cardName(catalog, state, id)} width={width} />
+            <CardView
+              key={id}
+              template={tOf(id)}
+              orientation={instance(state, id).orientation}
+              label={cardName(catalog, state, id)}
+              width={width}
+              onLongPress={() => onInspect(id)}
+            />
           ))}
         </div>
       </Dialog>
