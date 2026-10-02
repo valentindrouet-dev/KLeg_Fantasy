@@ -6,7 +6,10 @@ import { useRef, type MouseEvent, type PointerEvent } from "react";
 const LONG_PRESS_MS = 450;
 const MOVE_TOLERANCE = 10;
 
-export function usePress(onTap: () => void, onLongPress?: () => void) {
+/** Position du tap, relative à l'élément (0..1). */
+export type TapPoint = { x: number; y: number };
+
+export function usePress(onTap: (p: TapPoint) => void, onLongPress?: () => void) {
   const timer = useRef<number | undefined>(undefined);
   const start = useRef<{ x: number; y: number } | null>(null);
   const fired = useRef(false);
@@ -33,10 +36,12 @@ export function usePress(onTap: () => void, onLongPress?: () => void) {
       const s = start.current;
       if (s && Math.hypot(e.clientX - s.x, e.clientY - s.y) > MOVE_TOLERANCE) cancel();
     },
-    onPointerUp: () => {
+    onPointerUp: (e: PointerEvent) => {
       const wasPressed = start.current !== null;
       cancel();
-      if (wasPressed && !fired.current) onTap();
+      if (!wasPressed || fired.current) return;
+      const r = (e.currentTarget as HTMLElement).getBoundingClientRect();
+      onTap({ x: (e.clientX - r.left) / r.width, y: (e.clientY - r.top) / r.height });
     },
     onPointerLeave: cancel,
     onPointerCancel: cancel,

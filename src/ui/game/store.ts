@@ -7,12 +7,16 @@ import {
   undo as undoSession,
   type Action,
   type Catalog,
+  type GameState,
+  type InstanceId,
   type Session,
 } from "../../engine";
 import { getKingdom, saveKingdom } from "../../persistence/db";
 import { summarize, type Kingdom } from "../../persistence/kingdoms";
 
-// Store de l'écran de partie : session du moteur + royaume, sauvegarde automatique après chaque action.
+// Store de l'écran de partie : session du moteur + royaume, sauvegarde automatique après chaque geste.
+// Les cartes « engagées » (ressource réservée, pas encore produite) ne vivent que dans l'interface :
+// elles ne produisent qu'au paiement (voir planWithEngaged).
 
 type Toast = { id: number; text: string };
 
@@ -21,8 +25,12 @@ type GameStore = {
   kingdom: Kingdom | null;
   session: Session | null;
   toast: Toast | null;
+  engaged: InstanceId[];
+  /** Nombre d'actions du moteur par geste du joueur, pour annuler un geste d'un coup. */
+  groups: number[];
   load: (catalog: Catalog, id: string) => Promise<void>;
-  perform: (action: Action, toast?: string) => void;
+  perform: (actions: Action[], toast?: string) => void;
+  toggleEngaged: (card: InstanceId) => void;
   undo: () => void;
   dismissToast: () => void;
 };
@@ -42,14 +50,22 @@ function persist(catalog: Catalog, kingdom: Kingdom, session: Session): Kingdom 
   return next;
 }
 
+/** Les engagements tombent quand la carte quitte le jeu ou qu'un nouveau tour commence. */
+function keepEngaged(engaged: InstanceId[], before: GameState, after: GameState): InstanceId[] {
+  if (before.round !== after.round || before.turn !== after.turn) return [];
+  return engaged.filter((id) => after.zones.play.includes(id));
+}
+
 export const useGame = create<GameStore>((set, get) => ({
   status: "idle",
   kingdom: null,
   session: null,
   toast: null,
+  engaged: [],
+  groups: [],
 
   load: async (catalog, id) => {
-    set({ status: "loading", kingdom: null, session: null, toast: null });
+    set({ status: "loading", kingdom: null, session: null, toast: null, engaged: [], groups: [] });
     const kingdom = await getKingdom(id);
     if (!kingdom) {
       set({ status: "missing" });
@@ -58,22 +74,35 @@ export const useGame = create<GameStore>((set, get) => ({
     set({ status: "ready", kingdom, session: resumeSession(catalog, kingdom.record, kingdom.state) });
   },
 
-  perform: (action, toast) => {
-    const { session, kingdom } = get();
-    if (!session || !kingdom) return;
-    const next = act(session, action);
+  perform: (actions, toast) => {
+    const { session, kingdom, engaged, groups } = get();
+    if (!session || !kingdom || actions.length === 0) return;
+    const next = actions.reduce((s, a) => act(s, a), session);
     set({
       session: next,
       kingdom: persist(session.catalog, kingdom, next),
+      engaged: keepEngaged(engaged, current(session), current(next)),
+      groups: [...groups, actions.length],
       toast: toast && canUndo(next) ? { id: ++toastSeq, text: toast } : null,
     });
   },
 
+  toggleEngaged: (card) =>
+    set(({ engaged }) => ({ engaged: engaged.includes(card) ? engaged.filter((c) => c !== card) : [...engaged, card] })),
+
   undo: () => {
-    const { session, kingdom } = get();
+    const { session, kingdom, groups } = get();
     if (!session || !kingdom || !canUndo(session)) return;
-    const next = undoSession(session);
-    set({ session: next, kingdom: persist(session.catalog, kingdom, next), toast: null });
+    let next = session;
+    const count = groups.at(-1) ?? 1;
+    for (let i = 0; i < count && canUndo(next); i++) next = undoSession(next);
+    set({
+      session: next,
+      kingdom: persist(session.catalog, kingdom, next),
+      groups: groups.slice(0, -1),
+      engaged: [],
+      toast: null,
+    });
   },
 
   dismissToast: () => set({ toast: null }),

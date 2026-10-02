@@ -1,4 +1,4 @@
-# Interface (phase P2)
+# Interface (phases P2 et retours)
 
 Routage par hash (`src/ui/App.tsx`) : `#/` Mes royaumes, `#/partie/<id>` partie, `#/cartes` visionneuse de données.
 
@@ -10,15 +10,27 @@ Routage par hash (`src/ui/App.tsx`) : `#/` Mes royaumes, `#/partie/<id>` partie,
 | Partie | `src/ui/game/GameScreen.tsx` | Barre du haut (royaume, manche, tour, gloire, annuler, journal), permanentes, deck (carte du dessus visible), zone de jeu, défausse, ressources, Avancer / Passer |
 | Visionneuse | `src/ui/viewer/` | Vérification des fiches (P0) |
 
-## Interactions (spec 7.5 et 7.6)
+## Interactions (spec 7.5 et 7.6, demandes du 2026-10-02)
 
-- **Tap** sur une carte en jeu : feuille d'actions ancrée à la carte. Seules les actions légales sont cliquables ;
-  les améliorations impossibles affichent la raison (« Il manque … »), les effets non automatisés sont signalés.
+- **Engager une carte** : toucher la zone de ressource d'une carte en jeu (sous le bandeau, à gauche) la marque « engagée ».
+  Elle reste en jeu et ne produit qu'au moment de payer (amélioration, effet) : `planWithEngaged` choisit les cartes
+  à produire (le moins possible, l'option du « / » qui convient). Avancer ne fait donc rien perdre des cartes engagées ;
+  seules les ressources déjà gagnées (ex. les 3 bois de Forest) se perdent quand de nouvelles cartes entrent en jeu.
+  La barre du bas affiche « 0 +2 » : ressources en cours + ressources des cartes engagées.
+- **Zones cliquables** (`cardZones.ts`) : boîte d'amélioration → en haut à droite, boîte ↓ à droite contre la ligne
+  du milieu, texte d'effet au centre ; toucher la zone fait l'action si elle est unique et payable. Au survol (souris,
+  trackpad), la zone s'éclaire et une bulle annonce l'action.
+- **Pioche** : toucher le deck = Avancer.
+- **Traduction** : au survol d'une carte, bulle avec le nom et le texte en français du stage pointé (moitié haute =
+  stage actif, moitié basse = stage suivant). Sur iPad, la traduction du stage actif est dans la feuille d'actions.
+  Textes : `data/translations/FeudalKingdom.fr.json` (aide à la lecture, les fiches restent en anglais).
+- **Ailleurs sur la carte** : feuille d'actions (engager, améliorations, effets payables avec les cartes engagées,
+  raisons d'impossibilité).
 - **Appui long** ou **clic droit** : inspection des deux faces (cartes en jeu, défausse, permanentes ; jamais la boîte).
-- **Défausse** : tap pour voir toute la pile.
+- **Défausse** : toucher pour voir toute la pile.
 - **Décisions** (parchemin, choix de découverte, choix de face) : fenêtre bloquante tant que le choix n'est pas fait.
-- **Confirmation** avant une action qui ferait perdre des ressources non dépensées, une destruction ou un effet à usage unique ;
-  sinon un message « Annuler » de 4 secondes.
+- **Confirmation** avant de perdre des ressources déjà produites, une destruction, un effet à usage unique, et une
+  amélioration en annulation stricte ; sinon un message « Annuler » de 4 secondes qui annule tout le geste.
 - **Clavier** : A = Avancer, P = Passer, U ou Cmd+Z = Annuler, Échap = fermer.
 - Zone de jeu sans défilement : la taille des cartes s'adapte au nombre de cartes (`fitCards.ts`).
 - Portrait iPad : deck, ressources et défausse passent dans la bande du bas ; journal en panneau qui monte du bas.
