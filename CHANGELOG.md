@@ -3,6 +3,16 @@
 Chaque mise à jour publiée change de version (`package.json`, affichée dans l'appli en bas de l'écran « Mes royaumes »
 et dans la barre de la partie). Convention : `0.5.0` s'affiche **v0.05** ; un correctif `0.5.1` s'affiche **v0.05.1**.
 
+## v0.06 (2 octobre 2026)
+
+- Bouton « FR » dans la barre de la partie pour activer ou couper les infobulles en français (mémorisé).
+- Vraies icônes du jeu (pièce, bois, pierre, métal, épée, marchandise, ✓, sablier, ∞, case, détruire), découpées dans les cartes.
+- Animations fluides : rotation d'un seul mouvement, vrai retournement à deux faces.
+- Fin de tour animée : les cartes volent vers la défausse, les nouvelles glissent depuis la pioche.
+- Cartes plus grandes dans les fenêtres (choix de face, découvertes, parchemins, inspection).
+- Textes explicatifs retirés.
+- Effet à cible : toucher l'effet, puis la carte visée (ex. Plains : défausser une autre carte amie). Cible dans la défausse : choix dans la défausse.
+
 ## v0.05 (2 octobre 2026)
 
 - Améliorer une carte ne demande plus de confirmation.

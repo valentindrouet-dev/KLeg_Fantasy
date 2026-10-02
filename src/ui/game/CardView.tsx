@@ -1,9 +1,10 @@
-import { useEffect, useState, type ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { cardImageUrl } from "../../data/loadCards";
 import type { CardTemplate, Orientation, StageId } from "../../data/schema";
 import { stageFr } from "../../data/translations";
 import { stageIdAt } from "../../engine";
 import { IconText } from "../common/IconText";
+import { usePrefs } from "../common/prefs";
 import { usePress, type TapPoint } from "../common/usePress";
 import { ZONE_RECTS, zoneAt, type ZoneKind } from "./cardZones";
 import styles from "./Game.module.css";
@@ -13,14 +14,16 @@ import styles from "./Game.module.css";
 // pour une carte en jeu, zones cliquables (ressource, amélioration, effet).
 
 type Props = {
-  id?: string; // identifiant d'instance, repris en data-card pour ancrer la feuille d'actions
+  id?: string; // identifiant d'instance, repris en data-card (ancrage, animations)
   template: CardTemplate;
   orientation: Orientation;
   label: string;
   width?: number;
   selected?: boolean;
   engaged?: boolean;
-  badge?: ReactNode; // ex. « engagée »
+  targetable?: boolean; // cible possible de l'effet en cours
+  dimmed?: boolean;
+  badge?: ReactNode;
   onTap?: (p: TapPoint) => void;
   onLongPress?: () => void;
   /** Libellé de l'action d'une zone (null : zone sans action). Active la surbrillance des zones. */
@@ -29,7 +32,7 @@ type Props = {
   anim?: { kind: "rotate" | "flip"; to: Orientation };
 };
 
-export const ANIM_MS = 650;
+export const ANIM_MS = 700;
 
 type Hover = { zone: ZoneKind; half: "top" | "bottom"; x: number; y: number };
 
@@ -38,32 +41,50 @@ function stageInHalf(t: CardTemplate, o: Orientation, half: "top" | "bottom"): S
   return stageIdAt(t, half === "top" ? o : { side: o.side, rotation: o.rotation === 0 ? 180 : 0 });
 }
 
-export function CardView({ id, template, orientation: actual, label, width, selected, engaged, badge, onTap, onLongPress, zoneLabel, anim }: Props) {
+/** Une face : image dans son orientation + numéros d'étape de chaque moitié. */
+function Face({ template, orientation, label, className }: { template: CardTemplate; orientation: Orientation; label: string; className?: string }) {
+  const url = cardImageUrl(orientation.side === "front" ? template.images.front : template.images.back);
+  const top = stageInHalf(template, orientation, "top");
+  const bottom = stageInHalf(template, orientation, "bottom");
+  return (
+    <div className={`${styles.face} ${className ?? ""}`}>
+      {url ? (
+        <img src={url} alt="" draggable={false} className={orientation.rotation === 180 ? styles.rotated : undefined} />
+      ) : (
+        <span className={styles.cardFallback}>{label}</span>
+      )}
+      {top !== null && <span className={`${styles.stageNumber} ${styles.stageTop}`}>{top}</span>}
+      {bottom !== null && <span className={`${styles.stageNumber} ${styles.stageBottom}`}>{bottom}</span>}
+    </div>
+  );
+}
+
+export function CardView(props: Props) {
+  const { id, template, orientation, label, width, selected, engaged, targetable, dimmed, badge, onTap, onLongPress, zoneLabel, anim } = props;
   const press = usePress(onTap ?? (() => {}), onLongPress);
   const [hover, setHover] = useState<Hover | null>(null);
-  // Retournement : la face change à mi-animation, quand la carte est vue de profil.
-  const [flipped, setFlipped] = useState(false);
-  useEffect(() => {
-    setFlipped(false);
-    if (anim?.kind !== "flip") return;
-    const t = window.setTimeout(() => setFlipped(true), ANIM_MS / 2);
-    return () => window.clearTimeout(t);
-  }, [anim]);
-  const orientation = anim?.kind === "flip" && flipped ? anim.to : actual;
-  const url = cardImageUrl(orientation.side === "front" ? template.images.front : template.images.back);
+  const tooltipsFr = usePrefs((p) => p.tooltipsFr);
   const interactive = Boolean(onTap || onLongPress) && !anim;
-  const topStage = stageInHalf(template, orientation, "top");
-  const bottomStage = stageInHalf(template, orientation, "bottom");
 
   const stageId = hover ? stageInHalf(template, orientation, hover.half) : null;
   const stage = stageId ? template.stages[String(stageId) as "1" | "2" | "3" | "4"] : undefined;
-  const fr = stageId ? stageFr(template.id, stageId) : undefined;
+  const fr = stageId && tooltipsFr ? stageFr(template.id, stageId) : undefined;
   const action = hover && zoneLabel ? zoneLabel(hover.zone) : null;
   const rect = hover && action && hover.zone !== "other" && hover.zone !== "bottom" ? ZONE_RECTS[hover.zone] : null;
 
+  const classes = [
+    styles.card,
+    selected && styles.selected,
+    engaged && styles.engaged,
+    targetable && styles.targetable,
+    dimmed && styles.dimmed,
+    interactive && styles.interactive,
+    anim && (anim.kind === "rotate" ? styles.animRotate : styles.animFlip),
+  ].filter(Boolean);
+
   return (
     <div
-      className={`${styles.card} ${selected ? styles.selected : ""} ${engaged ? styles.engaged : ""} ${interactive ? styles.interactive : ""} ${anim ? (anim.kind === "rotate" ? styles.animRotate : styles.animFlip) : ""}`}
+      className={classes.join(" ")}
       style={width ? { width } : undefined}
       data-card={id}
       role={interactive ? "button" : "img"}
@@ -78,7 +99,7 @@ export function CardView({ id, template, orientation: actual, label, width, sele
       {...(interactive ? press : {})}
       onPointerMove={(e) => {
         if (interactive) press.onPointerMove(e);
-        if (e.pointerType === "touch") return;
+        if (e.pointerType === "touch" || anim) return;
         const r = e.currentTarget.getBoundingClientRect();
         const x = (e.clientX - r.left) / r.width;
         const y = (e.clientY - r.top) / r.height;
@@ -89,30 +110,28 @@ export function CardView({ id, template, orientation: actual, label, width, sele
         if (e.pointerType !== "touch") setHover(null);
       }}
     >
-      {url ? (
-        <img src={url} alt="" draggable={false} className={orientation.rotation === 180 ? styles.rotated : undefined} />
+      {anim?.kind === "flip" ? (
+        // Retournement : deux faces dos à dos, la carte pivote d'un seul mouvement.
+        <div className={styles.flipInner}>
+          <Face template={template} orientation={orientation} label={label} />
+          <Face template={template} orientation={anim.to} label={label} className={styles.backFace} />
+        </div>
       ) : (
-        <span className={styles.cardFallback}>{label}</span>
+        <Face template={template} orientation={orientation} label={label} />
       )}
-      {rect && (
+      {rect && !anim && (
         <span
           className={styles.zoneHighlight}
           style={{ left: `${rect.left * 100}%`, top: `${rect.top * 100}%`, width: `${rect.width * 100}%`, height: `${rect.height * 100}%` }}
         />
       )}
-      {topStage !== null && (
-        <span className={`${styles.stageNumber} ${styles.stageTop}`} title={`Étape ${topStage} (stage actif)`}>
-          {topStage}
-        </span>
-      )}
-      {bottomStage !== null && (
-        <span className={`${styles.stageNumber} ${styles.stageBottom}`} title={`Étape ${bottomStage}`}>
-          {bottomStage}
-        </span>
-      )}
       {badge && <span className={styles.badge}>{badge}</span>}
-      {hover && !anim && (fr || action) && (
-        <div className={styles.tooltip} style={{ left: Math.min(hover.x + 16, window.innerWidth - 336), top: Math.min(hover.y + 16, window.innerHeight - 160) }} role="tooltip">
+      {hover && !anim && (fr || (action && tooltipsFr)) && (
+        <div
+          className={styles.tooltip}
+          style={{ left: Math.min(hover.x + 16, window.innerWidth - 336), top: Math.min(hover.y + 16, window.innerHeight - 160) }}
+          role="tooltip"
+        >
           {action && (
             <p className={styles.tooltipAction}>
               <IconText text={action} />
@@ -123,7 +142,6 @@ export function CardView({ id, template, orientation: actual, label, width, sele
               <strong>
                 {fr.name || stage?.name}
                 {stage?.name && fr.name !== stage.name ? <small> ({stage.name})</small> : null}
-                {hover.half === "bottom" && <small> · stage suivant</small>}
               </strong>
               {fr.text && (
                 <p>

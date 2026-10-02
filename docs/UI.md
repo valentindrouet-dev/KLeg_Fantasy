@@ -34,6 +34,12 @@ Routage par hash (`src/ui/App.tsx`) : `#/` Mes royaumes, `#/partie/<id>` partie,
 - **Animations** : une carte qui change d'orientation tourne de 180° (↓) ou se retourne (→) avant de partir
   à la défausse (désactivées si le système demande moins d'animations).
 - **Numéro d'étape** (1 à 4) en bas à gauche de chaque moitié de carte.
+- **Effet à cible** : toucher l'effet, puis la carte visée (cartes possibles en surbrillance, les autres grisées) ;
+  cible dans la défausse : choix dans la défausse. Échap annule.
+- **Fin de tour animée** (`useCardMotion.ts`) : cartes vers la défausse, nouvelles cartes depuis la pioche.
+- **Bouton FR** : active ou coupe les infobulles en français (mémorisé dans le navigateur).
+- **Icônes** : découpées dans les cartes (`scripts/extract-icons.ts` → `src/ui/icons/`).
+- **Pas de textes explicatifs** dans l'interface (demande du 2026-10-02).
 - **Version** affichée en bas de « Mes royaumes » et dans la barre de la partie (`src/version.ts`, `CHANGELOG.md`).
 - **Clavier** : A = Avancer, P = Passer, U ou Cmd+Z = Annuler, Échap = fermer.
 - Zone de jeu sans défilement : la taille des cartes s'adapte au nombre de cartes (`fitCards.ts`).

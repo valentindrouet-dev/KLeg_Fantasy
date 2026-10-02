@@ -24,10 +24,10 @@ export function describeAction(catalog: Catalog, s: GameState, a: Action): strin
     }
     case "useEffect": {
       const e = usableEffects(catalog, s, a.card).find((x) => x.effect.id === a.effect)?.effect;
-      const details = [
-        ...a.targets.map((id) => cardName(catalog, s, id)),
-        ...(a.option !== null ? [`option ${a.option + 1}`] : []),
-      ];
+      // Option d'un « / » : on affiche l'alternative choisie (« {wood}/{stone} » → « {stone} »).
+      const alternatives = /gain (.+)\.$/i.exec(e?.text ?? "")?.[1]?.split("/") ?? [];
+      const chosen = a.option !== null && alternatives.length > 1 ? alternatives[a.option] : undefined;
+      const details = [...a.targets.map((id) => cardName(catalog, s, id)), ...(chosen ? [`→ ${chosen}`] : [])];
       return `Effet de ${cardName(catalog, s, a.card)} : ${e?.text ?? a.effect}${details.length ? ` [${details.join(", ")}]` : ""}`;
     }
     case "advance":

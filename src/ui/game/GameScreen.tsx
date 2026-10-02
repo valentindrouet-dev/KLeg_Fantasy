@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { ResourceId } from "../../data/schema";
 import {
   actionCost,
@@ -33,6 +33,8 @@ import { ANIM_MS, CardView } from "./CardView";
 import { CardListDialog, ConfirmDialog, DecisionDialog, EndDialog, Inspector } from "./Dialogs";
 import { useGame } from "./store";
 import { useFitCards } from "./useFitCards";
+import { useCardMotion } from "./useCardMotion";
+import { usePrefs } from "../common/prefs";
 import styles from "./Game.module.css";
 
 // Plateau de jeu (spec 7.3) : deck à gauche (toucher = Avancer), zone de jeu au centre, défausse à droite,
@@ -65,7 +67,7 @@ function missingText(catalog: Catalog, s: GameState, a: Action, engaged: Instanc
     else if (flexible > 0) flexible -= 1;
     else missing.push(r);
   }
-  return missing.length ? `Il manque ${icons(missing)} : engage d'autres cartes` : "Pas payable avec les cartes engagées";
+  return missing.length ? `Il manque ${icons(missing)}` : "Pas payable avec les cartes engagées";
 }
 
 /** Changement d'orientation que produit un geste sur sa carte (pour l'animer), ou null. */
@@ -114,8 +116,8 @@ function confirmationFor(catalog: Catalog, state: GameState, plan: Action[]): st
   return parts.length ? parts.join(" ") : null;
 }
 
-function toastFor(action: Action | undefined, produced: number): string {
-  const extra = produced > 0 ? ` (${produced} carte${produced > 1 ? "s" : ""} engagée${produced > 1 ? "s" : ""} utilisée${produced > 1 ? "s" : ""})` : "";
+function toastFor(action: Action | undefined): string {
+  const extra = "";
   switch (action?.type) {
     case "upgrade":
       return `Carte améliorée, fin du tour${extra}`;
@@ -140,6 +142,10 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
   const [endClosed, setEndClosed] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
   const [anim, setAnim] = useState<Anim | null>(null);
+  const [targeting, setTargeting] = useState<{ source: InstanceId; options: CardOption[] } | null>(null);
+  const tooltipsFr = usePrefs((p) => p.tooltipsFr);
+  const toggleTooltipsFr = usePrefs((p) => p.toggleTooltipsFr);
+  const playEl = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     void load(catalog, kingdomId);
@@ -149,6 +155,7 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
   const legal = useMemo(() => (state ? getLegalActions(catalog, state) : []), [catalog, state]);
   const engagedNow = useMemo(() => (state ? engaged.filter((id) => state.zones.play.includes(id)) : []), [engaged, state]);
   const [fitRef, cardWidth] = useFitCards(state?.zones.play.length ?? 0);
+  useCardMotion(catalog, state, playEl);
   const playing = state?.phase === "playing" && !state.pending && !anim;
 
   const optionsFor = useCallback(
@@ -185,7 +192,7 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
       if (!state) return;
       setSelected(null);
       const last = plan.at(-1);
-      const t = toastFor(last, plan.length - 1);
+      const t = toastFor(last);
       const message = confirmationFor(catalog, state, plan);
       if (message) setPending({ plan, message, toast: t });
       else commit(plan, t);
@@ -204,7 +211,11 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
   // Clavier (spec 7.6) : A = Avancer, P = Passer, U ou Cmd+Z = Annuler.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.target instanceof HTMLInputElement || pending || inspect || discardOpen || state?.pending || anim) return;
+      if (e.key === "Escape" && targeting) {
+        setTargeting(null);
+        return;
+      }
+      if (e.target instanceof HTMLInputElement || pending || inspect || discardOpen || state?.pending || anim || targeting) return;
       const key = e.key.toLowerCase();
       const mod = e.metaKey || e.ctrlKey;
       if ((key === "z" && mod) || (key === "u" && !mod)) {
@@ -215,7 +226,7 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [advance, pass, run, undo, pending, inspect, discardOpen, state?.pending, anim]);
+  }, [advance, pass, run, undo, pending, inspect, discardOpen, state?.pending, anim, targeting]);
 
   useEffect(() => {
     if (!toast) return;
@@ -256,12 +267,12 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
     if (zone === "production") {
       const p = productionLabel(catalog, state, card);
       if (!p) return null;
-      return engagedNow.includes(card) ? `Libérer (ne plus utiliser ${p})` : `Engager pour ${p}`;
+      return engagedNow.includes(card) ? `Libérer ${p}` : `Engager ${p}`;
     }
     const opts = zoneOptions(card, zone);
     const first = opts[0];
     if (!first) return null;
-    if (opts.length > 1) return `${opts.length} choix possibles : toucher pour choisir`;
+    if (opts.length > 1) return first.label.replace(/ \[.*$/, "").replace(/, en défaussant .*$/, "");
     return first.plan ? first.label : `${first.label} (${first.reason ?? "impossible"})`;
   };
 
@@ -270,7 +281,19 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
     setSelected({ card, anchor: el?.getBoundingClientRect() ?? new DOMRect() });
   };
 
+  /** Cibles possibles de l'effet en cours de ciblage, par carte visée. */
+  const targetOptions = new Map<InstanceId, CardOption>(
+    (targeting?.options ?? []).flatMap((o) => (o.action.type === "useEffect" && o.action.targets[0] ? [[o.action.targets[0], o] as const] : [])),
+  );
+  const targetsInDiscard = [...targetOptions.keys()].filter((id) => state.zones.discard.includes(id));
+
   const tapCard = (card: InstanceId, p: TapPoint) => {
+    if (targeting) {
+      const o = targetOptions.get(card);
+      setTargeting(null);
+      if (o?.plan) run(o.plan);
+      return;
+    }
     if (!playing) return;
     const zone = zoneAt(p.x, p.y);
     if (zone === "production" && productionLabel(catalog, state, card)) {
@@ -283,6 +306,17 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
       if (opts.length === 1 && only) {
         if (only.plan) run(only.plan);
         else flash(`${only.label} : ${only.reason ?? "impossible"}`);
+        return;
+      }
+      // Effet à cible unique (ex. « Discard a friendly card ») : toucher l'effet, puis la carte visée.
+      const targeted = opts.filter((o) => o.action.type === "useEffect" && o.action.targets.length === 1);
+      if (zone === "effect" && opts.length > 1 && targeted.length === opts.length) {
+        const playable = targeted.filter((o) => o.plan);
+        if (playable.length === 0) {
+          flash(`${targeted[0]?.label.replace(/ \[.*$/, "") ?? ""} : ${targeted[0]?.reason ?? "impossible"}`);
+          return;
+        }
+        setTargeting({ source: card, options: playable });
         return;
       }
       if (opts.length === 0 && zone === "effect" && (activeStage(catalog, state, card)?.effects.length ?? 0) === 0) {
@@ -303,6 +337,8 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
       width={width}
       selected={selected?.card === id}
       engaged={extra?.engaged}
+      targetable={targeting ? targetOptions.has(id) : undefined}
+      dimmed={targeting ? !targetOptions.has(id) && id !== targeting.source : undefined}
       badge={extra?.engaged ? <IconText text={`engagée ${productionLabel(catalog, state, id) ?? ""}`} /> : undefined}
       onTap={onTap}
       onLongPress={inspectable ? () => setInspect(id) : undefined}
@@ -320,20 +356,17 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
     <div className={styles.pile} aria-label={`Deck : ${state.zones.deck.length} cartes`}>
       <span className={styles.pileTitle}>Deck · {state.zones.deck.length}</span>
       {top ? (
-        <div title={advance ? "Toucher pour avancer (jouer 2 cartes de plus)" : undefined}>
-          {card(top, undefined, playing && advance ? () => run([advance]) : undefined, false)}
-        </div>
+        <div data-pile="deck">{card(top, undefined, playing && advance ? () => run([advance]) : undefined, false)}</div>
       ) : (
         <div className={styles.emptyPile}>Vide</div>
       )}
-      {top && playing && advance && <span className={styles.pileHint}>Toucher = Avancer</span>}
     </div>
   );
   const discard = (
     <div className={styles.pile} aria-label={`Défausse : ${state.zones.discard.length} cartes`}>
       <span className={styles.pileTitle}>Défausse · {state.zones.discard.length}</span>
       {lastDiscard ? (
-        card(lastDiscard, undefined, () => setDiscardOpen(true))
+        <div data-pile="discard">{card(lastDiscard, undefined, () => setDiscardOpen(true))}</div>
       ) : (
         <button className={styles.emptyPile} onClick={() => setDiscardOpen(true)}>
           Vide
@@ -383,6 +416,9 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
         <button className="btn" disabled={!canUndo(session)} onClick={undo} title="Annuler (U)">
           ⟲ Annuler
         </button>
+        <button className="btn" aria-pressed={tooltipsFr} onClick={toggleTooltipsFr} title="Infobulles en français">
+          FR {tooltipsFr ? "✓" : "✕"}
+        </button>
         <button className="btn" aria-pressed={journalOpen} onClick={() => setJournalOpen((o) => !o)}>
           Journal
         </button>
@@ -396,7 +432,14 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
 
       <aside className={styles.deckSlot}>{deck}</aside>
 
-      <main className={styles.play} ref={fitRef} aria-label="Zone de jeu">
+      <main
+        className={styles.play}
+        ref={(node) => {
+          playEl.current = node;
+          fitRef(node);
+        }}
+        aria-label="Zone de jeu"
+      >
         {state.zones.play.map((id) =>
           card(id, cardWidth || undefined, (p) => tapCard(id, p), true, { engaged: engagedNow.includes(id), zones: true }),
         )}
@@ -458,6 +501,20 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
         />
       )}
       {inspect && <Inspector catalog={catalog} state={state} card={inspect} onClose={() => setInspect(null)} />}
+      {targeting && targetsInDiscard.length > 0 && (
+        <CardListDialog
+          catalog={catalog}
+          state={state}
+          title="Défausse"
+          cards={targetsInDiscard}
+          onInspect={(id) => {
+            const o = targetOptions.get(id);
+            setTargeting(null);
+            if (o?.plan) run(o.plan);
+          }}
+          onClose={() => setTargeting(null)}
+        />
+      )}
       {discardOpen && (
         <CardListDialog catalog={catalog} state={state} title="Défausse" cards={state.zones.discard} onInspect={setInspect} onClose={() => setDiscardOpen(false)} />
       )}

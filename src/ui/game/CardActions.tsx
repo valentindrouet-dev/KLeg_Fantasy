@@ -65,7 +65,7 @@ export function CardActions({ catalog, state, card, anchor, options, engageLabel
         {engageLabel && (
           <section>
             <button className={styles.actionItem} onClick={onEngage}>
-              <IconText text={engaged ? `Libérer la carte (ne plus utiliser ${engageLabel})` : `Engager pour sa ressource : ${engageLabel}`} />
+              <IconText text={engaged ? `Libérer ${engageLabel}` : `Engager ${engageLabel}`} />
             </button>
           </section>
         )}
@@ -92,7 +92,7 @@ export function CardActions({ catalog, state, card, anchor, options, engageLabel
             {manual.map((e) => (
               <div key={e.id} className={styles.actionDisabled}>
                 <IconText text={e.text} />
-                <small>Pas encore automatisé (phase P3)</small>
+                <small>Non automatisé</small>
               </div>
             ))}
           </section>

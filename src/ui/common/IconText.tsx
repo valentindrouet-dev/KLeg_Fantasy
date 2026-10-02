@@ -1,6 +1,12 @@
 import { Fragment } from "react";
 import styles from "./common.module.css";
 
+// Icônes du jeu découpées dans les cartes (scripts/extract-icons.ts) ; les autres restent en caractères.
+const IMAGES = import.meta.glob<string>("../icons/*.png", { eager: true, query: "?url", import: "default" });
+function iconImage(id: string): string | undefined {
+  return IMAGES[`../icons/${id}.png`];
+}
+
 // Rendu des tokens d'icônes des textes de cartes ({coin}, {rotate}...).
 
 export const ICONS: Record<string, { glyph: string; label: string }> = {
@@ -27,6 +33,8 @@ export const ICONS: Record<string, { glyph: string; label: string }> = {
 
 export function Icon({ id }: { id: string }) {
   const icon = ICONS[id];
+  const src = iconImage(id);
+  if (src) return <img className={styles.iconImg} src={src} alt={icon?.label ?? id} title={icon?.label ?? id} draggable={false} />;
   return (
     <span className={styles.icon} title={icon?.label ?? id} aria-label={icon?.label ?? id} role="img">
       {icon?.glyph ?? `{${id}}`}

@@ -71,19 +71,15 @@ function NewKingdomDialog({ catalog, onClose }: { catalog: Catalog; onClose: () 
           <legend>Annulation</legend>
           <label className={styles.radio}>
             <input type="radio" checked={undoMode === "strict"} onChange={() => setUndoMode("strict")} />
-            <span>
-              <strong>Stricte</strong> : seulement dans le tour en cours, tant qu'aucune carte n'a été révélée.
-            </span>
+            <span>Stricte</span>
           </label>
           <label className={styles.radio}>
             <input type="radio" checked={undoMode === "free"} onChange={() => setUndoMode("free")} />
-            <span>
-              <strong>Libre</strong> : sans limite.
-            </span>
+            <span>Libre</span>
           </label>
         </fieldset>
         <label>
-          Graine du mélange (facultatif)
+          Graine
           <input inputMode="numeric" placeholder="aléatoire" value={seedText} onChange={(e) => setSeedText(e.target.value.replace(/\D/g, ""))} />
         </label>
       </div>
@@ -243,8 +239,7 @@ export function KingdomsScreen({ catalog }: { catalog: Catalog }) {
           }
         >
           <p>
-            {menu.kingdom.emoji} <strong>{menu.kingdom.name}</strong> et toute sa partie seront effacés de cet appareil. C'est
-            irréversible.
+            {menu.kingdom.emoji} <strong>{menu.kingdom.name}</strong>
           </p>
         </Dialog>
       )}
@@ -274,8 +269,7 @@ export function KingdomsScreen({ catalog }: { catalog: Catalog }) {
           }
         >
           <p>
-            La règle permet de recommencer tant que la carte 23 n'est pas découverte. Le royaume repart des cartes 1 à 10 avec
-            un nouveau mélange.
+            {menu.kingdom.emoji} <strong>{menu.kingdom.name}</strong>
           </p>
         </Dialog>
       )}

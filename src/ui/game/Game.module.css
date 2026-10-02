@@ -217,7 +217,7 @@
   touch-action: manipulation;
 }
 
-.card img {
+.face > img {
   display: block;
   width: 100%;
   height: 100%;
@@ -611,53 +611,98 @@
   opacity: 0.8;
 }
 
-/* --- Animations d'amélioration : rotation 180° (↓) ou retournement (→) --- */
+/* --- Animations d'orientation (fluides : un seul mouvement, propriétés rotate / scale séparées) --- */
+.face {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: inherit;
+}
+
 .animRotate,
 .animFlip {
-  position: relative;
   z-index: 5;
+  overflow: visible;
   pointer-events: none;
+  will-change: transform;
+}
+
+.flipInner {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.flipInner .face {
+  backface-visibility: hidden;
+}
+
+.backFace {
+  transform: rotateY(180deg);
 }
 
 @media (prefers-reduced-motion: no-preference) {
   .animRotate {
-    animation: card-rotate 650ms ease-in-out forwards;
+    animation:
+      card-rotate 700ms cubic-bezier(0.45, 0, 0.25, 1) forwards,
+      card-lift 700ms ease-in-out;
+  }
+
+  .animFlip .flipInner {
+    animation: card-flip 700ms cubic-bezier(0.45, 0, 0.25, 1) forwards;
   }
 
   .animFlip {
-    animation: card-flip 650ms ease-in-out forwards;
+    animation: card-lift 700ms ease-in-out;
   }
 }
 
 @keyframes card-rotate {
-  0% {
-    transform: rotate(0deg) scale(1);
+  from {
+    rotate: 0deg;
   }
+  to {
+    rotate: 180deg;
+  }
+}
+
+@keyframes card-lift {
   50% {
-    transform: rotate(90deg) scale(1.06);
-  }
-  100% {
-    transform: rotate(180deg) scale(1);
+    scale: 1.06;
   }
 }
 
 @keyframes card-flip {
-  0% {
-    transform: perspective(900px) rotateY(0deg);
+  from {
+    transform: perspective(1200px) rotateY(0deg);
   }
-  49.9% {
-    transform: perspective(900px) rotateY(90deg);
+  to {
+    transform: perspective(1200px) rotateY(180deg);
   }
-  50% {
-    transform: perspective(900px) rotateY(-90deg);
-  }
-  100% {
-    transform: perspective(900px) rotateY(0deg);
-  }
+}
+
+/* --- Cibles d'un effet --- */
+.targetable {
+  outline: 4px solid var(--accent);
+  outline-offset: 2px;
+  box-shadow: 0 0 18px 4px color-mix(in srgb, var(--accent) 60%, transparent);
+  cursor: pointer;
+}
+
+.dimmed {
+  opacity: 0.45;
+  filter: saturate(0.6);
 }
 
 .version {
   color: var(--text-muted);
   font-size: 0.75rem;
   font-weight: 400;
+}
+
+.animFlip {
+  background: transparent;
+  box-shadow: none;
 }

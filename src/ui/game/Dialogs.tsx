@@ -1,6 +1,5 @@
 import { useState } from "react";
 import {
-  activeStage,
   cardName,
   computeScore,
   instance,
@@ -17,19 +16,22 @@ import styles from "./Game.module.css";
 
 // Fenêtres de la partie : inspection, décisions en attente, défausse, fin de partie, confirmation.
 
+/** Largeur d'une grande carte dans une fenêtre : `count` cartes côte à côte, la plus grande qui tient. */
+function bigCard(count = 1): number {
+  const byHeight = (window.innerHeight - 200) * (373 / 520);
+  const byWidth = (Math.min(window.innerWidth, 1500) - 120 - (count - 1) * 16) / count;
+  return Math.floor(Math.max(150, Math.min(520, byHeight, byWidth)));
+}
+
 export function Inspector({ catalog, state, card, onClose }: { catalog: Catalog; state: GameState; card: InstanceId; onClose: () => void }) {
   const t = template(catalog, instance(state, card).templateId);
   return (
     <Dialog title={`Inspection : ${cardName(catalog, state, card)}`} onClose={onClose} wide>
       <div className={styles.inspector}>
         {(["front", "back"] as const).map((side) => (
-          <figure key={side}>
-            <CardView template={t} orientation={{ side, rotation: 0 }} label={side === "front" ? "Recto" : "Verso"} />
-            <figcaption>{side === "front" ? "Recto : stage 1 en haut, stage 2 tête en bas" : "Verso : stage 4 en haut, stage 3 tête en bas"}</figcaption>
-          </figure>
+          <CardView key={side} template={t} orientation={{ side, rotation: 0 }} label={side === "front" ? "Recto" : "Verso"} width={bigCard(2)} />
         ))}
       </div>
-      <p className={styles.muted}>Pince pour zoomer. L'orientation actuelle de la carte est celle du plateau.</p>
     </Dialog>
   );
 }
@@ -41,27 +43,19 @@ export function DecisionDialog({ catalog, state, onAction }: { catalog: Catalog;
 
   if (p.kind === "parchment") {
     const t = tOf(p.card);
-    const stage = activeStage(catalog, state, p.card);
     return (
       <Dialog
         title={`Parchemin #${t.serial}`}
         wide
         actions={
           <button className="btn btn-primary" onClick={() => onAction({ type: "acknowledgeParchment" })}>
-            J'ai lu, détruire le parchemin
+            Continuer
           </button>
         }
       >
         <div className={styles.decisionRow}>
-          <CardView template={t} orientation={{ side: "front", rotation: 0 }} label={`Parchemin #${t.serial}`} width={280} />
-          <div className={styles.parchmentText}>
-            <IconText text={stage?.text ?? ""} />
-            {!catalog.parchments.has(t.id) && (
-              <p className={styles.warning}>
-                Ces instructions ne sont pas encore automatisées : applique-les toi-même (phase P3).
-              </p>
-            )}
-          </div>
+          <CardView template={t} orientation={{ side: "front", rotation: 0 }} label={`Parchemin #${t.serial}`} width={bigCard(2)} />
+          {!catalog.parchments.has(t.id) && <p className={styles.warning}>À appliquer à la main</p>}
         </div>
       </Dialog>
     );
@@ -70,14 +64,13 @@ export function DecisionDialog({ catalog, state, onAction }: { catalog: Catalog;
   if (p.kind === "chooseSide") {
     const t = tOf(p.card);
     return (
-      <Dialog title={`Carte #${t.serial} : choisis la face visible`} wide>
-        <p>Ce choix est définitif : le numéro reste en haut quelle que soit la face.</p>
+      <Dialog title={`Carte #${t.serial}`} wide>
         <div className={styles.decisionRow}>
           {(["front", "back"] as const).map((side) => (
             <figure key={side} className={styles.choice}>
-              <CardView template={t} orientation={{ side, rotation: 0 }} label={side} width={260} onTap={() => onAction({ type: "chooseSide", side })} />
+              <CardView template={t} orientation={{ side, rotation: 0 }} label={side} width={bigCard(2)} onTap={() => onAction({ type: "chooseSide", side })} />
               <button className="btn btn-primary" onClick={() => onAction({ type: "chooseSide", side })}>
-                Garder {side === "front" ? "le recto" : "le verso"}
+                {side === "front" ? "Recto" : "Verso"}
               </button>
             </figure>
           ))}
@@ -87,10 +80,7 @@ export function DecisionDialog({ catalog, state, onAction }: { catalog: Catalog;
   }
 
   return (
-    <Dialog title={`Découverte : choisis ${p.remaining} carte${p.remaining > 1 ? "s" : ""}`} wide>
-      <p>
-        {p.leftovers === "destroy" ? "Les cartes non choisies seront détruites." : "Les cartes non choisies retournent dans la boîte."}
-      </p>
+    <Dialog title={`Découvrir ${p.remaining} carte${p.remaining > 1 ? "s" : ""}`} wide>
       <div className={styles.decisionRow}>
         {p.options.map((id) => {
           const t = tOf(id);
@@ -98,11 +88,11 @@ export function DecisionDialog({ catalog, state, onAction }: { catalog: Catalog;
           return (
             <figure key={id} className={styles.choice}>
               <div className={styles.bothSides}>
-                <CardView template={t} orientation={{ side: "front", rotation: 0 }} label="Recto" width={170} />
-                <CardView template={t} orientation={{ side: "back", rotation: 0 }} label="Verso" width={170} />
+                <CardView template={t} orientation={{ side: "front", rotation: 0 }} label="Recto" width={bigCard(p.options.length * 2)} />
+                <CardView template={t} orientation={{ side: "back", rotation: 0 }} label="Verso" width={bigCard(p.options.length * 2)} />
               </div>
               <button className="btn btn-primary" disabled={picked} onClick={() => onAction({ type: "chooseDiscovery", card: id })}>
-                {picked ? "Choisie" : `Découvrir #${t.serial}`}
+                {picked ? "Choisie" : `#${t.serial}`}
               </button>
             </figure>
           );
@@ -139,7 +129,7 @@ export function CardListDialog({
               template={template(catalog, instance(state, id).templateId)}
               orientation={instance(state, id).orientation}
               label={cardName(catalog, state, id)}
-              width={150}
+              width={190}
               onTap={() => onInspect(id)}
               onLongPress={() => onInspect(id)}
             />
@@ -177,7 +167,7 @@ export function EndDialog({ catalog, state, onBack, onClose }: { catalog: Catalo
             <tr key={l.card}>
               <td>{l.name}</td>
               <td>{l.fame}</td>
-              <td>{l.variable ? "+ calcul à faire à la main" : ""}</td>
+              <td>{l.variable ? "+ ?" : ""}</td>
             </tr>
           ))}
           {score.purgedFame > 0 && (

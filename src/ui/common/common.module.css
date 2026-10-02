@@ -28,7 +28,8 @@
 }
 
 .wide {
-  width: min(1100px, 100%);
+  width: fit-content;
+  max-width: min(1500px, 100%);
 }
 
 .dialogHeader {
@@ -66,4 +67,13 @@
   gap: var(--space-2);
   padding: var(--space-3) var(--space-4);
   border-top: 1px solid var(--border);
+}
+
+.iconImg {
+  display: inline-block;
+  width: 1.35em;
+  height: 1.35em;
+  margin: 0 0.08em;
+  border-radius: 3px;
+  vertical-align: -0.33em;
 }
