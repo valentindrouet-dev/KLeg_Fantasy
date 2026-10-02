@@ -12,6 +12,9 @@ const STAGGER = 70;
 
 type Snapshot = { rects: Map<InstanceId, DOMRect>; state: GameState };
 
+/** Copies volantes en cours, retirées si l'écran de partie se ferme. */
+const ghosts = new Set<HTMLElement>();
+
 const reducedMotion = () => window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
 
 function pileRect(name: "deck" | "discard"): DOMRect | null {
@@ -45,14 +48,27 @@ function ghost(catalog: Catalog, state: GameState, id: InstanceId, from: DOMRect
     rotate: c.orientation.rotation === 180 ? "180deg" : "0deg",
   });
   document.body.appendChild(el);
+  ghosts.add(el);
   const end = to ? { transform: moveFrom(to, from), opacity: 0.9 } : { transform: "scale(0.6)", opacity: 0 };
   const anim = el.animate([{ transform: "none", opacity: 1 }, end], { duration: DURATION, delay, easing: EASING, fill: "forwards" });
-  anim.onfinish = () => el.remove();
-  anim.oncancel = () => el.remove();
+  const remove = () => {
+    el.remove();
+    ghosts.delete(el);
+  };
+  anim.onfinish = remove;
+  anim.oncancel = remove;
 }
 
 export function useCardMotion(catalog: Catalog, state: GameState | null, play: RefObject<HTMLElement | null>): void {
   const prev = useRef<Snapshot | null>(null);
+
+  useLayoutEffect(
+    () => () => {
+      for (const g of ghosts) g.remove();
+      ghosts.clear();
+    },
+    [],
+  );
 
   useLayoutEffect(() => {
     const zone = play.current;

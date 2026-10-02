@@ -3,6 +3,13 @@
 Chaque mise à jour publiée change de version (`package.json`, affichée dans l'appli en bas de l'écran « Mes royaumes »
 et dans la barre de la partie). Convention : `0.5.0` s'affiche **v0.05** ; un correctif `0.5.1` s'affiche **v0.05.1**.
 
+## v0.08 (2 octobre 2026)
+
+- Défausse : cartes plus grandes.
+- Carte 23 : on voit les cartes 24 à 27, puis on choisit « Recommencer le royaume » ou « Continuer » (24 à 27 découvertes).
+- Accueil : boutons alignés, centrés, à icônes (continuer, renommer, dupliquer, recommencer, supprimer, visionneuse, nouveau royaume).
+- Le bouton FR reste utilisable quand une fenêtre de carte est ouverte.
+
 ## v0.07 (2 octobre 2026)
 
 - Pioche et défausse plus grandes.

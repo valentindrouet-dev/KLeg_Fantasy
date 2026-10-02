@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { computeScore } from "../../src/engine";
+import { canRestartKingdom, computeScore } from "../../src/engine";
 import { loadCatalog } from "../helpers/catalog";
 import { arrange, fk, legal, newGame, passUntil, run } from "../helpers/game";
 
@@ -68,6 +68,20 @@ describe("manches et découvertes", async () => {
     expect(legal(catalog, s)).toEqual([]);
     // Castle 12 + Royal Visit 2 (Wild Grass et Finishing Touch : 0).
     expect(computeScore(catalog, s).total).toBe(14);
+  });
+
+  it("parchemin 23 : continuer découvre 24 à 27 (24 est un parchemin, 25 à 27 sont permanentes)", () => {
+    let s = arrange(catalog, { play: [1] });
+    s.zones.box = s.zones.box.filter((id) => (s.cards[id]?.serial ?? 0) >= 23 || s.cards[id]?.serial === 0);
+    s = run(catalog, s, { type: "pass" });
+    expect(s.pending).toEqual({ kind: "parchment", card: fk(23) });
+    expect(canRestartKingdom(s)).toBe(true);
+    s = run(catalog, s, { type: "acknowledgeParchment" });
+    expect(s.pending).toEqual({ kind: "parchment", card: fk(24) });
+    expect(canRestartKingdom(s)).toBe(false);
+    s = run(catalog, s, { type: "acknowledgeParchment" });
+    expect(s.zones.permanent.sort()).toEqual([25, 26, 27].map(fk).sort());
+    expect(s.zones.destroyed.sort()).toEqual([fk(23), fk(24)].sort());
   });
 
   it("la carte 0 n'est jamais découverte", () => {

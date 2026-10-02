@@ -134,7 +134,7 @@ function toastFor(action: Action | undefined): string {
 }
 
 export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId: string }) {
-  const { status, kingdom, session, toast, engaged, load, perform, toggleEngaged, undo, dismissToast } = useGame();
+  const { status, kingdom, session, toast, engaged, load, perform, toggleEngaged, restart, undo, dismissToast } = useGame();
   const [selected, setSelected] = useState<Selected | null>(null);
   const [inspect, setInspect] = useState<InstanceId | null>(null);
   const [discardOpen, setDiscardOpen] = useState(false);
@@ -153,7 +153,8 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
     void load(catalog, kingdomId);
   }, [catalog, kingdomId, load]);
 
-  const state = session ? current(session) : null;
+  // Tant que le royaume demandé n'est pas chargé, on n'affiche pas l'état d'un autre royaume.
+  const state = session && kingdom?.id === kingdomId ? current(session) : null;
   const legal = useMemo(() => (state ? getLegalActions(catalog, state) : []), [catalog, state]);
   const engagedNow = useMemo(() => (state ? engaged.filter((id) => state.zones.play.includes(id)) : []), [engaged, state]);
   const [fitRef, cardWidth] = useFitCards(state?.zones.play.length ?? 0);
@@ -433,7 +434,7 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
           <UndoIcon />
         </button>
         <button
-          className={styles.iconBtn}
+          className={`${styles.iconBtn} ${styles.aboveDialogs}`}
           aria-pressed={tooltipsFr}
           onClick={toggleTooltipsFr}
           aria-label="Infobulles en français"
@@ -522,7 +523,7 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
       {discardOpen && (
         <CardListDialog catalog={catalog} state={state} title="Défausse" cards={state.zones.discard} onInspect={setInspect} onClose={() => setDiscardOpen(false)} />
       )}
-      {state.pending && <DecisionDialog catalog={catalog} state={state} onAction={(a) => perform([a])} />}
+      {state.pending && <DecisionDialog catalog={catalog} state={state} onAction={(a) => perform([a])} onRestart={restart} />}
       {state.phase === "gameOver" && !endClosed && (
         <EndDialog catalog={catalog} state={state} onBack={() => (window.location.hash = "#/")} onClose={() => setEndClosed(true)} />
       )}

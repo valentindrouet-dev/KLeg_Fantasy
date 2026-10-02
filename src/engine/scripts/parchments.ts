@@ -1,9 +1,10 @@
 import { cardId } from "../../data/schema";
-import { boxCardsBySerial, discoverNormally, offerDiscovery } from "../flow";
-import type { ParchmentImpl } from "../types";
+import { boxCardsBySerial, discoverNormally, offerDiscovery, pushFront } from "../flow";
+import type { FlowStep, ParchmentImpl } from "../types";
 
 // Instructions des parchemins de Feudal Kingdom qui ne font que régler la découverte de la manche.
-// Les parchemins 23 (choix de recommencer) et 24 (stickers) arrivent en P3.
+// Le parchemin 24 (stickers) arrive en P3. Pour le 23, le choix « recommencer » est proposé par l'interface
+// avant de confirmer la lecture (canRestartKingdom) ; continuer applique ce script.
 
 const range = (from: number, to: number): number[] => Array.from({ length: to - from + 1 }, (_, i) => from + i);
 
@@ -13,7 +14,15 @@ const lookAndChoose =
   (d) =>
     offerDiscovery(d, boxCardsBySerial(d, range(from, to)), pick, "destroy", null);
 
+/** Découvre ces cartes, dans l'ordre (parchemins compris). */
+const discoverSerials =
+  (...serials: number[]): ParchmentImpl =>
+  (d) =>
+    pushFront(d, ...boxCardsBySerial(d, serials).map((card): FlowStep => ({ kind: "discover", card })));
+
 export const feudalKingdomParchments: ReadonlyMap<string, ParchmentImpl> = new Map([
+  // « If you continue, you will discover 4 cards, cards 24-27. »
+  [cardId("FeudalKingdom", 23), discoverSerials(24, 25, 26, 27)],
   // « Instead of discovering the next 2 cards, look at the 4 next cards (31-34). Choose 2 to discover and destroy the other 2. »
   [cardId("FeudalKingdom", 30), lookAndChoose(31, 34, 2)],
   // « Discover 5 cards this round, instead of 2 (cards 38-42). » Le choix de face vient de chooseSideOnDiscover.

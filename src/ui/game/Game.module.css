@@ -730,3 +730,9 @@
     transform: translate(-50%, -50%) scale(1.04);
   }
 }
+
+/* Le bouton FR reste utilisable quand une fenêtre est ouverte (fond de fenêtre : z-index 50). */
+.aboveDialogs {
+  position: relative;
+  z-index: 60;
+}

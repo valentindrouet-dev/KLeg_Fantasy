@@ -1,5 +1,6 @@
 import { useState } from "react";
 import {
+  canRestartKingdom,
   cardName,
   computeScore,
   instance,
@@ -15,6 +16,11 @@ import { CardView } from "./CardView";
 import styles from "./Game.module.css";
 
 // Fenêtres de la partie : inspection, décisions en attente, défausse, fin de partie, confirmation.
+
+/** Largeur des cartes d'une liste (défausse) : environ 5 par rangée. */
+function listCard(): number {
+  return Math.floor(Math.max(180, Math.min(300, (Math.min(window.innerWidth, 1500) - 140) / 5)));
+}
 
 /** Largeur d'une grande carte dans une fenêtre : `count` cartes côte à côte, la plus grande qui tient. */
 function bigCard(count = 1): number {
@@ -36,25 +42,49 @@ export function Inspector({ catalog, state, card, onClose }: { catalog: Catalog;
   );
 }
 
-export function DecisionDialog({ catalog, state, onAction }: { catalog: Catalog; state: GameState; onAction: (a: Action) => void }) {
+export function DecisionDialog({
+  catalog,
+  state,
+  onAction,
+  onRestart,
+}: {
+  catalog: Catalog;
+  state: GameState;
+  onAction: (a: Action) => void;
+  onRestart: () => void;
+}) {
   const p = state.pending;
   if (!p) return null;
   const tOf = (id: InstanceId) => template(catalog, instance(state, id).templateId);
 
   if (p.kind === "parchment") {
     const t = tOf(p.card);
+    // Carte 23 : on regarde les cartes 24 à 27, puis on recommence le royaume ou on continue.
+    const resetPoint = t.serial === 23 && canRestartKingdom(state);
+    const preview = resetPoint ? state.zones.box.filter((id) => [24, 25, 26, 27].includes(instance(state, id).serial)) : [];
+    const width = bigCard(1 + preview.length);
     return (
       <Dialog
         title={`Parchemin #${t.serial}`}
         wide
         actions={
-          <button className="btn btn-primary" onClick={() => onAction({ type: "acknowledgeParchment" })}>
-            Continuer
-          </button>
+          <>
+            {resetPoint && (
+              <button className="btn" onClick={onRestart}>
+                ↺ Recommencer le royaume
+              </button>
+            )}
+            <button className="btn btn-primary" onClick={() => onAction({ type: "acknowledgeParchment" })}>
+              Continuer
+            </button>
+          </>
         }
       >
         <div className={styles.decisionRow}>
-          <CardView template={t} orientation={{ side: "front", rotation: 0 }} label={`Parchemin #${t.serial}`} width={bigCard(2)} />
+          <CardView template={t} orientation={{ side: "front", rotation: 0 }} label={`Parchemin #${t.serial}`} width={width} />
+          {preview.map((id) => (
+            <CardView key={id} template={tOf(id)} orientation={{ side: "front", rotation: 0 }} label={`#${instance(state, id).serial}`} width={width} />
+          ))}
           {!catalog.parchments.has(t.id) && <p className={styles.warning}>À appliquer à la main</p>}
         </div>
       </Dialog>
@@ -129,7 +159,7 @@ export function CardListDialog({
               template={template(catalog, instance(state, id).templateId)}
               orientation={instance(state, id).orientation}
               label={cardName(catalog, state, id)}
-              width={190}
+              width={listCard()}
               onTap={() => onInspect(id)}
               onLongPress={() => onInspect(id)}
             />

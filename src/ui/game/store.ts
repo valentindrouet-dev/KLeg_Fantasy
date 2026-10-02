@@ -3,6 +3,8 @@ import {
   act,
   canUndo,
   current,
+  newSession,
+  randomSeed,
   resumeSession,
   undo as undoSession,
   type Action,
@@ -31,6 +33,8 @@ type GameStore = {
   load: (catalog: Catalog, id: string) => Promise<void>;
   perform: (actions: Action[], toast?: string) => void;
   toggleEngaged: (card: InstanceId) => void;
+  /** Reset officiel (avant la carte 23) : le royaume repart des cartes 1 à 10, nouveau mélange. */
+  restart: () => void;
   undo: () => void;
   dismissToast: () => void;
 };
@@ -89,6 +93,13 @@ export const useGame = create<GameStore>((set, get) => ({
 
   toggleEngaged: (card) =>
     set(({ engaged }) => ({ engaged: engaged.includes(card) ? engaged.filter((c) => c !== card) : [...engaged, card] })),
+
+  restart: () => {
+    const { session, kingdom } = get();
+    if (!session || !kingdom) return;
+    const fresh = newSession(session.catalog, { ...session.record.config, seed: randomSeed() });
+    set({ session: fresh, kingdom: persist(session.catalog, kingdom, fresh), engaged: [], groups: [], toast: null });
+  },
 
   undo: () => {
     const { session, kingdom, groups } = get();

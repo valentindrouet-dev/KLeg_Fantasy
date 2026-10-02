@@ -5,6 +5,7 @@ import { KINGDOM_EMOJIS, newKingdomId, randomKingdomName, summarize, type Kingdo
 import { Dialog } from "../common/Dialog";
 import { IconText } from "../common/IconText";
 import { APP_VERSION } from "../../version";
+import { CardsIcon, CopyIcon, EditIcon, PlayIcon, PlusIcon, RestartIcon, TrashIcon } from "../common/UiIcons";
 import styles from "./Kingdoms.module.css";
 
 // Écran « Mes royaumes » (spec 6.1) : premier écran de l'appli.
@@ -141,11 +142,11 @@ export function KingdomsScreen({ catalog }: { catalog: Catalog }) {
         {(kingdoms?.length ?? 0) > 6 && (
           <input className={styles.search} placeholder="Rechercher" value={search} onChange={(e) => setSearch(e.target.value)} />
         )}
-        <a className="btn" href="#/cartes">
-          Visionneuse des cartes
+        <a className={styles.tool} href="#/cartes" aria-label="Visionneuse des cartes" title="Visionneuse des cartes">
+          <CardsIcon />
         </a>
-        <button className="btn btn-primary" onClick={() => setCreating(true)}>
-          + Nouveau royaume
+        <button className={styles.play} onClick={() => setCreating(true)}>
+          <PlusIcon /> Nouveau royaume
         </button>
       </header>
 
@@ -175,22 +176,22 @@ export function KingdomsScreen({ catalog }: { catalog: Catalog }) {
                 <span className={styles.date}>Joué le {dateFormat.format(k.updatedAt)}</span>
               </a>
               <div className={styles.actions}>
-                <a className="btn btn-primary" href={`#/partie/${k.id}`}>
-                  {k.summary.status === "finished" ? "Consulter" : "Continuer"}
+                <a className={styles.play} href={`#/partie/${k.id}`}>
+                  <PlayIcon /> {k.summary.status === "finished" ? "Consulter" : "Continuer"}
                 </a>
-                <button className="btn" onClick={() => setMenu({ kind: "rename", kingdom: k })}>
-                  Renommer
+                <button className={styles.tool} onClick={() => setMenu({ kind: "rename", kingdom: k })} aria-label="Renommer" title="Renommer">
+                  <EditIcon />
                 </button>
-                <button className="btn" onClick={() => void duplicateKingdom(k.id).then(refresh)}>
-                  Dupliquer
+                <button className={styles.tool} onClick={() => void duplicateKingdom(k.id).then(refresh)} aria-label="Dupliquer" title="Dupliquer">
+                  <CopyIcon />
                 </button>
                 {canRestartKingdom(k.state) && (
-                  <button className="btn" onClick={() => setMenu({ kind: "restart", kingdom: k })}>
-                    Recommencer
+                  <button className={styles.tool} onClick={() => setMenu({ kind: "restart", kingdom: k })} aria-label="Recommencer" title="Recommencer">
+                    <RestartIcon />
                   </button>
                 )}
-                <button className="btn btn-danger" onClick={() => setMenu({ kind: "delete", kingdom: k })}>
-                  Supprimer
+                <button className={`${styles.tool} ${styles.danger}`} onClick={() => setMenu({ kind: "delete", kingdom: k })} aria-label="Supprimer" title="Supprimer">
+                  <TrashIcon />
                 </button>
               </div>
             </li>
