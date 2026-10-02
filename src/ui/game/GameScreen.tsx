@@ -135,7 +135,7 @@ function toastFor(action: Action | undefined): string {
 }
 
 export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId: string }) {
-  const { status, kingdom, session, toast, engaged, load, perform, toggleEngaged, restart, undo, dismissToast } = useGame();
+  const { status, kingdom, session, toast, engaged, flagged, load, perform, toggleEngaged, toggleFlag, restart, undo, dismissToast } = useGame();
   const [selected, setSelected] = useState<Selected | null>(null);
   const [inspect, setInspect] = useState<InstanceId | null>(null);
   const [discardOpen, setDiscardOpen] = useState(false);
@@ -160,7 +160,7 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
   const state = session && kingdom?.id === kingdomId ? current(session) : null;
   const legal = useMemo(() => (state ? getLegalActions(catalog, state) : []), [catalog, state]);
   const engagedNow = useMemo(() => (state ? engaged.filter((id) => state.zones.play.includes(id)) : []), [engaged, state]);
-  const [fitRef, cardWidth] = useFitCards(state?.zones.play.length ?? 0);
+  const [fitRef, cardWidth] = useFitCards(state?.zones.play.length ?? 0, zoom);
   useCardMotion(catalog, state, playEl);
   const playing = state?.phase === "playing" && !state.pending && !anim;
 
@@ -338,12 +338,10 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
         setTargeting({ source: card, options: playable });
         return;
       }
-      if (opts.length === 0 && zone === "effect" && (activeStage(catalog, state, card)?.effects.length ?? 0) === 0) {
-        openMenu(card);
-        return;
-      }
+      // Plusieurs choix sans cible (ex. Bazaar : bois ou pierre) : petit menu de choix.
+      if (opts.length > 1) openMenu(card);
     }
-    openMenu(card);
+    // Zone neutre : rien (demande du 2026-10-02 : pas de fenêtre au toucher d'une carte).
   };
 
   const card = (id: InstanceId, width: number | undefined, onTap?: (p: TapPoint) => void, inspectable = true, extra?: { engaged?: boolean; zones?: boolean }) => (
@@ -356,6 +354,8 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
       width={width}
       selected={selected?.card === id}
       engaged={extra?.engaged}
+      flagged={extra?.zones ? flagged.includes(id) : undefined}
+      onTwoFinger={extra?.zones ? () => toggleFlag(id) : undefined}
       dimBottom={dimBottom && extra?.zones !== false}
       targetable={targeting ? targetOptions.has(id) : undefined}
       dimmed={targeting ? !targetOptions.has(id) && id !== targeting.source : undefined}
@@ -527,7 +527,7 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
       <div className={styles.resourceRow}>{resources}</div>
 
       <main
-        className={styles.play}
+        className={`${styles.play} ${zoom > 1 ? styles.playZoomed : ""}`}
         ref={(node) => {
           playEl.current = node;
           fitRef(node);

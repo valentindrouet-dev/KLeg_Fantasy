@@ -38,6 +38,9 @@ Routage par hash (`src/ui/App.tsx`) : `#/` Mes royaumes, `#/partie/<id>` partie,
   cible dans la défausse : choix dans la défausse. Échap annule.
 - **Fin de tour animée** (`useCardMotion.ts`) : cartes vers la défausse, nouvelles cartes depuis la pioche.
 - **Bouton FR** : active ou coupe les infobulles en français (mémorisé dans le navigateur).
+- **Drapeau** : toucher une carte en jeu avec deux doigts (Alt + clic sur ordinateur) ; il tombe quand la carte quitte le jeu.
+- **Zone neutre** d'une carte : toucher ne fait rien (pas de fenêtre). La feuille d'actions ne s'ouvre que pour un choix (ex. Bazaar).
+- **Appli iPad** : `public/manifest.webmanifest`, icônes pièce sur fond noir (`scripts/make-app-icons.ts`).
 - **Tri ⇅** : cartes en jeu par ressource (défaut), par type de terrain ou ordre d'arrivée (`sortCards.ts`, affichage seulement).
 - **Stats** : cartes par zone, production par ressource, gloire, types, découvertes / détruites / boîte (`engine/stats.ts`).
 - **Inspection** : face visible telle qu'elle est posée + autre face retournée de haut en bas (1 en haut ↔ 3 en haut).

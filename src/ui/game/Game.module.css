@@ -109,7 +109,7 @@
   gap: 12px;
   min-width: 0;
   min-height: 0;
-  padding: var(--space-3);
+  padding: 1.8rem var(--space-3) var(--space-3);
   overflow: hidden;
 }
 
@@ -118,7 +118,7 @@
   position: relative;
   flex: none;
   aspect-ratio: 373 / 520;
-  overflow: hidden;
+  overflow: visible; /* la face découpe l'image ; le drapeau dépasse au-dessus */
   border-radius: 4.5% / 3.2%;
   background: var(--surface-2);
   box-shadow: 0 2px 6px rgb(0 0 0 / 0.25);
@@ -858,4 +858,34 @@
 .sortChoice input {
   width: 1.3rem;
   height: 1.3rem;
+}
+
+/* Drapeau (toucher à deux doigts) */
+.flag {
+  position: absolute;
+  top: -1.6rem;
+  left: 50%;
+  z-index: 6;
+  width: 2.2rem;
+  height: 2.2rem;
+  filter: drop-shadow(0 2px 3px rgb(0 0 0 / 0.4));
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.flag svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* Cartes en jeu : pas de zoom de page au pincement (deux doigts = drapeau) */
+.play .card {
+  touch-action: pan-x pan-y;
+}
+
+/* Zoom au-delà de 100 % : les cartes grandissent, la zone défile si besoin */
+.playZoomed {
+  align-content: flex-start;
+  overflow-y: auto;
+  padding-top: 1.8rem;
 }

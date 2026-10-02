@@ -28,11 +28,14 @@ type GameStore = {
   session: Session | null;
   toast: Toast | null;
   engaged: InstanceId[];
+  /** Cartes marquées d'un drapeau (toucher à deux doigts) ; le drapeau tombe quand la carte quitte le jeu. */
+  flagged: InstanceId[];
   /** Nombre d'actions du moteur par geste du joueur, pour annuler un geste d'un coup. */
   groups: number[];
   load: (catalog: Catalog, id: string) => Promise<void>;
   perform: (actions: Action[], toast?: string) => void;
   toggleEngaged: (card: InstanceId) => void;
+  toggleFlag: (card: InstanceId) => void;
   /** Reset officiel (avant la carte 23) : le royaume repart des cartes 1 à 10, nouveau mélange. */
   restart: () => void;
   undo: () => void;
@@ -66,10 +69,11 @@ export const useGame = create<GameStore>((set, get) => ({
   session: null,
   toast: null,
   engaged: [],
+  flagged: [],
   groups: [],
 
   load: async (catalog, id) => {
-    set({ status: "loading", kingdom: null, session: null, toast: null, engaged: [], groups: [] });
+    set({ status: "loading", kingdom: null, session: null, toast: null, engaged: [], flagged: [], groups: [] });
     const kingdom = await getKingdom(id);
     if (!kingdom) {
       set({ status: "missing" });
@@ -79,10 +83,12 @@ export const useGame = create<GameStore>((set, get) => ({
   },
 
   perform: (actions, toast) => {
-    const { session, kingdom, engaged, groups } = get();
+    const { session, kingdom, engaged, flagged, groups } = get();
     if (!session || !kingdom || actions.length === 0) return;
     const next = actions.reduce((s, a) => act(s, a), session);
+    const inPlay = current(next).zones.play;
     set({
+      flagged: flagged.filter((id) => inPlay.includes(id)),
       session: next,
       kingdom: persist(session.catalog, kingdom, next),
       engaged: keepEngaged(engaged, current(session), current(next)),
@@ -90,6 +96,9 @@ export const useGame = create<GameStore>((set, get) => ({
       toast: toast && canUndo(next) ? { id: ++toastSeq, text: toast } : null,
     });
   },
+
+  toggleFlag: (card) =>
+    set(({ flagged }) => ({ flagged: flagged.includes(card) ? flagged.filter((c) => c !== card) : [...flagged, card] })),
 
   toggleEngaged: (card) =>
     set(({ engaged }) => ({ engaged: engaged.includes(card) ? engaged.filter((c) => c !== card) : [...engaged, card] })),

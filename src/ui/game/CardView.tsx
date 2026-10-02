@@ -23,6 +23,8 @@ type Props = {
   engaged?: boolean;
   targetable?: boolean; // cible possible de l'effet en cours
   dimBottom?: boolean; // griser la moitié basse (stage suivant)
+  flagged?: boolean; // petit drapeau posé par un toucher à deux doigts
+  onTwoFinger?: () => void;
   dimmed?: boolean;
   badge?: ReactNode;
   onTap?: (p: TapPoint) => void;
@@ -66,7 +68,7 @@ function Face({
       ) : (
         <span className={styles.cardFallback}>{label}</span>
       )}
-      {dimBottom && <span className={styles.bottomShade} />}
+      {dimBottom && top !== null && bottom !== null && <span className={styles.bottomShade} />}
       {top !== null && <span className={`${styles.stageNumber} ${styles.stageTop} ${styles[`stage${top}`]}`}>{top}</span>}
       {bottom !== null && <span className={`${styles.stageNumber} ${styles.stageBottom} ${styles[`stage${bottom}`]}`}>{bottom}</span>}
     </div>
@@ -74,9 +76,11 @@ function Face({
 }
 
 export function CardView(props: Props) {
-  const { id, template, orientation, label, width, selected, engaged, targetable, dimBottom, dimmed, badge, onTap, onLongPress, zoneLabel, anim } = props;
-  const press = usePress(onTap ?? (() => {}), onLongPress);
+  const { id, template, orientation, label, width, selected, engaged, targetable, dimBottom, flagged, onTwoFinger, dimmed, badge, onTap, onLongPress, zoneLabel, anim } =
+    props;
+  const press = usePress(onTap ?? (() => {}), onLongPress, onTwoFinger);
   const [hover, setHover] = useState<Hover | null>(null);
+  const [clicked, setClicked] = useState(false); // pas de bulle après un clic, jusqu'à la sortie du pointeur
   const tooltipsFr = usePrefs((p) => p.tooltipsFr);
   const interactive = Boolean(onTap || onLongPress) && !anim;
 
@@ -111,16 +115,22 @@ export function CardView(props: Props) {
         }
       }}
       {...(interactive ? press : {})}
+      onPointerDown={(e) => {
+        if (interactive) press.onPointerDown(e);
+        setClicked(true);
+        setHover(null);
+      }}
       onPointerMove={(e) => {
         if (interactive) press.onPointerMove(e);
-        if (e.pointerType === "touch" || anim) return;
+        if (e.pointerType === "touch" || anim || clicked) return;
         const r = e.currentTarget.getBoundingClientRect();
         const x = (e.clientX - r.left) / r.width;
         const y = (e.clientY - r.top) / r.height;
         setHover({ zone: zoneAt(x, y), half: y < 0.5 ? "top" : "bottom", x: e.clientX, y: e.clientY });
       }}
       onPointerLeave={(e) => {
-        if (interactive) press.onPointerLeave();
+        if (interactive) press.onPointerLeave(e);
+        setClicked(false);
         if (e.pointerType !== "touch") setHover(null);
       }}
     >
@@ -140,6 +150,14 @@ export function CardView(props: Props) {
         />
       )}
       {badge && <span className={styles.badge}>{badge}</span>}
+      {flagged && (
+        <span className={styles.flag} aria-label="Carte marquée">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M5 21V4" stroke="#3a2a14" strokeWidth="2" strokeLinecap="round" />
+            <path d="M6 4h12l-3 4 3 4H6z" fill="#d32f2f" stroke="#7f1d1d" strokeWidth="1" strokeLinejoin="round" />
+          </svg>
+        </span>
+      )}
       {hover && !anim && (fr || (action && tooltipsFr)) && (
         <div
           className={styles.tooltip}

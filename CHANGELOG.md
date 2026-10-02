@@ -3,6 +3,14 @@
 Chaque mise à jour publiée change de version (`package.json`, affichée dans l'appli en bas de l'écran « Mes royaumes »
 et dans la barre de la partie). Convention : `0.5.0` s'affiche **v0.05** ; un correctif `0.5.1` s'affiche **v0.05.1**.
 
+## v0.11 (2 octobre 2026)
+
+- Le zoom agrandit aussi les cartes en jeu (au-delà de 100 %, la zone de jeu défile si besoin).
+- Icône de l'appli iPad : la pièce sur fond noir (à réinstaller sur l'écran d'accueil pour la voir).
+- Toucher une carte en jeu avec deux doigts (Alt + clic sur ordinateur) : petit drapeau au-dessus, qui disparaît quand la carte quitte le jeu.
+- Grisage du bas : seulement sur les cartes qui ont deux étapes sur la face visible.
+- Plus de fenêtre quand on touche une carte en dehors d'une zone d'action ; pas d'infobulle après un clic.
+
 ## v0.10 (2 octobre 2026)
 
 - Correctif : une carte tournée (Plains, Felled Forest…) partait vers le haut à gauche au lieu d'aller à la défausse (fin de tour, effet).
