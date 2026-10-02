@@ -44,8 +44,8 @@ export function Inspector({ catalog, state, card, onClose }: { catalog: Catalog;
   return (
     <Dialog title={cardName(catalog, state, card)} onClose={onClose} wide>
       <div className={styles.inspector}>
-        <CardView template={t} orientation={c.orientation} label="Face visible" width={bigCard(2)} />
-        <CardView template={t} orientation={other} label="Autre face" width={bigCard(2)} />
+        <CardView template={t} orientation={c.orientation} label="Face visible" width={bigCard(2)} stickers={c.stickers} />
+        <CardView template={t} orientation={other} label="Autre face" width={bigCard(2)} stickers={c.stickers} />
       </div>
     </Dialog>
   );

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { applyAction, candidateActions, paymentCandidates, planWithEngaged, type Action } from "../../src/engine";
+import { applyAction, candidateActions, paymentCandidates, planWithEngaged, showsTopHalfOnly, type Action } from "../../src/engine";
 import { loadCatalog } from "../helpers/catalog";
 import { arrange, fk } from "../helpers/game";
 
@@ -80,5 +80,23 @@ describe("toucher l'effet d'abord, puis les cartes qui paient", async () => {
     expect(planWithEngaged(catalog, s, up, [fk(2)])).toBeNull();
     expect(paymentCandidates(catalog, s, up, [fk(2)])).toEqual([fk(3)]);
     expect(planWithEngaged(catalog, s, up, [fk(2), fk(3)])).not.toBeNull();
+  });
+});
+
+describe("pistes et demi-cartes", async () => {
+  const catalog = await loadCatalog();
+  it("Army : le coût est celui de la case suivante, les cartes à épées peuvent le payer", () => {
+    const s = arrange(catalog, { play: [9], permanent: [25], orientation: { 9: { side: "front", rotation: 180 } } });
+    const effect: Action = { type: "useEffect", card: fk(25), effect: "e1", targets: [], option: null };
+    expect(paymentCandidates(catalog, s, effect, [])).toEqual([fk(9)]);
+    expect(planWithEngaged(catalog, s, effect, [fk(9)])).not.toBeNull();
+  });
+
+  it("demi-carte : dernier stage ou « stays in play », jamais une carte à image pleine", () => {
+    const s = arrange(catalog, { play: [1, 2, 14, 84], orientation: { 1: { side: "back", rotation: 0 }, 84: { side: "back", rotation: 0 } } });
+    expect(showsTopHalfOnly(catalog, s, fk(1))).toBe(true); // Food Barns (stays in play)
+    expect(showsTopHalfOnly(catalog, s, fk(84))).toBe(true); // Diamond Mine (dernier stage)
+    expect(showsTopHalfOnly(catalog, s, fk(2))).toBe(false); // Wild Grass
+    expect(showsTopHalfOnly(catalog, s, fk(14))).toBe(false); // Bandit (image pleine)
   });
 });

@@ -15,7 +15,10 @@ export function actionCost(catalog: Catalog, s: GameState, a: Action): readonly 
     const u = activeStage(catalog, s, a.card)?.upgrades.find((x) => x.id === a.upgrade);
     return u ? upgradeCost(catalog, s, a.card, u) : null;
   }
-  if (a.type === "useEffect") return usableEffects(catalog, s, a.card).find((e) => e.effect.id === a.effect)?.impl.cost ?? null;
+  if (a.type === "useEffect") {
+    const impl = usableEffects(catalog, s, a.card).find((e) => e.effect.id === a.effect)?.impl;
+    return impl?.costOf?.({ catalog, s }, a.card) ?? impl?.cost ?? null;
+  }
   return null;
 }
 

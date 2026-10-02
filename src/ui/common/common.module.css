@@ -12,7 +12,8 @@
   display: grid;
   place-items: center;
   padding: max(var(--space-4), env(safe-area-inset-top)) var(--space-4) max(var(--space-4), env(safe-area-inset-bottom));
-  background: rgb(0 0 0 / 0.45);
+  /* Fond à peine assombri et fenêtre translucide : on voit ses cartes à travers (demande du 2026-10-02). */
+  background: rgb(0 0 0 / 0.12);
 }
 
 .dialog {
@@ -22,9 +23,16 @@
   max-height: 100%;
   border: 1px solid var(--border);
   border-radius: calc(var(--radius) * 1.5);
-  background: var(--surface);
+  background: color-mix(in srgb, var(--surface) 62%, transparent);
   color: var(--text);
   box-shadow: 0 12px 40px rgb(0 0 0 / 0.3);
+}
+
+/* Titres et boutons restent lisibles sur le fond translucide. */
+.dialogHeader h2,
+.dialogBody p,
+.dialogBody strong {
+  text-shadow: 0 0 6px var(--surface), 0 0 2px var(--surface);
 }
 
 .wide {

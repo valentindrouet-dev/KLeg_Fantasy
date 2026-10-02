@@ -322,7 +322,12 @@ const resourceStickerTo = (label: string, pick: (d: Draft, self: InstanceId) => 
   });
 
 /** Piste « Spend the {x} below to … mark 1 {mark} from left to right » : payer la case suivante. */
-const payTrack: Factory = () =>
+const payTrack: Factory = () => ({
+  ...trackEffect(),
+  costOf: (d: Draft, card: InstanceId) => unmarkedBoxes(d, card)[0]?.cost ?? [],
+});
+
+const trackEffect = (): EffectImpl =>
   effect({
     usable: (d, card) => {
       const next = unmarkedBoxes(d, card)[0];

@@ -76,6 +76,11 @@ export function CardActions({ catalog, state, card, anchor, options, engageLabel
                 // Impayable faute de ressources : le toucher fait choisir les cartes qui paient.
                 <button key={i} className={styles.actionItem} onClick={() => onRun(o)}>
                   <IconText text={o.label} />
+                  {!o.plan && o.reason && (
+                    <small className={styles.missing}>
+                      <IconText text={o.reason} />
+                    </small>
+                  )}
                 </button>
               ) : (
                 <div key={i} className={styles.actionDisabled}>

@@ -1043,3 +1043,48 @@
   width: 1.4em;
   height: 1.4em;
 }
+
+/* Stickers posés : dans la rangée des ressources imprimées de leur moitié. */
+.sticker {
+  position: absolute;
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px rgb(255 255 255 / 0.85), 0 2px 4px rgb(0 0 0 / 0.4);
+  pointer-events: none;
+}
+
+.sticker img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.sticker b {
+  font-size: 8cqw;
+  color: #fff;
+  text-shadow: 0 1px 2px #000;
+}
+
+.stickerFame {
+  position: absolute;
+}
+
+/* Demi-carte : seule la moitié haute (stage actif) est montrée. */
+.half {
+  aspect-ratio: 373 / 260;
+}
+
+.half .face {
+  inset: 0 0 auto 0;
+  height: 200%;
+  clip-path: inset(0 0 50% 0 round 0 0 4.5% 4.5%);
+}
+
+.missing {
+  display: block;
+  margin-top: 2px;
+  color: var(--danger, #a3362a);
+  font-weight: 700;
+}

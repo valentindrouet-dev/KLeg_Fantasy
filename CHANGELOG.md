@@ -3,6 +3,13 @@
 Chaque mise à jour publiée change de version (`package.json`, affichée dans l'appli en bas de l'écran « Mes royaumes »
 et dans la barre de la partie). Convention : `0.5.0` s'affiche **v0.05** ; un correctif `0.5.1` s'affiche **v0.05.1**.
 
+## v0.23 (2 octobre 2026)
+
+- Army, Treasury et les autres pistes : la pastille montre le palier suivant (« 3 {sword} → {fame}7 ») ; toucher la carte utilise son effet, ou fait briller les cartes qui peuvent payer, ou dit ce qui manque.
+- Fenêtres translucides : on voit ses cartes à travers pour choisir.
+- Stickers dessinés sur la carte, sur la moitié de leur stage, juste après les ressources imprimées et à leur taille.
+- Cartes au dernier stage et cartes « Stays in play » : seule la moitié haute est montrée en jeu (gain de place). Pas pour les cartes à image pleine, dont le texte est en bas.
+
 ## v0.22 (2 octobre 2026)
 
 - Ligne du haut de la zone de jeu : les ennemis, puis, un peu à l'écart, les cartes qui restent en jeu (« Stays in play »). Seules sur leur ligne quand la place le permet, sinon en tête de rangée.

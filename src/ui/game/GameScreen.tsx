@@ -8,6 +8,7 @@ import {
   paymentCandidates,
   canPeekSecond,
   cardBadges,
+  showsTopHalfOnly,
   canUndo,
   cardName,
   computeScore,
@@ -174,7 +175,7 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
   const { cardWidth, enemyRow } = useMemo(() => {
     const slots = (withBreak: boolean): Slot[] =>
       ordered.map((id, i) => ({
-        h: 1 + BLOCKED_PEEK * (state?.blocks?.[id]?.length ?? 0),
+        h: (state && showsTopHalfOnly(catalog, state, id) ? 0.5 : 1) + BLOCKED_PEEK * (state?.blocks?.[id]?.length ?? 0),
         breakBefore: withBreak && i === topCount,
         space: i === spacerAt ? TOP_SPACER : 0,
       }));
@@ -353,7 +354,9 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
   /** Option impayable : si des cartes en jeu peuvent fournir ce qui manque, on passe au choix des cartes qui paient. */
   const startPaying = (source: InstanceId, o: CardOption): boolean => {
     if (o.plan || !(o.reason ?? "").startsWith("Il manque")) return false;
-    if (paymentCandidates(catalog, state, o.action, engagedNow).length === 0) return false;
+    // Seulement si les cartes en jeu peuvent couvrir tout le coût ; sinon le menu dit ce qui manque.
+    const all = paymentCandidates(catalog, state, o.action, engagedNow);
+    if (all.length === 0 || !planWithEngaged(catalog, state, o.action, [...engagedNow, ...all])) return false;
     setSelected(null);
     setPaying({ source, action: o.action });
     return true;
@@ -430,6 +433,8 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
       onLongPress={inspectable ? () => setInspect(id) : undefined}
       zoneLabel={extra?.zones ? zoneLabel(id) : undefined}
       anim={anim?.card === id ? { kind: anim.kind, to: anim.to } : undefined}
+      stickers={instance(state, id).stickers}
+      half={extra?.zones ? showsTopHalfOnly(catalog, state, id) : undefined}
     />
   );
 
@@ -440,9 +445,19 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
     return parts.length ? <IconText text={parts.join(" · ")} /> : undefined;
   };
 
-  /** Carte permanente touchée : ses effets utilisables (Army, Export…), sinon l'inspection. */
+  /**
+   * Carte permanente touchée : son effet (Army, Treasury…). Payable : il part ; il manque des ressources : les cartes
+   * qui peuvent payer s'allument ; plusieurs effets : le menu. Sans effet : l'inspection (appui long aussi).
+   */
   const tapPermanent = (id: InstanceId) => {
-    if (playing && optionsFor(id).some((o) => o.plan)) openMenu(id);
+    const opts = playing ? optionsFor(id) : [];
+    const only = opts[0];
+    if (opts.length === 1 && only) {
+      if (only.plan) run(only.plan);
+      else if (!startPaying(id, only)) openMenu(id); // le menu dit ce qui manque
+      return;
+    }
+    if (opts.length > 1) openMenu(id);
     else setInspect(id);
   };
 

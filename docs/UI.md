@@ -59,6 +59,14 @@ Routage par hash (`src/ui/App.tsx`) : `#/` Mes royaumes, `#/partie/<id>` partie,
   ce qui manque brillent (`paymentCandidates`), les toucher les engage, l'action part dès que `planWithEngaged` la couvre.
 - **Compteurs de ressources** : vert = engrangé (ressources en cours + cartes engagées), gris = production des autres cartes en jeu.
 - **Nouvelles cartes** : appui long sur une carte = inspection recto verso (l'inspection s'ouvre par-dessus les fenêtres).
+- **Pistes** (Army, Treasury…) : pastille = coût de la case suivante et sa gloire ; Export : marchandises / palier.
+  Toucher une carte permanente utilise son effet (ou le paiement après coup, ou le menu qui dit ce qui manque).
+  Coût variable d'un effet : `EffectImpl.costOf`.
+- **Fenêtres translucides** (`common.module.css`) : fond à 12 %, fenêtre à 62 % d'opacité.
+- **Stickers** (`stickerLayout.ts`) : dessinés sur la moitié de leur stage, après les ressources imprimées
+  (x = 4,5 % + 12,9 % par icône, y = 13,7 %, 11,8 % de large), à l'envers sur la moitié basse.
+- **Demi-cartes** (`showsTopHalfOnly`) : dernier stage (ni amélioration ni effet qui la tourne) ou « stays in play » ;
+  jamais les cartes à image pleine. Zones cliquables ramenées à la carte entière.
 - **Ligne du haut** (`playLayout`) : ennemis, puis à 40 px d'écart les cartes « stays in play » ; seules sur leur ligne si
   les cartes y gardent au moins 75 % de leur taille, sinon en tête de rangée.
 - **Réglages ⚙** : thème Auto / Clair / Sombre (data-theme sur <html>), zoom des cartes en jeu seulement (60 à 200 %, la zone défile au besoin) et grisage de la moitié basse des cartes.

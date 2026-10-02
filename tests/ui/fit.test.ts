@@ -1,4 +1,6 @@
 import { describe, expect, it } from "vitest";
+import type { Stage } from "../../src/data/schema";
+import { stickerSpots } from "../../src/ui/game/stickerLayout";
 import { BLOCKED_PEEK, CARD_ASPECT, fitCardWidth, fitSlots } from "../../src/ui/game/fitCards";
 
 // Spec 7.3 : la zone de jeu affiche toutes les cartes sans défilement.
@@ -29,5 +31,21 @@ describe("emplacements de la zone de jeu", () => {
     const w = fitSlots(880, 560, slots, 12, 300);
     expect(w).toBeLessThan(plain);
     expect(w).toBeGreaterThan(120);
+  });
+});
+
+describe("place des stickers", () => {
+  it("juste après les ressources imprimées, sur la même rangée", () => {
+    const stage = { production: [{ id: "p1", options: [["coin", "coin"]] }] } as unknown as Stage;
+    const [first, second] = stickerSpots(stage, 2);
+    expect(first?.left).toBeCloseTo(0.045 + 2 * 0.129);
+    expect(second?.left).toBeCloseTo(0.045 + 3 * 0.129);
+    expect(first?.top).toBeCloseTo(0.137);
+  });
+
+  it("rangée pleine : à droite de la gloire imprimée, plus bas", () => {
+    const stage = { production: [{ id: "p1", options: [["stone", "metal", "metal", "tradeGood", "tradeGood"]] }, { id: "p2", options: [["coin"], ["wood"]] }] } as unknown as Stage;
+    const [spot] = stickerSpots(stage, 1);
+    expect(spot).toEqual({ left: 0.2, top: 0.25 });
   });
 });

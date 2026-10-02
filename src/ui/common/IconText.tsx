@@ -3,7 +3,7 @@ import styles from "./common.module.css";
 
 // Icônes du jeu découpées dans les cartes (scripts/extract-icons.ts) ; les autres restent en caractères.
 const IMAGES = import.meta.glob<string>("../icons/*.png", { eager: true, query: "?url", import: "default" });
-function iconImage(id: string): string | undefined {
+export function iconImage(id: string): string | undefined {
   return IMAGES[`../icons/${id}.png`];
 }
 
