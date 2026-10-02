@@ -29,8 +29,12 @@ Routage par hash (`src/ui/App.tsx`) : `#/` Mes royaumes, `#/partie/<id>` partie,
 - **Appui long** ou **clic droit** : inspection des deux faces (cartes en jeu, défausse, permanentes ; jamais la boîte).
 - **Défausse** : toucher pour voir toute la pile.
 - **Décisions** (parchemin, choix de découverte, choix de face) : fenêtre bloquante tant que le choix n'est pas fait.
-- **Confirmation** avant de perdre des ressources déjà produites, une destruction, un effet à usage unique, et une
-  amélioration en annulation stricte ; sinon un message « Annuler » de 4 secondes qui annule tout le geste.
+- **Confirmation** avant de perdre des ressources déjà produites, une destruction ou un effet à usage unique ; jamais
+  avant une amélioration (demande du 2026-10-02). Sinon un message « Annuler » de 4 secondes qui annule tout le geste.
+- **Animations** : une carte qui change d'orientation tourne de 180° (↓) ou se retourne (→) avant de partir
+  à la défausse (désactivées si le système demande moins d'animations).
+- **Numéro d'étape** (1 à 4) en bas à gauche de chaque moitié de carte.
+- **Version** affichée en bas de « Mes royaumes » et dans la barre de la partie (`src/version.ts`, `CHANGELOG.md`).
 - **Clavier** : A = Avancer, P = Passer, U ou Cmd+Z = Annuler, Échap = fermer.
 - Zone de jeu sans défilement : la taille des cartes s'adapte au nombre de cartes (`fitCards.ts`).
 - Portrait iPad : deck, ressources et défausse passent dans la bande du bas ; journal en panneau qui monte du bas.

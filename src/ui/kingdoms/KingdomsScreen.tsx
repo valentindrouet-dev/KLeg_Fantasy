@@ -4,6 +4,7 @@ import { deleteKingdom, duplicateKingdom, listKingdoms, renameKingdom, saveKingd
 import { KINGDOM_EMOJIS, newKingdomId, randomKingdomName, summarize, type Kingdom } from "../../persistence/kingdoms";
 import { Dialog } from "../common/Dialog";
 import { IconText } from "../common/IconText";
+import { APP_VERSION } from "../../version";
 import styles from "./Kingdoms.module.css";
 
 // Écran « Mes royaumes » (spec 6.1) : premier écran de l'appli.
@@ -200,6 +201,13 @@ export function KingdomsScreen({ catalog }: { catalog: Catalog }) {
           ))}
         </ul>
       )}
+
+      <footer className={styles.footer}>
+        Kingdom Legacy Digital {APP_VERSION} ·{" "}
+        <a href="https://github.com/valentindrouet-dev/KLeg_Fantasy/blob/claude/sharp-curie-b9evuk/CHANGELOG.md" target="_blank" rel="noreferrer">
+          nouveautés
+        </a>
+      </footer>
 
       {creating && <NewKingdomDialog catalog={catalog} onClose={() => setCreating(false)} />}
       {menu?.kind === "rename" && (

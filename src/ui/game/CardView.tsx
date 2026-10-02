@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { cardImageUrl } from "../../data/loadCards";
 import type { CardTemplate, Orientation, StageId } from "../../data/schema";
 import { stageFr } from "../../data/translations";
@@ -25,7 +25,11 @@ type Props = {
   onLongPress?: () => void;
   /** Libellé de l'action d'une zone (null : zone sans action). Active la surbrillance des zones. */
   zoneLabel?: (zone: ZoneKind) => string | null;
+  /** Animation de changement d'orientation : rotation 180° ou retournement, vers `to`. */
+  anim?: { kind: "rotate" | "flip"; to: Orientation };
 };
+
+export const ANIM_MS = 650;
 
 type Hover = { zone: ZoneKind; half: "top" | "bottom"; x: number; y: number };
 
@@ -34,11 +38,22 @@ function stageInHalf(t: CardTemplate, o: Orientation, half: "top" | "bottom"): S
   return stageIdAt(t, half === "top" ? o : { side: o.side, rotation: o.rotation === 0 ? 180 : 0 });
 }
 
-export function CardView({ id, template, orientation, label, width, selected, engaged, badge, onTap, onLongPress, zoneLabel }: Props) {
+export function CardView({ id, template, orientation: actual, label, width, selected, engaged, badge, onTap, onLongPress, zoneLabel, anim }: Props) {
   const press = usePress(onTap ?? (() => {}), onLongPress);
   const [hover, setHover] = useState<Hover | null>(null);
+  // Retournement : la face change à mi-animation, quand la carte est vue de profil.
+  const [flipped, setFlipped] = useState(false);
+  useEffect(() => {
+    setFlipped(false);
+    if (anim?.kind !== "flip") return;
+    const t = window.setTimeout(() => setFlipped(true), ANIM_MS / 2);
+    return () => window.clearTimeout(t);
+  }, [anim]);
+  const orientation = anim?.kind === "flip" && flipped ? anim.to : actual;
   const url = cardImageUrl(orientation.side === "front" ? template.images.front : template.images.back);
-  const interactive = Boolean(onTap || onLongPress);
+  const interactive = Boolean(onTap || onLongPress) && !anim;
+  const topStage = stageInHalf(template, orientation, "top");
+  const bottomStage = stageInHalf(template, orientation, "bottom");
 
   const stageId = hover ? stageInHalf(template, orientation, hover.half) : null;
   const stage = stageId ? template.stages[String(stageId) as "1" | "2" | "3" | "4"] : undefined;
@@ -48,7 +63,7 @@ export function CardView({ id, template, orientation, label, width, selected, en
 
   return (
     <div
-      className={`${styles.card} ${selected ? styles.selected : ""} ${engaged ? styles.engaged : ""} ${interactive ? styles.interactive : ""}`}
+      className={`${styles.card} ${selected ? styles.selected : ""} ${engaged ? styles.engaged : ""} ${interactive ? styles.interactive : ""} ${anim ? (anim.kind === "rotate" ? styles.animRotate : styles.animFlip) : ""}`}
       style={width ? { width } : undefined}
       data-card={id}
       role={interactive ? "button" : "img"}
@@ -85,8 +100,18 @@ export function CardView({ id, template, orientation, label, width, selected, en
           style={{ left: `${rect.left * 100}%`, top: `${rect.top * 100}%`, width: `${rect.width * 100}%`, height: `${rect.height * 100}%` }}
         />
       )}
+      {topStage !== null && (
+        <span className={`${styles.stageNumber} ${styles.stageTop}`} title={`Étape ${topStage} (stage actif)`}>
+          {topStage}
+        </span>
+      )}
+      {bottomStage !== null && (
+        <span className={`${styles.stageNumber} ${styles.stageBottom}`} title={`Étape ${bottomStage}`}>
+          {bottomStage}
+        </span>
+      )}
       {badge && <span className={styles.badge}>{badge}</span>}
-      {hover && (fr || action) && (
+      {hover && !anim && (fr || action) && (
         <div className={styles.tooltip} style={{ left: Math.min(hover.x + 16, window.innerWidth - 336), top: Math.min(hover.y + 16, window.innerHeight - 160) }} role="tooltip">
           {action && (
             <p className={styles.tooltipAction}>

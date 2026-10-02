@@ -23,11 +23,13 @@ import {
   type GameState,
   type InstanceId,
 } from "../../engine";
+import type { Orientation } from "../../data/schema";
+import { APP_VERSION } from "../../version";
 import { Icon, IconText } from "../common/IconText";
 import type { TapPoint } from "../common/usePress";
 import { CardActions, type CardOption } from "./CardActions";
 import { zoneAt, type ZoneKind } from "./cardZones";
-import { CardView } from "./CardView";
+import { ANIM_MS, CardView } from "./CardView";
 import { CardListDialog, ConfirmDialog, DecisionDialog, EndDialog, Inspector } from "./Dialogs";
 import { useGame } from "./store";
 import { useFitCards } from "./useFitCards";
@@ -38,6 +40,7 @@ import styles from "./Game.module.css";
 // d'amélioration améliore, toucher l'effet l'applique ; ailleurs, la feuille d'actions s'ouvre.
 
 type Selected = { card: InstanceId; anchor: DOMRect };
+type Anim = { card: InstanceId; kind: "rotate" | "flip"; to: Orientation };
 type Pending = { plan: Action[]; message: string; toast: string };
 
 const icons = (rs: readonly ResourceId[]) => rs.map((r) => `{${r}}`).join("");
@@ -65,8 +68,28 @@ function missingText(catalog: Catalog, s: GameState, a: Action, engaged: Instanc
   return missing.length ? `Il manque ${icons(missing)} : engage d'autres cartes` : "Pas payable avec les cartes engagées";
 }
 
+/** Changement d'orientation que produit un geste sur sa carte (pour l'animer), ou null. */
+function orientationChange(catalog: Catalog, state: GameState, plan: Action[]): Anim | null {
+  const last = plan.at(-1);
+  if (!last || !("card" in last) || last.type === "produce") return null;
+  let s = state;
+  try {
+    for (const a of plan) s = applyAction(catalog, s, a);
+  } catch {
+    return null;
+  }
+  const before = instance(state, last.card).orientation;
+  const after = instance(s, last.card).orientation;
+  if (before.side !== after.side) return { card: last.card, kind: "flip", to: after };
+  if (before.rotation !== after.rotation) return { card: last.card, kind: "rotate", to: after };
+  return null;
+}
+
+const reducedMotion = () => window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
+
 /** Confirmation nécessaire avant un geste (spec 7.5), ou null. */
 function confirmationFor(catalog: Catalog, state: GameState, plan: Action[]): string | null {
+  if (plan.at(-1)?.type === "upgrade") return null; // demande du 2026-10-02 : améliorer sans confirmation
   let s = state;
   const lost: Record<string, number> = {};
   const parts: string[] = [];
@@ -75,9 +98,6 @@ function confirmationFor(catalog: Catalog, state: GameState, plan: Action[]): st
       const effect = usableEffects(catalog, s, a.card).find((e) => e.effect.id === a.effect)?.effect;
       if (effect?.type === "destroy") parts.push(`${cardName(catalog, s, a.card)} sera détruite définitivement.`);
       if (effect?.oneTime) parts.push("Cet effet ne sert qu'une fois : il sera rayé.");
-    }
-    if (a.type === "upgrade" && state.config.undoMode === "strict") {
-      parts.push(`${describeAction(catalog, s, a)}. Impossible d'annuler ensuite (mode strict).`);
     }
     try {
       s = applyAction(catalog, s, a);
@@ -119,6 +139,7 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
   const [pending, setPending] = useState<Pending | null>(null);
   const [endClosed, setEndClosed] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
+  const [anim, setAnim] = useState<Anim | null>(null);
 
   useEffect(() => {
     void load(catalog, kingdomId);
@@ -128,7 +149,7 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
   const legal = useMemo(() => (state ? getLegalActions(catalog, state) : []), [catalog, state]);
   const engagedNow = useMemo(() => (state ? engaged.filter((id) => state.zones.play.includes(id)) : []), [engaged, state]);
   const [fitRef, cardWidth] = useFitCards(state?.zones.play.length ?? 0);
-  const playing = state?.phase === "playing" && !state.pending;
+  const playing = state?.phase === "playing" && !state.pending && !anim;
 
   const optionsFor = useCallback(
     (card: InstanceId): CardOption[] => {
@@ -141,6 +162,24 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
     [catalog, state, engagedNow],
   );
 
+  /** Joue un geste ; si la carte change d'orientation, l'anime d'abord (rotation ou retournement). */
+  const commit = useCallback(
+    (plan: Action[], toast: string) => {
+      if (!state) return;
+      const a = reducedMotion() ? null : orientationChange(catalog, state, plan);
+      if (!a) {
+        perform(plan, toast);
+        return;
+      }
+      setAnim(a);
+      window.setTimeout(() => {
+        perform(plan, toast);
+        setAnim(null);
+      }, ANIM_MS + 80);
+    },
+    [catalog, state, perform],
+  );
+
   const run = useCallback(
     (plan: Action[]) => {
       if (!state) return;
@@ -149,9 +188,9 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
       const t = toastFor(last, plan.length - 1);
       const message = confirmationFor(catalog, state, plan);
       if (message) setPending({ plan, message, toast: t });
-      else perform(plan, t);
+      else commit(plan, t);
     },
-    [catalog, state, perform],
+    [catalog, state, commit],
   );
 
   const flash = useCallback((text: string) => {
@@ -165,7 +204,7 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
   // Clavier (spec 7.6) : A = Avancer, P = Passer, U ou Cmd+Z = Annuler.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.target instanceof HTMLInputElement || pending || inspect || discardOpen || state?.pending) return;
+      if (e.target instanceof HTMLInputElement || pending || inspect || discardOpen || state?.pending || anim) return;
       const key = e.key.toLowerCase();
       const mod = e.metaKey || e.ctrlKey;
       if ((key === "z" && mod) || (key === "u" && !mod)) {
@@ -176,7 +215,7 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [advance, pass, run, undo, pending, inspect, discardOpen, state?.pending]);
+  }, [advance, pass, run, undo, pending, inspect, discardOpen, state?.pending, anim]);
 
   useEffect(() => {
     if (!toast) return;
@@ -268,6 +307,7 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
       onTap={onTap}
       onLongPress={inspectable ? () => setInspect(id) : undefined}
       zoneLabel={extra?.zones ? zoneLabel(id) : undefined}
+      anim={anim?.card === id ? { kind: anim.kind, to: anim.to } : undefined}
     />
   );
 
@@ -338,6 +378,7 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
             {state.finalRound ? " (dernière)" : ""} · {state.turn > 0 ? `Tour ${state.turn}` : "Début de manche"} ·{" "}
             <IconText text={`{fame} ${fame}`} />
           </span>
+          <small className={styles.version}>{APP_VERSION}</small>
         </h1>
         <button className="btn" disabled={!canUndo(session)} onClick={undo} title="Annuler (U)">
           ⟲ Annuler
@@ -430,7 +471,7 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
           confirm="Continuer"
           onCancel={() => setPending(null)}
           onConfirm={() => {
-            perform(pending.plan, pending.toast);
+            commit(pending.plan, pending.toast);
             setPending(null);
           }}
         />
