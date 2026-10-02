@@ -38,7 +38,10 @@ Routage par hash (`src/ui/App.tsx`) : `#/` Mes royaumes, `#/partie/<id>` partie,
   cible dans la défausse : choix dans la défausse. Échap annule.
 - **Fin de tour animée** (`useCardMotion.ts`) : cartes vers la défausse, nouvelles cartes depuis la pioche.
 - **Bouton FR** : active ou coupe les infobulles en français (mémorisé dans le navigateur).
-- **Icônes** : découpées dans les cartes (`scripts/extract-icons.ts` → `src/ui/icons/`).
+- **Réglages ⚙** : zoom de toute l'interface (variable CSS `--zoom`, tailles en rem) et grisage de la moitié basse des cartes.
+- **Mises à jour** : l'appli compare sa version à `version.json` (publié au build) au démarrage, au retour au premier plan
+  et toutes les 15 min ; un bouton recharge la page en contournant le cache (utile pour l'appli installée sur l'iPad).
+- **Icônes** : ressources, gloire et stickers détourés de la planche fournie (`data/icons/stickers-sheet.webp`, `scripts/extract-sheet-icons.ts`) ; types d'effet découpés dans les cartes (`scripts/extract-icons.ts`).
 - **Pas de textes explicatifs** dans l'interface (demande du 2026-10-02).
 - **Version** affichée en bas de « Mes royaumes » et dans la barre de la partie (`src/version.ts`, `CHANGELOG.md`).
 - **Clavier** : A = Avancer, P = Passer, U ou Cmd+Z = Annuler, Échap = fermer.

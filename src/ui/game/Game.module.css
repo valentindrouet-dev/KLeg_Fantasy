@@ -1,7 +1,7 @@
 /* Plateau (spec 7.3). Paysage = référence ; portrait iPad en variante. Aucun défilement du plateau. */
 .game {
   display: grid;
-  grid-template-columns: 220px minmax(0, 1fr) 220px;
+  grid-template-columns: clamp(13rem, 24vw, 22rem) minmax(0, 1fr) clamp(13rem, 24vw, 22rem);
   grid-template-rows: auto auto auto minmax(0, 1fr) auto;
   grid-template-areas:
     "top top top"
@@ -18,6 +18,7 @@
 
 .topbar {
   grid-area: top;
+  position: relative;
   display: flex;
   align-items: center;
   gap: var(--space-2);
@@ -37,9 +38,9 @@
 }
 
 .topbar h1 span {
-  color: var(--text-muted);
-  font-size: 0.95rem;
-  font-weight: 400;
+  color: var(--text);
+  font-size: 1.05rem;
+  font-weight: 700;
 }
 
 .permanents {
@@ -73,7 +74,7 @@
   flex-direction: column;
   gap: var(--space-2);
   width: 100%;
-  max-width: 196px;
+  max-width: 21rem;
 }
 
 .pile .card {
@@ -81,8 +82,9 @@
 }
 
 .pileTitle {
-  color: var(--text-muted);
-  font-size: 0.85rem;
+  color: var(--text);
+  font-size: 1.15rem;
+  font-weight: 700;
   text-align: center;
 }
 
@@ -340,7 +342,7 @@
 /* Portrait iPad : ressources et cartes au centre, deck / boutons / défausse dans la bande du bas. */
 @media (orientation: portrait) {
   .game {
-    grid-template-columns: 150px minmax(0, 1fr) 150px;
+    grid-template-columns: clamp(9rem, 24vw, 14rem) minmax(0, 1fr) clamp(9rem, 24vw, 14rem);
     grid-template-rows: auto auto auto minmax(0, 1fr) auto;
     grid-template-areas:
       "top top top"
@@ -351,11 +353,11 @@
   }
 
   .pile {
-    max-width: 130px;
+    max-width: 14rem;
   }
 
   .turnBtn {
-    min-width: 150px;
+    min-width: 9.5rem;
     padding: 0 var(--space-4);
   }
 }
@@ -492,6 +494,24 @@
   pointer-events: none;
 }
 
+.stage1 {
+  background: #2e8b3d;
+}
+
+.stage2 {
+  background: #e3b505;
+  color: #2b2418;
+}
+
+.stage3 {
+  background: #e07b1a;
+  color: #2b2418;
+}
+
+.stage4 {
+  background: #c62828;
+}
+
 .stageTop {
   top: calc(50% - max(16px, 9cqw) - 2%);
 }
@@ -602,7 +622,7 @@
   grid-area: res;
   display: flex;
   justify-content: center;
-  min-height: 60px;
+  min-height: 4.4rem;
   padding: var(--space-2) var(--space-3) 0;
 }
 
@@ -617,13 +637,13 @@
   display: inline-flex;
   align-items: center;
   gap: var(--space-1);
-  min-height: 48px;
+  min-height: 3.6rem;
   padding: 0 var(--space-4);
   border: 1px solid var(--border);
   border-radius: 999px;
   background: var(--surface);
   box-shadow: 0 2px 6px rgb(0 0 0 / 0.12);
-  font-size: 1.35rem;
+  font-size: 1.9rem;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
 }
@@ -643,8 +663,8 @@
   align-items: center;
   justify-content: center;
   gap: var(--space-2);
-  min-width: 200px;
-  min-height: 60px;
+  min-width: 12.5rem;
+  min-height: 3.75rem;
   padding: 0 var(--space-6);
   border: 2px solid var(--accent);
   border-radius: 14px;
@@ -672,11 +692,11 @@
   display: inline-grid;
   place-items: center;
   flex: none;
-  width: 48px;
-  height: 48px;
+  width: 3rem;
+  height: 3rem;
   padding: 0;
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: 0.75rem;
   background: var(--surface-2);
   color: var(--text);
   cursor: pointer;
@@ -735,4 +755,50 @@
 .aboveDialogs {
   position: relative;
   z-index: 60;
+}
+
+/* Moitié basse grisée (stage suivant), option des réglages */
+.bottomShade {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 50%;
+  background: rgb(40 36 30 / 0.45);
+  pointer-events: none;
+}
+
+/* Réglages (zoom, grisage) */
+.settings {
+  position: absolute;
+  top: calc(100% + var(--space-2));
+  right: var(--space-3);
+  z-index: 40;
+  display: grid;
+  gap: var(--space-3);
+  min-width: 15rem;
+  padding: var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  background: var(--surface);
+  box-shadow: 0 10px 30px rgb(0 0 0 / 0.3);
+  font-weight: 700;
+}
+
+.settingsRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.settingsRow input[type="checkbox"] {
+  width: 1.4rem;
+  height: 1.4rem;
+}
+
+.zoomValue {
+  min-width: 3.5rem;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
 }

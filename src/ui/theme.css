@@ -1,18 +1,19 @@
 /* Tokens de thème centralisés (spec section 2). Les composants n'utilisent que ces variables. */
 :root {
   color-scheme: light dark;
+  --zoom: 1; /* échelle de l'interface, réglable (prefs.ts) */
 
   --font-ui: system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-mono: ui-monospace, "SF Mono", Menlo, monospace;
   --text-scale: 1;
 
-  --space-1: 4px;
-  --space-2: 8px;
-  --space-3: 12px;
-  --space-4: 16px;
-  --space-6: 24px;
+  --space-1: calc(4px * var(--zoom));
+  --space-2: calc(8px * var(--zoom));
+  --space-3: calc(12px * var(--zoom));
+  --space-4: calc(16px * var(--zoom));
+  --space-6: calc(24px * var(--zoom));
   --radius: 8px;
-  --tap-min: 44px;
+  --tap-min: calc(44px * var(--zoom));
 
   --bg: #f4efe6;
   --surface: #fffaf0;
@@ -56,12 +57,17 @@
   box-sizing: border-box;
 }
 
+html {
+  font-size: calc(16px * var(--zoom));
+}
+
 body {
   margin: 0;
   background: var(--bg);
   color: var(--text);
   font-family: var(--font-ui);
-  font-size: calc(16px * var(--text-scale));
+  font-size: calc(1rem * var(--text-scale));
+  font-weight: 500;
 }
 
 /* Boutons communs (cibles tactiles ≥ 44 px, spec 7.6) */

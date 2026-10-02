@@ -22,6 +22,7 @@ type Props = {
   selected?: boolean;
   engaged?: boolean;
   targetable?: boolean; // cible possible de l'effet en cours
+  dimBottom?: boolean; // griser la moitié basse (stage suivant)
   dimmed?: boolean;
   badge?: ReactNode;
   onTap?: (p: TapPoint) => void;
@@ -42,7 +43,19 @@ function stageInHalf(t: CardTemplate, o: Orientation, half: "top" | "bottom"): S
 }
 
 /** Une face : image dans son orientation + numéros d'étape de chaque moitié. */
-function Face({ template, orientation, label, className }: { template: CardTemplate; orientation: Orientation; label: string; className?: string }) {
+function Face({
+  template,
+  orientation,
+  label,
+  className,
+  dimBottom,
+}: {
+  template: CardTemplate;
+  orientation: Orientation;
+  label: string;
+  className?: string;
+  dimBottom?: boolean;
+}) {
   const url = cardImageUrl(orientation.side === "front" ? template.images.front : template.images.back);
   const top = stageInHalf(template, orientation, "top");
   const bottom = stageInHalf(template, orientation, "bottom");
@@ -53,14 +66,15 @@ function Face({ template, orientation, label, className }: { template: CardTempl
       ) : (
         <span className={styles.cardFallback}>{label}</span>
       )}
-      {top !== null && <span className={`${styles.stageNumber} ${styles.stageTop}`}>{top}</span>}
-      {bottom !== null && <span className={`${styles.stageNumber} ${styles.stageBottom}`}>{bottom}</span>}
+      {dimBottom && <span className={styles.bottomShade} />}
+      {top !== null && <span className={`${styles.stageNumber} ${styles.stageTop} ${styles[`stage${top}`]}`}>{top}</span>}
+      {bottom !== null && <span className={`${styles.stageNumber} ${styles.stageBottom} ${styles[`stage${bottom}`]}`}>{bottom}</span>}
     </div>
   );
 }
 
 export function CardView(props: Props) {
-  const { id, template, orientation, label, width, selected, engaged, targetable, dimmed, badge, onTap, onLongPress, zoneLabel, anim } = props;
+  const { id, template, orientation, label, width, selected, engaged, targetable, dimBottom, dimmed, badge, onTap, onLongPress, zoneLabel, anim } = props;
   const press = usePress(onTap ?? (() => {}), onLongPress);
   const [hover, setHover] = useState<Hover | null>(null);
   const tooltipsFr = usePrefs((p) => p.tooltipsFr);
@@ -113,11 +127,11 @@ export function CardView(props: Props) {
       {anim?.kind === "flip" ? (
         // Retournement : deux faces dos à dos, la carte pivote d'un seul mouvement.
         <div className={styles.flipInner}>
-          <Face template={template} orientation={orientation} label={label} />
-          <Face template={template} orientation={anim.to} label={label} className={styles.backFace} />
+          <Face template={template} orientation={orientation} label={label} dimBottom={dimBottom} />
+          <Face template={template} orientation={anim.to} label={label} className={styles.backFace} dimBottom={dimBottom} />
         </div>
       ) : (
-        <Face template={template} orientation={orientation} label={label} />
+        <Face template={template} orientation={orientation} label={label} dimBottom={dimBottom} />
       )}
       {rect && !anim && (
         <span

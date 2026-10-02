@@ -26,7 +26,7 @@ import {
 import type { Orientation } from "../../data/schema";
 import { APP_VERSION } from "../../version";
 import { Icon, IconText } from "../common/IconText";
-import { AdvanceIcon, CastleIcon, PassIcon, TranslateIcon, UndoIcon } from "../common/UiIcons";
+import { AdvanceIcon, CastleIcon, PassIcon, SettingsIcon, TranslateIcon, UndoIcon } from "../common/UiIcons";
 import type { TapPoint } from "../common/usePress";
 import { CardActions, type CardOption } from "./CardActions";
 import { zoneAt, type ZoneKind } from "./cardZones";
@@ -35,7 +35,7 @@ import { CardListDialog, ConfirmDialog, DecisionDialog, EndDialog, Inspector } f
 import { useGame } from "./store";
 import { useFitCards } from "./useFitCards";
 import { useCardMotion } from "./useCardMotion";
-import { usePrefs } from "../common/prefs";
+import { usePrefs, ZOOM_MAX, ZOOM_MIN } from "../common/prefs";
 import styles from "./Game.module.css";
 
 // Plateau de jeu (spec 7.3) : deck à gauche (toucher = Avancer), zone de jeu au centre, défausse à droite,
@@ -145,8 +145,8 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
   const [notice, setNotice] = useState<string | null>(null);
   const [anim, setAnim] = useState<Anim | null>(null);
   const [targeting, setTargeting] = useState<{ source: InstanceId; options: CardOption[] } | null>(null);
-  const tooltipsFr = usePrefs((p) => p.tooltipsFr);
-  const toggleTooltipsFr = usePrefs((p) => p.toggleTooltipsFr);
+  const { tooltipsFr, toggleTooltipsFr, zoom, setZoom, dimBottom, toggleDimBottom } = usePrefs();
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const playEl = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
@@ -353,6 +353,7 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
       width={width}
       selected={selected?.card === id}
       engaged={extra?.engaged}
+      dimBottom={dimBottom && extra?.zones !== false}
       targetable={targeting ? targetOptions.has(id) : undefined}
       dimmed={targeting ? !targetOptions.has(id) && id !== targeting.source : undefined}
       badge={extra?.engaged ? <IconText text={`engagée ${productionLabel(catalog, state, id) ?? ""}`} /> : undefined}
@@ -390,24 +391,21 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
       )}
     </div>
   );
+  // Ressources : icône + total (en cours + cartes engagées), seulement celles qu'on a.
   const resources = (
     <div className={styles.resources} aria-label="Ressources">
       {catalog.resources.map((r) => {
-        const have = state.resources[r] ?? 0;
-        const more = potential.fixed[r] ?? 0;
-        if (have + more === 0) return null;
+        const total = (state.resources[r] ?? 0) + (potential.fixed[r] ?? 0);
+        if (total === 0) return null;
         return (
           <span key={r} className={styles.resource}>
-            <Icon id={r} /> {have}
-            {more > 0 && <span className={styles.engagedCount}>+{more}</span>}
+            <Icon id={r} /> {total}
           </span>
         );
       })}
       {potential.choices.map((opts, i) => (
         <span key={`c${i}`} className={styles.resource}>
-          <span className={styles.engagedCount}>
-            +<IconText text={opts.map((o) => icons(o)).join("/")} />
-          </span>
+          <IconText text={opts.map((o) => icons(o)).join("/")} /> 1
         </span>
       ))}
     </div>
@@ -442,6 +440,29 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
         >
           <TranslateIcon />
         </button>
+        <button className={styles.iconBtn} aria-pressed={settingsOpen} onClick={() => setSettingsOpen((o) => !o)} aria-label="Réglages" title="Réglages">
+          <SettingsIcon />
+        </button>
+        {settingsOpen && (
+          <div className={styles.settings} role="dialog" aria-label="Réglages">
+            <div className={styles.settingsRow}>
+              <span>Zoom</span>
+              <span className={styles.settingsRow}>
+                <button className={styles.iconBtn} onClick={() => setZoom(zoom - 0.1)} disabled={zoom <= ZOOM_MIN} aria-label="Dézoomer">
+                  −
+                </button>
+                <span className={styles.zoomValue}>{Math.round(zoom * 100)} %</span>
+                <button className={styles.iconBtn} onClick={() => setZoom(zoom + 0.1)} disabled={zoom >= ZOOM_MAX} aria-label="Zoomer">
+                  +
+                </button>
+              </span>
+            </div>
+            <label className={styles.settingsRow}>
+              <span>Griser le bas des cartes</span>
+              <input type="checkbox" checked={dimBottom} onChange={toggleDimBottom} />
+            </label>
+          </div>
+        )}
       </header>
 
       {state.zones.permanent.length > 0 && (

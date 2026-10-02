@@ -71,9 +71,27 @@
 
 .iconImg {
   display: inline-block;
-  width: 1.35em;
-  height: 1.35em;
+  width: auto;
+  height: 1.4em;
   margin: 0 0.08em;
   border-radius: 3px;
   vertical-align: -0.33em;
+}
+
+.updateBanner {
+  position: fixed;
+  top: calc(var(--space-2) + env(safe-area-inset-top));
+  left: 50%;
+  z-index: 90;
+  min-height: var(--tap-min);
+  padding: 0 var(--space-4);
+  border: none;
+  border-radius: 999px;
+  background: var(--ok);
+  color: #fff;
+  font: inherit;
+  font-weight: 700;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.3);
+  transform: translateX(-50%);
+  cursor: pointer;
 }

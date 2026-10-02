@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useCatalog } from "./common/catalog";
+import { UpdateBanner } from "./common/UpdateBanner";
 import { GameScreen } from "./game/GameScreen";
 import { KingdomsScreen } from "./kingdoms/KingdomsScreen";
 import { DataViewer } from "./viewer/DataViewer";
@@ -18,6 +19,15 @@ function useHash(): string {
 }
 
 export function App() {
+  return (
+    <>
+      <Screen />
+      <UpdateBanner />
+    </>
+  );
+}
+
+function Screen() {
   const hash = useHash();
   const catalog = useCatalog();
 

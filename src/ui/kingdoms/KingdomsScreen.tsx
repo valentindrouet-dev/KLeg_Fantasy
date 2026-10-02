@@ -253,24 +253,30 @@ export function KingdomsScreen({ catalog }: { catalog: Catalog }) {
               <button className="btn" onClick={() => setMenu(null)}>
                 Annuler
               </button>
-              <button
-                className="btn btn-primary"
-                onClick={() => {
-                  const k = menu.kingdom;
-                  const fresh = createKingdom(catalog, k.name, k.emoji, k.record.config.undoMode, randomSeed());
-                  void saveKingdom({ ...fresh, id: k.id, createdAt: k.createdAt }).then(() => {
-                    setMenu(null);
-                    refresh();
-                  });
-                }}
-              >
-                Recommencer
-              </button>
+              {[
+                { label: "Même graine", seed: menu.kingdom.record.config.seed },
+                { label: "Nouvelle graine", seed: randomSeed() },
+              ].map(({ label, seed }) => (
+                <button
+                  key={label}
+                  className="btn btn-primary"
+                  onClick={() => {
+                    const k = menu.kingdom;
+                    const fresh = createKingdom(catalog, k.name, k.emoji, k.record.config.undoMode, seed);
+                    void saveKingdom({ ...fresh, id: k.id, createdAt: k.createdAt }).then(() => {
+                      setMenu(null);
+                      refresh();
+                    });
+                  }}
+                >
+                  {label}
+                </button>
+              ))}
             </>
           }
         >
           <p>
-            {menu.kingdom.emoji} <strong>{menu.kingdom.name}</strong>
+            {menu.kingdom.emoji} <strong>{menu.kingdom.name}</strong> · graine {menu.kingdom.record.config.seed}
           </p>
         </Dialog>
       )}

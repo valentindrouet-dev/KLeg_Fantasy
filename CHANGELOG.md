@@ -3,6 +3,17 @@
 Chaque mise à jour publiée change de version (`package.json`, affichée dans l'appli en bas de l'écran « Mes royaumes »
 et dans la barre de la partie). Convention : `0.5.0` s'affiche **v0.05** ; un correctif `0.5.1` s'affiche **v0.05.1**.
 
+## v0.09 (2 octobre 2026)
+
+- Réglages (⚙) : zoom de l'interface (80 à 160 %) et option pour griser la moitié basse des cartes.
+- Textes du plateau (deck, défausse, manche, tour) dans le style gras des boutons Avancer / Passer.
+- Pioche et défausse plus grandes, surtout sur iPad.
+- Recommencer un royaume : choix « Même graine » ou « Nouvelle graine ».
+- Ressources en haut : icône et total, en plus gros.
+- Numéros d'étape en couleur : 1 vert, 2 jaune, 3 orange, 4 rouge.
+- Appli installée sur l'iPad : elle détecte les nouvelles versions et propose « mettre à jour ».
+- Icônes détourées de ta planche (ressources, gloire, stickers 7, 8, 10, 11, 13k, 16).
+
 ## v0.08 (2 octobre 2026)
 
 - Défausse : cartes plus grandes.
