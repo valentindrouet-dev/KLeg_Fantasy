@@ -65,6 +65,9 @@ Routage par hash (`src/ui/App.tsx`) : `#/` Mes royaumes, `#/partie/<id>` partie,
 - **Fenêtres translucides** (`common.module.css`) : fond à 12 %, fenêtre à 62 % d'opacité.
 - **Stickers** (`stickerLayout.ts`) : dessinés sur la moitié de leur stage, après les ressources imprimées
   (x = 4,5 % + 12,9 % par icône, y = 13,7 %, 11,8 % de large), à l'envers sur la moitié basse.
+- **Cartes à image pleine** (`isFullImage`, `zoneAtCard`) : la moitié basse sert à l'effet ; traduction de l'étape unique.
+- **Choix de découverte** à plus de 2 cartes : 2 par rangée (`pairWidth`).
+- **Carte découverte** : vole du centre de l'écran vers la défausse (ou vers la pioche au mélange de début de manche).
 - **Demi-cartes** (`showsTopHalfOnly`) : dernier stage (ni amélioration ni effet qui la tourne) ou « stays in play » ;
   jamais les cartes à image pleine. Zones cliquables ramenées à la carte entière.
 - **Ligne du haut** (`playLayout`) : ennemis, puis à 40 px d'écart les cartes « stays in play » ; seules sur leur ligne si

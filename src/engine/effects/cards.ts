@@ -175,7 +175,8 @@ const gainProductionOf = (keyword: string): Factory => () =>
   effect({
     usable: (d, card) => otherInPlay(d, card, (id) => isKind(d, id, keyword) && hasProduction(d, id)).length > 0,
     ask: (d, card, a) => {
-      if (a.length === 0) return askCards(`Choisis : ${keyword}`, otherInPlay(d, card, (id) => isKind(d, id, keyword) && hasProduction(d, id)), 1);
+      const what = { Land: "une terre", Building: "un bâtiment", Person: "une personne" }[keyword] ?? keyword;
+      if (a.length === 0) return askCards(`Choisis ${what} en jeu`, otherInPlay(d, card, (id) => isKind(d, id, keyword) && hasProduction(d, id)), 1);
       const target = cardsOf(a[0])[0];
       if (!target) return null;
       const slash = productionGroups(d.catalog, d.s, target).filter((g) => g.options.length > 1);

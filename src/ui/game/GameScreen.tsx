@@ -5,6 +5,7 @@ import {
   activeStage,
   applyAction,
   candidateActions,
+  isFullImage,
   paymentCandidates,
   canPeekSecond,
   cardBadges,
@@ -41,7 +42,7 @@ import { BLOCKED_PEEK, CARD_ASPECT, type Slot } from "./fitCards";
 const TOP_SPACER = 40;
 import type { TapPoint } from "../common/usePress";
 import { CardActions, type CardOption } from "./CardActions";
-import { zoneAt, type ZoneKind } from "./cardZones";
+import { zoneAtCard, type ZoneKind } from "./cardZones";
 import { ANIM_MS, CardView } from "./CardView";
 import { CardListDialog, ConfirmDialog, DecisionDialog, EndDialog, Inspector, StatsDialog, TranslationBubble } from "./Dialogs";
 import { useGame } from "./store";
@@ -385,7 +386,7 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
       return;
     }
     if (!playing) return;
-    const zone = zoneAt(p.x, p.y);
+    const zone = zoneAtCard(p.x, p.y, isFullImage(tpl(card)));
     if (zone === "production" && productionLabel(catalog, state, card)) {
       toggleEngaged(card);
       return;

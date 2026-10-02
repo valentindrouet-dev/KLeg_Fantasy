@@ -88,9 +88,12 @@ const RIFFLE = 820;
  * la pioche est battue, puis le tour commence. Renvoie la durée de la séquence, pour retarder les cartes jouées.
  */
 function reshuffle(catalog: Catalog, before: Snapshot, state: GameState, deck: DOMRect, discard: DOMRect | null): number {
+  // Les cartes que la fenêtre « Nouvelles cartes » montrait partent du centre de l'écran, en premier.
+  const fresh = before.state.pending?.kind === "newCards" ? before.state.pending.cards : [];
   const fromPlay = [...before.rects].filter(([id]) => !state.zones.play.includes(id));
-  const fromDiscard = before.state.zones.discard.slice(-Math.max(0, GATHER_MAX - fromPlay.length));
+  const fromDiscard = before.state.zones.discard.filter((id) => !fresh.includes(id)).slice(-Math.max(0, GATHER_MAX - fromPlay.length - fresh.length));
   let n = 0;
+  for (const id of fresh) ghostTo(catalog, state, id, centerRect(fresh.length, fresh.indexOf(id)), deck, n++ * GATHER_STAGGER * 2);
   for (const [id, rect] of fromPlay) ghostTo(catalog, state, id, rect, deck, n++ * GATHER_STAGGER);
   if (discard) for (const id of fromDiscard) ghostTo(catalog, state, id, discard, deck, n++ * GATHER_STAGGER);
   const gathered = Math.max(0, n - 1) * GATHER_STAGGER + DURATION;
@@ -122,6 +125,14 @@ function reshuffle(catalog: Catalog, before: Snapshot, state: GameState, deck: D
     });
   });
   return gathered + RIFFLE;
+}
+
+/** Place d'une carte (parmi `count`) montrée au centre de l'écran, comme dans la fenêtre des nouvelles cartes. */
+function centerRect(count: number, i: number): DOMRect {
+  const w = Math.min(240, (window.innerWidth - 80) / Math.max(1, count));
+  const h = w / (373 / 520);
+  const left = window.innerWidth / 2 - (count * w) / 2 + i * w;
+  return new DOMRect(left, window.innerHeight / 2 - h / 2, w, h);
 }
 
 /** Copie volante vers la pioche, qui disparaît en s'y posant. */
@@ -164,6 +175,12 @@ export function useCardMotion(catalog: Catalog, state: GameState | null, play: R
     // Nouveau deck : la pioche était vide et ne l'est plus (seul le mélange de début de manche fait ça).
     const shuffled = before.state.zones.deck.length === 0 && state.zones.deck.length > 0;
     const shuffleTime = shuffled && deck ? reshuffle(catalog, before, state, deck, discard) : 0;
+
+    // Cartes découvertes en cours de partie (effets) : elles arrivent du centre de l'écran vers la défausse.
+    if (!shuffled && discard) {
+      const found = Object.keys(state.cards).filter((id) => zoneOf(before.state, id) === "box" && zoneOf(state, id) === "discard");
+      found.forEach((id, i) => ghostTo(catalog, state, id, centerRect(found.length, i), discard, 250 + i * 120));
+    }
 
     // Cartes parties : vers la défausse, vers la pioche, ou effacées (détruites, permanentes…).
     let out = 0;

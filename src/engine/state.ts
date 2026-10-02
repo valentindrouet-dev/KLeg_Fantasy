@@ -41,9 +41,13 @@ export function stageIdAt(t: CardTemplate, o: Orientation): StageId | null {
  * parchemins…) ont les étapes 1 et 2 ; le site les numérote 1 et 4, numéro gardé dans les fiches.
  */
 export function printedStage(t: CardTemplate, id: StageId): StageId {
+  return isFullImage(t) && id === 4 ? 2 : id;
+}
+
+/** Carte à une seule étape par face (image pleine) : le texte de l'étape est en bas de la carte. */
+export function isFullImage(t: CardTemplate): boolean {
   const used = Object.values(t.orientationToStage);
-  const onePerFace = !used.includes(2) && !used.includes(3);
-  return onePerFace && id === 4 ? 2 : id;
+  return !used.includes(2) && !used.includes(3);
 }
 
 /** Stage actif d'une carte (celui qui est lisible en haut). */

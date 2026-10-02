@@ -2,12 +2,12 @@ import { useState, type ReactNode } from "react";
 import { cardImageUrl } from "../../data/loadCards";
 import type { CardTemplate, Orientation, StageId } from "../../data/schema";
 import { stageFr } from "../../data/translations";
-import { printedStage, stageIdAt, type StickerPlacement } from "../../engine";
+import { isFullImage, printedStage, stageIdAt, type StickerPlacement } from "../../engine";
 import { IconText, iconImage } from "../common/IconText";
 import { STICKER_SIZE, stickerSpots } from "./stickerLayout";
 import { usePrefs } from "../common/prefs";
 import { usePress, type TapPoint } from "../common/usePress";
-import { ZONE_RECTS, zoneAt, type ZoneKind } from "./cardZones";
+import { FULL_IMAGE_EFFECT_RECT, ZONE_RECTS, zoneAtCard, type ZoneKind } from "./cardZones";
 import styles from "./Game.module.css";
 
 // Une carte dans son orientation réelle (spec 7.4) : la face visible, tournée de 180° si besoin,
@@ -83,8 +83,9 @@ export const ANIM_MS = 700;
 
 type Hover = { zone: ZoneKind; half: "top" | "bottom"; x: number; y: number };
 
-/** Stage visible dans la moitié haute ou basse de la carte. */
+/** Stage visible dans la moitié haute ou basse de la carte (image pleine : la même étape partout). */
 function stageInHalf(t: CardTemplate, o: Orientation, half: "top" | "bottom"): StageId | null {
+  if (isFullImage(t)) return stageIdAt(t, o);
   return stageIdAt(t, half === "top" ? o : { side: o.side, rotation: o.rotation === 0 ? 180 : 0 });
 }
 
@@ -144,7 +145,13 @@ export function CardView(props: Props) {
   const stage = stageId ? template.stages[String(stageId) as "1" | "2" | "3" | "4"] : undefined;
   const fr = stageId && tooltipsFr ? stageFr(template.id, stageId) : undefined;
   const action = hover && zoneLabel ? zoneLabel(hover.zone) : null;
-  const rect = hover && action && hover.zone !== "other" && hover.zone !== "bottom" ? ZONE_RECTS[hover.zone] : null;
+  const fullImage = isFullImage(template);
+  const rect =
+    hover && action && hover.zone !== "other" && hover.zone !== "bottom"
+      ? fullImage && hover.zone === "effect"
+        ? FULL_IMAGE_EFFECT_RECT
+        : ZONE_RECTS[hover.zone]
+      : null;
 
   const classes = [
     styles.card,
@@ -184,7 +191,7 @@ export function CardView(props: Props) {
         const r = e.currentTarget.getBoundingClientRect();
         const x = (e.clientX - r.left) / r.width;
         const y = ((e.clientY - r.top) / r.height) * yScale;
-        setHover({ zone: zoneAt(x, y), half: y < 0.5 ? "top" : "bottom", x: e.clientX, y: e.clientY });
+        setHover({ zone: zoneAtCard(x, y, fullImage), half: y < 0.5 ? "top" : "bottom", x: e.clientX, y: e.clientY });
       }}
       onPointerLeave={(e) => {
         if (interactive) press.onPointerLeave(e);

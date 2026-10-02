@@ -1088,3 +1088,9 @@
   color: var(--danger, #a3362a);
   font-weight: 700;
 }
+
+.twoPerRow {
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  justify-content: center;
+}

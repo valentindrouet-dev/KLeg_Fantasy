@@ -4,6 +4,7 @@ import {
   cardName,
   computeScore,
   instance,
+  isFullImage,
   kingdomStats,
   stageIdAt,
   template,
@@ -24,6 +25,13 @@ import styles from "./Game.module.css";
 /** Largeur des cartes d'une liste (défausse) : environ 5 par rangée. */
 function listCard(): number {
   return Math.floor(Math.max(180, Math.min(300, (Math.min(window.innerWidth, 1500) - 140) / 5)));
+}
+
+/** Largeur d'une carte d'un choix de découverte à 2 cartes (recto + verso) par rangée, 2 rangées visibles. */
+function pairWidth(): number {
+  const byWidth = (Math.min(window.innerWidth, 1500) - 140 - 3 * 16) / 4;
+  const byHeight = ((window.innerHeight - 300) / 2) * (373 / 520);
+  return Math.floor(Math.max(130, Math.min(320, byWidth, byHeight)));
 }
 
 /** Largeur d'une grande carte dans une fenêtre : `count` cartes côte à côte, la plus grande qui tient. */
@@ -152,15 +160,17 @@ export function DecisionDialog({
 
   return (
     <Dialog title={`Découvrir ${p.remaining} carte${p.remaining > 1 ? "s" : ""}`} wide>
-      <div className={styles.decisionRow}>
+      <div className={`${styles.decisionRow} ${p.options.length > 2 ? styles.twoPerRow : ""}`}>
         {p.options.map((id) => {
           const t = tOf(id);
           const picked = p.picked.includes(id);
+          // Plus de 2 cartes : 2 par rangée (recto + verso de chacune), rangées qui défilent (demande du 2026-10-02).
+          const width = p.options.length > 2 ? pairWidth() : bigCard(p.options.length * 2);
           return (
             <figure key={id} className={styles.choice}>
               <div className={styles.bothSides}>
-                <CardView template={t} orientation={{ side: "front", rotation: 0 }} label="Recto" width={bigCard(p.options.length * 2)} />
-                <CardView template={t} orientation={{ side: "back", rotation: 0 }} label="Verso" width={bigCard(p.options.length * 2)} />
+                <CardView template={t} orientation={{ side: "front", rotation: 0 }} label="Recto" width={width} onLongPress={() => onInspect(id)} />
+                <CardView template={t} orientation={{ side: "back", rotation: 0 }} label="Verso" width={width} onLongPress={() => onInspect(id)} />
               </div>
               <button className="btn btn-primary" disabled={picked} onClick={() => onAction({ type: "chooseDiscovery", card: id })}>
                 {picked ? "Choisie" : `#${t.serial}`}
@@ -510,7 +520,8 @@ export function TranslationBubble({
 }) {
   const c = instance(state, card);
   const t = template(catalog, c.templateId);
-  const o = half === "top" ? c.orientation : { side: c.orientation.side, rotation: c.orientation.rotation === 0 ? 180 : 0 } as const;
+  // Image pleine : une seule étape par face, quelle que soit la moitié touchée.
+  const o = half === "top" || isFullImage(t) ? c.orientation : ({ side: c.orientation.side, rotation: c.orientation.rotation === 0 ? 180 : 0 } as const);
   const stageId = stageIdAt(t, o);
   const fr = stageId ? stageFr(t.id, stageId) : undefined;
   if (!fr) return null;

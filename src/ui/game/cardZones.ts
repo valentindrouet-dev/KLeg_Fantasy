@@ -22,3 +22,17 @@ export const ZONE_RECTS: Record<Exclude<ZoneKind, "other" | "bottom">, { left: n
   upgradeRotate: { left: 0.7, top: 0.34, width: 0.3, height: 0.16 },
   effect: { left: 0, top: 0.31, width: 0.7, height: 0.19 },
 };
+
+/**
+ * Zone d'une carte à image pleine (une étape par face) : le texte de l'effet est dans la moitié basse, toute la
+ * moitié basse sert donc à l'effet ; le haut garde la ressource et les flèches d'amélioration.
+ */
+export function zoneAtCard(x: number, y: number, fullImage: boolean): ZoneKind {
+  const zone = zoneAt(x, y);
+  if (!fullImage) return zone;
+  if (zone === "bottom") return "effect";
+  return zone === "effect" ? "other" : zone;
+}
+
+/** Rectangle de la zone d'effet d'une carte à image pleine. */
+export const FULL_IMAGE_EFFECT_RECT = { left: 0.05, top: 0.52, width: 0.9, height: 0.4 };
