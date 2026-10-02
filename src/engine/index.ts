@@ -10,3 +10,4 @@ export { productionGroups, productionCount, canAddResourceSticker, addResourceSt
 export { describeAction } from "./describe";
 export { activeStage, cardName, zoneOf, formatCounts, totalResources, instance, template, stageIdAt } from "./state";
 export { randomSeed } from "./rng";
+export { planWithEngaged, candidateActions, engagedPotential, actionCost } from "./payment";

@@ -15,6 +15,7 @@ export const NO_PARAMS: EffectParams = { targets: [], option: null };
 /** « Spend {coin} to gain {wood}/{stone} » : une option par ressource après le « / ». */
 export function spendToGain(cost: readonly ResourceId[], gains: readonly (readonly ResourceId[])[]): EffectImpl {
   return {
+    cost,
     params: (d) => (canPay(d.s, cost) ? gains.map((_, i) => ({ targets: [], option: i })) : []),
     apply: (d, _card, p) => {
       pay(d.s, cost);

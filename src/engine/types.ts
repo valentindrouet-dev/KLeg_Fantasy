@@ -93,6 +93,8 @@ export type EffectImpl = {
   params: (d: Draft, card: InstanceId) => EffectParams[];
   /** Applique le corps de l'effet. Le coût lié au type (défausser, détruire) est déjà payé. */
   apply: (d: Draft, card: InstanceId, p: EffectParams) => void;
+  /** Ressources que l'effet dépense (pour payer avec des cartes engagées). */
+  cost?: readonly string[];
 };
 
 /** Instructions d'un parchemin, appliquées après lecture, avant sa destruction. */
