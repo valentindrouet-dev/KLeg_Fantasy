@@ -1,0 +1,134 @@
+{
+  "id": "FeudalKingdom-096",
+  "expansion": "FeudalKingdom",
+  "serial": 96,
+  "origin": "official",
+  "images": {
+    "front": "FeudalKingdom/FK_Page_193.webp",
+    "back": "FeudalKingdom/FK_Page_194.webp"
+  },
+  "orientationToStage": {
+    "front-0": 1,
+    "front-180": 2,
+    "back-0": 4,
+    "back-180": 3
+  },
+  "isParchment": false,
+  "chooseSideOnDiscover": false,
+  "stages": {
+    "1": {
+      "id": 1,
+      "name": "Alchemist",
+      "keywords": [
+        "Person"
+      ],
+      "category": "person",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "activated",
+          "text": "Spend {coin}{coin} to rotate this card to any orientation."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "{activated} Spend {coin}{coin} to rotate this card to any orientation.",
+      "siteKeywords": [
+        "Activated Effect"
+      ]
+    },
+    "2": {
+      "id": 2,
+      "name": "Potion of Strength",
+      "keywords": [
+        "Potion",
+        "Item"
+      ],
+      "category": "other",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "activated",
+          "text": "Reset this card to gain {sword}{sword}{sword}."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "{activated} Reset this card to gain {sword}{sword}{sword}.",
+      "siteKeywords": [
+        "Activated Effect"
+      ]
+    },
+    "3": {
+      "id": 3,
+      "name": "Healing Potion",
+      "keywords": [
+        "Potion",
+        "Item"
+      ],
+      "category": "other",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "triggeredOptional",
+          "text": "When discarding a person, you may reset this instead."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "{triggeredOptional} When discarding a person, you may reset this instead.",
+      "siteKeywords": [
+        "Triggered Optional Effect"
+      ]
+    },
+    "4": {
+      "id": 4,
+      "name": "Love Potion",
+      "keywords": [
+        "Potion",
+        "Item"
+      ],
+      "category": "other",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "activated",
+          "text": "Reset this card to gain {tradeGood}{tradeGood}{tradeGood}{tradeGood}{tradeGood}."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "{activated} Reset this card to gain {tradeGood}{tradeGood}{tradeGood}{tradeGood}{tradeGood}.",
+      "siteKeywords": [
+        "Activated Effect"
+      ]
+    }
+  },
+  "description": "This is a card made accessible by the Lab, stage 3 of the <a href=\"/cards/FeudalKingdom/32\">Scientist</a>. He can cook up a brew for any occasion!",
+  "source": {
+    "url": "https://www.kingdomlegacygame.com/cards/FeudalKingdom/96",
+    "scrapedAt": "2026-10-02T13:07:03.495Z"
+  },
+  "confidence": 0.95,
+  "to_verify": []
+}

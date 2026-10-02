@@ -1,0 +1,49 @@
+{
+  "id": "FeudalKingdom-000",
+  "expansion": "FeudalKingdom",
+  "serial": 0,
+  "origin": "official",
+  "images": {
+    "front": "FeudalKingdom/FK_Page_001.webp",
+    "back": "FeudalKingdom/FK_Page_002.webp"
+  },
+  "orientationToStage": {
+    "front-0": 1,
+    "front-180": null,
+    "back-0": null,
+    "back-180": null
+  },
+  "isParchment": true,
+  "chooseSideOnDiscover": false,
+  "stages": {
+    "1": {
+      "id": 1,
+      "name": "Welcome",
+      "keywords": [],
+      "category": "none",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "WELCOME to Kingdom Legacy - Feudal Kingdom. Make sure to read the rules before opening this pack of cards, or scan the QR code below to watch a tutorial. Memorize the golden rules (see {flip})! The orientation of the cards in this game is important, so do not shuffle, rotate, or flip the cards except when instructed by the rules. The best of luck building your kingdom!",
+      "siteKeywords": []
+    }
+  },
+  "description": "<b><i>VERSION NOTE: The backside of this card was added in the 2nd print, it does not exist in the first print run.</i></b><br>\n<b><i>VERSION NOTE: In 2nd Edition, a new golden rule was added, saying you cannot place a resource sticker on a card which already produces 9 or more resources.</i></b><br>\nThis is the cover card for Feudal Kingdom. The QR code can be found in the rules sheet if you lose this card. The backside can be used as a quick reference of the golden rules.",
+  "source": {
+    "url": "https://www.kingdomlegacygame.com/cards/FeudalKingdom/0",
+    "scrapedAt": "2026-10-02T12:30:25.861Z"
+  },
+  "confidence": 0.9,
+  "to_verify": [
+    "Carte de couverture, jamais découverte en jeu : isParchment=true par analogie visuelle (fond parchemin), à confirmer.",
+    "Le site nomme le stage 1 « STOP! » (erreur probable du site) : nom repris de l'image (WELCOME).",
+    "Le verso (Golden Rules) n'a aucun stage sur le site : il n'est pas modélisé comme stage.",
+    "Note de version du site : The backside of this card was added in the 2nd print, it does not exist in the first print run.",
+    "Note de version du site : In 2nd Edition, a new golden rule was added, saying you cannot place a resource sticker on a card which already produces 9 or more resources."
+  ]
+}

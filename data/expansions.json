@@ -1,0 +1,12 @@
+{
+  "expansions": [
+    {
+      "id": "FeudalKingdom",
+      "name": "Feudal Kingdom",
+      "kind": "base",
+      "serialFrom": 0,
+      "serialTo": 139,
+      "sourceUrl": "https://www.kingdomlegacygame.com/expansions/FeudalKingdom"
+    }
+  ]
+}

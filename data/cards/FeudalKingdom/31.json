@@ -1,0 +1,213 @@
+{
+  "id": "FeudalKingdom-031",
+  "expansion": "FeudalKingdom",
+  "serial": 31,
+  "origin": "official",
+  "images": {
+    "front": "FeudalKingdom/FK_Page_063.webp",
+    "back": "FeudalKingdom/FK_Page_064.webp"
+  },
+  "orientationToStage": {
+    "front-0": 1,
+    "front-180": 2,
+    "back-0": 4,
+    "back-180": 3
+  },
+  "isParchment": false,
+  "chooseSideOnDiscover": false,
+  "stages": {
+    "1": {
+      "id": 1,
+      "name": "Entrepreneur",
+      "keywords": [
+        "Person"
+      ],
+      "category": "person",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [
+        {
+          "id": "p1",
+          "options": [
+            [
+              "tradeGood"
+            ]
+          ]
+        }
+      ],
+      "upgrades": [
+        {
+          "id": "u1",
+          "cost": [
+            "coin",
+            "wood",
+            "wood",
+            "wood"
+          ],
+          "arrow": "rotate",
+          "toStage": 2
+        }
+      ],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "time",
+          "text": "Discover School (118)."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "{time} Discover School (118).",
+      "siteKeywords": [
+        "Time Effect",
+        "Discover"
+      ]
+    },
+    "2": {
+      "id": 2,
+      "name": "Hotel",
+      "keywords": [
+        "Building"
+      ],
+      "category": "building",
+      "negative": false,
+      "permanent": false,
+      "fame": 2,
+      "production": [
+        {
+          "id": "p1",
+          "options": [
+            [
+              "coin",
+              "tradeGood"
+            ]
+          ]
+        }
+      ],
+      "upgrades": [
+        {
+          "id": "u1",
+          "cost": [
+            "coin",
+            "wood",
+            "stone"
+          ],
+          "arrow": "flip",
+          "toStage": 3
+        }
+      ],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "activated",
+          "text": "Gain {coin} per person in play."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "{activated} Gain {coin} per person in play.",
+      "siteKeywords": [
+        "Activated Effect"
+      ],
+      "helpText": "Remember that if you use the effect of this card, you cannot produce with it and vice versa."
+    },
+    "3": {
+      "id": 3,
+      "name": "Cozy Pub",
+      "keywords": [
+        "Building"
+      ],
+      "category": "building",
+      "negative": false,
+      "permanent": false,
+      "fame": 2,
+      "production": [
+        {
+          "id": "p1",
+          "options": [
+            [
+              "tradeGood",
+              "tradeGood"
+            ]
+          ]
+        }
+      ],
+      "upgrades": [
+        {
+          "id": "u1",
+          "cost": [
+            "tradeGood",
+            "wood",
+            "coin",
+            "tradeGood",
+            "wood",
+            "coin"
+          ],
+          "arrow": "rotate",
+          "toStage": 4
+        }
+      ],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "activated",
+          "text": "Discard 1 person to discover Stranger (92)."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "{activated} Discard 1 person to discover Stranger (92).",
+      "siteKeywords": [
+        "Activated Effect",
+        "Discover"
+      ]
+    },
+    "4": {
+      "id": 4,
+      "name": "Tavern",
+      "keywords": [
+        "Building"
+      ],
+      "category": "building",
+      "negative": false,
+      "permanent": false,
+      "fame": 4,
+      "production": [
+        {
+          "id": "p1",
+          "options": [
+            [
+              "tradeGood",
+              "tradeGood",
+              "coin",
+              "coin"
+            ]
+          ]
+        }
+      ],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "activated",
+          "text": "Discover Quests (87)."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "{activated} Discover Quests (87).",
+      "siteKeywords": [
+        "Activated Effect",
+        "Discover"
+      ]
+    }
+  },
+  "description": "The Entrepreneur is one of the 4 immigrants you may choose from by campaign card 30. His strength is that he offers 3 brand new cards to your kingdom; the School, Stranger, and Quests. When fully upgraded, it is also a strong production card focused on trade goods.<br>\nSPOILER: This card lets you discover <a href=\"/cards/FeudalKingdom/118\">School</a>, <a href=\"/cards/FeudalKingdom/92\">Stranger</a>, and <a href=\"/cards/FeudalKingdom/87\">Quests</a>.",
+  "source": {
+    "url": "https://www.kingdomlegacygame.com/cards/FeudalKingdom/31",
+    "scrapedAt": "2026-10-02T13:03:32.051Z"
+  },
+  "confidence": 0.95,
+  "to_verify": []
+}

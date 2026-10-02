@@ -1,0 +1,63 @@
+{
+  "id": "FeudalKingdom-139",
+  "expansion": "FeudalKingdom",
+  "serial": 139,
+  "origin": "official",
+  "images": {
+    "front": "FeudalKingdom/FK_Page_279.webp",
+    "back": "FeudalKingdom/FK_Page_280.webp"
+  },
+  "orientationToStage": {
+    "front-0": 1,
+    "front-180": null,
+    "back-0": 4,
+    "back-180": null
+  },
+  "isParchment": true,
+  "chooseSideOnDiscover": false,
+  "stages": {
+    "1": {
+      "id": 1,
+      "name": "STOP!",
+      "keywords": [],
+      "category": "none",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "STOP! This is the last card of the deck. It exists only to mark the backside of the deck.",
+      "siteKeywords": [],
+      "helpText": "Svensk text"
+    },
+    "4": {
+      "id": 4,
+      "name": "STOP!",
+      "keywords": [],
+      "category": "none",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "STOP! This is the backside of the deck.",
+      "siteKeywords": []
+    }
+  },
+  "description": "After finishing the game, go ahead and destroy it in any way you fancy! Document the event, and share it on social media with the hashtag #kingdomlegacy and you might win an expansion to continue your adventure!",
+  "source": {
+    "url": "https://www.kingdomlegacygame.com/cards/FeudalKingdom/139",
+    "scrapedAt": "2026-10-02T13:09:22.290Z"
+  },
+  "confidence": 0.9,
+  "to_verify": [
+    "Carte de fin de paquet, jamais découverte en jeu ; isParchment=true par analogie visuelle (fond parchemin).",
+    "Le site nomme le stage 1 « Örjan » avec l'aide « Svensk text » (donnée de test du site) : ignoré, nom repris de l'image."
+  ]
+}

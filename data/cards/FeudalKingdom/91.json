@@ -1,0 +1,189 @@
+{
+  "id": "FeudalKingdom-091",
+  "expansion": "FeudalKingdom",
+  "serial": 91,
+  "origin": "official",
+  "images": {
+    "front": "FeudalKingdom/FK_Page_183.webp",
+    "back": "FeudalKingdom/FK_Page_184.webp"
+  },
+  "orientationToStage": {
+    "front-0": 1,
+    "front-180": null,
+    "back-0": 4,
+    "back-180": null
+  },
+  "isParchment": false,
+  "chooseSideOnDiscover": false,
+  "stages": {
+    "1": {
+      "id": 1,
+      "name": "Build an Ark",
+      "keywords": [],
+      "category": "none",
+      "negative": false,
+      "permanent": true,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "time",
+          "text": "Spend the {wood} below to mark 1 {mark} from left to right. When complete, {flip}."
+        }
+      ],
+      "checkboxes": [
+        {
+          "id": "c1",
+          "cost": [
+            "wood",
+            "wood"
+          ]
+        },
+        {
+          "id": "c2",
+          "cost": [
+            "wood",
+            "wood",
+            "wood",
+            "wood"
+          ]
+        },
+        {
+          "id": "c3",
+          "cost": [
+            "wood",
+            "wood",
+            "wood",
+            "wood",
+            "wood",
+            "wood"
+          ]
+        },
+        {
+          "id": "c4",
+          "cost": [
+            "wood",
+            "wood",
+            "wood",
+            "wood",
+            "wood",
+            "wood",
+            "wood",
+            "wood"
+          ]
+        },
+        {
+          "id": "c5",
+          "cost": [
+            "wood",
+            "wood",
+            "wood",
+            "wood",
+            "wood",
+            "wood",
+            "wood",
+            "wood",
+            "wood",
+            "wood"
+          ],
+          "text": "{flip}"
+        }
+      ],
+      "staysInPlay": false,
+      "flavor": "I can't explain it, but I feel I should build an unreasonably large ship for future generations...",
+      "text": "This card is permanent. {time} Spend the {wood} below to mark 1 {mark} from left to right. When complete, {flip}.",
+      "siteKeywords": [
+        "Permanent",
+        "Time Effect"
+      ]
+    },
+    "4": {
+      "id": 4,
+      "name": "The Ark",
+      "keywords": [
+        "Seafaring",
+        "Ship"
+      ],
+      "category": "seafaring",
+      "negative": false,
+      "permanent": false,
+      "fame": 24,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "activated",
+          "text": "Mark 1 {mark} for every 2 persons you have in play."
+        }
+      ],
+      "checkboxes": [
+        {
+          "id": "c1"
+        },
+        {
+          "id": "c2"
+        },
+        {
+          "id": "c3"
+        },
+        {
+          "id": "c4"
+        },
+        {
+          "id": "c5"
+        },
+        {
+          "id": "c6"
+        },
+        {
+          "id": "c7"
+        },
+        {
+          "id": "c8"
+        },
+        {
+          "id": "c9"
+        },
+        {
+          "id": "c10"
+        },
+        {
+          "id": "c11"
+        },
+        {
+          "id": "c12"
+        },
+        {
+          "id": "c13"
+        },
+        {
+          "id": "c14"
+        },
+        {
+          "id": "c15"
+        },
+        {
+          "id": "c16"
+        }
+      ],
+      "staysInPlay": false,
+      "fameVariable": true,
+      "text": "{activated} Mark 1 {mark} for every 2 persons you have in play. {asterisk}Worth +1{fame} for every {mark}.",
+      "siteKeywords": [
+        "Activated Effect"
+      ]
+    }
+  },
+  "description": "This is a card made accessible by Wood Industry, stage 2 of <a href=\"/cards/FeudalKingdom/100\">Saw Mill</a>. It is a <i><b>track</b></i> card, letting you spend [wood] to build your ark. End your turn by spending an increasing amount of [wood] to cross out the boxes from left to right. You must take them in order, and only one per turn (unless you use an effect that prevents your turn from ending). This card card needs a lot of [wood] to complete. The reward, though, is a famous ship that might just change the future for all mankind. Or at least for you and your closest family...",
+  "source": {
+    "url": "https://www.kingdomlegacygame.com/cards/FeudalKingdom/91",
+    "scrapedAt": "2026-10-02T13:06:46.911Z"
+  },
+  "confidence": 0.85,
+  "to_verify": [
+    "The Ark : 24 de gloire fixe + 1 par case cochée (16 cases) ; d'après le site, ce côté n'est pas permanent."
+  ]
+}

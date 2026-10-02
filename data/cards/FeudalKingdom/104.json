@@ -1,0 +1,97 @@
+{
+  "id": "FeudalKingdom-104",
+  "expansion": "FeudalKingdom",
+  "serial": 104,
+  "origin": "official",
+  "images": {
+    "front": "FeudalKingdom/FK_Page_209.webp",
+    "back": "FeudalKingdom/FK_Page_210.webp"
+  },
+  "orientationToStage": {
+    "front-0": 1,
+    "front-180": null,
+    "back-0": 4,
+    "back-180": null
+  },
+  "isParchment": false,
+  "chooseSideOnDiscover": false,
+  "stages": {
+    "1": {
+      "id": 1,
+      "name": "Priest",
+      "keywords": [
+        "Person"
+      ],
+      "category": "person",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [],
+      "upgrades": [
+        {
+          "id": "u1",
+          "cost": [
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "tradeGood",
+            "tradeGood"
+          ],
+          "arrow": "flip",
+          "toStage": 4
+        }
+      ],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "activated",
+          "text": "Spend {coin}{coin} to upgrade 1 card in play, paying as normal. This does NOT end your turn."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "{activated} Spend {coin}{coin} to upgrade 1 card in play, paying as normal. This does NOT end your turn.",
+      "siteKeywords": [
+        "Activated Effect"
+      ],
+      "helpText": "Note that this cards Activated Effect only applies to upgrades, which are indicated by brown boxes with upgrade costs. Also note that every card that is rotated is also discarded, so the card you upgrade can not be used this turn, even if your turn does not end. Maybe if you gave him a promotion, he would be more compliant and stop asking for charity?"
+    },
+    "4": {
+      "id": 4,
+      "name": "Cardinal",
+      "keywords": [
+        "Person"
+      ],
+      "category": "person",
+      "negative": false,
+      "permanent": false,
+      "fame": 5,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "activated",
+          "text": "Upgrade 1 card in play, paying as normal. This does NOT end your turn."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "{activated} Upgrade 1 card in play, paying as normal. This does NOT end your turn.",
+      "siteKeywords": [
+        "Activated Effect"
+      ],
+      "helpText": "Ahh, that's more like it! \n\nNote that this cards Activated Effect only applies to upgrades, which are indicated by brown boxes with upgrade costs. Also note that every card that is rotated is also discarded, so the card you upgrade can not be used this turn, even if your turn does not end."
+    }
+  },
+  "description": "This is a card made accessible by the Church, stage 3 of <a href=\"/cards/FeudalKingdom/17\">Hill</a>. It will make your kingdom a whole lot more efficient, with the blessing of your own, personal clergy.",
+  "source": {
+    "url": "https://www.kingdomlegacygame.com/cards/FeudalKingdom/104",
+    "scrapedAt": "2026-10-02T13:07:29.909Z"
+  },
+  "confidence": 0.95,
+  "to_verify": []
+}

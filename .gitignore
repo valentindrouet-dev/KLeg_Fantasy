@@ -1,0 +1,9 @@
+node_modules/
+dist/
+.DS_Store
+*.local
+.vite/
+coverage/
+
+# Cache brut du scraper (HTML, JSON bruts, images originales non optimisées)
+data/raw/

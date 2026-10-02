@@ -1,0 +1,163 @@
+{
+  "id": "FeudalKingdom-036",
+  "expansion": "FeudalKingdom",
+  "serial": 36,
+  "origin": "official",
+  "images": {
+    "front": "FeudalKingdom/FK_Page_073.webp",
+    "back": "FeudalKingdom/FK_Page_074.webp"
+  },
+  "orientationToStage": {
+    "front-0": 1,
+    "front-180": null,
+    "back-0": 4,
+    "back-180": null
+  },
+  "isParchment": false,
+  "chooseSideOnDiscover": false,
+  "stages": {
+    "1": {
+      "id": 1,
+      "name": "Mercenary",
+      "keywords": [
+        "Person"
+      ],
+      "category": "person",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [],
+      "upgrades": [
+        {
+          "id": "u1",
+          "cost": [
+            "coin",
+            "metal",
+            "coin",
+            "coin"
+          ],
+          "arrow": "flip",
+          "toStage": 4
+        }
+      ],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "activated",
+          "text": "Spend {coin}{coin} to mark 1-2 {mark}."
+        }
+      ],
+      "checkboxes": [
+        {
+          "id": "c1",
+          "gain": [
+            "sword"
+          ]
+        },
+        {
+          "id": "c2",
+          "gain": [
+            "sword"
+          ]
+        },
+        {
+          "id": "c3",
+          "gain": [
+            "sword"
+          ]
+        },
+        {
+          "id": "c4",
+          "gain": [
+            "sword"
+          ]
+        },
+        {
+          "id": "c5",
+          "gain": [
+            "sword"
+          ]
+        },
+        {
+          "id": "c6",
+          "gain": [
+            "sword"
+          ]
+        },
+        {
+          "id": "c7",
+          "gain": [
+            "sword"
+          ]
+        },
+        {
+          "id": "c8",
+          "gain": [
+            "sword"
+          ]
+        }
+      ],
+      "staysInPlay": false,
+      "text": "{activated} Spend {coin}{coin} to mark 1-2 {mark}.",
+      "siteKeywords": [
+        "Activated Effect"
+      ],
+      "helpText": "Discard this card and spend 2 gold [money] to mark [mark] 1 or 2 boxes. When you mark a box with a resource icon in it, you gain that resource."
+    },
+    "4": {
+      "id": 4,
+      "name": "Sir ________",
+      "keywords": [
+        "Person",
+        "Knight"
+      ],
+      "category": "person",
+      "negative": false,
+      "permanent": false,
+      "fame": 3,
+      "production": [
+        {
+          "id": "p1",
+          "options": [
+            [
+              "sword"
+            ]
+          ]
+        }
+      ],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "time",
+          "text": "Spend {metal}{metal}{metal} to add sticker 5 here.",
+          "oneTime": true
+        },
+        {
+          "id": "e2",
+          "type": "time",
+          "text": "Spend {metal}{metal}{metal}{metal} to add sticker 5 here.",
+          "oneTime": true
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "{time} Spend {metal}{metal}{metal} to add sticker 5 here. {oneTime} {time} Spend {metal}{metal}{metal}{metal} to add sticker 5 here. {oneTime}",
+      "siteKeywords": [
+        "One-time Effect",
+        "Time Effect"
+      ],
+      "helpText": "You may give this person any name you wish.<br>\nHowever, it cannot gain properties from this name. For example, if a card tells you to play \"Merlin\" from discard pile, it is not referring to this card, even if you name it \"Merlin\". "
+    }
+  },
+  "description": "This mercenary lets you pay [money] to gain [sword]. But in the end, you can't keep paying him like this to fight for you. Why not hire him full time?",
+  "source": {
+    "url": "https://www.kingdomlegacygame.com/cards/FeudalKingdom/36",
+    "scrapedAt": "2026-10-02T13:03:48.557Z"
+  },
+  "confidence": 0.9,
+  "to_verify": [
+    "Sir ________ : le nom est à compléter par le joueur (champ libre), sans effet de règle.",
+    "Mercenary : 8 cases contenant chacune une épée, comptées sur l'image."
+  ]
+}

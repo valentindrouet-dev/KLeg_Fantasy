@@ -1,0 +1,100 @@
+{
+  "id": "FeudalKingdom-034",
+  "expansion": "FeudalKingdom",
+  "serial": 34,
+  "origin": "official",
+  "images": {
+    "front": "FeudalKingdom/FK_Page_069.webp",
+    "back": "FeudalKingdom/FK_Page_070.webp"
+  },
+  "orientationToStage": {
+    "front-0": 1,
+    "front-180": null,
+    "back-0": 4,
+    "back-180": null
+  },
+  "isParchment": false,
+  "chooseSideOnDiscover": false,
+  "stages": {
+    "1": {
+      "id": 1,
+      "name": "Inventor",
+      "keywords": [
+        "Person"
+      ],
+      "category": "person",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [],
+      "upgrades": [
+        {
+          "id": "u1",
+          "cost": [
+            "coin",
+            "coin",
+            "coin",
+            "coin"
+          ],
+          "arrow": "flip",
+          "toStage": 4
+        }
+      ],
+      "effects": [],
+      "checkboxes": [
+        {
+          "id": "c1"
+        },
+        {
+          "id": "c2"
+        },
+        {
+          "id": "c3"
+        }
+      ],
+      "staysInPlay": false,
+      "fameVariable": true,
+      "text": "{asterisk}Worth 5{fame} per {mark}.",
+      "siteKeywords": [],
+      "helpText": "This is worth 5 fame [vp] for each box you have marked. You mark boxes by upgrading her to the other side."
+    },
+    "4": {
+      "id": 4,
+      "name": "Inspired Inventor",
+      "keywords": [
+        "Person"
+      ],
+      "category": "person",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "activated",
+          "text": "Reset and mark 1 {mark} on that side if possible. Then discover an invention (97 / 98 / 99) or gain any 1 resource for each {mark}."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "fameVariable": true,
+      "text": "{activated} Reset and mark 1 {mark} on that side if possible. Then discover an invention (97 / 98 / 99) or gain any 1 resource for each {mark}. {asterisk}Worth 5{fame} for each {mark} on the other side.",
+      "siteKeywords": [
+        "Activated Effect",
+        "Discover"
+      ],
+      "helpText": "Reset this card. When you do so, mark [mark] 1 box on the reset side. Then, either discover 1 of the listed cards OR gain any 1 resource for each [mark] on that side."
+    }
+  },
+  "description": "The Inventor is 1 of 4 immigrants you can choose when reaching campaign card 30. Her strength is that she invents 3 new things (3 new cards). As she does so, she also gains you fame and may be reset to gain any resources you may need. Note that she resets when she invents something, so she needs to be upgraded several times to discover them all.<br>\nSPOILER: This card lets you discover 3 inventions (<a href=\"/cards/FeudalKingdom/97\">97</a>, <a href=\"/cards/FeudalKingdom/98\">98</a>, <a href=\"/cards/FeudalKingdom/99\">99</a>)",
+  "source": {
+    "url": "https://www.kingdomlegacygame.com/cards/FeudalKingdom/34",
+    "scrapedAt": "2026-10-02T13:03:41.965Z"
+  },
+  "confidence": 0.9,
+  "to_verify": [
+    "Gloire variable (ruban « * ») : 5 par case cochée du recto ; fame=0 et fameVariable=true."
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "id": "FeudalKingdom-030",
+  "expansion": "FeudalKingdom",
+  "serial": 30,
+  "origin": "official",
+  "images": {
+    "front": "FeudalKingdom/FK_Page_061.webp",
+    "back": "FeudalKingdom/FK_Page_062.webp"
+  },
+  "orientationToStage": {
+    "front-0": 1,
+    "front-180": null,
+    "back-0": null,
+    "back-180": null
+  },
+  "isParchment": true,
+  "chooseSideOnDiscover": false,
+  "stages": {
+    "1": {
+      "id": 1,
+      "name": "STOP!",
+      "keywords": [],
+      "category": "none",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "triggeredForced",
+          "text": "This round, instead of discovering the next 2 cards, look at the 4 next cards of the box (cards 31-34). Choose 2 of them to discover and destroy the other 2."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "flavor": "With your kingdom growing and flourishing, many are coming here to pursue their dreams.",
+      "text": "STOP! This round, instead of discovering the next 2 cards, look at the 4 next cards of the box (cards 31-34). Choose 2 of them to discover and destroy the other 2.",
+      "siteKeywords": []
+    }
+  },
+  "description": "This is a parchment card. Follow its instructions, and when you are done with it, destroy it. For all intents and purposes, this is not considered a card at all. Especially not when you have destroyed it. All 4 cards you can choose will let you discover new cards. Whichever you choose, you will miss out on cards that the others offer. This decision will shape the future of your kingdom, but don't worry about not knowing exactly what the cards referenced are; all 4 cards are good in different ways, you cannot make a bad call.",
+  "source": {
+    "url": "https://www.kingdomlegacygame.com/cards/FeudalKingdom/30",
+    "scrapedAt": "2026-10-02T13:03:28.755Z"
+  },
+  "confidence": 0.9,
+  "to_verify": [
+    "Instructions de parchemin : classées triggeredForced (à appliquer à la découverte, puis détruire la carte) ; le site ne donne pas de type d'effet."
+  ]
+}

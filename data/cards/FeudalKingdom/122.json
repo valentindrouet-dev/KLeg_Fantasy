@@ -1,0 +1,86 @@
+{
+  "id": "FeudalKingdom-122",
+  "expansion": "FeudalKingdom",
+  "serial": 122,
+  "origin": "official",
+  "images": {
+    "front": "FeudalKingdom/FK_Page_245.webp",
+    "back": "FeudalKingdom/FK_Page_246.webp"
+  },
+  "orientationToStage": {
+    "front-0": 1,
+    "front-180": null,
+    "back-0": 4,
+    "back-180": null
+  },
+  "isParchment": false,
+  "chooseSideOnDiscover": true,
+  "stages": {
+    "1": {
+      "id": 1,
+      "name": "Royal Consort",
+      "keywords": [
+        "Person",
+        "Lady"
+      ],
+      "category": "person",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [
+        {
+          "id": "p1",
+          "options": [
+            [
+              "coin",
+              "tradeGood",
+              "tradeGood"
+            ]
+          ]
+        }
+      ],
+      "upgrades": [],
+      "effects": [],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "",
+      "siteKeywords": []
+    },
+    "4": {
+      "id": 4,
+      "name": "Royal Consort",
+      "keywords": [
+        "Person",
+        "Knight"
+      ],
+      "category": "person",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [
+        {
+          "id": "p1",
+          "options": [
+            [
+              "wood",
+              "stone"
+            ]
+          ]
+        }
+      ],
+      "upgrades": [],
+      "effects": [],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "",
+      "siteKeywords": []
+    }
+  },
+  "description": "This is a card made accessible by the Ambassador, stage 4 of <a href=\"/cards/FeudalKingdom/48\">Envoy</a>. The red arrows at the top of this card means that when you discover it, you must choose which of its 2 sides should be face up (the serial number must be at the top of this card, whichever side you choose). Choose wisely, since you cannot change this later.",
+  "source": {
+    "url": "https://www.kingdomlegacygame.com/cards/FeudalKingdom/122",
+    "scrapedAt": "2026-10-02T13:08:29.389Z"
+  },
+  "confidence": 0.95,
+  "to_verify": []
+}

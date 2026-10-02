@@ -1,0 +1,65 @@
+/* Tokens de thème centralisés (spec section 2). Les composants n'utilisent que ces variables. */
+:root {
+  color-scheme: light dark;
+
+  --font-ui: system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, monospace;
+  --text-scale: 1;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --radius: 8px;
+  --tap-min: 44px;
+
+  --bg: #f4efe6;
+  --surface: #fffaf0;
+  --surface-2: #ece4d4;
+  --border: #cfc3ab;
+  --text: #2b2418;
+  --text-muted: #6b5f4a;
+  --accent: #8a5a1c;
+  --danger: #a3261d;
+  --warn: #9a6a00;
+  --ok: #2f6b34;
+
+  /* Couleur du bandeau = catégorie (spec section 7.4) */
+  --cat-building: #8b8d91;
+  --cat-person: #d9b526;
+  --cat-seafaring: #2f7fc1;
+  --cat-land: #3f9b45;
+  --cat-livestock: #d9822b;
+  --cat-other: #c95fa3;
+  --cat-negative: #b3261e;
+  --cat-goal: #d9b526;
+  --cat-none: #c9b58a;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1b1814;
+    --surface: #26221c;
+    --surface-2: #322c24;
+    --border: #4a4236;
+    --text: #efe6d4;
+    --text-muted: #b3a78f;
+    --accent: #e0a75a;
+    --danger: #f0776c;
+    --warn: #e2b34d;
+    --ok: #7fc586;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: calc(16px * var(--text-scale));
+}

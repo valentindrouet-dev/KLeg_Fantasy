@@ -1,0 +1,95 @@
+{
+  "id": "FeudalKingdom-044",
+  "expansion": "FeudalKingdom",
+  "serial": 44,
+  "origin": "official",
+  "images": {
+    "front": "FeudalKingdom/FK_Page_089.webp",
+    "back": "FeudalKingdom/FK_Page_090.webp"
+  },
+  "orientationToStage": {
+    "front-0": 1,
+    "front-180": null,
+    "back-0": 4,
+    "back-180": null
+  },
+  "isParchment": false,
+  "chooseSideOnDiscover": false,
+  "stages": {
+    "1": {
+      "id": 1,
+      "name": "Thunderstorm",
+      "keywords": [
+        "Event"
+      ],
+      "category": "negative",
+      "negative": true,
+      "permanent": false,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "triggeredForced",
+          "text": "When played, discard the next 3 cards of your deck, then {flip}."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "{triggeredForced} When played, discard the next 3 cards of your deck, then {flip}.",
+      "siteKeywords": [
+        "Forced Triggered Effect"
+      ],
+      "helpText": "When played, discard the next 3 cards of your deck. If you have less than 3 cards in your deck, discard all of them. Then turn this card. Remember that cards are always discarded when rotated."
+    },
+    "4": {
+      "id": 4,
+      "name": "Rain",
+      "keywords": [
+        "Event"
+      ],
+      "category": "negative",
+      "negative": true,
+      "permanent": false,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "passive",
+          "text": "Your lands have +{coin}{coin} production."
+        },
+        {
+          "id": "e2",
+          "type": "passive",
+          "text": "You may not advance."
+        },
+        {
+          "id": "e3",
+          "type": "triggeredForced",
+          "text": "End of Turn: {flip}."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "{passive} Your lands have +{coin}{coin} production. {passive} You may not advance. {triggeredForced} End of Turn: {flip}.",
+      "siteKeywords": [
+        "Passive Effect",
+        "Forced Triggered Effect"
+      ],
+      "helpText": "<b><i>VERSION NOTE: A skull icon in the keyword banner means the card is a negative card.</i></b><br>\nAs long as this card is in play, your lands (green banner) produce 2 [money] in addition to any production it already had. Even if they had no production, they now produce 2 [money].<br>\nYou cannot advance, meaning you cannot choose to play 2 more cards while this is in play.<br>\nAt the end of the turn, flip this card over."
+    }
+  },
+  "description": "<b><i>VERSION NOTE: The effect of the Rain was changed in 2nd Edition to this effect.</i></b><br>\n\nBoth sides of this card instruct you to turn it over, so it will alternate sides each round forever.",
+  "source": {
+    "url": "https://www.kingdomlegacygame.com/cards/FeudalKingdom/44",
+    "scrapedAt": "2026-10-02T13:04:14.975Z"
+  },
+  "confidence": 0.95,
+  "to_verify": [
+    "Note de version du site (stage 4) : A skull icon in the keyword banner means the card is a negative card.",
+    "Note de version du site : The effect of the Rain was changed in 2nd Edition to this effect."
+  ]
+}

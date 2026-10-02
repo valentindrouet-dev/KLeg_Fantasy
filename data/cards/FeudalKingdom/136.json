@@ -1,0 +1,167 @@
+{
+  "id": "FeudalKingdom-136",
+  "expansion": "FeudalKingdom",
+  "serial": 136,
+  "origin": "official",
+  "images": {
+    "front": "FeudalKingdom/FK_Page_273.webp",
+    "back": "FeudalKingdom/FK_Page_274.webp"
+  },
+  "orientationToStage": {
+    "front-0": 1,
+    "front-180": 2,
+    "back-0": 4,
+    "back-180": 3
+  },
+  "isParchment": false,
+  "chooseSideOnDiscover": false,
+  "stages": {
+    "1": {
+      "id": 1,
+      "name": "Prosperity (expansion)",
+      "keywords": [
+        "Event"
+      ],
+      "category": "other",
+      "negative": false,
+      "permanent": true,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "passive",
+          "text": "Play 1 round where all friendly cards have +{coin} production. Then {rotate}."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "Play 1 round where all friendly cards have +{coin} production. Then {rotate}.",
+      "siteKeywords": [
+        "Passive Effect",
+        "Permanent"
+      ],
+      "helpText": "This round, this card has a Passive Effect: All friendly (non-red banners) cards produce +[money]. Note that this only applies to production. If you use cards for other effects they do not produce at all. At the end of round, rotate this card."
+    },
+    "2": {
+      "id": 2,
+      "name": "Hoarding",
+      "keywords": [
+        "Event"
+      ],
+      "category": "other",
+      "negative": false,
+      "permanent": true,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "triggeredOptional",
+          "text": "Play 1 round where you may make 1 card stay in play each turn. Then {flip}."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "Play 1 round where you may make 1 card stay in play each turn. Then {flip}.",
+      "siteKeywords": [
+        "Triggered Optional Effect",
+        "Permanent"
+      ],
+      "helpText": "This round, this card has a Triggered Optional Effect: End of Turn: Make 1 card stay in play. At the end of round, flip this card."
+    },
+    "3": {
+      "id": 3,
+      "name": "Uprising",
+      "keywords": [
+        "Event"
+      ],
+      "category": "other",
+      "negative": false,
+      "permanent": true,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "triggeredForced",
+          "text": "Play 1 round where you must mark 1 {mark} each time a person is played when there is already a person in play. Then {rotate}."
+        }
+      ],
+      "checkboxes": [
+        {
+          "id": "c1"
+        },
+        {
+          "id": "c2"
+        },
+        {
+          "id": "c3"
+        },
+        {
+          "id": "c4"
+        },
+        {
+          "id": "c5"
+        },
+        {
+          "id": "c6"
+        },
+        {
+          "id": "c7"
+        },
+        {
+          "id": "c8"
+        }
+      ],
+      "staysInPlay": false,
+      "text": "Play 1 round where you must mark 1 {mark} each time a person is played when there is already a person in play. Then {rotate}.",
+      "siteKeywords": [
+        "Permanent",
+        "Forced Triggered Effect"
+      ],
+      "helpText": "This round, This card has a Forced Triggered Effect: You must mark [mark] in the track whenever a person (yellow banner) enters play from anywhere if there is already at least 1 person in play, unless all spaces are marked. At the end of round, rotate this card."
+    },
+    "4": {
+      "id": 4,
+      "name": "Royal Decree",
+      "keywords": [
+        "Event"
+      ],
+      "category": "other",
+      "negative": false,
+      "permanent": true,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "triggeredForced",
+          "text": "Play 1 round. Then, for each {mark} on Uprising, you must cross out 1 production on 1 card. Then destroy this."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "Play 1 round. Then, for each {mark} on Uprising, you must cross out 1 production on 1 card. Then destroy this.",
+      "siteKeywords": [
+        "Permanent"
+      ],
+      "helpText": "This round, there is no special effect. After the round, you must cross out 1 production on 1 friendly card for each [mark] on Uprising (stage 3 of this card). You may choose to cross out production several times on the same card, if you want to. Then destroy this card, add sticker 13k to your box's score path and add your new score next to it. The expansion is over and you may choose a new one to play."
+    }
+  },
+  "description": "This is one of the 3 built-in expansions for Feudal Kingdom.  You may discover it between games to start the expansion. Before playing, purge 1 permanent card and perform a purge 12. You do not discover the first 2 cards of your deck when playing a built-in expansion. Instead, this permanent card will guide you through 4 rounds of play, with different effects on the different sides of the card.  After 4 rounds, add sticker 13k to your box's score path and write your new score next to it.\n\nThis expansion is the story of how greed fuels conflict. You will gain extra [money] and storage, but you will need to watch out for the Uprising!",
+  "source": {
+    "url": "https://www.kingdomlegacygame.com/cards/FeudalKingdom/136",
+    "scrapedAt": "2026-10-02T12:30:29.511Z"
+  },
+  "confidence": 0.85,
+  "to_verify": [
+    "Mini-extension : les changements de stage (« Then {rotate}/{flip} ») sont des effets de fin de manche, pas des améliorations.",
+    "Aucune icône de type d'effet sur la carte : types repris du glossaire du site (stage 4 : triggeredForced d'après « you must »).",
+    "Uprising : 8 cases comptées sur l'image (2 rangées de 4)."
+  ]
+}

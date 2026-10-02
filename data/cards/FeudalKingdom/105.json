@@ -1,0 +1,179 @@
+{
+  "id": "FeudalKingdom-105",
+  "expansion": "FeudalKingdom",
+  "serial": 105,
+  "origin": "official",
+  "images": {
+    "front": "FeudalKingdom/FK_Page_211.webp",
+    "back": "FeudalKingdom/FK_Page_212.webp"
+  },
+  "orientationToStage": {
+    "front-0": 1,
+    "front-180": 2,
+    "back-0": 4,
+    "back-180": 3
+  },
+  "isParchment": false,
+  "chooseSideOnDiscover": false,
+  "stages": {
+    "1": {
+      "id": 1,
+      "name": "Small Hill Town",
+      "keywords": [
+        "Land"
+      ],
+      "category": "land",
+      "negative": false,
+      "permanent": false,
+      "fame": 6,
+      "production": [],
+      "upgrades": [
+        {
+          "id": "u1",
+          "cost": [
+            "wood",
+            "wood",
+            "stone",
+            "stone"
+          ],
+          "arrow": "rotate",
+          "toStage": 2
+        }
+      ],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "activated",
+          "text": "Spend {coin}{coin} to gain any 1 resource."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "{activated} Spend {coin}{coin} to gain any 1 resource.",
+      "siteKeywords": [
+        "Activated Effect"
+      ]
+    },
+    "2": {
+      "id": 2,
+      "name": "Hill Town",
+      "keywords": [
+        "Land"
+      ],
+      "category": "land",
+      "negative": false,
+      "permanent": false,
+      "fame": 8,
+      "production": [],
+      "upgrades": [
+        {
+          "id": "u1",
+          "cost": [
+            "wood",
+            "stone",
+            "wood",
+            "stone",
+            "wood",
+            "stone"
+          ],
+          "arrow": "flip",
+          "toStage": 3
+        }
+      ],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "activated",
+          "text": "Spend {coin} to gain any 1 resource."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "{activated} Spend {coin} to gain any 1 resource.",
+      "siteKeywords": [
+        "Activated Effect"
+      ]
+    },
+    "3": {
+      "id": 3,
+      "name": "Large Town",
+      "keywords": [
+        "Land"
+      ],
+      "category": "land",
+      "negative": false,
+      "permanent": false,
+      "fame": 10,
+      "production": [],
+      "upgrades": [
+        {
+          "id": "u1",
+          "cost": [
+            "wood",
+            "wood",
+            "wood",
+            "wood",
+            "wood",
+            "wood"
+          ],
+          "arrow": "rotate",
+          "toStage": 4
+        }
+      ],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "activated",
+          "text": "Spend any 1 resource to gain any 1 resource."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "{activated} Spend any 1 resource to gain any 1 resource.",
+      "siteKeywords": [
+        "Activated Effect"
+      ]
+    },
+    "4": {
+      "id": 4,
+      "name": "City on a Hill",
+      "keywords": [
+        "Land"
+      ],
+      "category": "land",
+      "negative": false,
+      "permanent": false,
+      "fame": 12,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "activated",
+          "text": "Undiscover this to discover Camelot (106). (Put it back into the box. It may be discovered again.)"
+        },
+        {
+          "id": "e2",
+          "type": "activated",
+          "text": "Gain any 1 resource."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "{activated} Undiscover this to discover Camelot (106). (Put it back into the box. It may be discovered again.) {activated} Gain any 1 resource.",
+      "siteKeywords": [
+        "Activated Effect",
+        "Undiscover",
+        "Discover"
+      ],
+      "helpText": "This card has 2 Activated Effects. Note that you cannot use them both. \n\nSPOILER: This card leads to <a href=\"/cards/FeudalKingdom/106\">this</a>."
+    }
+  },
+  "description": "This is a card made accessible by the Peak Village, stage 4 of <a href=\"/cards/FeudalKingdom/52\">Mighty Mound.</a>. This card can from its last stage grow even more glorious!",
+  "source": {
+    "url": "https://www.kingdomlegacygame.com/cards/FeudalKingdom/105",
+    "scrapedAt": "2026-10-02T13:07:33.207Z"
+  },
+  "confidence": 0.95,
+  "to_verify": []
+}

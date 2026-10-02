@@ -1,0 +1,183 @@
+{
+  "id": "FeudalKingdom-084",
+  "expansion": "FeudalKingdom",
+  "serial": 84,
+  "origin": "official",
+  "images": {
+    "front": "FeudalKingdom/FK_Page_169.webp",
+    "back": "FeudalKingdom/FK_Page_170.webp"
+  },
+  "orientationToStage": {
+    "front-0": 1,
+    "front-180": 2,
+    "back-0": 4,
+    "back-180": 3
+  },
+  "isParchment": false,
+  "chooseSideOnDiscover": false,
+  "stages": {
+    "1": {
+      "id": 1,
+      "name": "Mine",
+      "keywords": [
+        "Building"
+      ],
+      "category": "building",
+      "negative": false,
+      "permanent": false,
+      "fame": 4,
+      "production": [
+        {
+          "id": "p1",
+          "options": [
+            [
+              "stone",
+              "metal"
+            ]
+          ]
+        }
+      ],
+      "upgrades": [
+        {
+          "id": "u1",
+          "cost": [
+            "wood",
+            "wood",
+            "wood"
+          ],
+          "arrow": "rotate",
+          "toStage": 2
+        }
+      ],
+      "effects": [],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "",
+      "siteKeywords": []
+    },
+    "2": {
+      "id": 2,
+      "name": "Deep Mine",
+      "keywords": [
+        "Building"
+      ],
+      "category": "building",
+      "negative": false,
+      "permanent": false,
+      "fame": 6,
+      "production": [
+        {
+          "id": "p1",
+          "options": [
+            [
+              "stone",
+              "metal",
+              "metal"
+            ]
+          ]
+        }
+      ],
+      "upgrades": [
+        {
+          "id": "u1",
+          "cost": [
+            "coin",
+            "wood",
+            "coin",
+            "wood",
+            "wood"
+          ],
+          "arrow": "flip",
+          "toStage": 3
+        }
+      ],
+      "effects": [],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "",
+      "siteKeywords": []
+    },
+    "3": {
+      "id": 3,
+      "name": "Ruby Mine",
+      "keywords": [
+        "Building"
+      ],
+      "category": "building",
+      "negative": false,
+      "permanent": false,
+      "fame": 9,
+      "production": [
+        {
+          "id": "p1",
+          "options": [
+            [
+              "stone",
+              "metal",
+              "metal",
+              "tradeGood"
+            ]
+          ]
+        }
+      ],
+      "upgrades": [
+        {
+          "id": "u1",
+          "cost": [
+            "stone",
+            "stone",
+            "wood",
+            "wood",
+            "coin",
+            "coin"
+          ],
+          "arrow": "rotate",
+          "toStage": 4
+        }
+      ],
+      "effects": [],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "",
+      "siteKeywords": []
+    },
+    "4": {
+      "id": 4,
+      "name": "Diamond Mine",
+      "keywords": [
+        "Building"
+      ],
+      "category": "building",
+      "negative": false,
+      "permanent": false,
+      "fame": 13,
+      "production": [
+        {
+          "id": "p1",
+          "options": [
+            [
+              "stone",
+              "metal",
+              "metal",
+              "tradeGood",
+              "tradeGood"
+            ]
+          ]
+        }
+      ],
+      "upgrades": [],
+      "effects": [],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "",
+      "siteKeywords": []
+    }
+  },
+  "description": "This is a card made accessible by any Distant Mountain (<a href=\"/cards/FeudalKingdom/5\">05</a>, <a href=\"/cards/FeudalKingdom/6\">06</a>, <a href=\"/cards/FeudalKingdom/15\">15</a>, <a href=\"/cards/FeudalKingdom/35\">35</a>, or <a href=\"/cards/FeudalKingdom/71\">71</a>).",
+  "source": {
+    "url": "https://www.kingdomlegacygame.com/cards/FeudalKingdom/84",
+    "scrapedAt": "2026-10-02T13:06:23.797Z"
+  },
+  "confidence": 0.95,
+  "to_verify": []
+}

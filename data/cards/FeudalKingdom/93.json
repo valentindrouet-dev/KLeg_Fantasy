@@ -1,0 +1,163 @@
+{
+  "id": "FeudalKingdom-093",
+  "expansion": "FeudalKingdom",
+  "serial": 93,
+  "origin": "official",
+  "images": {
+    "front": "FeudalKingdom/FK_Page_187.webp",
+    "back": "FeudalKingdom/FK_Page_188.webp"
+  },
+  "orientationToStage": {
+    "front-0": 1,
+    "front-180": 2,
+    "back-0": 4,
+    "back-180": 3
+  },
+  "isParchment": false,
+  "chooseSideOnDiscover": false,
+  "stages": {
+    "1": {
+      "id": 1,
+      "name": "Treasure Hunt",
+      "keywords": [
+        "Seafaring"
+      ],
+      "category": "seafaring",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [],
+      "upgrades": [
+        {
+          "id": "u1",
+          "cost": [
+            "coin",
+            "wood",
+            "metal"
+          ],
+          "arrow": "rotate",
+          "toStage": 2
+        }
+      ],
+      "effects": [],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "",
+      "siteKeywords": []
+    },
+    "2": {
+      "id": 2,
+      "name": "Pirate Cove",
+      "keywords": [
+        "Seafaring"
+      ],
+      "category": "seafaring",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [],
+      "upgrades": [
+        {
+          "id": "u1",
+          "cost": [
+            "metal",
+            "sword"
+          ],
+          "arrow": "flip",
+          "toStage": 3,
+          "otherCost": "2 Persons"
+        }
+      ],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "triggeredForced",
+          "text": "End of Turn: Unfortunately discover Backstabber (94)."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "{triggeredForced} End of Turn: Unfortunately discover Backstabber (94).",
+      "siteKeywords": [
+        "Forced Triggered Effect",
+        "Discover"
+      ],
+      "helpText": "SPOILER: This card leads to <a href=\"/cards/FeudalKingdom/94\">this</a>."
+    },
+    "3": {
+      "id": 3,
+      "name": "Treasure Map",
+      "keywords": [
+        "Seafaring"
+      ],
+      "category": "seafaring",
+      "negative": false,
+      "permanent": false,
+      "fame": 5,
+      "production": [
+        {
+          "id": "p1",
+          "options": [
+            [
+              "coin"
+            ]
+          ]
+        }
+      ],
+      "upgrades": [
+        {
+          "id": "u1",
+          "cost": [],
+          "arrow": "rotate",
+          "toStage": 4,
+          "otherCost": "2 seafaring"
+        }
+      ],
+      "effects": [],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "",
+      "siteKeywords": []
+    },
+    "4": {
+      "id": 4,
+      "name": "Pirate Treasure",
+      "keywords": [
+        "Item",
+        "Loot"
+      ],
+      "category": "other",
+      "negative": false,
+      "permanent": false,
+      "fame": 15,
+      "production": [
+        {
+          "id": "p1",
+          "options": [
+            [
+              "coin",
+              "coin"
+            ]
+          ]
+        }
+      ],
+      "upgrades": [],
+      "effects": [],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "",
+      "siteKeywords": [],
+      "helpText": "<b><i>VERSION NOTE: Added the \"item\" keyword.</i></b><br>"
+    }
+  },
+  "description": "This is a card made accessible by your Skilled Ally, stage 4 of <a href=\"/cards/FeudalKingdom/76\">Pirate</a>. It's a dangerous venture, but it promises great riches!",
+  "source": {
+    "url": "https://www.kingdomlegacygame.com/cards/FeudalKingdom/93",
+    "scrapedAt": "2026-10-02T13:06:53.589Z"
+  },
+  "confidence": 0.9,
+  "to_verify": [
+    "Coûts non-ressources « 2 Persons » et « 2 seafaring » saisis dans otherCost.",
+    "Note de version du site (stage 4) : Added the \"item\" keyword."
+  ]
+}

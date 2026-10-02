@@ -1,0 +1,56 @@
+{
+  "id": "FeudalKingdom-117",
+  "expansion": "FeudalKingdom",
+  "serial": 117,
+  "origin": "official",
+  "images": {
+    "front": "FeudalKingdom/FK_Page_235.webp",
+    "back": "FeudalKingdom/FK_Page_236.webp"
+  },
+  "orientationToStage": {
+    "front-0": 1,
+    "front-180": null,
+    "back-0": null,
+    "back-180": null
+  },
+  "isParchment": false,
+  "chooseSideOnDiscover": false,
+  "stages": {
+    "1": {
+      "id": 1,
+      "name": "Trade Relations",
+      "keywords": [],
+      "category": "other",
+      "negative": false,
+      "permanent": true,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "passive",
+          "text": "Spend {tradeGood}{tradeGood}{tradeGood} to gain any 1 resource."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "{passive} Spend {tradeGood}{tradeGood}{tradeGood} to gain any 1 resource.",
+      "siteKeywords": [
+        "Permanent",
+        "Passive Effect"
+      ],
+      "helpText": "Remember that resources are \"invisible\", and that they are lost whenever a new card enters your play area. "
+    }
+  },
+  "description": "This is a card made accessible by Mass Export, stage 4 of <a href=\"/cards/FeudalKingdom/27\">Export</a>. It is a permanent card, so you will always be able to pull these strings when you need to.",
+  "source": {
+    "url": "https://www.kingdomlegacygame.com/cards/FeudalKingdom/117",
+    "scrapedAt": "2026-10-02T13:08:12.886Z"
+  },
+  "confidence": 0.9,
+  "to_verify": [
+    "Le verso est le dos de carte générique : aucun stage.",
+    "Bandeau rose avec la seule mention « Permanent » : aucun mot-clé de type, category=other."
+  ]
+}

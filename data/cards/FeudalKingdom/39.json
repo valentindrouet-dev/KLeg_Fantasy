@@ -1,0 +1,75 @@
+{
+  "id": "FeudalKingdom-039",
+  "expansion": "FeudalKingdom",
+  "serial": 39,
+  "origin": "official",
+  "images": {
+    "front": "FeudalKingdom/FK_Page_079.webp",
+    "back": "FeudalKingdom/FK_Page_080.webp"
+  },
+  "orientationToStage": {
+    "front-0": 1,
+    "front-180": null,
+    "back-0": 4,
+    "back-180": null
+  },
+  "isParchment": false,
+  "chooseSideOnDiscover": true,
+  "stages": {
+    "1": {
+      "id": 1,
+      "name": "Expanding Borders",
+      "keywords": [
+        "Goal"
+      ],
+      "category": "goal",
+      "negative": false,
+      "permanent": true,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "fameVariable": true,
+      "text": "{asterisk}You want 75 or more cards in your kingdom (not counting permanent cards). This is worth -2{fame} for each card missing from 75.",
+      "siteKeywords": [
+        "Permanent"
+      ],
+      "helpText": "<b><i>VERSION NOTE: This card now requires 75 cards instead of 70 in previous prints.</i></b><br>\nExample: If you have 7 permanent cards and 60 cards in your deck, you are missing 15 cards, since you want 75 cards in your deck. This card would then be worth -30 fame [vp].<br>NOTE: Goals have the yellow name banner, just like persons. However, this is NOT a person."
+    },
+    "4": {
+      "id": 4,
+      "name": "Maximizer",
+      "keywords": [
+        "Goal"
+      ],
+      "category": "goal",
+      "negative": false,
+      "permanent": true,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "fameVariable": true,
+      "text": "{asterisk}Worth -1{fame} per card with exactly 0{fame} (excluding permanent cards).",
+      "siteKeywords": [
+        "Permanent"
+      ],
+      "helpText": "This doesn't count cards with negative fame [vp], only cards with exactly zero [vp].<br>NOTE: Goals have the yellow name banner, just like persons. However, this is NOT a person."
+    }
+  },
+  "description": "<b><i>VERSION NOTE: Expanding Borders now requires 75 fame instead of 70 in previous versions.</i></b><br>\nThis is a goal card which gives fame [vp] depending on how well you do. The red arrows at the top of this card means that when you discover it, you must choose which of its 2 sides should be face up (the serial number must be at the top of this card, whichever side you choose). Choose wisely, since you cannot change this later.",
+  "source": {
+    "url": "https://www.kingdomlegacygame.com/cards/FeudalKingdom/39",
+    "scrapedAt": "2026-10-02T13:03:58.464Z"
+  },
+  "confidence": 0.9,
+  "to_verify": [
+    "Carte objectif : bandeau jaune mais pas une personne (category=goal, mot-clé Goal) ; gloire calculée par le texte (fameVariable).",
+    "Note de version du site (stage 1) : This card now requires 75 cards instead of 70 in previous prints.",
+    "Note de version du site : Expanding Borders now requires 75 fame instead of 70 in previous versions."
+  ]
+}

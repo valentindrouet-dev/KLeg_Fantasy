@@ -1,0 +1,137 @@
+{
+  "id": "FeudalKingdom-118",
+  "expansion": "FeudalKingdom",
+  "serial": 118,
+  "origin": "official",
+  "images": {
+    "front": "FeudalKingdom/FK_Page_237.webp",
+    "back": "FeudalKingdom/FK_Page_238.webp"
+  },
+  "orientationToStage": {
+    "front-0": 1,
+    "front-180": 2,
+    "back-0": 4,
+    "back-180": 3
+  },
+  "isParchment": false,
+  "chooseSideOnDiscover": false,
+  "stages": {
+    "1": {
+      "id": 1,
+      "name": "Small School",
+      "keywords": [
+        "Building"
+      ],
+      "category": "building",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "time",
+          "text": "Upgrade a person in play for free, then {rotate}."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "{time} Upgrade a person in play for free, then {rotate}.",
+      "siteKeywords": [
+        "Time Effect"
+      ],
+      "helpText": "When using this Time Effect, you can upgrade 1 person (yellow banner) in play, ignoring whatever requirement is indicated in the brown upgrade cost on that card. This might mean that you can upgrade persons you otherwise would not be able to. Choose wisely, education is not something to be done carelessly. If you choose to use this effect, remember that you must also rotate this card."
+    },
+    "2": {
+      "id": 2,
+      "name": "School",
+      "keywords": [
+        "Building"
+      ],
+      "category": "building",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "time",
+          "text": "Upgrade a person in play for free. Then {flip}."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "{time} Upgrade a person in play for free. Then {flip}.",
+      "siteKeywords": [
+        "Time Effect"
+      ],
+      "helpText": "When using this Time Effect, you can upgrade 1 person (yellow banner) in play, ignoring whatever requirement is indicated in the brown upgrade cost on that card. This might mean that you can upgrade persons you otherwise would not be able to. Choose wisely, education is not something to be done carelessly. If you choose to use this effect, remember that you must also flip this card."
+    },
+    "3": {
+      "id": 3,
+      "name": "Prominent School",
+      "keywords": [
+        "Building"
+      ],
+      "category": "building",
+      "negative": false,
+      "permanent": false,
+      "fame": 4,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "time",
+          "text": "Add 1 resource sticker (1-6) to a person in play, then {rotate}."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "{time} Add 1 resource sticker (1-6) to a person in play, then {rotate}.",
+      "siteKeywords": [
+        "Time Effect"
+      ],
+      "helpText": "If you choose to use this cards Time Effect, remember that you must also rotate this card."
+    },
+    "4": {
+      "id": 4,
+      "name": "Renowned School",
+      "keywords": [
+        "Building"
+      ],
+      "category": "building",
+      "negative": false,
+      "permanent": false,
+      "fame": 6,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "time",
+          "text": "Add 1 resource sticker (1-6) to a person in play.",
+          "oneTime": true
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "{time} Add 1 resource sticker (1-6) to a person in play. {oneTime}",
+      "siteKeywords": [
+        "Time Effect",
+        "One-time Effect"
+      ],
+      "helpText": "If you choose to use this cards Time Effect, remember that it is a One-Time Effect."
+    }
+  },
+  "description": "This is a card made accessible by the <a href=\"/cards/FeudalKingdom/31\">Entrepreneur</a>. It will let you upgrade persons without the resources needed, and on stage 3 and 4 it will let you increase their production.",
+  "source": {
+    "url": "https://www.kingdomlegacygame.com/cards/FeudalKingdom/118",
+    "scrapedAt": "2026-10-02T13:08:16.176Z"
+  },
+  "confidence": 0.95,
+  "to_verify": []
+}

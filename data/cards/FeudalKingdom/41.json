@@ -1,0 +1,291 @@
+{
+  "id": "FeudalKingdom-041",
+  "expansion": "FeudalKingdom",
+  "serial": 41,
+  "origin": "official",
+  "images": {
+    "front": "FeudalKingdom/FK_Page_083.webp",
+    "back": "FeudalKingdom/FK_Page_084.webp"
+  },
+  "orientationToStage": {
+    "front-0": 1,
+    "front-180": null,
+    "back-0": 4,
+    "back-180": null
+  },
+  "isParchment": false,
+  "chooseSideOnDiscover": true,
+  "stages": {
+    "1": {
+      "id": 1,
+      "name": "Jester",
+      "keywords": [
+        "Person"
+      ],
+      "category": "person",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "activated",
+          "text": "Discard the top card of your deck."
+        },
+        {
+          "id": "e2",
+          "type": "activated",
+          "text": "Mark 1 {mark}."
+        }
+      ],
+      "checkboxes": [
+        {
+          "id": "c1",
+          "gain": [
+            "coin",
+            "coin"
+          ]
+        },
+        {
+          "id": "c2",
+          "gain": [
+            "coin",
+            "coin"
+          ]
+        },
+        {
+          "id": "c3",
+          "gain": [
+            "coin",
+            "coin"
+          ]
+        },
+        {
+          "id": "c4",
+          "gain": [
+            "coin",
+            "wood"
+          ]
+        },
+        {
+          "id": "c5",
+          "gain": [
+            "coin",
+            "wood"
+          ]
+        },
+        {
+          "id": "c6",
+          "gain": [
+            "coin",
+            "wood"
+          ]
+        },
+        {
+          "id": "c7",
+          "gain": [
+            "tradeGood",
+            "tradeGood"
+          ]
+        },
+        {
+          "id": "c8",
+          "gain": [
+            "tradeGood",
+            "tradeGood"
+          ]
+        }
+      ],
+      "staysInPlay": true,
+      "text": "{passive} Stays in play. {activated} Discard the top card of your deck. {activated} Mark 1 {mark}.",
+      "siteKeywords": [
+        "Stays in play",
+        "Activated Effect"
+      ]
+    },
+    "4": {
+      "id": 4,
+      "name": "Merchant",
+      "keywords": [
+        "Person"
+      ],
+      "category": "person",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "activated",
+          "text": "Mark 1-2 {mark}."
+        }
+      ],
+      "checkboxes": [
+        {
+          "id": "c1",
+          "gain": [
+            "coin"
+          ]
+        },
+        {
+          "id": "c2",
+          "gain": [
+            "coin"
+          ]
+        },
+        {
+          "id": "c3",
+          "gain": [
+            "wood"
+          ]
+        },
+        {
+          "id": "c4",
+          "gain": [
+            "wood"
+          ]
+        },
+        {
+          "id": "c5",
+          "gain": [
+            "stone"
+          ]
+        },
+        {
+          "id": "c6",
+          "gain": [
+            "stone"
+          ]
+        },
+        {
+          "id": "c7",
+          "gain": [
+            "metal"
+          ]
+        },
+        {
+          "id": "c8",
+          "gain": [
+            "metal"
+          ]
+        },
+        {
+          "id": "c9",
+          "gain": [
+            "coin"
+          ]
+        },
+        {
+          "id": "c10",
+          "gain": [
+            "coin"
+          ]
+        },
+        {
+          "id": "c11",
+          "gain": [
+            "wood"
+          ]
+        },
+        {
+          "id": "c12",
+          "gain": [
+            "wood"
+          ]
+        },
+        {
+          "id": "c13",
+          "gain": [
+            "stone"
+          ]
+        },
+        {
+          "id": "c14",
+          "gain": [
+            "stone"
+          ]
+        },
+        {
+          "id": "c15",
+          "gain": [
+            "metal"
+          ]
+        },
+        {
+          "id": "c16",
+          "gain": [
+            "metal"
+          ]
+        },
+        {
+          "id": "c17",
+          "gain": [
+            "coin"
+          ]
+        },
+        {
+          "id": "c18",
+          "gain": [
+            "coin"
+          ]
+        },
+        {
+          "id": "c19",
+          "gain": [
+            "wood"
+          ]
+        },
+        {
+          "id": "c20",
+          "gain": [
+            "wood"
+          ]
+        },
+        {
+          "id": "c21",
+          "gain": [
+            "stone"
+          ]
+        },
+        {
+          "id": "c22",
+          "gain": [
+            "stone"
+          ]
+        },
+        {
+          "id": "c23",
+          "gain": [
+            "metal"
+          ]
+        },
+        {
+          "id": "c24",
+          "gain": [
+            "metal"
+          ]
+        }
+      ],
+      "staysInPlay": false,
+      "text": "{activated} Mark 1-2 {mark}.",
+      "siteKeywords": [
+        "Activated Effect"
+      ]
+    }
+  },
+  "description": "<b><i>VERSION NOTE: Changed Jester's effect from an \"OR\" effect to 2 separate effects.</b></i><br>\nThe red arrows at the top of this card means that when you discover it, you must choose which of its 2 sides should be face up (the serial number must be at the top of this card, whichever side you choose). Choose wisely, since you cannot change this later. Here you get to choose between the Jester and the Merchant. Both use marks [mark] to gain resources. The Jester has fewer boxes, but has an ongoing effect. Merchant is better in terms of resources, but will eventually run out of resources to offer.",
+  "source": {
+    "url": "https://www.kingdomlegacygame.com/cards/FeudalKingdom/41",
+    "scrapedAt": "2026-10-02T13:04:05.076Z"
+  },
+  "confidence": 0.9,
+  "to_verify": [
+    "Jester : 8 cases à deux icônes (3 × or+or, 3 × or+bois, 2 × marchandise+marchandise), lues sur l'image.",
+    "Merchant : 24 cases en 3 rangées identiques (or, or, bois, bois, pierre, pierre, métal, métal).",
+    "Note de version du site : Changed Jester's effect from an \"OR\" effect to 2 separate effects."
+  ]
+}

@@ -1,0 +1,73 @@
+{
+  "id": "FeudalKingdom-038",
+  "expansion": "FeudalKingdom",
+  "serial": 38,
+  "origin": "official",
+  "images": {
+    "front": "FeudalKingdom/FK_Page_077.webp",
+    "back": "FeudalKingdom/FK_Page_078.webp"
+  },
+  "orientationToStage": {
+    "front-0": 1,
+    "front-180": null,
+    "back-0": 4,
+    "back-180": null
+  },
+  "isParchment": false,
+  "chooseSideOnDiscover": true,
+  "stages": {
+    "1": {
+      "id": 1,
+      "name": "Strength in Numbers",
+      "keywords": [
+        "Goal"
+      ],
+      "category": "goal",
+      "negative": false,
+      "permanent": true,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "fameVariable": true,
+      "text": "{asterisk}Worth 2{fame} per person.",
+      "siteKeywords": [
+        "Permanent"
+      ],
+      "helpText": "<br>NOTE: Goals have the yellow name banner, just like persons. However, this is NOT a person."
+    },
+    "4": {
+      "id": 4,
+      "name": "Military Dominance",
+      "keywords": [
+        "Goal"
+      ],
+      "category": "goal",
+      "negative": false,
+      "permanent": true,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "fameVariable": true,
+      "text": "{asterisk}Worth 2{fame} per production of {sword}.",
+      "siteKeywords": [
+        "Permanent"
+      ],
+      "helpText": "This card is worth 2 fame [vp] for each production of [sword] you have in your kingdom. If a card has variable production, so that it produces either 1 [money] OR 1 [sword], it still counts as 1 [sword] production. Note that only resource icons on cards that are used for production are counted as production, not other effects that let you gain resources.\n<br>NOTE: Goals have the yellow name banner, just like persons. However, this is NOT a person."
+    }
+  },
+  "description": "This is a goal card. It is a permanent card which will be worth fame depending on how well you do in a certain metric. The red arrows at the top of this card means that when you discover it, you must choose which of its 2 sides should be face up (the serial number must be at the top of this card, whichever side you choose). Choose wisely, since you cannot change this later.",
+  "source": {
+    "url": "https://www.kingdomlegacygame.com/cards/FeudalKingdom/38",
+    "scrapedAt": "2026-10-02T13:03:55.169Z"
+  },
+  "confidence": 0.9,
+  "to_verify": [
+    "Carte objectif : bandeau jaune mais pas une personne (category=goal, mot-clé Goal) ; gloire calculée par le texte (fameVariable)."
+  ]
+}

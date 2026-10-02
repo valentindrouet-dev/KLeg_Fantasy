@@ -1,0 +1,222 @@
+{
+  "id": "FeudalKingdom-123",
+  "expansion": "FeudalKingdom",
+  "serial": 123,
+  "origin": "official",
+  "images": {
+    "front": "FeudalKingdom/FK_Page_247.webp",
+    "back": "FeudalKingdom/FK_Page_248.webp"
+  },
+  "orientationToStage": {
+    "front-0": 1,
+    "front-180": 2,
+    "back-0": 4,
+    "back-180": 3
+  },
+  "isParchment": false,
+  "chooseSideOnDiscover": false,
+  "stages": {
+    "1": {
+      "id": 1,
+      "name": "Grand Castle",
+      "keywords": [
+        "Building"
+      ],
+      "category": "building",
+      "negative": false,
+      "permanent": false,
+      "fame": 15,
+      "production": [
+        {
+          "id": "p1",
+          "options": [
+            [
+              "sword"
+            ]
+          ]
+        }
+      ],
+      "upgrades": [
+        {
+          "id": "u1",
+          "cost": [
+            "wood",
+            "wood",
+            "stone",
+            "stone",
+            "metal",
+            "metal"
+          ],
+          "arrow": "rotate",
+          "toStage": 2
+        }
+      ],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "activated",
+          "text": "Play 1 card from discard pile."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "{activated} Play 1 card from discard pile.",
+      "siteKeywords": [
+        "Activated Effect"
+      ]
+    },
+    "2": {
+      "id": 2,
+      "name": "Huge Castle",
+      "keywords": [
+        "Building"
+      ],
+      "category": "building",
+      "negative": false,
+      "permanent": false,
+      "fame": 20,
+      "production": [
+        {
+          "id": "p1",
+          "options": [
+            [
+              "sword",
+              "sword"
+            ]
+          ]
+        }
+      ],
+      "upgrades": [
+        {
+          "id": "u1",
+          "cost": [
+            "metal",
+            "stone",
+            "metal",
+            "stone",
+            "metal",
+            "stone"
+          ],
+          "arrow": "flip",
+          "toStage": 3
+        }
+      ],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "activated",
+          "text": "Play 1 card from discard pile."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "{activated} Play 1 card from discard pile.",
+      "siteKeywords": [
+        "Activated Effect"
+      ]
+    },
+    "3": {
+      "id": 3,
+      "name": "Fortress",
+      "keywords": [
+        "Building"
+      ],
+      "category": "building",
+      "negative": false,
+      "permanent": false,
+      "fame": 25,
+      "production": [
+        {
+          "id": "p1",
+          "options": [
+            [
+              "sword",
+              "sword"
+            ]
+          ]
+        }
+      ],
+      "upgrades": [
+        {
+          "id": "u1",
+          "cost": [
+            "metal",
+            "metal",
+            "metal",
+            "metal",
+            "stone",
+            "stone",
+            "stone",
+            "stone"
+          ],
+          "arrow": "rotate",
+          "toStage": 4
+        }
+      ],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "activated",
+          "text": "Play 1 card from discard pile."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "{activated} Play 1 card from discard pile.",
+      "siteKeywords": [
+        "Activated Effect"
+      ]
+    },
+    "4": {
+      "id": 4,
+      "name": "Impregnable Fortress",
+      "keywords": [
+        "Building"
+      ],
+      "category": "building",
+      "negative": false,
+      "permanent": false,
+      "fame": 30,
+      "production": [
+        {
+          "id": "p1",
+          "options": [
+            [
+              "sword",
+              "sword",
+              "sword"
+            ]
+          ]
+        }
+      ],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "activated",
+          "text": "Play 1 card from discard pile."
+        },
+        {
+          "id": "e2",
+          "type": "triggeredOptional",
+          "text": "You may discard 2 Walls instead of this."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "{activated} Play 1 card from discard pile. {triggeredOptional} You may discard 2 Walls instead of this.",
+      "siteKeywords": [
+        "Activated Effect",
+        "Triggered Optional Effect"
+      ],
+      "helpText": "Note that only cards with the printed word \"Wall\" on them are counted for this cards Triggered Optional Effect. Note also that two Walls can be used instead of this card for any effect, both the Activated Effect, the production or any other reason you might want to discard a fine Building like this."
+    }
+  },
+  "description": "This is a card made accessible by the <a href=\"/cards/FeudalKingdom/49\">Royal Architect</a>. To discover it, you must first discard her and destroy a Castle in play. This card will always be able to play any 1 card from discard pile, but it will grow in both [vp] and [sword] as you upgrade it. On the last stage, it can make use of Walls for its Activated Effect, making it possible to play more cards from discard pile, or use this cards [sword] production several times.",
+  "source": {
+    "url": "https://www.kingdomlegacygame.com/cards/FeudalKingdom/123",
+    "scrapedAt": "2026-10-02T13:08:32.685Z"
+  },
+  "confidence": 0.95,
+  "to_verify": []
+}

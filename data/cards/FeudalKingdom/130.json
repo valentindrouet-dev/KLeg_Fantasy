@@ -1,0 +1,191 @@
+{
+  "id": "FeudalKingdom-130",
+  "expansion": "FeudalKingdom",
+  "serial": 130,
+  "origin": "official",
+  "images": {
+    "front": "FeudalKingdom/FK_Page_261.webp",
+    "back": "FeudalKingdom/FK_Page_262.webp"
+  },
+  "orientationToStage": {
+    "front-0": 1,
+    "front-180": 2,
+    "back-0": 4,
+    "back-180": 3
+  },
+  "isParchment": false,
+  "chooseSideOnDiscover": false,
+  "stages": {
+    "1": {
+      "id": 1,
+      "name": "Town Border",
+      "keywords": [
+        "Land"
+      ],
+      "category": "land",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [
+        {
+          "id": "p1",
+          "options": [
+            [
+              "coin"
+            ]
+          ]
+        }
+      ],
+      "upgrades": [
+        {
+          "id": "u1",
+          "cost": [
+            "stone",
+            "stone",
+            "stone",
+            "stone"
+          ],
+          "arrow": "flip",
+          "toStage": 4
+        },
+        {
+          "id": "u2",
+          "cost": [
+            "wood",
+            "wood",
+            "wood",
+            "coin"
+          ],
+          "arrow": "rotate",
+          "toStage": 2
+        }
+      ],
+      "effects": [],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "",
+      "siteKeywords": [],
+      "helpText": "This card has two upgrade possibilities. Look through the card's stages to make an informed decision!"
+    },
+    "2": {
+      "id": 2,
+      "name": "Watchtower",
+      "keywords": [
+        "Building"
+      ],
+      "category": "building",
+      "negative": false,
+      "permanent": false,
+      "fame": 4,
+      "production": [
+        {
+          "id": "p1",
+          "options": [
+            [
+              "sword"
+            ]
+          ]
+        }
+      ],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "passive",
+          "text": "You may look at the top 2 cards of your deck."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "{passive} You may look at the top 2 cards of your deck.",
+      "siteKeywords": [
+        "Passive Effect"
+      ],
+      "helpText": "This cards Passive Effect lets you lift the top card of your deck, revealing the second card as well, and then putting the first card back on top. You may not, however, pick up the second card, as that would reveal the third card. "
+    },
+    "3": {
+      "id": 3,
+      "name": "Double Wall",
+      "keywords": [
+        "Building"
+      ],
+      "category": "building",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [
+        {
+          "id": "p1",
+          "options": [
+            [
+              "sword",
+              "sword"
+            ]
+          ]
+        }
+      ],
+      "upgrades": [],
+      "effects": [],
+      "checkboxes": [],
+      "staysInPlay": true,
+      "fameVariable": true,
+      "text": "{asterisk}Worth 4{fame} for each wall, including this. {passive} Stays in play.",
+      "siteKeywords": [
+        "Stays in play"
+      ],
+      "helpText": "This card is worth 4 [vp] for each card with the printed word \"Wall\" on them that are visible to you (cards in play and in discard pile). This means that the [vp] is not constant throughout the game. However, at the end of the game, all cards in your entire kingdom are counted. This card counts as 1 wall.\n\nCorner case: During the purge, this card counts all cards in your kingdom. If you need to look through the cards that you havo not yet gone through to establish this cards [vp], you may do so. Then, reshuffle those cards and continue with your purge. "
+    },
+    "4": {
+      "id": 4,
+      "name": "Inner Wall",
+      "keywords": [
+        "Building"
+      ],
+      "category": "building",
+      "negative": false,
+      "permanent": false,
+      "fame": 3,
+      "production": [
+        {
+          "id": "p1",
+          "options": [
+            [
+              "sword"
+            ]
+          ]
+        }
+      ],
+      "upgrades": [
+        {
+          "id": "u1",
+          "cost": [
+            "stone",
+            "stone",
+            "stone",
+            "stone",
+            "wood",
+            "wood"
+          ],
+          "arrow": "rotate",
+          "toStage": 3
+        }
+      ],
+      "effects": [],
+      "checkboxes": [],
+      "staysInPlay": true,
+      "text": "{passive} Stays in play.",
+      "siteKeywords": [
+        "Stays in play"
+      ]
+    }
+  },
+  "description": "This is a card made accessible by the <a href=\"/cards/FeudalKingdom/51\">Magistrate</a>. You have to make a decision: will you quickly build a Watchtower to see your enemies from afar, or will you invest time and resources to make the Double Wall to earn you more [vp] and [sword]?",
+  "source": {
+    "url": "https://www.kingdomlegacygame.com/cards/FeudalKingdom/130",
+    "scrapedAt": "2026-10-02T13:08:55.840Z"
+  },
+  "confidence": 0.9,
+  "to_verify": [
+    "Double Wall : gloire variable, 4 par carte dont le nom contient « Wall » (cette carte comprise)."
+  ]
+}

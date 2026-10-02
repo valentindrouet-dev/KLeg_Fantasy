@@ -1,0 +1,200 @@
+{
+  "id": "FeudalKingdom-110",
+  "expansion": "FeudalKingdom",
+  "serial": 110,
+  "origin": "official",
+  "images": {
+    "front": "FeudalKingdom/FK_Page_221.webp",
+    "back": "FeudalKingdom/FK_Page_222.webp"
+  },
+  "orientationToStage": {
+    "front-0": 1,
+    "front-180": 2,
+    "back-0": 4,
+    "back-180": 3
+  },
+  "isParchment": false,
+  "chooseSideOnDiscover": false,
+  "stages": {
+    "1": {
+      "id": 1,
+      "name": "Barn",
+      "keywords": [
+        "Building"
+      ],
+      "category": "building",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [
+        {
+          "id": "p1",
+          "options": [
+            [
+              "coin"
+            ]
+          ]
+        }
+      ],
+      "upgrades": [
+        {
+          "id": "u1",
+          "cost": [
+            "wood",
+            "wood",
+            "wood"
+          ],
+          "arrow": "rotate",
+          "toStage": 2
+        }
+      ],
+      "effects": [],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "",
+      "siteKeywords": []
+    },
+    "2": {
+      "id": 2,
+      "name": "Large Barn",
+      "keywords": [
+        "Building"
+      ],
+      "category": "building",
+      "negative": false,
+      "permanent": false,
+      "fame": 2,
+      "production": [
+        {
+          "id": "p1",
+          "options": [
+            [
+              "coin"
+            ],
+            [
+              "wood"
+            ]
+          ]
+        }
+      ],
+      "upgrades": [
+        {
+          "id": "u1",
+          "cost": [
+            "wood",
+            "wood",
+            "wood",
+            "wood",
+            "wood",
+            "wood"
+          ],
+          "arrow": "flip",
+          "toStage": 3
+        }
+      ],
+      "effects": [],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "",
+      "siteKeywords": [
+        "Variable Production"
+      ]
+    },
+    "3": {
+      "id": 3,
+      "name": "Countryside",
+      "keywords": [
+        "Land"
+      ],
+      "category": "land",
+      "negative": false,
+      "permanent": false,
+      "fame": 3,
+      "production": [
+        {
+          "id": "p1",
+          "options": [
+            [
+              "coin",
+              "wood"
+            ]
+          ]
+        }
+      ],
+      "upgrades": [
+        {
+          "id": "u1",
+          "cost": [
+            "wood",
+            "wood",
+            "wood",
+            "wood",
+            "wood",
+            "wood"
+          ],
+          "arrow": "rotate",
+          "toStage": 4
+        }
+      ],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "activated",
+          "text": "Put a card in play at the bottom of your deck."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "{activated} Put a card in play at the bottom of your deck.",
+      "siteKeywords": [
+        "Activated Effect"
+      ],
+      "helpText": "Note that if you use this cards Activated Effect, you cannot also produce with it. Remember that if there are no cards in your deck, you cannot use this cards Activated Effect. Note also that you cannot place this card at the bottom of the deck, since you have to discard it to perform the effect. "
+    },
+    "4": {
+      "id": 4,
+      "name": "Thriving Countryside",
+      "keywords": [
+        "Land"
+      ],
+      "category": "land",
+      "negative": false,
+      "permanent": false,
+      "fame": 5,
+      "production": [
+        {
+          "id": "p1",
+          "options": [
+            [
+              "coin",
+              "coin",
+              "wood"
+            ]
+          ]
+        }
+      ],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "activated",
+          "text": "Choose 1 card in play or discard pile. Put it at the bottom of the deck."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "{activated} Choose 1 card in play or discard pile. Put it at the bottom of the deck.",
+      "siteKeywords": [
+        "Activated Effect"
+      ],
+      "helpText": "Note that if you use this cards Activated Effect, you cannot also produce with it. Remember that if there are no cards in your deck, you cannot use this cards Activated Effect. Note also that you cannot place this card at the bottom of the deck, since you have to discard it to perform the effect. "
+    }
+  },
+  "description": "This is a card made accessible by the Brick Road, stage 4 of the <a href=\"/cards/FeudalKingdom/43\">Mason</a>. Expand this barn into a thriving countryside, for generous production and tactical opportunity! ",
+  "source": {
+    "url": "https://www.kingdomlegacygame.com/cards/FeudalKingdom/110",
+    "scrapedAt": "2026-10-02T13:07:49.736Z"
+  },
+  "confidence": 0.95,
+  "to_verify": []
+}

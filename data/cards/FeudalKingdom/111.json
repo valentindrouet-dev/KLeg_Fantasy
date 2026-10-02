@@ -1,0 +1,221 @@
+{
+  "id": "FeudalKingdom-111",
+  "expansion": "FeudalKingdom",
+  "serial": 111,
+  "origin": "official",
+  "images": {
+    "front": "FeudalKingdom/FK_Page_223.webp",
+    "back": "FeudalKingdom/FK_Page_224.webp"
+  },
+  "orientationToStage": {
+    "front-0": 1,
+    "front-180": 2,
+    "back-0": 4,
+    "back-180": 3
+  },
+  "isParchment": false,
+  "chooseSideOnDiscover": false,
+  "stages": {
+    "1": {
+      "id": 1,
+      "name": "Manor",
+      "keywords": [
+        "Building"
+      ],
+      "category": "building",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [
+        {
+          "id": "p1",
+          "options": [
+            [
+              "coin",
+              "coin",
+              "coin",
+              "coin",
+              "coin",
+              "coin"
+            ]
+          ]
+        }
+      ],
+      "upgrades": [
+        {
+          "id": "u1",
+          "cost": [
+            "wood",
+            "wood",
+            "wood"
+          ],
+          "arrow": "rotate",
+          "toStage": 2
+        }
+      ],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "triggeredForced",
+          "text": "After this produces, cross out 1 production here."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "{triggeredForced} After this produces, cross out 1 production here.",
+      "siteKeywords": [
+        "Forced Triggered Effect"
+      ],
+      "helpText": "The first time you produce with this, you get 6[money], then you cross out 1 production. Next time, you get 5[money], and so on."
+    },
+    "2": {
+      "id": 2,
+      "name": "Large Manor",
+      "keywords": [
+        "Building"
+      ],
+      "category": "building",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [
+        {
+          "id": "p1",
+          "options": [
+            [
+              "coin",
+              "coin",
+              "coin",
+              "coin",
+              "coin",
+              "coin"
+            ]
+          ]
+        }
+      ],
+      "upgrades": [
+        {
+          "id": "u1",
+          "cost": [
+            "stone",
+            "stone",
+            "stone"
+          ],
+          "arrow": "flip",
+          "toStage": 3
+        }
+      ],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "triggeredForced",
+          "text": "After this produces, cross out 1 production here."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "{triggeredForced} After this produces, cross out 1 production here.",
+      "siteKeywords": [
+        "Forced Triggered Effect"
+      ]
+    },
+    "3": {
+      "id": 3,
+      "name": "Noble Residence",
+      "keywords": [
+        "Building"
+      ],
+      "category": "building",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [
+        {
+          "id": "p1",
+          "options": [
+            [
+              "coin",
+              "coin",
+              "coin",
+              "coin",
+              "coin",
+              "coin"
+            ]
+          ]
+        }
+      ],
+      "upgrades": [
+        {
+          "id": "u1",
+          "cost": [
+            "stone",
+            "stone",
+            "stone",
+            "stone"
+          ],
+          "arrow": "rotate",
+          "toStage": 4
+        }
+      ],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "triggeredForced",
+          "text": "After this produces, cross out 1 production here."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "{triggeredForced} After this produces, cross out 1 production here.",
+      "siteKeywords": [
+        "Forced Triggered Effect"
+      ]
+    },
+    "4": {
+      "id": 4,
+      "name": "Grand Residence",
+      "keywords": [
+        "Building"
+      ],
+      "category": "building",
+      "negative": false,
+      "permanent": false,
+      "fame": 5,
+      "production": [
+        {
+          "id": "p1",
+          "options": [
+            [
+              "coin",
+              "coin",
+              "coin"
+            ]
+          ]
+        }
+      ],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "time",
+          "text": "Discover a nobleman (116)."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "{time} Discover a nobleman (116).",
+      "siteKeywords": [
+        "Time Effect",
+        "Discover"
+      ],
+      "helpText": "Note that if you use this cards Time Effect, you cannot also produce with it. SPOILER: This card leads to <a href=\"/cards/FeudalKingdom/116\">this</a>."
+    }
+  },
+  "description": "This is a card made accessible by the Stone Street, stage 3 of the <a href=\"/cards/FeudalKingdom/43\">Mason</a>. On the first three stages, it produces a lot of [money], but degenerates over time, so you'll need to upgrade it to keep it going. On the last stage, it has a solid [money] production, and also attracts a noble to join your kingdom! You cross out the production after getting the resources, so the first time you produce, you get 6[money].",
+  "source": {
+    "url": "https://www.kingdomlegacygame.com/cards/FeudalKingdom/111",
+    "scrapedAt": "2026-10-02T13:07:53.037Z"
+  },
+  "confidence": 0.95,
+  "to_verify": []
+}

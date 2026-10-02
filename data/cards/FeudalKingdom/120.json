@@ -1,0 +1,138 @@
+{
+  "id": "FeudalKingdom-120",
+  "expansion": "FeudalKingdom",
+  "serial": 120,
+  "origin": "official",
+  "images": {
+    "front": "FeudalKingdom/FK_Page_241.webp",
+    "back": "FeudalKingdom/FK_Page_242.webp"
+  },
+  "orientationToStage": {
+    "front-0": 1,
+    "front-180": 2,
+    "back-0": 4,
+    "back-180": 3
+  },
+  "isParchment": false,
+  "chooseSideOnDiscover": false,
+  "stages": {
+    "1": {
+      "id": 1,
+      "name": "Investor",
+      "keywords": [
+        "Person",
+        "Lady"
+      ],
+      "category": "person",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "activated",
+          "text": "Gain any 3 resources, then {rotate}."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "{activated} Gain any 3 resources, then {rotate}.",
+      "siteKeywords": [
+        "Activated Effect"
+      ],
+      "helpText": "Note that when you choose to use this cards Activated Effect, you must also rotate it."
+    },
+    "2": {
+      "id": 2,
+      "name": "Investor",
+      "keywords": [
+        "Person",
+        "Lady"
+      ],
+      "category": "person",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "activated",
+          "text": "Gain any 3 resources, then {flip}."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "{activated} Gain any 3 resources, then {flip}.",
+      "siteKeywords": [
+        "Activated Effect"
+      ],
+      "helpText": "Note that when you choose to use this cards Activated Effect, you must also flip it."
+    },
+    "3": {
+      "id": 3,
+      "name": "Investor",
+      "keywords": [
+        "Person",
+        "Lady"
+      ],
+      "category": "person",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "activated",
+          "text": "Gain any 3 resources, then {rotate}."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "{activated} Gain any 3 resources, then {rotate}.",
+      "siteKeywords": [
+        "Activated Effect"
+      ],
+      "helpText": "Note that when you choose to use this cards Activated Effect, you must also rotate it."
+    },
+    "4": {
+      "id": 4,
+      "name": "Investor",
+      "keywords": [
+        "Person",
+        "Lady"
+      ],
+      "category": "person",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "activated",
+          "text": "Gain any 1 resource."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "{activated} Gain any 1 resource.",
+      "siteKeywords": [
+        "Activated Effect"
+      ]
+    }
+  },
+  "description": "This is a card made accessible by the Emissary, stage 2 of <a href=\"/cards/FeudalKingdom/48\">Envoy</a>. This investor will make 3 larger investments into your kingdom, before settling on a permanent lower level.",
+  "source": {
+    "url": "https://www.kingdomlegacygame.com/cards/FeudalKingdom/120",
+    "scrapedAt": "2026-10-02T13:08:22.784Z"
+  },
+  "confidence": 0.95,
+  "to_verify": []
+}

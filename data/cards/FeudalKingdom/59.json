@@ -1,0 +1,153 @@
+{
+  "id": "FeudalKingdom-059",
+  "expansion": "FeudalKingdom",
+  "serial": 59,
+  "origin": "official",
+  "images": {
+    "front": "FeudalKingdom/FK_Page_119.webp",
+    "back": "FeudalKingdom/FK_Page_120.webp"
+  },
+  "orientationToStage": {
+    "front-0": 1,
+    "front-180": 2,
+    "back-0": 4,
+    "back-180": 3
+  },
+  "isParchment": false,
+  "chooseSideOnDiscover": false,
+  "stages": {
+    "1": {
+      "id": 1,
+      "name": "Mysterious Cave",
+      "keywords": [
+        "Land"
+      ],
+      "category": "land",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [],
+      "upgrades": [
+        {
+          "id": "u1",
+          "cost": [],
+          "arrow": "rotate",
+          "toStage": 2,
+          "otherCost": "1 Person"
+        }
+      ],
+      "effects": [],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "",
+      "siteKeywords": []
+    },
+    "2": {
+      "id": 2,
+      "name": "Dungeon",
+      "keywords": [
+        "Land"
+      ],
+      "category": "land",
+      "negative": false,
+      "permanent": false,
+      "fame": 2,
+      "production": [],
+      "upgrades": [
+        {
+          "id": "u1",
+          "cost": [],
+          "arrow": "flip",
+          "toStage": 3,
+          "otherCost": "2 Persons"
+        }
+      ],
+      "effects": [],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "",
+      "siteKeywords": []
+    },
+    "3": {
+      "id": 3,
+      "name": "Lost Civilization",
+      "keywords": [
+        "Land"
+      ],
+      "category": "land",
+      "negative": false,
+      "permanent": false,
+      "fame": 5,
+      "production": [],
+      "upgrades": [
+        {
+          "id": "u1",
+          "cost": [
+            "metal",
+            "metal",
+            "coin"
+          ],
+          "arrow": "rotate",
+          "toStage": 4
+        }
+      ],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "activated",
+          "text": "Discard 6 friendly cards in play to discover an artifact (108)."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "{activated} Discard 6 friendly cards in play to discover an artifact (108).",
+      "siteKeywords": [
+        "Activated Effect",
+        "Discover"
+      ],
+      "helpText": "SPOILER: This card leads to card <a href=\"/cards/FeudalKingdom/108\">108</a>."
+    },
+    "4": {
+      "id": 4,
+      "name": "Treasures",
+      "keywords": [
+        "Item",
+        "Loot"
+      ],
+      "category": "other",
+      "negative": false,
+      "permanent": false,
+      "fame": 8,
+      "production": [
+        {
+          "id": "p1",
+          "options": [
+            [
+              "coin",
+              "coin"
+            ]
+          ]
+        }
+      ],
+      "upgrades": [],
+      "effects": [],
+      "checkboxes": [],
+      "staysInPlay": true,
+      "text": "{passive} Stays in play.",
+      "siteKeywords": [
+        "Stays in play"
+      ],
+      "helpText": "<b><i>VERSION NOTE: Added the \"item\" keyword.</i></b><br>"
+    }
+  },
+  "description": "Search this Mysterious Cave for riches and ancient artifacts.",
+  "source": {
+    "url": "https://www.kingdomlegacygame.com/cards/FeudalKingdom/59",
+    "scrapedAt": "2026-10-02T13:05:04.566Z"
+  },
+  "confidence": 0.9,
+  "to_verify": [
+    "Coûts d'amélioration « 1 Person » et « 2 Persons » : pas des ressources, saisis dans otherCost ; la règle exacte (défausser des personnes ?) est à confirmer.",
+    "Note de version du site (stage 4) : Added the \"item\" keyword."
+  ]
+}

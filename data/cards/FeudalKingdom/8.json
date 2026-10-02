@@ -1,0 +1,179 @@
+{
+  "id": "FeudalKingdom-008",
+  "expansion": "FeudalKingdom",
+  "serial": 8,
+  "origin": "official",
+  "images": {
+    "front": "FeudalKingdom/FK_Page_017.webp",
+    "back": "FeudalKingdom/FK_Page_018.webp"
+  },
+  "orientationToStage": {
+    "front-0": 1,
+    "front-180": 2,
+    "back-0": 4,
+    "back-180": 3
+  },
+  "isParchment": false,
+  "chooseSideOnDiscover": false,
+  "stages": {
+    "1": {
+      "id": 1,
+      "name": "Forest",
+      "keywords": [
+        "Land"
+      ],
+      "category": "land",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [
+        {
+          "id": "p1",
+          "options": [
+            [
+              "wood"
+            ]
+          ]
+        }
+      ],
+      "upgrades": [
+        {
+          "id": "u1",
+          "cost": [
+            "stone",
+            "stone"
+          ],
+          "arrow": "flip",
+          "toStage": 4
+        }
+      ],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "activated",
+          "text": "Gain {wood}{wood}{wood}, then {rotate}."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "{activated} Gain {wood}{wood}{wood}, then {rotate}.",
+      "siteKeywords": [
+        "Activated Effect"
+      ],
+      "helpText": "You may cut down this forest (turn down) to gain 3 wood ([wood]). This is not an upgrade and does not end your turn."
+    },
+    "2": {
+      "id": 2,
+      "name": "Felled Forest",
+      "keywords": [
+        "Land"
+      ],
+      "category": "land",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [],
+      "upgrades": [
+        {
+          "id": "u1",
+          "cost": [
+            "stone",
+            "coin",
+            "wood",
+            "coin"
+          ],
+          "arrow": "flip",
+          "toStage": 3
+        },
+        {
+          "id": "u2",
+          "cost": [
+            "coin"
+          ],
+          "arrow": "rotate",
+          "toStage": 1
+        }
+      ],
+      "effects": [],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "",
+      "siteKeywords": [],
+      "helpText": "This card has two upgrade possibilities. Look through the card's stages to make an informed decision!"
+    },
+    "3": {
+      "id": 3,
+      "name": "Lumberjack",
+      "keywords": [
+        "Building"
+      ],
+      "category": "building",
+      "negative": false,
+      "permanent": false,
+      "fame": 2,
+      "production": [
+        {
+          "id": "p1",
+          "options": [
+            [
+              "wood",
+              "wood"
+            ]
+          ]
+        }
+      ],
+      "upgrades": [],
+      "effects": [],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "",
+      "siteKeywords": []
+    },
+    "4": {
+      "id": 4,
+      "name": "Sacred Well",
+      "keywords": [
+        "Building"
+      ],
+      "category": "building",
+      "negative": false,
+      "permanent": false,
+      "fame": 2,
+      "production": [
+        {
+          "id": "p1",
+          "options": [
+            [
+              "coin"
+            ]
+          ]
+        }
+      ],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "destroy",
+          "text": "Discover Shrine (82 / 83)."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "{destroy} Discover Shrine (82 / 83).",
+      "siteKeywords": [
+        "Discover",
+        "Destroy Effect"
+      ],
+      "helpText": "SPOILER: This card leads to 1 of 2 copies of <a href=\"/cards/FeudalKingdom/82\">this card</a>."
+    }
+  },
+  "description": "This card has a split upgrade path. You can either upgrade it into a Sacred Well, or cut it down with the effect and then build a lumberjack. You will never have both, and once you have chosen one, you cannot choose the other.",
+  "source": {
+    "url": "https://www.kingdomlegacygame.com/cards/FeudalKingdom/8",
+    "scrapedAt": "2026-10-02T13:02:19.410Z"
+  },
+  "confidence": 0.95,
+  "to_verify": [
+    "Felled Forest : la seconde amélioration (1 pièce, flèche verticale) ramène au stage 1 Forest, d'après la géométrie de la carte."
+  ]
+}

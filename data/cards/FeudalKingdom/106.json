@@ -1,0 +1,181 @@
+{
+  "id": "FeudalKingdom-106",
+  "expansion": "FeudalKingdom",
+  "serial": 106,
+  "origin": "official",
+  "images": {
+    "front": "FeudalKingdom/FK_Page_213.webp",
+    "back": "FeudalKingdom/FK_Page_214.webp"
+  },
+  "orientationToStage": {
+    "front-0": 1,
+    "front-180": 2,
+    "back-0": 4,
+    "back-180": 3
+  },
+  "isParchment": false,
+  "chooseSideOnDiscover": false,
+  "stages": {
+    "1": {
+      "id": 1,
+      "name": "Camelot",
+      "keywords": [
+        "Building"
+      ],
+      "category": "building",
+      "negative": false,
+      "permanent": false,
+      "fame": 15,
+      "production": [],
+      "upgrades": [
+        {
+          "id": "u1",
+          "cost": [
+            "wood",
+            "wood",
+            "stone",
+            "stone",
+            "stone",
+            "stone"
+          ],
+          "arrow": "rotate",
+          "toStage": 2
+        }
+      ],
+      "effects": [],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "",
+      "siteKeywords": []
+    },
+    "2": {
+      "id": 2,
+      "name": "Camelot",
+      "keywords": [
+        "Building"
+      ],
+      "category": "building",
+      "negative": false,
+      "permanent": false,
+      "fame": 20,
+      "production": [],
+      "upgrades": [
+        {
+          "id": "u1",
+          "cost": [
+            "metal",
+            "stone",
+            "metal",
+            "stone",
+            "wood",
+            "stone"
+          ],
+          "arrow": "flip",
+          "toStage": 3
+        }
+      ],
+      "effects": [],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "",
+      "siteKeywords": []
+    },
+    "3": {
+      "id": 3,
+      "name": "Camelot",
+      "keywords": [
+        "Building"
+      ],
+      "category": "building",
+      "negative": false,
+      "permanent": false,
+      "fame": 30,
+      "production": [],
+      "upgrades": [
+        {
+          "id": "u1",
+          "cost": [
+            "metal",
+            "metal",
+            "metal",
+            "stone",
+            "stone",
+            "stone",
+            "stone",
+            "stone",
+            "stone"
+          ],
+          "arrow": "rotate",
+          "toStage": 4
+        }
+      ],
+      "effects": [],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "",
+      "siteKeywords": []
+    },
+    "4": {
+      "id": 4,
+      "name": "Camelot",
+      "keywords": [
+        "Building"
+      ],
+      "category": "building",
+      "negative": false,
+      "permanent": false,
+      "fame": 40,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "triggeredOptional",
+          "text": "End of Turn: If you have no cards in your deck, mark 1 {mark}."
+        }
+      ],
+      "checkboxes": [
+        {
+          "id": "c1"
+        },
+        {
+          "id": "c2"
+        },
+        {
+          "id": "c3"
+        },
+        {
+          "id": "c4"
+        },
+        {
+          "id": "c5"
+        },
+        {
+          "id": "c6"
+        },
+        {
+          "id": "c7"
+        },
+        {
+          "id": "c8"
+        }
+      ],
+      "staysInPlay": false,
+      "fameVariable": true,
+      "text": "{triggeredOptional} End of Turn: If you have no cards in your deck, mark 1 {mark}. {asterisk}Worth +5{fame} per {mark}.",
+      "siteKeywords": [
+        "Triggered Optional Effect"
+      ],
+      "helpText": "Note that to use this cards Triggered Optional Effect, it must be in play at the end of a turn when there are no cards left in your deck (that is, mostly, at the end of a round). It needs to have the last say, so to speak. "
+    }
+  },
+  "description": "This card is the continued development of your City on a Hill, stage 4 of <a href=\"/cards/FeudalKingdom/105\">Small Hill Town</a>. As you well know, Camelot is famous, but it's [vp] can rise even higher, especially on stage 4!",
+  "source": {
+    "url": "https://www.kingdomlegacygame.com/cards/FeudalKingdom/106",
+    "scrapedAt": "2026-10-02T13:07:36.523Z"
+  },
+  "confidence": 0.9,
+  "to_verify": [
+    "Camelot stage 4 : 40 de gloire + 5 par case cochée (8 cases)."
+  ]
+}

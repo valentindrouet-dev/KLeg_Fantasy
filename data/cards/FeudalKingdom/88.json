@@ -1,0 +1,173 @@
+{
+  "id": "FeudalKingdom-088",
+  "expansion": "FeudalKingdom",
+  "serial": 88,
+  "origin": "official",
+  "images": {
+    "front": "FeudalKingdom/FK_Page_177.webp",
+    "back": "FeudalKingdom/FK_Page_178.webp"
+  },
+  "orientationToStage": {
+    "front-0": 1,
+    "front-180": null,
+    "back-0": null,
+    "back-180": null
+  },
+  "isParchment": false,
+  "chooseSideOnDiscover": false,
+  "stages": {
+    "1": {
+      "id": 1,
+      "name": "A Perfect Tower",
+      "keywords": [],
+      "category": "none",
+      "negative": false,
+      "permanent": true,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "time",
+          "text": "Spend the {stone} below to mark 1 {mark} from left to right."
+        }
+      ],
+      "checkboxes": [
+        {
+          "id": "c1",
+          "cost": [
+            "stone"
+          ],
+          "fame": 3
+        },
+        {
+          "id": "c2",
+          "cost": [
+            "stone",
+            "stone"
+          ],
+          "fame": 6
+        },
+        {
+          "id": "c3",
+          "cost": [
+            "stone",
+            "stone",
+            "stone"
+          ],
+          "fame": 10
+        },
+        {
+          "id": "c4",
+          "cost": [
+            "stone",
+            "stone",
+            "stone",
+            "stone"
+          ],
+          "fame": 15
+        },
+        {
+          "id": "c5",
+          "cost": [
+            "stone",
+            "stone",
+            "stone",
+            "stone",
+            "stone"
+          ],
+          "fame": 22
+        },
+        {
+          "id": "c6",
+          "cost": [
+            "stone",
+            "stone",
+            "stone",
+            "stone",
+            "stone",
+            "stone"
+          ],
+          "fame": 30
+        },
+        {
+          "id": "c7",
+          "cost": [
+            "stone",
+            "stone",
+            "stone",
+            "stone",
+            "stone",
+            "stone",
+            "stone"
+          ],
+          "fame": 38
+        },
+        {
+          "id": "c8",
+          "cost": [
+            "stone",
+            "stone",
+            "stone",
+            "stone",
+            "stone",
+            "stone",
+            "stone",
+            "stone"
+          ],
+          "fame": 48
+        },
+        {
+          "id": "c9",
+          "cost": [
+            "stone",
+            "stone",
+            "stone",
+            "stone",
+            "stone",
+            "stone",
+            "stone",
+            "stone",
+            "stone"
+          ],
+          "fame": 60
+        },
+        {
+          "id": "c10",
+          "cost": [
+            "stone",
+            "stone",
+            "stone",
+            "stone",
+            "stone",
+            "stone",
+            "stone",
+            "stone",
+            "stone",
+            "stone"
+          ],
+          "fame": 75
+        }
+      ],
+      "staysInPlay": false,
+      "fameVariable": true,
+      "flavor": "But what if the perfect tower would be infinitely tall? So be it!",
+      "text": "This card is permanent. {time} Spend the {stone} below to mark 1 {mark} from left to right. This card is worth the highest marked {fame}.",
+      "siteKeywords": [
+        "Permanent",
+        "Time Effect"
+      ]
+    }
+  },
+  "description": "This is a card made accessible by the <a href=\"/cards/FeudalKingdom/43\">Mason</a>. This is a <i><b>track</b></i> card, letting you spend your [stone] to gain fame [vp]. End your turn by spending an increasing amount of [stone] to cross out the boxes from left to right. You must take them in order, and only one per turn (unless you use an effect that prevents your turn from ending). The first one requires 1 [stone], the next requires 2, and so on.",
+  "source": {
+    "url": "https://www.kingdomlegacygame.com/cards/FeudalKingdom/88",
+    "scrapedAt": "2026-10-02T13:06:37.014Z"
+  },
+  "confidence": 0.85,
+  "to_verify": [
+    "Carte de piste : la gloire vaut la plus haute case cochée (fameVariable) ; coûts et gloire de chaque case lus sur l'image.",
+    "Le verso est le dos de carte générique : aucun stage."
+  ]
+}

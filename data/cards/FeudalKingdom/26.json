@@ -1,0 +1,340 @@
+{
+  "id": "FeudalKingdom-026",
+  "expansion": "FeudalKingdom",
+  "serial": 26,
+  "origin": "official",
+  "images": {
+    "front": "FeudalKingdom/FK_Page_053.webp",
+    "back": "FeudalKingdom/FK_Page_054.webp"
+  },
+  "orientationToStage": {
+    "front-0": 1,
+    "front-180": null,
+    "back-0": 4,
+    "back-180": null
+  },
+  "isParchment": false,
+  "chooseSideOnDiscover": false,
+  "stages": {
+    "1": {
+      "id": 1,
+      "name": "Treasury",
+      "keywords": [],
+      "category": "none",
+      "negative": false,
+      "permanent": true,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "time",
+          "text": "Spend the {coin} below to fill up your treasury: mark 1 {mark} from left to right."
+        }
+      ],
+      "checkboxes": [
+        {
+          "id": "c1",
+          "cost": [
+            "coin"
+          ],
+          "fame": 1
+        },
+        {
+          "id": "c2",
+          "cost": [
+            "coin",
+            "coin"
+          ],
+          "fame": 2
+        },
+        {
+          "id": "c3",
+          "cost": [
+            "coin",
+            "coin",
+            "coin"
+          ],
+          "fame": 3
+        },
+        {
+          "id": "c4",
+          "cost": [
+            "coin",
+            "coin",
+            "coin",
+            "coin"
+          ],
+          "fame": 5
+        },
+        {
+          "id": "c5",
+          "cost": [
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin"
+          ],
+          "fame": 7
+        },
+        {
+          "id": "c6",
+          "cost": [
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin"
+          ],
+          "fame": 10
+        },
+        {
+          "id": "c7",
+          "cost": [
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin"
+          ],
+          "fame": 14
+        },
+        {
+          "id": "c8",
+          "cost": [
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin"
+          ],
+          "fame": 19
+        },
+        {
+          "id": "c9",
+          "cost": [
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin"
+          ],
+          "fame": 25
+        },
+        {
+          "id": "c10",
+          "cost": [
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin"
+          ],
+          "fame": 32
+        },
+        {
+          "id": "c11",
+          "cost": [
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin"
+          ],
+          "fame": 40
+        },
+        {
+          "id": "c12",
+          "cost": [
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin"
+          ],
+          "text": "{flip}"
+        }
+      ],
+      "staysInPlay": false,
+      "fameVariable": true,
+      "flavor": "Store up those riches, you never know when you might need them!",
+      "text": "This card is permanent. {time} Spend the {coin} below to fill up your treasury: mark 1 {mark} from left to right. This card is worth the highest marked {fame}.",
+      "siteKeywords": [
+        "Permanent",
+        "Time Effect"
+      ]
+    },
+    "4": {
+      "id": 4,
+      "name": "Extended Treasury",
+      "keywords": [],
+      "category": "none",
+      "negative": false,
+      "permanent": true,
+      "fame": 50,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "time",
+          "text": "Spend the {coin} below to fill up your treasury: mark 1 {mark} from left to right."
+        }
+      ],
+      "checkboxes": [
+        {
+          "id": "c1",
+          "cost": [
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin"
+          ],
+          "fame": 10
+        },
+        {
+          "id": "c2",
+          "cost": [
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin"
+          ],
+          "fame": 20
+        },
+        {
+          "id": "c3",
+          "cost": [
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin"
+          ],
+          "fame": 30
+        },
+        {
+          "id": "c4",
+          "cost": [
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin"
+          ],
+          "fame": 40
+        },
+        {
+          "id": "c5",
+          "cost": [
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin"
+          ],
+          "fame": 50
+        }
+      ],
+      "staysInPlay": false,
+      "fameVariable": true,
+      "flavor": "I want to be unreasonably rich and put King Midas to shame.",
+      "text": "This card is permanent. {time} Spend the {coin} below to fill up your treasury: mark 1 {mark} from left to right. This card is worth 50{fame} + the highest marked {fame}.",
+      "siteKeywords": [
+        "Permanent",
+        "Time Effect"
+      ]
+    }
+  },
+  "description": "This is a track card, letting you spend your gold to gain fame. End your turn by spending an increasing amount of gold to cross out the boxes from left to right. You must take them in order, and only one per turn (unless you use an effect that prevents your turn from ending). The first one requires 1 gold, the next requires 2, and so on. When you are done with the first side of the card, it is automatically flipped over to its reverse side.",
+  "source": {
+    "url": "https://www.kingdomlegacygame.com/cards/FeudalKingdom/26",
+    "scrapedAt": "2026-10-02T13:03:15.554Z"
+  },
+  "confidence": 0.85,
+  "to_verify": [
+    "Carte de piste : la gloire vaut la plus haute case cochée (fameVariable) ; coûts et gloire de chaque case lus sur l'image."
+  ]
+}

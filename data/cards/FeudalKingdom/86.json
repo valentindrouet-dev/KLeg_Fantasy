@@ -1,0 +1,83 @@
+{
+  "id": "FeudalKingdom-086",
+  "expansion": "FeudalKingdom",
+  "serial": 86,
+  "origin": "official",
+  "images": {
+    "front": "FeudalKingdom/FK_Page_173.webp",
+    "back": "FeudalKingdom/FK_Page_174.webp"
+  },
+  "orientationToStage": {
+    "front-0": 1,
+    "front-180": null,
+    "back-0": 4,
+    "back-180": null
+  },
+  "isParchment": false,
+  "chooseSideOnDiscover": false,
+  "stages": {
+    "1": {
+      "id": 1,
+      "name": "Dubbing",
+      "keywords": [
+        "Event"
+      ],
+      "category": "other",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "triggeredForced",
+          "text": "End of Round: Add sticker 1 & 5 & 11 to 1 person. Then {flip}."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": true,
+      "text": "{passive} Stays in play. {triggeredForced} End of Round: Add sticker 1 & 5 & 11 to 1 person. Then {flip}.",
+      "siteKeywords": [
+        "End of Round",
+        "Stays in play",
+        "Forced Triggered Effect"
+      ]
+    },
+    "4": {
+      "id": 4,
+      "name": "Renovation",
+      "keywords": [
+        "Event"
+      ],
+      "category": "other",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "triggeredForced",
+          "text": "End of Round: Add sticker 2 / 3 and 4 / 6 to 1 building. Then destroy this."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": true,
+      "text": "{passive} Stays in play. {triggeredForced} End of Round: Add sticker 2 / 3 and 4 / 6 to 1 building. Then destroy this.",
+      "siteKeywords": [
+        "Stays in play",
+        "Forced Triggered Effect",
+        "End of Round"
+      ]
+    }
+  },
+  "description": "This is a card made accessible by <a href=\"/cards/FeudalKingdom/27\">Export</a>. This card represents progress in your kingdom. A person will become a knight, and a building will be remodeled into something better.",
+  "source": {
+    "url": "https://www.kingdomlegacygame.com/cards/FeudalKingdom/86",
+    "scrapedAt": "2026-10-02T13:06:30.408Z"
+  },
+  "confidence": 0.95,
+  "to_verify": []
+}

@@ -1,0 +1,80 @@
+{
+  "id": "FeudalKingdom-080",
+  "expansion": "FeudalKingdom",
+  "serial": 80,
+  "origin": "official",
+  "images": {
+    "front": "FeudalKingdom/FK_Page_161.webp",
+    "back": "FeudalKingdom/FK_Page_162.webp"
+  },
+  "orientationToStage": {
+    "front-0": 1,
+    "front-180": null,
+    "back-0": 4,
+    "back-180": null
+  },
+  "isParchment": false,
+  "chooseSideOnDiscover": false,
+  "stages": {
+    "1": {
+      "id": 1,
+      "name": "Cooperation",
+      "keywords": [
+        "Event"
+      ],
+      "category": "other",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "activated",
+          "text": "Discard 2 persons to gain any 3 resources, then {flip}."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "{activated} Discard 2 persons to gain any 3 resources, then {flip}.",
+      "siteKeywords": [
+        "Activated Effect"
+      ]
+    },
+    "4": {
+      "id": 4,
+      "name": "Favor",
+      "keywords": [
+        "Event"
+      ],
+      "category": "other",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "activated",
+          "text": "Gain any 1 resource, then {flip}."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": true,
+      "text": "{passive} Stays in play. {activated} Gain any 1 resource, then {flip}.",
+      "siteKeywords": [
+        "Stays in play",
+        "Activated Effect"
+      ]
+    }
+  },
+  "description": "This is a card made accessible by <a href=\"/cards/FeudalKingdom/55\">Lord Aethan</a>.",
+  "source": {
+    "url": "https://www.kingdomlegacygame.com/cards/FeudalKingdom/80",
+    "scrapedAt": "2026-10-02T13:06:10.607Z"
+  },
+  "confidence": 0.95,
+  "to_verify": []
+}

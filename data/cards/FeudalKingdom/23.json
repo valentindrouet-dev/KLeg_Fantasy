@@ -1,0 +1,67 @@
+{
+  "id": "FeudalKingdom-023",
+  "expansion": "FeudalKingdom",
+  "serial": 23,
+  "origin": "official",
+  "images": {
+    "front": "FeudalKingdom/FK_Page_047.webp",
+    "back": "FeudalKingdom/FK_Page_048.webp"
+  },
+  "orientationToStage": {
+    "front-0": 1,
+    "front-180": null,
+    "back-0": 4,
+    "back-180": null
+  },
+  "isParchment": true,
+  "chooseSideOnDiscover": false,
+  "stages": {
+    "1": {
+      "id": 1,
+      "name": "STOP!",
+      "keywords": [],
+      "category": "none",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "triggeredForced",
+          "text": "Now that you have got the hang of the game, you may reset to start again if you like to give it your best shot. If you continue, you will discover 4 cards, cards 24-27. Look at them now and THEN decide if you want to restart or continue."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "STOP! Now that you have got the hang of the game, you may reset to start again if you like to give it your best shot. If you continue, you will discover 4 cards, cards 24-27. Look at them now and THEN decide if you want to restart or continue. After this card comes the legacy part of the game, where some cards will permanently change over the course of the game. You will not be able to reset the game once you continue down this road. Rule clarifications on the back ({flip}).",
+      "siteKeywords": []
+    },
+    "4": {
+      "id": 4,
+      "name": "",
+      "keywords": [],
+      "category": "none",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "Cards 25, 26, and 27 are permanent cards, meaning they are never shuffled into your deck and cannot be discarded. They are always visible and active, but are not counted as \"in play\". The Army and Treasury are track cards. They let you spend your turn ({time}) and resources ({sword}/{coin}) to gain fame {fame}. Export is a tally card. It doesn't end your turn ({passive}) and lets you spend trade goods ({tradeGood}) to gain stickers, new cards, and other cool effects. You will not be able to complete all tracks before the game ends. Try to get as far as possible! We recommend reading through the golden rules again to avoid mistakes.",
+      "siteKeywords": []
+    }
+  },
+  "description": "This card denotes the shift from a regular game to a legacy game where components will change permanently based on your decisions. Follow the instructions, looking at the next 4 cards to see what is coming. Then you may choose to either reset the game and start over, or head into the legacy adventure by immediately discovering cards 24-27. This is a parchment card. Follow its instructions, and when you are done with it, destroy it. For all intents and purposes, this is not considered a card at all. Especially not when you have destroyed it.",
+  "source": {
+    "url": "https://www.kingdomlegacygame.com/cards/FeudalKingdom/23",
+    "scrapedAt": "2026-10-02T12:30:27.059Z"
+  },
+  "confidence": 0.9,
+  "to_verify": [
+    "Instructions de parchemin : classées triggeredForced (à appliquer à la découverte, puis détruire la carte) ; le site ne donne pas de type d'effet."
+  ]
+}

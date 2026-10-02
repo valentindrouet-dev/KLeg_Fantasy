@@ -1,0 +1,125 @@
+{
+  "id": "FeudalKingdom-134",
+  "expansion": "FeudalKingdom",
+  "serial": 134,
+  "origin": "official",
+  "images": {
+    "front": "FeudalKingdom/FK_Page_269.webp",
+    "back": "FeudalKingdom/FK_Page_270.webp"
+  },
+  "orientationToStage": {
+    "front-0": 1,
+    "front-180": null,
+    "back-0": 4,
+    "back-180": null
+  },
+  "isParchment": false,
+  "chooseSideOnDiscover": false,
+  "stages": {
+    "1": {
+      "id": 1,
+      "name": "Handsome Rival",
+      "keywords": [
+        "Person"
+      ],
+      "category": "person",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "passive",
+          "text": "Cannot be destroyed unless Lord Nimrod has been destroyed."
+        },
+        {
+          "id": "e2",
+          "type": "activated",
+          "text": "Discard Lord Nimrod and spend the resources for 1 box below to mark {mark} it. When complete, {flip}."
+        }
+      ],
+      "checkboxes": [
+        {
+          "id": "c1",
+          "cost": [
+            "coin",
+            "coin",
+            "coin",
+            "coin"
+          ]
+        },
+        {
+          "id": "c2",
+          "cost": [
+            "sword",
+            "sword"
+          ]
+        },
+        {
+          "id": "c3",
+          "cost": [
+            "sword",
+            "sword",
+            "sword"
+          ]
+        },
+        {
+          "id": "c4",
+          "cost": [
+            "tradeGood",
+            "tradeGood",
+            "tradeGood"
+          ]
+        }
+      ],
+      "staysInPlay": false,
+      "fameVariable": true,
+      "text": "{passive} Cannot be destroyed unless Lord Nimrod has been destroyed. {activated} Discard Lord Nimrod and spend the resources for 1 box below to mark {mark} it. When complete, {flip}. {asterisk}Worth -5{fame} for each unmarked box.",
+      "siteKeywords": [
+        "Passive Effect",
+        "Activated Effect"
+      ],
+      "helpText": "This card cannot be destroyed in any way as long as the Passive Effect remains or unless Lord Nimrod has been destroyed. In order to mark [mark] the spaces, you use the Activated Effect: Discard Lord Nimrod and pay the corresponding resources for 1 box. Note that Lord Nimrod cannot do anything else, like producing or using any of his effects, when used this way. This card is worth -5 [vp] for each unmarked box."
+    },
+    "4": {
+      "id": 4,
+      "name": "Noble Ally",
+      "keywords": [
+        "Person"
+      ],
+      "category": "person",
+      "negative": false,
+      "permanent": false,
+      "fame": 6,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "activated",
+          "text": "Choose a person in play and gain its production as resources."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "{activated} Choose a person in play and gain its production as resources.",
+      "siteKeywords": [
+        "Activated Effect"
+      ],
+      "helpText": "This card's Activated Effect lets you choose a person in play and gain its production as resources. Note that this only applies to production, not to any other way that person may gain resources (like Activated Effects). "
+    }
+  },
+  "description": "This is a card made accessible by <a href=\"/cards/FeudalKingdom/55\">Lord Nimrod.</a> This rivalry needs to be settled by Nimrod himself! Nimrod has to make a better impression than him 4 times to make it final. If he doesn't, this man will continue to detract from your fame. But if he does, you have gained a valuable friend.",
+  "source": {
+    "url": "https://www.kingdomlegacygame.com/cards/FeudalKingdom/134",
+    "scrapedAt": "2026-10-02T13:09:09.069Z"
+  },
+  "confidence": 0.85,
+  "to_verify": [
+    "Handsome Rival : 4 cases avec coûts lus comme 4 or, 2 épées, 3 épées, 3 marchandises (petites icônes) : à vérifier.",
+    "Handsome Rival : indestructible sous condition (tant que Lord Nimrod n'est pas détruit) : effet passif à scripter, cannotBeDestroyed non posé.",
+    "Gloire variable : -5 par case non cochée."
+  ]
+}

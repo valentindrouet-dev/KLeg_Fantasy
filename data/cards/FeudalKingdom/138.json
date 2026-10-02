@@ -1,0 +1,168 @@
+{
+  "id": "FeudalKingdom-138",
+  "expansion": "FeudalKingdom",
+  "serial": 138,
+  "origin": "official",
+  "images": {
+    "front": "FeudalKingdom/FK_Page_277.webp",
+    "back": "FeudalKingdom/FK_Page_278.webp"
+  },
+  "orientationToStage": {
+    "front-0": 1,
+    "front-180": 2,
+    "back-0": 4,
+    "back-180": 3
+  },
+  "isParchment": false,
+  "chooseSideOnDiscover": false,
+  "stages": {
+    "1": {
+      "id": 1,
+      "name": "Border Dispute (expansion)",
+      "keywords": [
+        "Event"
+      ],
+      "category": "other",
+      "negative": false,
+      "permanent": true,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "triggeredForced",
+          "text": "Play 1 round where all lands stay in play. Then {rotate}."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "Play 1 round where all lands stay in play. Then {rotate}.",
+      "siteKeywords": [
+        "Permanent",
+        "Forced Triggered Effect"
+      ],
+      "helpText": "This round, this card has the Forced Triggered Effect: At the end of turn, make all lands (green banner) stay in play. At the end of round, rotate this card."
+    },
+    "2": {
+      "id": 2,
+      "name": "Espionage",
+      "keywords": [
+        "Event"
+      ],
+      "category": "other",
+      "negative": false,
+      "permanent": true,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "triggeredForced",
+          "text": "When a person is played, either mark 1 {mark} or discard 2 friendly cards. If complete, discard all cards in your deck."
+        }
+      ],
+      "checkboxes": [
+        {
+          "id": "c1"
+        },
+        {
+          "id": "c2"
+        },
+        {
+          "id": "c3"
+        },
+        {
+          "id": "c4"
+        },
+        {
+          "id": "c5"
+        },
+        {
+          "id": "c6"
+        }
+      ],
+      "staysInPlay": false,
+      "text": "Play 1 round. Then {flip}. {triggeredForced} When a person is played, either mark 1 {mark} or discard 2 friendly cards. If complete, discard all cards in your deck.",
+      "siteKeywords": [
+        "Permanent",
+        "Forced Triggered Effect"
+      ],
+      "helpText": "This round, whenever a person (yellow banner) enters play from anywhere, you must mark [mark] in the track or discard 2 friendly cards. If and when the track is full, you immediately put the remaining cards in your deck in your discard pile. At the end of round, flip this card."
+    },
+    "3": {
+      "id": 3,
+      "name": "Attack",
+      "keywords": [
+        "Event"
+      ],
+      "category": "other",
+      "negative": false,
+      "permanent": true,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "triggeredForced",
+          "text": "End of Turn: If you have no {sword}, cross out 1 production on 1 card in play."
+        },
+        {
+          "id": "e2",
+          "type": "triggeredForced",
+          "text": "End of Round: Add any resource sticker (1-6) to 1 friendly card, then {rotate}."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "Play 1 round. {triggeredForced} End of Turn: If you have no {sword}, cross out 1 production on 1 card in play. {triggeredForced} End of Round: Add any resource sticker (1-6) to 1 friendly card, then {rotate}.",
+      "siteKeywords": [
+        "Permanent",
+        "Forced Triggered Effect"
+      ],
+      "helpText": "This round, at the end of each turn, you must cross out 1 production on 1 card in play unless you have at least 1 [sword] in play. Note that you have to produce the [sword] during your turn after you played your last card in order to not lose it. At the end of round, you must add any resource sticker (1-6) to any card. At the end of round, rotate this card"
+    },
+    "4": {
+      "id": 4,
+      "name": "Resistance",
+      "keywords": [
+        "Event"
+      ],
+      "category": "other",
+      "negative": false,
+      "permanent": true,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "passive",
+          "text": "Play 1 round where you can spend any amount of {sword} and keep track of how many you have spent. After the round, write the amount (max 100) in sticker 16 and add that sticker to 1 land. Then destroy this."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "Play 1 round where you can spend any amount of {sword} and keep track of how many you have spent. After the round, write the amount (max 100) in sticker 16 and add that sticker to 1 land. Then destroy this.",
+      "siteKeywords": [
+        "Passive Effect",
+        "Permanent"
+      ],
+      "helpText": "This round, this card is a tally card with a Passive Effect: keep track of the amount of [sword] you spend here. \n\nAt the end of round, write the amount of [sword] spent here in sticker 16 and add it to 1 land card (green banner). Then destroy this card, add sticker 13k to your box's score path and add your new score next to it. The expansion is over and you may choose a new one to play."
+    }
+  },
+  "description": "This is one of the 3 built-in expansions for Feudal Kingdom.  You may discover it between games to start the expansion. Before playing, purge 1 permanent card and perform a purge 12. You do not discover the first 2 cards of your deck when playing a built-in expansion. Instead, this permanent card will guide you through 4 rounds of play, with different effects on the different sides of the card.  After 4 rounds, add sticker 13k to your box's score path and write your new score next to it.\n\nThis expansion is an escalating border dispute with a neighboring kingdom. You're going to need lots of [sword]!",
+  "source": {
+    "url": "https://www.kingdomlegacygame.com/cards/FeudalKingdom/138",
+    "scrapedAt": "2026-10-02T13:09:18.941Z"
+  },
+  "confidence": 0.85,
+  "to_verify": [
+    "Mini-extension : les changements de stage (« Then {rotate}/{flip} ») sont des effets de fin de manche, pas des améliorations.",
+    "Espionage : 6 cases (2 rangées de 3) comptées sur l'image.",
+    "Resistance : compteur libre d'épées dépensées (lignes de pointage), non modélisé par des cases.",
+    "Resistance utilise le sticker 16 pour une gloire sur un terrain, alors que la spec réserve le sticker 16 à la gloire purgée : à clarifier avec le catalogue de stickers."
+  ]
+}

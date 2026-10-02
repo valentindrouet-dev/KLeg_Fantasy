@@ -1,0 +1,181 @@
+{
+  "id": "FeudalKingdom-010",
+  "expansion": "FeudalKingdom",
+  "serial": 10,
+  "origin": "official",
+  "images": {
+    "front": "FeudalKingdom/FK_Page_021.webp",
+    "back": "FeudalKingdom/FK_Page_022.webp"
+  },
+  "orientationToStage": {
+    "front-0": 1,
+    "front-180": 2,
+    "back-0": 4,
+    "back-180": 3
+  },
+  "isParchment": false,
+  "chooseSideOnDiscover": false,
+  "stages": {
+    "1": {
+      "id": 1,
+      "name": "Trader",
+      "keywords": [
+        "Person"
+      ],
+      "category": "person",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [],
+      "upgrades": [
+        {
+          "id": "u1",
+          "cost": [
+            "coin",
+            "coin",
+            "coin"
+          ],
+          "arrow": "rotate",
+          "toStage": 2
+        }
+      ],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "activated",
+          "text": "Spend {coin} to gain {wood}."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "{activated} Spend {coin} to gain {wood}.",
+      "siteKeywords": [
+        "Activated Effect"
+      ],
+      "helpText": "This cards Activated Effect lets you discard this card and spend 1 gold [money] to gain 1 wood [wood]."
+    },
+    "2": {
+      "id": 2,
+      "name": "Bazaar",
+      "keywords": [
+        "Building"
+      ],
+      "category": "building",
+      "negative": false,
+      "permanent": false,
+      "fame": 1,
+      "production": [],
+      "upgrades": [
+        {
+          "id": "u1",
+          "cost": [
+            "coin",
+            "coin",
+            "coin"
+          ],
+          "arrow": "flip",
+          "toStage": 3
+        }
+      ],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "activated",
+          "text": "Spend {coin} to gain {wood}/{stone}."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "{activated} Spend {coin} to gain {wood}/{stone}.",
+      "siteKeywords": [
+        "Activated Effect"
+      ],
+      "helpText": "This cards Activated Effect lets you discard this card and spend 1 gold [money] to gain either 1 wood [wood] or 1 stone [stone]."
+    },
+    "3": {
+      "id": 3,
+      "name": "Market",
+      "keywords": [
+        "Building"
+      ],
+      "category": "building",
+      "negative": false,
+      "permanent": false,
+      "fame": 3,
+      "production": [],
+      "upgrades": [
+        {
+          "id": "u1",
+          "cost": [
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin"
+          ],
+          "arrow": "rotate",
+          "toStage": 4
+        }
+      ],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "activated",
+          "text": "Spend {coin} to gain {wood}/{stone}/{metal}."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "{activated} Spend {coin} to gain {wood}/{stone}/{metal}.",
+      "siteKeywords": [
+        "Activated Effect"
+      ],
+      "helpText": "This cards Activated Effect lets you discard this card and spend 1 gold [money] to gain either 1 wood [wood] or 1 stone [stone] or 1 metal [steel]."
+    },
+    "4": {
+      "id": 4,
+      "name": "Festival",
+      "keywords": [
+        "Event"
+      ],
+      "category": "other",
+      "negative": false,
+      "permanent": false,
+      "fame": 4,
+      "production": [
+        {
+          "id": "p1",
+          "options": [
+            [
+              "coin"
+            ],
+            [
+              "wood"
+            ],
+            [
+              "stone"
+            ],
+            [
+              "metal"
+            ]
+          ]
+        }
+      ],
+      "upgrades": [],
+      "effects": [],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "",
+      "siteKeywords": [
+        "Variable Production"
+      ]
+    }
+  },
+  "description": "As you upgrade this card, it will get more efficient at helping you trade [money] for other resources, until it starts to produce its own resources on stage 4.",
+  "source": {
+    "url": "https://www.kingdomlegacygame.com/cards/FeudalKingdom/10",
+    "scrapedAt": "2026-10-02T13:02:26.014Z"
+  },
+  "confidence": 0.95,
+  "to_verify": []
+}

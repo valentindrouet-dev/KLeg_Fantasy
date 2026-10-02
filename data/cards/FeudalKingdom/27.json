@@ -1,0 +1,167 @@
+{
+  "id": "FeudalKingdom-027",
+  "expansion": "FeudalKingdom",
+  "serial": 27,
+  "origin": "official",
+  "images": {
+    "front": "FeudalKingdom/FK_Page_055.webp",
+    "back": "FeudalKingdom/FK_Page_056.webp"
+  },
+  "orientationToStage": {
+    "front-0": 1,
+    "front-180": null,
+    "back-0": 4,
+    "back-180": null
+  },
+  "isParchment": false,
+  "chooseSideOnDiscover": false,
+  "stages": {
+    "1": {
+      "id": 1,
+      "name": "Export",
+      "keywords": [],
+      "category": "none",
+      "negative": false,
+      "permanent": true,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "passive",
+          "text": "Spend {tradeGood} here and keep track of how much you have spent."
+        },
+        {
+          "id": "e2",
+          "type": "triggeredOptional",
+          "text": "Between rounds, you may use effects you have reached enough {tradeGood} for (mark {mark})."
+        }
+      ],
+      "checkboxes": [
+        {
+          "id": "c1",
+          "threshold": 10,
+          "text": "Sticker 1 / 2 / 3 on 1 land."
+        },
+        {
+          "id": "c2",
+          "threshold": 20,
+          "text": "Sticker 7 on 1 person."
+        },
+        {
+          "id": "c3",
+          "threshold": 30,
+          "text": "Discover Dubbing (86)."
+        },
+        {
+          "id": "c4",
+          "threshold": 40,
+          "text": "Sticker 4 / 5 / 6 on 1 building."
+        },
+        {
+          "id": "c5",
+          "threshold": 55,
+          "text": "Sticker 2 / 3 / 4 / 5 on 1 friendly card."
+        },
+        {
+          "id": "c6",
+          "threshold": 75,
+          "text": "Sticker 10 on any card."
+        },
+        {
+          "id": "c7",
+          "threshold": 100,
+          "text": "{flip}"
+        }
+      ],
+      "staysInPlay": false,
+      "flavor": "Make yourself invaluable for your neighbours, it will surely pay off.",
+      "text": "This card is permanent. {passive} Spend {tradeGood} here and keep track of how much you have spent. Between rounds, you may use effects you have reached enough {tradeGood} for (mark {mark}): 10: Sticker 1 / 2 / 3 on 1 land. 20: Sticker 7 on 1 person. 30: Discover Dubbing (86). 40: Sticker 4 / 5 / 6 on 1 building. 55: Sticker 2 / 3 / 4 / 5 on 1 friendly card. 75: Sticker 10 on any card. 100: {flip}.",
+      "siteKeywords": [
+        "Passive Effect",
+        "Permanent"
+      ],
+      "helpText": "<b><i>VERSION NOTE: Effect at 55 trade goods must be placed on a friendly card.</b></i><br>\nEffects that happen between rounds generally allow you to choose any card in your kingdom. In contrast, during the round you may generally only target cards in play, unless the effect states otherwise.<br>For these effects, you may choose any card in your kingdom.<br>\nSPOILER: This card lets you discover <a href=\"/cards/FeudalKingdom/86\">Dubbing</a>"
+    },
+    "4": {
+      "id": 4,
+      "name": "Mass Export",
+      "keywords": [],
+      "category": "none",
+      "negative": false,
+      "permanent": true,
+      "fame": 25,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "passive",
+          "text": "Spend {tradeGood} here and keep track of how much you have spent below."
+        },
+        {
+          "id": "e2",
+          "type": "triggeredOptional",
+          "text": "Between rounds, you may use (and {mark}) effects below you have reached enough {tradeGood} for."
+        }
+      ],
+      "checkboxes": [
+        {
+          "id": "c1",
+          "threshold": 25,
+          "text": "Sticker 8 on 2 different lands."
+        },
+        {
+          "id": "c2",
+          "threshold": 50,
+          "text": "Sticker 10 on 1 person."
+        },
+        {
+          "id": "c3",
+          "threshold": 75,
+          "text": "Discover Royal Visit (107)."
+        },
+        {
+          "id": "c4",
+          "threshold": 100,
+          "text": "Sticker 10 on 1 building."
+        },
+        {
+          "id": "c5",
+          "threshold": 150,
+          "text": "{mark} 1 other permanent card, gaining any effects."
+        },
+        {
+          "id": "c6",
+          "threshold": 200,
+          "text": "{mark} all other permanent cards you want."
+        },
+        {
+          "id": "c7",
+          "threshold": 250,
+          "text": "Discover Trade Relations (117)."
+        }
+      ],
+      "staysInPlay": false,
+      "text": "This card is permanent. {passive} Spend {tradeGood} here and keep track of how much you have spent below. Between rounds, you may use (and {mark}) effects below you have reached enough {tradeGood} for: 25: Sticker 8 on 2 different lands. 50: Sticker 10 on 1 person. 75: Discover Royal Visit (107). 100: Sticker 10 on 1 building. 150: {mark} 1 other permanent card, gaining any effects. 200: {mark} all other permanent cards you want. 250: Discover Trade Relations (117).",
+      "siteKeywords": [
+        "Passive Effect",
+        "Permanent"
+      ],
+      "helpText": "When you use the effects to mark permanent cards, you get whatever their normal benefits give. For example, if a permanent card says you may mark it to gain 5 trade goods, you would gain those trade goods even when you use this card's effect to mark it.<br>\nThe effects at 150 and 200 trade goods let you mark other permanent cards. This is not limited to track cards, but may be other permanent cards that have checkboxes to mark.<br>\nSPOILER: This card lets you discover <a href=\"/cards/FeudalKingdom/107\">Royal Visit</a> and <a href=\"/cards/FeudalKingdom/117\">Trade Relations</a>."
+    }
+  },
+  "description": "This is a tally card where you can spend trade goods to gain benefits.<br>Note that your turn doesn't end when you use this effect, in contrast to the other permanent cards The Armory and The Treasury. Simply put, whenever you gain trade goods, they can be used to mark this card.\n<br>Also note that this is the primary use of trade goods. When you have spent enough trade goods here, you can use the corresponding effects between 2 rounds.<br>\nFor example, if my round is over and I have spent 13 trade goods here, that would allow me to add sticker 1 or 2 or 3 to any 1 land in my kingdom. I then cross out that effect on this card and continue to work my way to the next effect. However, I don't <i>have</i> to use the effects right away, I can save them for a time between 2 rounds much later if that is more fitting.",
+  "source": {
+    "url": "https://www.kingdomlegacygame.com/cards/FeudalKingdom/27",
+    "scrapedAt": "2026-10-02T13:03:18.850Z"
+  },
+  "confidence": 0.85,
+  "to_verify": [
+    "Carte de compte : le total de marchandises dépensées est un compteur libre (lignes de pointage), non modélisé par des cases ; les cases portent les seuils.",
+    "Les effets « Between rounds » sont classés triggeredOptional d'après le texte (« you may ») ; le site n'indique que Passive Effect.",
+    "Mass Export cite « Royal Visit (107) » alors que la carte 70 s'appelle aussi Royal Visit : à recouper avec la carte 107.",
+    "Note de version du site (stage 1) : Effect at 55 trade goods must be placed on a friendly card."
+  ]
+}

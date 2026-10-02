@@ -1,0 +1,10 @@
+{
+  "resources": [
+    { "id": "coin", "label_fr": "Or", "label_en": "Gold", "siteTokens": ["money"] },
+    { "id": "wood", "label_fr": "Bois", "label_en": "Wood", "siteTokens": ["wood"] },
+    { "id": "stone", "label_fr": "Pierre", "label_en": "Stone", "siteTokens": [] },
+    { "id": "metal", "label_fr": "Métal", "label_en": "Metal", "siteTokens": [] },
+    { "id": "sword", "label_fr": "Épée", "label_en": "Sword", "siteTokens": [] },
+    { "id": "tradeGood", "label_fr": "Marchandise", "label_en": "Trade good", "siteTokens": [] }
+  ]
+}

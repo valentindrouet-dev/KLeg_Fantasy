@@ -1,0 +1,198 @@
+{
+  "id": "FeudalKingdom-124",
+  "expansion": "FeudalKingdom",
+  "serial": 124,
+  "origin": "official",
+  "images": {
+    "front": "FeudalKingdom/FK_Page_249.webp",
+    "back": "FeudalKingdom/FK_Page_250.webp"
+  },
+  "orientationToStage": {
+    "front-0": 1,
+    "front-180": 2,
+    "back-0": 4,
+    "back-180": 3
+  },
+  "isParchment": false,
+  "chooseSideOnDiscover": false,
+  "stages": {
+    "1": {
+      "id": 1,
+      "name": "Jewel Extraction",
+      "keywords": [
+        "Event"
+      ],
+      "category": "other",
+      "negative": false,
+      "permanent": false,
+      "fame": 15,
+      "production": [
+        {
+          "id": "p1",
+          "options": [
+            [
+              "stone",
+              "metal",
+              "metal",
+              "tradeGood",
+              "tradeGood"
+            ]
+          ]
+        }
+      ],
+      "upgrades": [
+        {
+          "id": "u1",
+          "cost": [
+            "wood",
+            "wood",
+            "metal",
+            "metal"
+          ],
+          "arrow": "rotate",
+          "toStage": 2
+        }
+      ],
+      "effects": [],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "",
+      "siteKeywords": []
+    },
+    "2": {
+      "id": 2,
+      "name": "Jewel Cutting",
+      "keywords": [
+        "Event"
+      ],
+      "category": "other",
+      "negative": false,
+      "permanent": false,
+      "fame": 18,
+      "production": [
+        {
+          "id": "p1",
+          "options": [
+            [
+              "metal",
+              "metal",
+              "tradeGood",
+              "tradeGood",
+              "tradeGood"
+            ]
+          ]
+        }
+      ],
+      "upgrades": [
+        {
+          "id": "u1",
+          "cost": [
+            "metal",
+            "wood",
+            "metal",
+            "wood",
+            "wood"
+          ],
+          "arrow": "flip",
+          "toStage": 3
+        }
+      ],
+      "effects": [],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "",
+      "siteKeywords": []
+    },
+    "3": {
+      "id": 3,
+      "name": "Jewel Polishing",
+      "keywords": [
+        "Event"
+      ],
+      "category": "other",
+      "negative": false,
+      "permanent": false,
+      "fame": 21,
+      "production": [
+        {
+          "id": "p1",
+          "options": [
+            [
+              "metal",
+              "metal",
+              "metal",
+              "tradeGood",
+              "tradeGood",
+              "tradeGood",
+              "tradeGood"
+            ]
+          ]
+        }
+      ],
+      "upgrades": [
+        {
+          "id": "u1",
+          "cost": [
+            "wood",
+            "wood",
+            "metal",
+            "metal",
+            "metal",
+            "metal"
+          ],
+          "arrow": "rotate",
+          "toStage": 4
+        }
+      ],
+      "effects": [],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "",
+      "siteKeywords": []
+    },
+    "4": {
+      "id": 4,
+      "name": "Jewel Exhibit",
+      "keywords": [
+        "Event"
+      ],
+      "category": "other",
+      "negative": false,
+      "permanent": false,
+      "fame": 25,
+      "production": [
+        {
+          "id": "p1",
+          "options": [
+            [
+              "metal",
+              "metal",
+              "metal",
+              "tradeGood",
+              "tradeGood",
+              "tradeGood",
+              "tradeGood",
+              "tradeGood",
+              "tradeGood"
+            ]
+          ]
+        }
+      ],
+      "upgrades": [],
+      "effects": [],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "",
+      "siteKeywords": []
+    }
+  },
+  "description": "This is a card made accessible by the <a href=\"/cards/FeudalKingdom/49\">Royal Architect</a>. To discover it, you must first discard her and destroy a Diamond Mine in play. This card will grow in [vp] and production of both [steel] and [tradegoods].",
+  "source": {
+    "url": "https://www.kingdomlegacygame.com/cards/FeudalKingdom/124",
+    "scrapedAt": "2026-10-02T13:08:36.022Z"
+  },
+  "confidence": 0.9,
+  "to_verify": [
+    "Productions à nombreuses icônes (jusqu'à 9) lues sur l'image : à vérifier."
+  ]
+}

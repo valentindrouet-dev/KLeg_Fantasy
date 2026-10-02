@@ -1,0 +1,105 @@
+{
+  "id": "FeudalKingdom-033",
+  "expansion": "FeudalKingdom",
+  "serial": 33,
+  "origin": "official",
+  "images": {
+    "front": "FeudalKingdom/FK_Page_067.webp",
+    "back": "FeudalKingdom/FK_Page_068.webp"
+  },
+  "orientationToStage": {
+    "front-0": 1,
+    "front-180": null,
+    "back-0": 4,
+    "back-180": null
+  },
+  "isParchment": false,
+  "chooseSideOnDiscover": false,
+  "stages": {
+    "1": {
+      "id": 1,
+      "name": "Engineer",
+      "keywords": [
+        "Person"
+      ],
+      "category": "person",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [],
+      "upgrades": [
+        {
+          "id": "u1",
+          "cost": [
+            "wood",
+            "metal",
+            "wood",
+            "metal"
+          ],
+          "arrow": "flip",
+          "toStage": 4
+        }
+      ],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "activated",
+          "text": "Destroy one of the following cards in play to discover an improved version of it; Lumberjack - discover card 100 Food Barns - discover card 101 Fishing Boat - discover card 102"
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "{activated} Destroy one of the following cards in play to discover an improved version of it; Lumberjack - discover card 100 Food Barns - discover card 101 Fishing Boat - discover card 102",
+      "siteKeywords": [
+        "Destroy Effect",
+        "Discover",
+        "Activated Effect"
+      ],
+      "helpText": "Destroy one of the mentioned cards to discover a better version of it.<br>\nSPOILER: This card lets you discover cards <a href=\"/cards/FeudalKingdom/100\">100</a>, <a href=\"/cards/FeudalKingdom/101\">101</a>, and <a href=\"/cards/FeudalKingdom/102\">102</a>."
+    },
+    "4": {
+      "id": 4,
+      "name": "Trebuchet",
+      "keywords": [
+        "Building"
+      ],
+      "category": "building",
+      "negative": false,
+      "permanent": false,
+      "fame": 1,
+      "production": [
+        {
+          "id": "p1",
+          "options": [
+            [
+              "sword"
+            ]
+          ]
+        }
+      ],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "destroy",
+          "text": "Defeat an enemy in play, discard pile, or permanent. Then mark the next {mark} on The Army / Grand Army."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "{destroy} Defeat an enemy in play, discard pile, or permanent. Then mark the next {mark} on The Army / Grand Army.",
+      "siteKeywords": [
+        "Destroy Effect",
+        "Defeat"
+      ],
+      "helpText": "You may destroy this card to defeat an enemy. You may only defeat enemies that define what \"defeat\" means, and defeating it follows the rules stated on that enemy. Most enemies are either turned or destroyed when defeated.<br>\nDon't forget to mark the next box on <a href=\"/cards/FeudalKingdom/25\">The Army</a> or <a href=\"/cards/FeudalKingdom/25#stage-4\">Grand Army</a> when you use this effect."
+    }
+  },
+  "description": "The Engineer is 1 of the 4 immigrants you may choose from when you reach campaign card 30. His strength is that he enhances some of the cards in your deck to more powerful variants. However, he doesn't offer any brand new cards, so your deck will not grow by choosing him. When he is done, he can be upgraded into a powerful Trebuchet.",
+  "source": {
+    "url": "https://www.kingdomlegacygame.com/cards/FeudalKingdom/33",
+    "scrapedAt": "2026-10-02T13:03:38.657Z"
+  },
+  "confidence": 0.95,
+  "to_verify": []
+}

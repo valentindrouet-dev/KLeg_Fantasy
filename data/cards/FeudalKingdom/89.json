@@ -1,0 +1,232 @@
+{
+  "id": "FeudalKingdom-089",
+  "expansion": "FeudalKingdom",
+  "serial": 89,
+  "origin": "official",
+  "images": {
+    "front": "FeudalKingdom/FK_Page_179.webp",
+    "back": "FeudalKingdom/FK_Page_180.webp"
+  },
+  "orientationToStage": {
+    "front-0": 1,
+    "front-180": 2,
+    "back-0": 4,
+    "back-180": 3
+  },
+  "isParchment": false,
+  "chooseSideOnDiscover": false,
+  "stages": {
+    "1": {
+      "id": 1,
+      "name": "Deep Pit",
+      "keywords": [
+        "Land"
+      ],
+      "category": "land",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [
+        {
+          "id": "p1",
+          "options": [
+            [
+              "stone"
+            ]
+          ]
+        }
+      ],
+      "upgrades": [
+        {
+          "id": "u1",
+          "cost": [
+            "wood",
+            "wood",
+            "wood",
+            "wood"
+          ],
+          "arrow": "flip",
+          "toStage": 4
+        },
+        {
+          "id": "u2",
+          "cost": [
+            "wood",
+            "stone"
+          ],
+          "arrow": "rotate",
+          "toStage": 2
+        }
+      ],
+      "effects": [],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "",
+      "siteKeywords": [],
+      "helpText": "This card has two upgrade possibilities. Look through the card's stages to make an informed decision!"
+    },
+    "2": {
+      "id": 2,
+      "name": "Town Well",
+      "keywords": [
+        "Land"
+      ],
+      "category": "land",
+      "negative": false,
+      "permanent": false,
+      "fame": 3,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "passive",
+          "text": "Buildings have +1{coin} production."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "{passive} Buildings have +1{coin} production.",
+      "siteKeywords": [
+        "Passive Effect"
+      ]
+    },
+    "3": {
+      "id": 3,
+      "name": "Prison",
+      "keywords": [
+        "Building"
+      ],
+      "category": "building",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [
+        {
+          "id": "p1",
+          "options": [
+            [
+              "sword"
+            ]
+          ]
+        }
+      ],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "activated",
+          "text": "Mark any 1 {mark} below to discard 1 enemy."
+        }
+      ],
+      "checkboxes": [
+        {
+          "id": "c1"
+        },
+        {
+          "id": "c2"
+        },
+        {
+          "id": "c3"
+        },
+        {
+          "id": "c4",
+          "gain": [
+            "sword"
+          ]
+        },
+        {
+          "id": "c5",
+          "gain": [
+            "sword"
+          ]
+        },
+        {
+          "id": "c6",
+          "gain": [
+            "coin"
+          ]
+        },
+        {
+          "id": "c7",
+          "gain": [
+            "coin",
+            "coin"
+          ]
+        },
+        {
+          "id": "c8",
+          "gain": [
+            "coin",
+            "coin",
+            "coin"
+          ]
+        }
+      ],
+      "staysInPlay": true,
+      "fameVariable": true,
+      "text": "{passive} Stays in play. {activated} Mark any 1 {mark} below to discard 1 enemy. {asterisk}Worth 2{fame} per {mark}.",
+      "siteKeywords": [
+        "Stays in play",
+        "Activated Effect"
+      ],
+      "helpText": "Note that if you use this cards Activated Effect, you cannot also produce with it."
+    },
+    "4": {
+      "id": 4,
+      "name": "Pit Settlement",
+      "keywords": [
+        "Building"
+      ],
+      "category": "building",
+      "negative": false,
+      "permanent": false,
+      "fame": 1,
+      "production": [
+        {
+          "id": "p1",
+          "options": [
+            [
+              "wood",
+              "stone"
+            ]
+          ]
+        }
+      ],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "activated",
+          "text": "Mark 1 {mark}. When complete, {rotate}."
+        }
+      ],
+      "checkboxes": [
+        {
+          "id": "c1"
+        },
+        {
+          "id": "c2"
+        },
+        {
+          "id": "c3"
+        }
+      ],
+      "staysInPlay": false,
+      "text": "{activated} Mark 1 {mark}. When complete, {rotate}.",
+      "siteKeywords": [
+        "Activated Effect"
+      ]
+    }
+  },
+  "description": "This is a card made accessible by the <a href=\"/cards/FeudalKingdom/43\">Mason</a>. You have to make a decision: either you quickly turn it into a Town Well, giving you extra [money] production, or you take the longer path of turning this into a high security Prison, for handling the unhandlebles you will surely encounter in time. ",
+  "source": {
+    "url": "https://www.kingdomlegacygame.com/cards/FeudalKingdom/89",
+    "scrapedAt": "2026-10-02T13:06:40.315Z"
+  },
+  "confidence": 0.85,
+  "to_verify": [
+    "Prison : 8 cases lues comme 3 vides, épée, épée, 1 or, 2 or, 3 or (petites icônes) : à vérifier.",
+    "Prison : gloire variable (ruban « * »), 2 par case cochée."
+  ]
+}

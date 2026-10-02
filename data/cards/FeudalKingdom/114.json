@@ -1,0 +1,57 @@
+{
+  "id": "FeudalKingdom-114",
+  "expansion": "FeudalKingdom",
+  "serial": 114,
+  "origin": "official",
+  "images": {
+    "front": "FeudalKingdom/FK_Page_229.webp",
+    "back": "FeudalKingdom/FK_Page_230.webp"
+  },
+  "orientationToStage": {
+    "front-0": 1,
+    "front-180": null,
+    "back-0": null,
+    "back-180": null
+  },
+  "isParchment": false,
+  "chooseSideOnDiscover": false,
+  "stages": {
+    "1": {
+      "id": 1,
+      "name": "Horse",
+      "keywords": [
+        "Livestock",
+        "Horse"
+      ],
+      "category": "livestock",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [
+        {
+          "id": "p1",
+          "options": [
+            [
+              "sword"
+            ]
+          ]
+        }
+      ],
+      "upgrades": [],
+      "effects": [],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "",
+      "siteKeywords": []
+    }
+  },
+  "description": "This is a card made accessible by stage 2 of the <a href=\"/cards/FeudalKingdom/112\">Stable</a>.",
+  "source": {
+    "url": "https://www.kingdomlegacygame.com/cards/FeudalKingdom/114",
+    "scrapedAt": "2026-10-02T13:08:02.941Z"
+  },
+  "confidence": 0.95,
+  "to_verify": [
+    "Le verso est le dos de carte générique : aucun stage."
+  ]
+}
