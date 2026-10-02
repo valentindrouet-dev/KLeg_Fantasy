@@ -1,0 +1,156 @@
+import {
+  orientationKey,
+  type CardTemplate,
+  type Orientation,
+  type ResourceId,
+  type Stage,
+  type StageId,
+} from "../data/schema";
+import {
+  ZONES,
+  type CardInstance,
+  type Catalog,
+  type Draft,
+  type GameState,
+  type InstanceId,
+  type ResourceCounts,
+  type Zone,
+} from "./types";
+
+// Accès et mutations élémentaires de l'état. Les mutations ne s'appliquent qu'à un brouillon
+// (copie faite par applyAction), jamais à un état reçu de l'extérieur.
+
+export function template(catalog: Catalog, templateId: string): CardTemplate {
+  const t = catalog.templates.get(templateId);
+  if (!t) throw new Error(`Carte inconnue : ${templateId}`);
+  return t;
+}
+
+export function instance(s: GameState, id: InstanceId): CardInstance {
+  const c = s.cards[id];
+  if (!c) throw new Error(`Instance inconnue : ${id}`);
+  return c;
+}
+
+export function stageIdAt(t: CardTemplate, o: Orientation): StageId | null {
+  return t.orientationToStage[orientationKey(o)];
+}
+
+/** Stage actif d'une carte (celui qui est lisible en haut). */
+export function activeStage(catalog: Catalog, s: GameState, id: InstanceId): Stage | null {
+  const c = instance(s, id);
+  const t = template(catalog, c.templateId);
+  const sid = stageIdAt(t, c.orientation);
+  return sid === null ? null : (t.stages[String(sid) as "1" | "2" | "3" | "4"] ?? null);
+}
+
+export function activeStageOrThrow(catalog: Catalog, s: GameState, id: InstanceId): Stage {
+  const st = activeStage(catalog, s, id);
+  if (!st) throw new Error(`Pas de stage actif pour ${id}`);
+  return st;
+}
+
+export function cardName(catalog: Catalog, s: GameState, id: InstanceId): string {
+  const st = activeStage(catalog, s, id);
+  const serial = instance(s, id).serial;
+  return st?.name ? `${st.name} (#${serial})` : `#${serial}`;
+}
+
+export function hasKeyword(catalog: Catalog, s: GameState, id: InstanceId, keyword: string): boolean {
+  const k = keyword.toLowerCase();
+  return activeStage(catalog, s, id)?.keywords.some((w) => w.toLowerCase() === k) ?? false;
+}
+
+/** Amie = non négative (spec 4.6 : purge, cibles « friendly »). */
+export function isFriendly(catalog: Catalog, s: GameState, id: InstanceId): boolean {
+  return !(activeStage(catalog, s, id)?.negative ?? false);
+}
+
+export function zoneOf(s: GameState, id: InstanceId): Zone {
+  for (const z of ZONES) if (s.zones[z].includes(id)) return z;
+  throw new Error(`Carte hors de toute zone : ${id}`);
+}
+
+export function removeFromZones(s: GameState, id: InstanceId): void {
+  for (const z of ZONES) {
+    const i = s.zones[z].indexOf(id);
+    if (i >= 0) s.zones[z].splice(i, 1);
+  }
+}
+
+/** Déplace une carte. Deck : `top` place la carte dessus. Défausse : toujours dessus. */
+export function moveTo(s: GameState, id: InstanceId, zone: Zone, position: "top" | "bottom" = "bottom"): void {
+  removeFromZones(s, id);
+  if (zone === "deck" && position === "top") s.zones.deck.unshift(id);
+  else s.zones[zone].push(id);
+}
+
+/** Défausse une carte ; une carte dont le stage actif est permanent rejoint les permanentes (spec 4.6). */
+export function discard(d: Draft, id: InstanceId): void {
+  const permanent = activeStage(d.catalog, d.s, id)?.permanent ?? false;
+  moveTo(d.s, id, permanent ? "permanent" : "discard");
+}
+
+export function destroy(d: Draft, id: InstanceId): void {
+  moveTo(d.s, id, "destroyed");
+}
+
+export function log(s: GameState, text: string): void {
+  s.log.push({ round: s.round, turn: s.turn, text });
+}
+
+// --- Ressources (spec 4.5) ---
+
+export function emptyResources(catalog: Catalog): ResourceCounts {
+  return Object.fromEntries(catalog.resources.map((r) => [r, 0]));
+}
+
+export function countIcons(icons: readonly ResourceId[]): ResourceCounts {
+  const out: ResourceCounts = {};
+  for (const r of icons) out[r] = (out[r] ?? 0) + 1;
+  return out;
+}
+
+export function canPay(s: GameState, cost: readonly ResourceId[]): boolean {
+  return missingFor(s, cost).length === 0;
+}
+
+/** Ressources qui manquent pour payer `cost` (une entrée par icône manquante). */
+export function missingFor(s: GameState, cost: readonly ResourceId[]): ResourceId[] {
+  const missing: ResourceId[] = [];
+  for (const [r, n] of Object.entries(countIcons(cost))) {
+    const have = s.resources[r] ?? 0;
+    for (let i = have; i < n; i++) missing.push(r);
+  }
+  return missing;
+}
+
+export function pay(s: GameState, cost: readonly ResourceId[]): void {
+  if (!canPay(s, cost)) throw new Error(`Ressources insuffisantes pour ${cost.join(", ")}`);
+  for (const r of cost) s.resources[r] = (s.resources[r] ?? 0) - 1;
+}
+
+export function gain(s: GameState, icons: readonly ResourceId[]): void {
+  for (const r of icons) s.resources[r] = (s.resources[r] ?? 0) + 1;
+}
+
+export function totalResources(r: ResourceCounts): number {
+  return Object.values(r).reduce((a, b) => a + b, 0);
+}
+
+/** Toutes les ressources sont perdues (nouvelle carte en jeu, fin de tour). */
+export function clearResources(s: GameState): void {
+  for (const [r, n] of Object.entries(s.resources)) {
+    if (n > 0) s.lostResources[r] = (s.lostResources[r] ?? 0) + n;
+    s.resources[r] = 0;
+  }
+}
+
+export function formatIcons(icons: readonly ResourceId[]): string {
+  return icons.map((r) => `{${r}}`).join("");
+}
+
+export function formatCounts(r: ResourceCounts): string {
+  const icons = Object.entries(r).flatMap(([k, n]) => Array.from({ length: n }, () => k));
+  return icons.length ? formatIcons(icons) : "rien";
+}
