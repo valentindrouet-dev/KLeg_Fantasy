@@ -3,6 +3,13 @@
 Chaque mise à jour publiée change de version (`package.json`, affichée dans l'appli en bas de l'écran « Mes royaumes »
 et dans la barre de la partie). Convention : `0.5.0` s'affiche **v0.05** ; un correctif `0.5.1` s'affiche **v0.05.1**.
 
+## v0.25 (2 octobre 2026)
+
+- Stats : toucher « Détruites » montre les cartes détruites.
+- Demi-cartes seulement pour les cartes « Stays in play ».
+- Cartes à image pleine : plus de moitié basse grisée ni de numéro d'étape en double.
+- Un seul compteur de ressources (fond gris) : par ressource, ce qu'on a plus ce que les cartes en jeu peuvent produire ; l'icône est entourée de vert quand une partie est déjà gagnée (production, effet, carte engagée).
+
 ## v0.24 (2 octobre 2026)
 
 - Cartes à image pleine (une étape par face, ex. Field Worker #13, Bandit) : toucher le texte en bas de la carte utilise l'effet ; la traduction FR s'affiche aussi en touchant le bas.

@@ -57,7 +57,8 @@ Routage par hash (`src/ui/App.tsx`) : `#/` Mes royaumes, `#/partie/<id>` partie,
 - **Cartes bloquées** : sous leur bloquante, le haut dépasse de 18 % (`BLOCKED_PEEK`) ; la place est comptée par `fitSlots`.
 - **Payer après coup** : effet ou amélioration touché sans assez de ressources → les cartes en jeu qui peuvent fournir
   ce qui manque brillent (`paymentCandidates`), les toucher les engage, l'action part dès que `planWithEngaged` la couvre.
-- **Compteurs de ressources** : vert = engrangé (ressources en cours + cartes engagées), gris = production des autres cartes en jeu.
+- **Compteur de ressources** : un seul, fond gris ; par ressource, gagné ou engagé + production des autres cartes en jeu ;
+  icône entourée de vert quand une partie est déjà gagnée.
 - **Nouvelles cartes** : appui long sur une carte = inspection recto verso (l'inspection s'ouvre par-dessus les fenêtres).
 - **Pistes** (Army, Treasury…) : pastille = coût de la case suivante et sa gloire ; Export : marchandises / palier.
   Toucher une carte permanente utilise son effet (ou le paiement après coup, ou le menu qui dit ce qui manque).
@@ -68,8 +69,9 @@ Routage par hash (`src/ui/App.tsx`) : `#/` Mes royaumes, `#/partie/<id>` partie,
 - **Cartes à image pleine** (`isFullImage`, `zoneAtCard`) : la moitié basse sert à l'effet ; traduction de l'étape unique.
 - **Choix de découverte** à plus de 2 cartes : 2 par rangée (`pairWidth`).
 - **Carte découverte** : vole du centre de l'écran vers la défausse (ou vers la pioche au mélange de début de manche).
-- **Demi-cartes** (`showsTopHalfOnly`) : dernier stage (ni amélioration ni effet qui la tourne) ou « stays in play » ;
-  jamais les cartes à image pleine. Zones cliquables ramenées à la carte entière.
+- **Demi-cartes** (`showsTopHalfOnly`) : seulement les cartes « stays in play », jamais les cartes à image pleine.
+  Zones cliquables ramenées à la carte entière.
+- **Stats** : « Détruites » ouvre la liste des cartes détruites.
 - **Ligne du haut** (`playLayout`) : ennemis, puis à 40 px d'écart les cartes « stays in play » ; seules sur leur ligne si
   les cartes y gardent au moins 75 % de leur taille, sinon en tête de rangée.
 - **Réglages ⚙** : thème Auto / Clair / Sombre (data-theme sur <html>), zoom des cartes en jeu seulement (60 à 200 %, la zone défile au besoin) et grisage de la moitié basse des cartes.

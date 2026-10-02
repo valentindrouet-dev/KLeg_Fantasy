@@ -106,8 +106,9 @@ function Face({
   stickers?: readonly StickerPlacement[];
 }) {
   const url = cardImageUrl(orientation.side === "front" ? template.images.front : template.images.back);
-  const topId = stageInHalf(template, orientation, "top");
-  const bottomId = stageInHalf(template, orientation, "bottom");
+  // Moitiés réellement imprimées : une carte à image pleine n'a pas de moitié basse (pas de grisé, un seul numéro).
+  const topId = stageIdAt(template, orientation);
+  const bottomId = stageIdAt(template, { side: orientation.side, rotation: orientation.rotation === 0 ? 180 : 0 });
   const top = topId === null ? null : printedStage(template, topId);
   const bottom = bottomId === null ? null : printedStage(template, bottomId);
   return (

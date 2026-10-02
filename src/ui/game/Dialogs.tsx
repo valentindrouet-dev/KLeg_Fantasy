@@ -415,7 +415,17 @@ export function ConfirmDialog({ message, confirm, onConfirm, onCancel }: { messa
 }
 
 /** Fenêtre « Stats » : composition et production du royaume. */
-export function StatsDialog({ catalog, state, onClose }: { catalog: Catalog; state: GameState; onClose: () => void }) {
+export function StatsDialog({
+  catalog,
+  state,
+  onClose,
+  onShowDestroyed,
+}: {
+  catalog: Catalog;
+  state: GameState;
+  onClose: () => void;
+  onShowDestroyed: () => void;
+}) {
   const st = kingdomStats(catalog, state);
   // Couleur de chaque case selon ce qu'elle compte (ressource, étape, type de carte).
   const cell = (label: ReactNode, value: number, tone?: string) => (
@@ -470,7 +480,9 @@ export function StatsDialog({ catalog, state, onClose }: { catalog: Catalog; sta
           <h3>Boîte</h3>
           <div className={styles.statGrid}>
             {cell("Découvertes", st.discovered)}
-            {cell("Détruites", st.destroyed)}
+            <button className={styles.statButton} onClick={onShowDestroyed} disabled={st.destroyed === 0}>
+              {cell("Détruites", st.destroyed)}
+            </button>
             {cell("Dans la boîte", st.inBox)}
           </div>
         </section>

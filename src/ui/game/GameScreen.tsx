@@ -153,6 +153,7 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [sortOpen, setSortOpen] = useState(false);
   const [statsOpen, setStatsOpen] = useState(false);
+  const [destroyedOpen, setDestroyedOpen] = useState(false);
   const playEl = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
@@ -493,39 +494,28 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
     </div>
   );
   // Ressources : icône + total (en cours + cartes engagées), seulement celles qu'on a.
-  // Deux compteurs (demande du 2026-10-02) : en vert, ce qui est engrangé (ressources en cours + cartes engagées) ;
-  // en gris, ce que les autres cartes en jeu peuvent encore produire.
+  // Un seul compteur (demande du 2026-10-02) : par ressource, ce qu'on a (gagné ou engagé) plus ce que les autres
+  // cartes en jeu peuvent produire ; l'icône est entourée de vert quand une partie est déjà gagnée.
   const available = engagedPotential(
     catalog,
     state,
     state.zones.play.filter((id) => !engagedNow.includes(id)),
   );
-  const counters = (fixed: Record<string, number>, choices: ResourceId[][][], extra: Record<string, number> = {}) => [
+  const counters = [
     ...catalog.resources.flatMap((r) => {
-      const total = (extra[r] ?? 0) + (fixed[r] ?? 0);
-      return total ? [{ key: r, text: `{${r}}`, n: total }] : [];
+      const banked = (state.resources[r] ?? 0) + (potential.fixed[r] ?? 0);
+      const total = banked + (available.fixed[r] ?? 0);
+      return total ? [{ key: r, text: `{${r}}`, n: total, banked: banked > 0 }] : [];
     }),
-    ...choices.map((opts, i) => ({ key: `c${i}`, text: opts.map((o) => icons(o)).join("/"), n: 1 })),
+    ...potential.choices.map((opts, i) => ({ key: `e${i}`, text: opts.map((o) => icons(o)).join("/"), n: 1, banked: true })),
+    ...available.choices.map((opts, i) => ({ key: `c${i}`, text: opts.map((o) => icons(o)).join("/"), n: 1, banked: false })),
   ];
-  const banked = counters(potential.fixed, potential.choices, state.resources);
-  const reachable = counters(available.fixed, available.choices);
   const resources = (
     <div className={styles.resources} aria-label="Ressources">
-      <div className={styles.banked} aria-label="Ressources engrangées">
-        {banked.length === 0 ? (
-          <span className={styles.counter}>0</span>
-        ) : (
-          banked.map((c) => (
-            <span key={c.key} className={styles.counter}>
-              <IconText text={c.text} /> {c.n}
-            </span>
-          ))
-        )}
-      </div>
-      {reachable.length > 0 && (
-        <div className={styles.reachable} aria-label="Ressources disponibles sur les cartes en jeu">
-          {reachable.map((c) => (
-            <span key={c.key} className={styles.counter}>
+      {counters.length > 0 && (
+        <div className={styles.reachable}>
+          {counters.map((c) => (
+            <span key={c.key} className={`${styles.counter} ${c.banked ? styles.banked : ""}`} title={c.banked ? "Déjà gagnée" : undefined}>
               <IconText text={c.text} /> {c.n}
             </span>
           ))}
@@ -760,7 +750,10 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
           onClose={() => setSelected(null)}
         />
       )}
-      {statsOpen && <StatsDialog catalog={catalog} state={state} onClose={() => setStatsOpen(false)} />}
+      {statsOpen && <StatsDialog catalog={catalog} state={state} onClose={() => setStatsOpen(false)} onShowDestroyed={() => setDestroyedOpen(true)} />}
+      {destroyedOpen && (
+        <CardListDialog catalog={catalog} state={state} title="Détruites" cards={state.zones.destroyed} onInspect={setInspect} onClose={() => setDestroyedOpen(false)} />
+      )}
       {targeting && targetsInDiscard.length > 0 && (
         <CardListDialog
           catalog={catalog}

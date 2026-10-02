@@ -92,10 +92,10 @@ describe("pistes et demi-cartes", async () => {
     expect(planWithEngaged(catalog, s, effect, [fk(9)])).not.toBeNull();
   });
 
-  it("demi-carte : dernier stage ou « stays in play », jamais une carte à image pleine", () => {
+  it("demi-carte : seulement les cartes « stays in play », jamais une carte à image pleine", () => {
     const s = arrange(catalog, { play: [1, 2, 14, 84], orientation: { 1: { side: "back", rotation: 0 }, 84: { side: "back", rotation: 0 } } });
     expect(showsTopHalfOnly(catalog, s, fk(1))).toBe(true); // Food Barns (stays in play)
-    expect(showsTopHalfOnly(catalog, s, fk(84))).toBe(true); // Diamond Mine (dernier stage)
+    expect(showsTopHalfOnly(catalog, s, fk(84))).toBe(false); // Diamond Mine (dernier stage, mais ne reste pas en jeu)
     expect(showsTopHalfOnly(catalog, s, fk(2))).toBe(false); // Wild Grass
     expect(showsTopHalfOnly(catalog, s, fk(14))).toBe(false); // Bandit (image pleine)
   });

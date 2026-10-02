@@ -1,5 +1,5 @@
 import { staysInPlay } from "./flow";
-import { activeStage, instance, template } from "./state";
+import { activeStage, instance, isFullImage, template } from "./state";
 import type { Catalog, GameState, InstanceId } from "./types";
 
 // Ce qu'on ne voit pas sur l'image d'une carte : cases cochées ou palier suivant, compteur, gloire écrite.
@@ -30,19 +30,11 @@ export function cardBadges(catalog: Catalog, s: GameState, id: InstanceId): stri
   return out;
 }
 
-/** Texte d'un effet qui peut changer l'orientation de sa propre carte. */
-const TURNS_ITSELF = /\{rotate\}|\{flip\}|\breset\b|rotate this card|Undiscover/i;
-
 /**
- * Carte en jeu qu'on peut montrer en demi-carte (demande du 2026-10-02) : elle reste en jeu, ou elle est à son
- * dernier stage (aucune amélioration, aucun effet qui la tourne). Jamais une carte à une étape par face (image pleine),
- * dont le texte est en bas.
+ * Carte en jeu montrée en demi-carte (demande du 2026-10-02) : seulement celles qui restent en jeu (« Stays in play »),
+ * jamais une carte à image pleine (une étape par face), dont le texte est en bas.
  */
 export function showsTopHalfOnly(catalog: Catalog, s: GameState, id: InstanceId): boolean {
-  const stage = activeStage(catalog, s, id);
-  if (!stage || !s.zones.play.includes(id)) return false;
-  const used = Object.values(template(catalog, instance(s, id).templateId).orientationToStage);
-  if (!used.includes(2) && !used.includes(3)) return false;
-  if (staysInPlay({ catalog, s }, id)) return true;
-  return stage.upgrades.length === 0 && !stage.effects.some((e) => TURNS_ITSELF.test(e.text));
+  if (!s.zones.play.includes(id) || isFullImage(template(catalog, instance(s, id).templateId))) return false;
+  return staysInPlay({ catalog, s }, id);
 }
