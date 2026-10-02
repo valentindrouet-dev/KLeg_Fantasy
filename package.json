@@ -16,9 +16,11 @@
     "validate": "tsx scripts/validate-cards.ts"
   },
   "dependencies": {
+    "dexie": "^4.4.6",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
-    "zod": "^4.6.5"
+    "zod": "^4.6.5",
+    "zustand": "^5.0.15"
   },
   "devDependencies": {
     "@types/node": "^26.6.4",
@@ -26,6 +28,7 @@
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.1.1",
     "cheerio": "^1.2.0",
+    "fake-indexeddb": "^6.2.5",
     "sharp": "^0.35.5",
     "tsx": "^4.23.15",
     "typescript": "^7.0.2",
