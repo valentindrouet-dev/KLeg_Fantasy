@@ -10,6 +10,7 @@
     "typecheck": "tsc -b",
     "test": "vitest run",
     "test:watch": "vitest",
+    "play": "tsx scripts/play.ts",
     "scrape": "tsx scripts/scrape.ts",
     "images": "tsx scripts/optimize-images.ts",
     "validate": "tsx scripts/validate-cards.ts"

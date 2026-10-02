@@ -1,4 +1,4 @@
-# Reprise du projet (état au 2 octobre 2026, fin de la phase P0)
+# Reprise du projet (état au 2 octobre 2026, fin de la phase P1)
 
 Ce document rassemble tout ce qu'il faut pour continuer le projet dans une autre session (Claude Code sur le web ou ailleurs) : les prompts utilisés, les décisions prises, l'état du code et les questions ouvertes.
 
@@ -48,8 +48,10 @@ Tu reprends le projet Kingdom Legacy Digital. Lis dans l'ordre :
 2. docs/HANDOFF.md (état du projet, décisions, questions ouvertes)
 3. docs/DATA_EXTRACTION.md (conventions des fiches de cartes)
 
-La phase P0 (données) est terminée : 140 fiches dans data/cards/FeudalKingdom,
-images WebP dans data/images, visionneuse de données dans src/ui/viewer.
+Les phases P0 (données) et P1 (moteur, docs/ENGINE.md) sont terminées :
+140 fiches dans data/cards/FeudalKingdom, visionneuse dans src/ui/viewer,
+moteur dans src/engine, partie en ligne de commande avec `npm run play`.
+Le site se déploie tout seul à chaque push (docs/DEPLOY.md).
 Commence par `npm install`, puis `npm test` et `npm run build` pour vérifier
 que tout passe.
 
@@ -57,7 +59,7 @@ Règles de travail : une phase à la fois, arrêt pour mon retour à la fin de
 chaque phase, petits commits, push sur main en fin de phase, TypeScript strict
 sans any, interface en français, ne jamais inventer de données de carte.
 
-Avant de commencer P1 (moteur), pose-moi les questions ouvertes de la
+Avant de commencer P2 (interface), pose-moi les questions ouvertes de la
 section 5 de docs/HANDOFF.md.
 ```
 
@@ -74,7 +76,7 @@ section 5 de docs/HANDOFF.md.
 
 ## 3. État du code
 
-Phase P0 terminée. Phases P1 à P6 non commencées (spec section 12).
+Phases P0 (données) et P1 (moteur) terminées. Phases P2 à P6 non commencées (spec section 12). Détails du moteur : `docs/ENGINE.md`.
 
 | Élément | Emplacement | État |
 |---|---|---|
@@ -89,9 +91,13 @@ Phase P0 terminée. Phases P1 à P6 non commencées (spec section 12).
 | Saisie des fiches | `scripts/extraction/` | fait, régénère les 140 fiches à l'identique |
 | Fiches de cartes | `data/cards/FeudalKingdom/0.json` à `139.json` | 140 fiches, 0 invalide |
 | Images | `data/images/FeudalKingdom/*.webp` | 280 images, 16 Mo |
-| Tests | `tests/data/cards.test.ts` | 142 tests passent |
+| Tests des fiches | `tests/data/cards.test.ts` | 142 tests |
 | Catalogue de stickers | `data/stickers.json` | squelette vide, à fournir |
-| Moteur, persistance, UI de jeu, PWA, déploiement | `src/engine`, `src/persistence` | non commencé |
+| Moteur de règles (P1) | `src/engine/` | fait : tours, manches, actions, découvertes, annulation, score ; effets des cartes 1 à 10 |
+| Partie en ligne de commande | `scripts/play.ts` (`npm run play`) | fait |
+| Tests du moteur | `tests/rules/`, `tests/scenarios/` | 56 tests |
+| Déploiement | `.github/workflows/deploy.yml` | fait (GitHub Actions, voir `docs/DEPLOY.md`) |
+| Persistance, UI de jeu, PWA | `src/persistence`, `src/ui` | non commencé |
 
 Versions installées : Node 24, Vite 8, React 19, TypeScript 7, Zod 4, Vitest 5.
 
