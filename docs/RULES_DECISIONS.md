@@ -39,7 +39,8 @@ ne tranchent pas ; à confirmer par l'utilisateur.
 - **Questions sans vrai choix** (une seule carte possible, une seule option) : résolues d'office.
 - **Export / Mass Export** : à la fin de chaque tour, les marchandises restantes y sont dépensées automatiquement
   (elles seraient perdues), ce qui couvre la remarque de Jewellery (« the turn ends just slowly enough »).
-- **« Mark 1-2 »** (Mercenary, Merchant) et **« Mark 1 »** : cases cochées de gauche à droite.
+- **« Mark 1-2 »** (Mercenary, Merchant) et **« Mark 1 »** : le joueur choisit les cases (corrigé le 2026-10-02 à la
+  demande de l'utilisateur ; d'abord cochées de gauche à droite). Les pistes « from left to right » restent dans l'ordre.
 - **Lord Aethan** (« passive: Mark 1 {mark} ») : utilisable à volonté, chaque case une fois, sans défausser la carte.
 - **Camelot** (« End of Turn: If you have no cards in your deck, mark 1 ») : appliqué d'office, il n'a aucun coût.
 - **Parchemin 24** : les deux stickers sont posés (Fertile Soil puis Efficiency), sur des cartes du royaume.

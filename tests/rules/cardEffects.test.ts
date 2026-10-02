@@ -203,4 +203,14 @@ describe("effets des cartes", async () => {
     s = run(catalog, s, use(120));
     for (const a of getLegalActions(catalog, s)) expect(() => run(catalog, s, a)).not.toThrow();
   });
+
+  it("Merchant : choisir librement les cases à cocher (2 au plus)", () => {
+    let s = arrange(catalog, { play: [41, 1], orientation: { 41: back0 } });
+    s = run(catalog, s, use(41));
+    const first = pending(s)?.request;
+    expect(first).toMatchObject({ type: "option", labels: ["+{coin}", "+{wood}", "+{stone}", "+{metal}"] });
+    s = run(catalog, s, choose({ option: 3 }), choose({ option: 2 }));
+    expect(s.resources).toMatchObject({ metal: 1, stone: 1, coin: 0 });
+    expect(s.cards[fk(41)]?.checkedBoxes).toEqual([checkKey(4, "c7"), checkKey(4, "c5")]);
+  });
 });

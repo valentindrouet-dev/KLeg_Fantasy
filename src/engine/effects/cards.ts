@@ -322,6 +322,47 @@ const resourceStickerTo = (label: string, pick: (d: Draft, self: InstanceId) => 
     },
   });
 
+/** Libellé d'une case : ce qu'elle rapporte. */
+const boxLabel = (b: Checkbox): string =>
+  [b.gain?.length ? `+${b.gain.map(icon).join("")}` : "", b.fame !== undefined ? `{fame}${b.fame}` : "", b.icon ? icon(b.icon) : ""].filter(Boolean).join(" ") || "Case";
+
+/** Cases libres, une par contenu (cocher l'une ou l'autre de deux cases identiques revient au même). */
+const distinctBoxes = (d: Draft, card: InstanceId, without: string | null) =>
+  unmarkedBoxes(d, card)
+    .filter((b) => b.id !== without)
+    .filter((b, i, all) => all.findIndex((x) => boxLabel(x) === boxLabel(b)) === i);
+
+/**
+ * « Mark 1 {mark}. », « Mark 1-2 {mark}. », « Spend … to mark 1-2 {mark}. » : le joueur choisit librement les cases
+ * (demande du 2026-10-02 : Merchant doit pouvoir cocher toutes les ressources). Les pistes « from left to right »
+ * restent dans l'ordre (markNext).
+ */
+function freeMark(count: 1 | 2, cost: ResourceId[]): EffectImpl {
+  return effect({
+    cost,
+    usable: (d, card) => unmarkedBoxes(d, card).length > 0,
+    ask: (d, card, a) => {
+      if (a.length === 0) return askOption("Quelle case cocher ?", distinctBoxes(d, card, null).map(boxLabel));
+      if (a.length === 1 && count === 2) {
+        const first = distinctBoxes(d, card, null)[optionOf(a[0])];
+        const rest = distinctBoxes(d, card, first?.id ?? null);
+        return rest.length ? askOption("Une deuxième case ?", [...rest.map(boxLabel), "Non"]) : null;
+      }
+      return null;
+    },
+    run: (d, card, a) => {
+      const first = distinctBoxes(d, card, null)[optionOf(a[0])];
+      if (!first) return;
+      const second = count === 2 ? distinctBoxes(d, card, first.id)[optionOf(a[1])] : undefined;
+      for (const b of [first, second]) {
+        if (!b) continue;
+        markBox(d, card, b.stage, b.id);
+        applyBoxText(d, card, b.text);
+      }
+    },
+  });
+}
+
 /** Piste « Spend the {x} below to … mark 1 {mark} from left to right » : payer la case suivante. */
 const payTrack: Factory = () => ({
   ...trackEffect(),
@@ -494,7 +535,7 @@ const EXACT: Record<string, Factory> = {
         log(d.s, `${moved.length} carte(s) de la défausse vont sous la pioche`);
       },
     }),
-  "Mark 1 {mark}.": () => effect({ usable: (d, card) => unmarkedBoxes(d, card).length > 0, run: (d, card) => void markNext(d, card) }),
+  "Mark 1 {mark}.": () => freeMark(1, []),
   "Mark 1 {mark}. When complete, add sticker 1 as production here.": () =>
     effect({
       usable: (d, card) => unmarkedBoxes(d, card).length > 0,
@@ -513,15 +554,7 @@ const EXACT: Record<string, Factory> = {
         if (stage !== undefined && trackComplete(d, card, stage)) turnCard(d, card, "rotate");
       },
     }),
-  "Mark 1-2 {mark}.": () =>
-    effect({
-      usable: (d, card) => unmarkedBoxes(d, card).length > 0,
-      ask: steps((d, card) => (unmarkedBoxes(d, card).length >= 2 ? askOption("Combien de cases ?", ["1", "2"]) : null)),
-      run: (d, card, a) => {
-        markNext(d, card);
-        if (optionOf(a[0]) === 1) markNext(d, card);
-      },
-    }),
+  "Mark 1-2 {mark}.": () => freeMark(2, []),
   "Mark any 1 {mark} below to discard 1 enemy.": () => {
     const enemies = (d: Draft, self: InstanceId) => otherInPlay(d, self, (id) => isEnemy(d, id));
     return effect({
@@ -798,16 +831,7 @@ const PATTERNS: [RegExp, (m: RegExpExecArray) => Factory][] = [
     });
   }],
   // « Spend {coin}{coin} to mark 1 {mark}. », « … to mark 1-2 {mark}. »
-  [/^Spend ((?:\{\w+\})+) to mark 1(-2)? \{mark\}\.$/, (m) => () =>
-    effect({
-      cost: iconsIn(m[1] ?? ""),
-      usable: (d, card) => unmarkedBoxes(d, card).length > 0,
-      ask: m[2] ? steps((d, card) => (unmarkedBoxes(d, card).length >= 2 ? askOption("Combien de cases ?", ["1", "2"]) : null)) : undefined,
-      run: (d, card, a) => {
-        markNext(d, card);
-        if (optionOf(a[0]) === 1) markNext(d, card);
-      },
-    })],
+  [/^Spend ((?:\{\w+\})+) to mark 1(-2)? \{mark\}\.$/, (m) => () => freeMark(m[2] ? 2 : 1, iconsIn(m[1] ?? ""))],
   // « Spend {metal}{metal}{metal} to add sticker 5 here. »
   [/^Spend ((?:\{\w+\})+) to add sticker (\d+) here\.$/, (m) => () => effect({ cost: iconsIn(m[1] ?? ""), run: (d, card) => placeSticker(d, card, m[2] ?? "") })],
   // Défaites : « Spend {sword}{sword} to defeat ({destroy}) and gain any 2 resources. », « … ({flip}). », « …, then discover Lagoon (77). »

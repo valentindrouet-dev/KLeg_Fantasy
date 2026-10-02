@@ -55,6 +55,9 @@ Routage par hash (`src/ui/App.tsx`) : `#/` Mes royaumes, `#/partie/<id>` partie,
 - **Nouvelles cartes** (début de manche) : fenêtre avec les cartes découvertes, « Mélanger dans le deck » (décision `newCards`).
 - **Mélange animé** (`useCardMotion.ts`, `reshuffle`) : défausse → pioche, pioche battue, puis les cartes du tour.
 - **Cartes bloquées** : sous leur bloquante, le haut dépasse de 18 % (`BLOCKED_PEEK`) ; la place est comptée par `fitSlots`.
+- **Aucune confirmation** avant un geste (demandes du 2026-10-02) ; l'annulation reste dans la barre du haut.
+- **Chemins vérifiés** (`tests/scenarios/uiPaths.test.ts`) : chaque action légale est proposée sur sa carte et
+  payable par les cartes qui brillent. `planWithEngaged` produit carte par carte, dans tous les ordres (≤ 4 cartes).
 - **Payer après coup** : effet ou amélioration touché sans assez de ressources → les cartes en jeu qui peuvent fournir
   ce qui manque brillent (`paymentCandidates`), les toucher les engage, l'action part dès que `planWithEngaged` la couvre.
 - **Compteur de ressources** : un seul, fond gris ; par ressource, gagné ou engagé + production des autres cartes en jeu ;

@@ -21,8 +21,6 @@ import {
   planWithEngaged,
   productionGroups,
   template,
-  totalResources,
-  usableEffects,
   type Action,
   type Catalog,
   type GameState,
@@ -103,32 +101,6 @@ function orientationChange(catalog: Catalog, state: GameState, plan: Action[]): 
 
 const reducedMotion = () => window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
 
-/** Confirmation nécessaire avant un geste (spec 7.5), ou null. */
-function confirmationFor(catalog: Catalog, state: GameState, plan: Action[]): string | null {
-  if (plan.at(-1)?.type === "upgrade") return null; // demande du 2026-10-02 : améliorer sans confirmation
-  let s = state;
-  const lost: Record<string, number> = {};
-  const parts: string[] = [];
-  for (const a of plan) {
-    if (a.type === "useEffect") {
-      const effect = usableEffects(catalog, s, a.card).find((e) => e.effect.id === a.effect)?.effect;
-      if (effect?.type === "destroy") parts.push(`${cardName(catalog, s, a.card)} sera détruite définitivement.`);
-      if (effect?.oneTime) parts.push("Cet effet ne sert qu'une fois : il sera rayé.");
-    }
-    try {
-      s = applyAction(catalog, s, a);
-    } catch {
-      return null;
-    }
-    for (const [r, n] of Object.entries(s.lostResources)) lost[r] = (lost[r] ?? 0) + n;
-  }
-  const n = totalResources(lost);
-  if (n > 0) {
-    const list = Object.entries(lost).flatMap(([r, k]) => Array.from({ length: k }, () => r));
-    parts.push(`Tu vas perdre ${n} ressource${n > 1 ? "s" : ""} déjà produite${n > 1 ? "s" : ""} et non dépensée${n > 1 ? "s" : ""} : ${icons(list)}.`);
-  }
-  return parts.length ? parts.join(" ") : null;
-}
 
 /** Pas de message après une action (demandes du 2026-10-02) : l'annulation reste dans la barre du haut. */
 function toastFor(_action: Action | undefined): string {
@@ -224,9 +196,8 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
       setSelected(null);
       const last = plan.at(-1);
       const t = toastFor(last);
-      const message = confirmationFor(catalog, state, plan);
-      if (message) setPending({ plan, message, toast: t });
-      else commit(plan, t);
+      // Aucune confirmation (demandes du 2026-10-02) : le geste part tout de suite, « Annuler » reste possible.
+      commit(plan, t);
     },
     [catalog, state, commit],
   );

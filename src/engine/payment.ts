@@ -55,26 +55,69 @@ export function planWithEngaged(
   for (let size = 1; size <= candidates.length; size++) {
     let best: { produce: Action[]; waste: number } | null = null;
     for (const subset of combinations(candidates, size)) {
-      const options = subset.map((id) => productionChoices(productionGroups(catalog, s, id)));
-      const combos = options.reduce<number[][][]>((acc, opts) => acc.flatMap((prefix) => opts.map((o) => [...prefix, o])), [[]]);
-      for (const choices of combos) {
-        const have: Record<string, number> = { ...s.resources };
-        subset.forEach((id, i) => {
-          for (const r of producedIcons(productionGroups(catalog, s, id), choices[i] ?? [])) have[r] = (have[r] ?? 0) + 1;
-        });
-        if (!covers(have, cost)) continue;
-        const waste = surplus(have, cost);
-        if (best && best.waste <= waste) continue;
-        best = { produce: subset.map((card, i) => ({ type: "produce", card, choices: choices[i] ?? [] })), waste };
+      // La production d'une carte peut dépendre des autres cartes en jeu (Cathedral : +1 {coin} par personne) :
+      // on produit carte par carte, dans chaque ordre possible, en recalculant à chaque fois.
+      for (const order of size <= 4 ? permutations(subset) : [subset]) {
+        for (const produce of producePlans(catalog, s, order)) {
+          const sim = simulate(catalog, s, produce);
+          if (!sim || !covers(sim.resources, cost)) continue;
+          const waste = surplus(sim.resources, cost);
+          if (best && best.waste <= waste) continue;
+          if (!isLegal(catalog, sim, action)) continue;
+          best = { produce, waste };
+        }
       }
     }
     if (best) {
-      let next = s;
-      for (const p of best.produce) next = applyAction(catalog, next, p);
-      if (isLegal(catalog, next, action)) return [...best.produce, action];
+      // Vérification sur le vrai moteur (déclencheurs compris) ; un plan qui échoue n'est jamais proposé.
+      try {
+        let next = s;
+        for (const p of best.produce) next = applyAction(catalog, next, p);
+        if (isLegal(catalog, next, action)) return [...best.produce, action];
+      } catch {
+        // essayer avec plus de cartes
+      }
     }
   }
   return null;
+}
+
+function permutations<T>(items: readonly T[]): T[][] {
+  if (items.length <= 1) return [[...items]];
+  return items.flatMap((x, i) => permutations([...items.slice(0, i), ...items.slice(i + 1)]).map((rest) => [x, ...rest]));
+}
+
+/** État allégé après ces productions (carte défaussée, ressources gagnées), ou null si l'une est impossible. */
+function simulate(catalog: Catalog, s: GameState, produce: Action[]): GameState | null {
+  let sim: GameState = { ...s, zones: { ...s.zones, play: [...s.zones.play], discard: [...s.zones.discard] }, resources: { ...s.resources } };
+  for (const p of produce) {
+    if (p.type !== "produce" || !sim.zones.play.includes(p.card)) return null;
+    const groups = productionGroups(catalog, sim, p.card);
+    if (p.choices.length !== groups.length) return null;
+    const icons = producedIcons(groups, p.choices);
+    const resources = { ...sim.resources };
+    for (const r of icons) resources[r] = (resources[r] ?? 0) + 1;
+    sim = { ...sim, zones: { ...sim.zones, play: sim.zones.play.filter((id) => id !== p.card), discard: [...sim.zones.discard, p.card] }, resources };
+  }
+  return sim;
+}
+
+/** Toutes les productions possibles des cartes dans cet ordre (choix des « / » recalculés après chaque carte). */
+function producePlans(catalog: Catalog, s: GameState, order: readonly InstanceId[]): Action[][] {
+  const out: Action[][] = [];
+  const walk = (i: number, done: Action[]): void => {
+    if (out.length >= 200) return;
+    const card = order[i];
+    if (card === undefined) {
+      out.push(done);
+      return;
+    }
+    const sim = simulate(catalog, s, done);
+    if (!sim) return;
+    for (const choices of productionChoices(productionGroups(catalog, sim, card))) walk(i + 1, [...done, { type: "produce", card, choices }]);
+  };
+  walk(0, []);
+  return out;
 }
 
 /**

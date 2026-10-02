@@ -3,6 +3,13 @@
 Chaque mise à jour publiée change de version (`package.json`, affichée dans l'appli en bas de l'écran « Mes royaumes »
 et dans la barre de la partie). Convention : `0.5.0` s'affiche **v0.05** ; un correctif `0.5.1` s'affiche **v0.05.1**.
 
+## v0.26 (2 octobre 2026)
+
+- Bug : payer avec plusieurs cartes engagées dont la production dépend des autres (Cathedral : +1 {coin} par personne) échouait sans rien dire. Le paiement produit maintenant carte par carte, dans le meilleur ordre.
+- Plus aucune fenêtre de confirmation (elle s'ouvrait avant un effet de temps qui fait perdre des ressources, et passait pour un blocage) ; « Annuler » reste possible.
+- Merchant, Jester, Lord Aethan, Lord Nimrod, Mercenary, Astronomer : on choisit librement la ou les cases à cocher (or, bois, pierre, métal…).
+- Vérification automatique : dans des parties jouées au hasard, chaque effet et chaque amélioration permis par les règles est proposé sur sa carte et payable en touchant les cartes qui brillent.
+
 ## v0.25 (2 octobre 2026)
 
 - Stats : toucher « Détruites » montre les cartes détruites.

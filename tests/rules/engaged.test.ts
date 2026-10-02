@@ -100,3 +100,17 @@ describe("pistes et demi-cartes", async () => {
     expect(showsTopHalfOnly(catalog, s, fk(14))).toBe(false); // Bandit (image pleine)
   });
 });
+
+describe("productions qui dépendent des autres cartes", async () => {
+  const catalog = await loadCatalog();
+  it("Cathedral et une personne engagées paient Treasury : Cathedral produit d'abord, avec toutes les personnes", () => {
+    // Cathedral (17 au stage 4) : 1 {coin} + 1 par personne ; Opportunist (29) : personne qui produit 1 {coin}.
+    const s = arrange(catalog, { play: [17, 29, 10], permanent: [26], orientation: { 17: { side: "back", rotation: 0 } } });
+    s.cards[fk(26)]!.checkedBoxes = ["1/c1", "1/c2"]; // case suivante : 3 {coin}
+    const effect: Action = { type: "useEffect", card: fk(26), effect: "e1", targets: [], option: null };
+    const plan = planWithEngaged(catalog, s, effect, [fk(29), fk(17)]);
+    expect(plan?.[0]).toMatchObject({ type: "produce", card: fk(17) });
+    const after = (plan ?? []).reduce((st, a) => applyAction(catalog, st, a), s);
+    expect(after.cards[fk(26)]?.checkedBoxes).toContain("1/c3");
+  });
+});
