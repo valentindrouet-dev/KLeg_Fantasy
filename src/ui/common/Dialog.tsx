@@ -9,9 +9,11 @@ type Props = {
   onClose?: () => void;
   actions?: ReactNode;
   wide?: boolean;
+  /** Au-dessus des autres fenêtres (signalement d'un bug ouvert pendant une décision). */
+  top?: boolean;
 };
 
-export function Dialog({ title, children, onClose, actions, wide }: Props) {
+export function Dialog({ title, children, onClose, actions, wide, top }: Props) {
   useEffect(() => {
     if (!onClose) return;
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
@@ -19,7 +21,7 @@ export function Dialog({ title, children, onClose, actions, wide }: Props) {
     return () => window.removeEventListener("keydown", onKey);
   }, [onClose]);
   return (
-    <div className={styles.backdrop} onClick={onClose}>
+    <div className={`${styles.backdrop} ${top ? styles.topLayer : ""}`} onClick={onClose}>
       <div
         className={`${styles.dialog} ${wide ? styles.wide : ""}`}
         role="dialog"

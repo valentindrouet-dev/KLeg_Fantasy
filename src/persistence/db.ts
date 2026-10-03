@@ -1,19 +1,22 @@
 import { Dexie, type EntityTable } from "dexie";
+import type { BugReport } from "./bugs";
 import { newKingdomId, type Kingdom } from "./kingdoms";
 
 // Stockage des royaumes dans IndexedDB (spec 6.2) : un enregistrement par royaume, sauvegardé après chaque action.
 
 class KingdomDb extends Dexie {
   kingdoms!: EntityTable<Kingdom, "id">;
+  bugs!: EntityTable<BugReport, "id">;
 
   constructor() {
     super("kleg-fantasy");
     this.version(1).stores({ kingdoms: "id, updatedAt" });
+    this.version(2).stores({ kingdoms: "id, updatedAt", bugs: "id, createdAt" });
   }
 }
 
 let db: KingdomDb | undefined;
-function getDb(): KingdomDb {
+export function getDb(): KingdomDb {
   db ??= new KingdomDb();
   return db;
 }

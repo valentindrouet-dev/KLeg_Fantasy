@@ -894,17 +894,6 @@
   color: var(--surface);
 }
 
-.feedback {
-  display: grid;
-  place-items: center;
-  min-height: var(--tap-min);
-  border: 1px solid var(--border);
-  border-radius: 0.6rem;
-  background: var(--surface-2);
-  color: var(--text);
-  font-weight: 700;
-  text-decoration: none;
-}
 
 /* --- Questions des effets --- */
 .choiceHead {
@@ -1179,4 +1168,37 @@
 
 .strikeLine.strikeBottom {
   transform: translateY(-50%) rotate(179.3deg);
+}
+
+/* Carte qui interdit le geste tenté : elle secoue la tête (demande du 2026-10-03). */
+.shake {
+  z-index: 5;
+  animation: shakeNo 0.6s ease-in-out;
+  box-shadow: 0 0 0 3px var(--danger), 0 0 22px color-mix(in srgb, var(--danger) 60%, transparent);
+}
+
+@keyframes shakeNo {
+  0%,
+  100% {
+    translate: 0;
+    rotate: 0deg;
+  }
+  12%,
+  44%,
+  76% {
+    translate: -9px 0;
+    rotate: -2.5deg;
+  }
+  28%,
+  60%,
+  92% {
+    translate: 9px 0;
+    rotate: 2.5deg;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shake {
+    animation: none;
+  }
 }

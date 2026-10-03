@@ -16,4 +16,4 @@ export { manualEffects, validOrientations, checkKey, isManualOpValid } from "./m
 export { cardBadges, showsTopHalfOnly } from "./badges";
 export { exhaustedEffects, isEffectExhausted, type ExhaustedEffect } from "./exhausted";
 export { staysInPlay } from "./flow";
-export { canPeekSecond, restrictions } from "./passives";
+export { canPeekSecond, restrictions, restrictionSources } from "./passives";

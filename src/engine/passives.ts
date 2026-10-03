@@ -60,9 +60,16 @@ export function payPool(catalog: Catalog, s: GameState): Pool {
 export type Restrictions = { noAdvance: boolean; noUpgrade: boolean; noTime: boolean };
 
 export function restrictions(catalog: Catalog, s: GameState): Restrictions {
-  const dark = countSources(catalog, s, T.darkRestriction, ["play"]) > 0;
-  const rain = countSources(catalog, s, T.rainNoAdvance, ["play"]) > 0;
-  return { noAdvance: dark || rain, noUpgrade: dark, noTime: dark };
+  const src = restrictionSources(catalog, s);
+  return { noAdvance: src.advance.length > 0, noUpgrade: src.upgrade.length > 0, noTime: src.time.length > 0 };
+}
+
+/** Cartes en jeu responsables de chaque interdiction (Dark Prince, Rain) : l'interface les fait trembler. */
+export function restrictionSources(catalog: Catalog, s: GameState): { advance: InstanceId[]; upgrade: InstanceId[]; time: InstanceId[] } {
+  const withText = (text: string) => s.zones.play.filter((id) => activeTexts(catalog, s, id).includes(text));
+  const dark = withText(T.darkRestriction);
+  const rain = withText(T.rainNoAdvance);
+  return { advance: [...dark, ...rain], upgrade: dark, time: dark };
 }
 
 /** Watchtower en jeu : on peut voir la deuxième carte de la pioche. */

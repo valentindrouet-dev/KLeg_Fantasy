@@ -41,6 +41,8 @@ type Props = {
   note?: CardNote;
   /** Effets épuisés d'un stage (rang parmi ses effets) : barrés au feutre noir sur la carte. */
   exhausted?: (stage: StageId) => ExhaustedEffect[];
+  /** Tremble « non » : cette carte interdit le geste tenté. */
+  shake?: boolean;
 };
 
 /**
@@ -179,7 +181,7 @@ function Face({
 }
 
 export function CardView(props: Props) {
-  const { id, template, orientation, label, width, selected, engaged, targetable, dimBottom, flagged, onTwoFinger, dimmed, badge, onTap, onLongPress, zoneLabel, anim, stickers, half, note, exhausted } =
+  const { id, template, orientation, label, width, selected, engaged, targetable, dimBottom, flagged, onTwoFinger, dimmed, badge, onTap, onLongPress, zoneLabel, anim, stickers, half, note, exhausted, shake } =
     props;
   // Demi-carte : les positions touchées sont ramenées à la carte entière (zones cliquables inchangées).
   const yScale = half ? 0.5 : 1;
@@ -207,6 +209,7 @@ export function CardView(props: Props) {
     interactive && styles.interactive,
     anim && (anim.kind === "rotate" ? styles.animRotate : styles.animFlip),
     half && !anim && styles.half,
+    shake && !anim && styles.shake,
   ].filter(Boolean);
 
   return (

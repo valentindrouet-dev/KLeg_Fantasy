@@ -89,7 +89,8 @@ Routage par hash (`src/ui/App.tsx`) : `#/` Mes royaumes, `#/partie/<id>` partie,
 - **Clavier** : A = Avancer, P = Passer, U ou Cmd+Z = Annuler, Échap = fermer.
 - Zone de jeu sans défilement : la taille des cartes s'adapte au nombre de cartes (`fitCards.ts`).
 - Paysage et portrait : même disposition, deck, boutons et défausse dans la bande du bas.
-- **Signaler un bug ou une idée** (⚙, et bas de l'accueil) : ticket GitHub pré-rempli (`common/feedback.ts`).
+- **Bouton bug** (barre du haut, partie et accueil ; `common/BugButton.tsx`) : description + enregistrement de la partie, état du moteur, ce qui était ouvert à l'écran et les 25 dernières lignes du journal, rangés dans IndexedDB (table `bugs`, `persistence/bugs.ts`). « Partager » (feuille de partage, sinon téléchargement) ou « Copier » donne un fichier `kleg-fantasy-bugs` : chaque `game.kingdom.record` se rejoue comme une sauvegarde, `game.state` est l'état au signalement.
+- **« Non »** : un geste interdit par une carte en jeu fait trembler la carte responsable (`restrictionSources` : Dark Prince, Rain ; carte bloquée → sa bloquante).
 - En dessous de 744 px de large : message « Agrandis la fenêtre ».
 
 ## Sauvegarde

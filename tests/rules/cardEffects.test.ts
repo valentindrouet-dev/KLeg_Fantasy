@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { computeScore, exhaustedEffects, getLegalActions, isEffectExhausted, productionGroups, type Action, type Answer, type GameState } from "../../src/engine";
 import { canPay } from "../../src/engine/state";
 import { checkKey } from "../../src/engine/ops";
-import { payPool } from "../../src/engine/passives";
+import { payPool, restrictionSources } from "../../src/engine/passives";
 import { loadCatalog } from "../helpers/catalog";
 import { arrange, fk, legal, run } from "../helpers/game";
 
@@ -93,7 +93,7 @@ describe("effets des cartes", async () => {
   });
 
   it("Rain : interdit d'avancer, les terres produisent 2 pièces de plus", () => {
-    const s = arrange(catalog, { play: [44, 1], deck: [2], orientation: { 44: back0 } });
+    const s = arrange(catalog, { play: [44, 1], deck: [2], orientation: { 44: { side: "back", rotation: 0 } } });
     expect(legal(catalog, s).some((a) => a.type === "advance")).toBe(false);
     expect(productionGroups(catalog, s, fk(1)).flatMap((g) => g.options[0] ?? [])).toEqual(["coin", "coin", "coin"]);
   });
@@ -233,5 +233,11 @@ describe("effets épuisés", async () => {
     expect(exhaustedEffects(catalog, s, fk(25), 1)).toEqual([]);
     s.cards[fk(25)]!.checkedBoxes = Array.from({ length: 10 }, (_, i) => `1/c${i + 1}`);
     expect(exhaustedEffects(catalog, s, fk(25), 1)).toEqual([{ id: "e1", index: 0, count: 1 }]);
+  });
+
+  it("Dark Prince et Rain : les cartes qui interdisent d'avancer, d'améliorer, les effets {time}", () => {
+    const s = arrange(catalog, { play: [61, 44, 1], orientation: { 44: { side: "back", rotation: 0 } } });
+    expect(restrictionSources(catalog, s)).toEqual({ advance: [fk(61), fk(44)], upgrade: [fk(61)], time: [fk(61)] });
+    expect(legal(catalog, s).some((a) => a.type === "advance")).toBe(false);
   });
 });

@@ -3,6 +3,11 @@
 Chaque mise à jour publiée change de version (`package.json`, affichée dans l'appli en bas de l'écran « Mes royaumes »
 et dans la barre de la partie). Convention : `0.5.0` s'affiche **v0.05** ; un correctif `0.5.1` s'affiche **v0.05.1**.
 
+## v0.32 (3 octobre 2026)
+
+- Bouton « bug » dans la barre du haut (en partie, au-dessus des fenêtres, et sur « Mes royaumes ») : on décrit le problème, il est enregistré avec la partie (rejouable), son état et ce qui était ouvert à l'écran. « Partager » envoie le fichier de tous les bugs (Mail, Fichiers, AirDrop…), « Copier » le met dans le presse-papiers. Il remplace le lien « signaler un bug » vers GitHub.
+- Geste interdit par un ennemi : la carte responsable secoue la tête (« non ») avec un contour rouge. Avancer sous Dark Prince ou Rain, améliorer ou utiliser un effet {time} sous Dark Prince, toucher une carte bloquée (sa bloquante tremble).
+
 ## v0.31 (3 octobre 2026)
 
 - Effets épuisés : un trait de feutre par ligne de texte, à sa place et à sa largeur (Mason : ses deux lignes). Les lignes de chaque effet ont été mesurées sur les images des cartes (`npm run text-lines`).

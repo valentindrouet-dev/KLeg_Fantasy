@@ -9,6 +9,7 @@ import {
   isFullImageFace,
   paymentCandidates,
   canPeekSecond,
+  restrictionSources,
   cardBadges,
   showsTopHalfOnly,
   canUndo,
@@ -32,7 +33,7 @@ import { APP_VERSION } from "../../version";
 import { IconText } from "../common/IconText";
 import { AdvanceIcon, CastleIcon, PassIcon, SaveIcon, SettingsIcon, SortIcon, StatsIcon, TranslateIcon, UndoIcon } from "../common/UiIcons";
 import { downloadText } from "../common/download";
-import { feedbackUrl } from "../common/feedback";
+import { BugButton } from "../common/BugButton";
 import { backupFileName, exportKingdom } from "../../persistence/backup";
 import { playLayout } from "./sortCards";
 import { BLOCKED_PEEK, CARD_ASPECT, type Slot } from "./fitCards";
@@ -127,6 +128,9 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
   const [targeting, setTargeting] = useState<{ source: InstanceId; options: CardOption[] } | null>(null);
   /** Effet ou amélioration touché sans assez de ressources : on touche ensuite les cartes qui paient. */
   const [paying, setPaying] = useState<{ source: InstanceId; action: Action } | null>(null);
+  /** Cartes qui tremblent « non » : l'ennemi ou l'événement qui interdit le geste tenté. */
+  const [shaking, setShaking] = useState<InstanceId[]>([]);
+  const shakeTimer = useRef<number | undefined>(undefined);
   const { tooltipsFr, toggleTooltipsFr, zoom, setZoom, dimBottom, toggleDimBottom, sortPlay: sortMode, setSortPlay, theme, setTheme } = usePrefs();
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [sortOpen, setSortOpen] = useState(false);
@@ -209,8 +213,46 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
   );
 
 
+  /** Partie et écran au moment d'un signalement de bug : de quoi rejouer et revoir la situation. */
+  const bugContext = () =>
+    state && kingdom
+      ? {
+          kingdom: { id: kingdom.id, name: kingdom.name, record: kingdom.record },
+          state,
+          where: `manche ${state.round}, tour ${state.turn}, ${state.phase}`,
+          screen: {
+            pending: state.pending?.kind ?? null,
+            selected: selected?.card ?? null,
+            engaged: engagedNow,
+            paying: paying ? { source: paying.source, action: paying.action } : null,
+            targeting: targeting?.source ?? null,
+            inspect,
+            note: note ? { card: note.card, text: note.note.text } : null,
+            discardOpen,
+            statsOpen,
+            tooltipsFr,
+            zoom,
+          },
+          log: state.log.slice(-25).map((l) => `M${l.round} T${l.turn} ${l.text}`),
+        }
+      : undefined;
+
   const advance = legal.find((a) => a.type === "advance");
   const pass = legal.find((a) => a.type === "pass");
+
+  /** Geste interdit par un ennemi ou un événement (demande du 2026-10-03) : la carte responsable tremble. */
+  const refuse = useCallback((ids: readonly InstanceId[]): boolean => {
+    if (ids.length === 0) return false;
+    window.clearTimeout(shakeTimer.current);
+    setShaking([...ids]);
+    shakeTimer.current = window.setTimeout(() => setShaking([]), 650);
+    return true;
+  }, []);
+  const advanceBlockers = useMemo(() => (state && !advance ? restrictionSources(catalog, state).advance : []), [catalog, state, advance]);
+  const tryAdvance = useCallback(() => {
+    if (advance) run([advance]);
+    else refuse(advanceBlockers);
+  }, [advance, run, refuse, advanceBlockers]);
 
   // Clavier (spec 7.6) : A = Avancer, P = Passer, U ou Cmd+Z = Annuler.
   useEffect(() => {
@@ -223,18 +265,18 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
         setTargeting(null);
         return;
       }
-      if (e.target instanceof HTMLInputElement || pending || inspect || discardOpen || state?.pending || anim || targeting || paying) return;
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement || pending || inspect || discardOpen || state?.pending || anim || targeting || paying) return;
       const key = e.key.toLowerCase();
       const mod = e.metaKey || e.ctrlKey;
       if ((key === "z" && mod) || (key === "u" && !mod)) {
         e.preventDefault();
         undo();
-      } else if (key === "a" && !mod && advance) run([advance]);
+      } else if (key === "a" && !mod) tryAdvance();
       else if (key === "p" && !mod && pass) run([pass]);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [advance, pass, run, undo, pending, inspect, discardOpen, state?.pending, anim, targeting, paying]);
+  }, [tryAdvance, pass, run, undo, pending, inspect, discardOpen, state?.pending, anim, targeting, paying]);
 
   // Texte sur une carte : il part au toucher suivant (ou après 4 s pour « il manque ») ; le mode FR coupé l'efface.
   useEffect(() => {
@@ -295,6 +337,16 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
       return all.filter((o) => o.action.type === "upgrade" && ups.some((u) => u.id === (o.action.type === "upgrade" ? o.action.upgrade : "")));
     }
     if (zone === "effect") return all.filter((o) => o.action.type === "useEffect");
+    return [];
+  };
+
+  /** Ennemis qui interdisent la zone touchée (Dark Prince : ni amélioration ni effet {time}). */
+  const forbiddenBy = (card: InstanceId, zone: ZoneKind): InstanceId[] => {
+    const stage = activeStage(catalog, state, card);
+    if (!stage) return [];
+    const src = restrictionSources(catalog, state);
+    if ((zone === "upgradeFlip" || zone === "upgradeRotate") && stage.upgrades.length > 0) return src.upgrade;
+    if (zone === "effect" && stage.effects.some((e) => e.type === "time")) return src.time;
     return [];
   };
 
@@ -382,6 +434,7 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
     }
     if (zone === "upgradeFlip" || zone === "upgradeRotate" || zone === "effect") {
       const opts = zoneOptions(card, zone);
+      if (opts.length === 0 && refuse(forbiddenBy(card, zone))) return;
       const only = opts[0];
       if (opts.length === 1 && only) {
         if (only.plan) run(only.plan);
@@ -425,6 +478,7 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
       half={extra?.zones ? showsTopHalfOnly(catalog, state, id) : undefined}
       note={note?.card === id ? note.note : undefined}
       exhausted={(stage) => exhaustedEffects(catalog, state, id, stage)}
+      shake={shaking.includes(id)}
     />
   );
 
@@ -453,7 +507,7 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
       return;
     }
     if (opts.length > 1) openMenu(id);
-    else setInspect(id);
+    else if (!(playing && refuse(forbiddenBy(id, "effect")))) setInspect(id);
   };
 
   const fame = computeScore(catalog, state).total;
@@ -466,7 +520,7 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
     <div className={styles.pile} aria-label={`Deck : ${state.zones.deck.length} cartes`}>
       <span className={styles.pileTitle}>Deck · {state.zones.deck.length}</span>
       {top ? (
-        <div data-pile="deck">{card(top, undefined, playing && advance ? () => run([advance]) : undefined, false)}</div>
+        <div data-pile="deck">{card(top, undefined, playing && (advance || advanceBlockers.length) ? tryAdvance : undefined, false)}</div>
       ) : (
         <div className={styles.emptyPile} data-pile="deck">
           Vide
@@ -593,6 +647,7 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
         >
           <TranslateIcon />
         </button>
+        <BugButton className={`${styles.iconBtn} ${styles.aboveDialogs}`} game={bugContext} />
         <button
           className={styles.iconBtn}
           aria-pressed={settingsOpen}
@@ -639,14 +694,6 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
               <span>Griser le bas des cartes</span>
               <input type="checkbox" checked={dimBottom} onChange={toggleDimBottom} />
             </label>
-            <a
-              className={styles.feedback}
-              href={feedbackUrl(`${kingdom.name}, manche ${state.round}, tour ${state.turn}, graine ${state.config.seed}`)}
-              target="_blank"
-              rel="noreferrer"
-            >
-              Signaler un bug ou une idée
-            </a>
           </div>
         )}
       </header>
@@ -705,7 +752,7 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
             <div key={id} className={styles.stack} style={{ paddingTop: peek * held.length }}>
               {held.map((b, j) => (
                 <div key={b} className={styles.under} style={{ top: peek * j }}>
-                  {card(b, cardWidth || undefined, undefined, true)}
+                  {card(b, cardWidth || undefined, () => refuse([id]), true)}
                 </div>
               ))}
               <div className={styles.over}>{main}</div>
@@ -718,7 +765,7 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
       <aside className={styles.discardSlot}>{discard}</aside>
 
       <div className={styles.turnButtons}>
-        <button className={styles.turnBtn} disabled={!playing || !advance} onClick={() => advance && run([advance])} title="Avancer (A)">
+        <button className={styles.turnBtn} disabled={!playing || (!advance && advanceBlockers.length === 0)} onClick={tryAdvance} title="Avancer (A)">
           <AdvanceIcon /> Avancer
         </button>
         <button className={`${styles.turnBtn} ${styles.turnBtnPrimary}`} disabled={!playing || !pass} onClick={() => pass && run([pass])} title="Passer (P)">

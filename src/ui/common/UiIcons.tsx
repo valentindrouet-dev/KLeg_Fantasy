@@ -150,3 +150,13 @@ export function ImportIcon() {
     </svg>
   );
 }
+
+/** Signaler un bug : insecte. */
+export function BugIcon() {
+  return (
+    <svg {...base} aria-hidden="true">
+      <rect x="8" y="7" width="8" height="13" rx="4" />
+      <path d="M12 11v9M9.5 7.5 8 4.5M14.5 7.5 16 4.5M4 11h4M16 11h4M4.5 17H8M16 17h3.5M5 6.5l3 2M19 6.5l-3 2" />
+    </svg>
+  );
+}

@@ -16,6 +16,10 @@
   background: rgb(0 0 0 / 0.12);
 }
 
+.topLayer {
+  z-index: 70;
+}
+
 .dialog {
   display: flex;
   flex-direction: column;
@@ -102,4 +106,68 @@
   box-shadow: 0 8px 24px rgb(0 0 0 / 0.3);
   transform: translateX(-50%);
   cursor: pointer;
+}
+
+/* Signalement d'un bug */
+.bugBtn {
+  position: relative;
+}
+
+.bugCount {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: var(--danger, #b3261e);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 20px;
+  text-align: center;
+}
+
+.bugText {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 7.5rem;
+  padding: var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  resize: vertical;
+}
+
+.bugList {
+  display: grid;
+  gap: var(--space-2);
+  margin: var(--space-4) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.bugList li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--surface) 70%, transparent);
+}
+
+.bugList li span {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bugList small {
+  color: var(--text-muted);
 }
