@@ -8,7 +8,7 @@ export { computeScore, kingdomCards, cardFame, type ScoreReport, type ScoreLine 
 export { upgradeOptions, type UpgradeOption } from "./upgrade";
 export { productionGroups, productionCount, canAddResourceSticker, addResourceSticker } from "./production";
 export { describeAction } from "./describe";
-export { activeStage, cardName, zoneOf, formatCounts, totalResources, instance, template, stageIdAt, printedStage, isFullImage } from "./state";
+export { activeStage, cardName, zoneOf, formatCounts, totalResources, instance, template, stageIdAt, printedStage, isFullImage, isFullImageFace } from "./state";
 export { randomSeed } from "./rng";
 export { planWithEngaged, candidateActions, engagedPotential, actionCost, paymentCandidates } from "./payment";
 export { kingdomStats, type KingdomStats } from "./stats";

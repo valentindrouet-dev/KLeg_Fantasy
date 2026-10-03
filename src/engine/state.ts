@@ -50,6 +50,15 @@ export function isFullImage(t: CardTemplate): boolean {
   return !used.includes(2) && !used.includes(3);
 }
 
+/**
+ * Face à image pleine (une seule étape, texte en bas). Certaines cartes (Mason 43…) ont une face à image pleine
+ * et une face à deux étapes : c'est la face visible qui décide des zones, des notes et des traits.
+ */
+export function isFullImageFace(t: CardTemplate, side: Orientation["side"]): boolean {
+  const o = t.orientationToStage;
+  return o[`${side}-0`] === null || o[`${side}-180`] === null;
+}
+
 /** Stage actif d'une carte (celui qui est lisible en haut). */
 export function activeStage(catalog: Catalog, s: GameState, id: InstanceId): Stage | null {
   const c = instance(s, id);

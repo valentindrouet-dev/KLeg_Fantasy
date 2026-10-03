@@ -6,7 +6,7 @@ import {
   applyAction,
   candidateActions,
   exhaustedEffects,
-  isFullImage,
+  isFullImageFace,
   paymentCandidates,
   canPeekSecond,
   cardBadges,
@@ -375,7 +375,7 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
       showTranslation(card, p);
       return;
     }
-    const zone = zoneAtCard(p.x, p.y, isFullImage(tpl(card)));
+    const zone = zoneAtCard(p.x, p.y, isFullImageFace(tpl(card), instance(state, card).orientation.side));
     if (zone === "production" && productionLabel(catalog, state, card)) {
       toggleEngaged(card);
       return;

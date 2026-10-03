@@ -1,5 +1,5 @@
 import { staysInPlay } from "./flow";
-import { activeStage, instance, isFullImage, template } from "./state";
+import { activeStage, instance, isFullImageFace, template } from "./state";
 import type { Catalog, GameState, InstanceId } from "./types";
 
 // Ce qu'on ne voit pas sur l'image d'une carte : cases cochées ou palier suivant, compteur, gloire écrite.
@@ -35,6 +35,6 @@ export function cardBadges(catalog: Catalog, s: GameState, id: InstanceId): stri
  * jamais une carte à image pleine (une étape par face), dont le texte est en bas.
  */
 export function showsTopHalfOnly(catalog: Catalog, s: GameState, id: InstanceId): boolean {
-  if (!s.zones.play.includes(id) || isFullImage(template(catalog, instance(s, id).templateId))) return false;
+  if (!s.zones.play.includes(id) || isFullImageFace(template(catalog, instance(s, id).templateId), instance(s, id).orientation.side)) return false;
   return staysInPlay({ catalog, s }, id);
 }

@@ -22,3 +22,17 @@ describe("zones cliquables d'une carte", () => {
     expect(at(180, 400)).toBe("bottom");
   });
 });
+
+describe("faces à image pleine", async () => {
+  const { loadCatalog } = await import("../helpers/catalog");
+  const { isFullImageFace } = await import("../../src/engine");
+  const { zoneAtCard } = await import("../../src/ui/game/cardZones");
+  const catalog = await loadCatalog();
+  const mason = [...catalog.templates.values()].find((t) => t.serial === 43);
+  it("Mason (43) : recto à image pleine, verso à deux étapes ; toucher le texte du recto vise l'effet", () => {
+    if (!mason) throw new Error("carte 43 absente");
+    expect(isFullImageFace(mason, "front")).toBe(true);
+    expect(isFullImageFace(mason, "back")).toBe(false);
+    expect(zoneAtCard(0.5, 0.75, isFullImageFace(mason, "front"))).toBe("effect");
+  });
+});

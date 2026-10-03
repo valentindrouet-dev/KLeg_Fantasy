@@ -1,7 +1,7 @@
 import { useState, type ReactNode } from "react";
 import { cardImageUrl } from "../../data/loadCards";
 import type { CardTemplate, Orientation, StageId } from "../../data/schema";
-import { isFullImage, printedStage, stageIdAt, type StickerPlacement } from "../../engine";
+import { isFullImageFace, printedStage, stageIdAt, type StickerPlacement } from "../../engine";
 import { IconText, iconImage } from "../common/IconText";
 import { STICKER_SIZE, stickerSpots } from "./stickerLayout";
 import { usePress, type TapPoint } from "../common/usePress";
@@ -147,7 +147,7 @@ function Face({
       {bottom !== null && <span className={`${styles.stageNumber} ${styles.stageBottom} ${styles[`stage${bottom}`]}`}>{bottom}</span>}
       {exhausted && (
         <>
-          <Strikes full={isFullImage(template)} stage={topId} list={topId === null ? [] : exhausted(topId)} half="top" />
+          <Strikes full={isFullImageFace(template, orientation.side)} stage={topId} list={topId === null ? [] : exhausted(topId)} half="top" />
           <Strikes full={false} stage={bottomId} list={bottomId === null ? [] : exhausted(bottomId)} half="bottom" />
         </>
       )}
@@ -172,7 +172,7 @@ export function CardView(props: Props) {
   const interactive = Boolean(onTap || onLongPress) && !anim;
 
   const action = hover && zoneLabel ? zoneLabel(hover.zone) : null;
-  const fullImage = isFullImage(template);
+  const fullImage = isFullImageFace(template, orientation.side);
   const rect =
     hover && action && hover.zone !== "other" && hover.zone !== "bottom"
       ? fullImage && hover.zone === "effect"
