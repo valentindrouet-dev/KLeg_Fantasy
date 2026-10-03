@@ -17,7 +17,7 @@ export function actionCost(catalog: Catalog, s: GameState, a: Action): readonly 
   }
   if (a.type === "useEffect") {
     const impl = usableEffects(catalog, s, a.card).find((e) => e.effect.id === a.effect)?.impl;
-    return impl?.costOf?.({ catalog, s }, a.card) ?? impl?.cost ?? null;
+    return impl?.costOf?.({ catalog, s }, a.card, { targets: a.targets, option: a.option }) ?? impl?.cost ?? null;
   }
   return null;
 }

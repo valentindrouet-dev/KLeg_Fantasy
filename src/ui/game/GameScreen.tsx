@@ -447,8 +447,19 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
   };
 
   /** Action impayable : ce qui manque s'affiche sur la carte quelques secondes (pas de fenêtre). */
-  const showMissing = (card: InstanceId, o: CardOption, p: TapPoint) =>
+  /** Action impayable : la carte fait « non » et dit ce qui manque (demande du 2026-10-03 : ce n'est pas un bug). */
+  const showMissing = (card: InstanceId, o: CardOption, p: TapPoint) => {
+    refuse([card]);
     setNote({ card, note: { half: p.y < 0.5 ? "top" : "bottom", text: o.reason ?? "Impossible pour l'instant", tone: "warn" } });
+  };
+
+  /** La zone touchée porte-t-elle une action de la carte (effet à lancer, amélioration) ? */
+  const hasActionAt = (card: InstanceId, zone: ZoneKind): boolean => {
+    const stage = activeStage(catalog, state, card);
+    if (!stage) return false;
+    if (zone === "upgradeFlip" || zone === "upgradeRotate") return stage.upgrades.length > 0;
+    return zone === "effect" && stage.effects.some((e) => e.type === "activated" || e.type === "time" || e.type === "destroy");
+  };
 
   /** Cartes qui peuvent payer l'action en attente de paiement. */
   const payers = new Set(paying ? paymentCandidates(catalog, state, paying.action, engagedNow) : []);
@@ -597,7 +608,12 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
         if (at) opts = opts.filter((o) => o.action.type === "useEffect" && o.action.effect === at);
         if (opts.length === 0) return;
       }
-      if (opts.length === 0 && refuse(forbiddenBy(card, zone))) return;
+      if (opts.length === 0) {
+        // Un ennemi l'interdit : c'est lui qui fait « non » ; sinon la carte elle-même (condition non remplie : pas
+        // 6 cartes amies, plus rien à découvrir…).
+        if (!refuse(forbiddenBy(card, zone)) && hasActionAt(card, zone)) refuse([card]);
+        return;
+      }
       const only = opts[0];
       if (opts.length === 1 && only) {
         if (only.plan) run(only.plan);
@@ -698,7 +714,7 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
       return;
     }
     if (opts.length > 1) openMenu(id);
-    else if (!(playing && refuse(forbiddenBy(id, "effect")))) setInspect(id);
+    else if (!(playing && (refuse(forbiddenBy(id, "effect")) || (hasActionAt(id, "effect") && refuse([id]))))) setInspect(id);
   };
 
   const fame = computeScore(catalog, state).total;

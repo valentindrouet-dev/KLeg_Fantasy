@@ -44,7 +44,7 @@ import { restrictions } from "../passives";
 import { canAddResourceSticker, crossOutProduction, producedIcons, productionCount, productionGroups } from "../production";
 import { shuffle } from "../rng";
 import { activeStage, cardName, gain, instance, log, moveTo, template } from "../state";
-import type { Answer, ChoiceRequest, Draft, EffectImpl, InstanceId, TriggerCtx, TriggerImpl } from "../types";
+import type { Answer, ChoiceRequest, Draft, EffectImpl, EffectParams, InstanceId, TriggerCtx, TriggerImpl } from "../types";
 import { cardCostOptions, upgradeCost, upgradeOptions } from "../upgrade";
 import { upgradeCard } from "../actions";
 import { NO_PARAMS, effectKey } from "./registry";
@@ -292,19 +292,52 @@ function applyUpgradeChoice(d: Draft, c: UpgradeChoice, free: boolean): void {
   log(d.s, `Amélioration : ${before} → ${cardName(d.catalog, d.s, c.card)} (le tour continue)`);
 }
 
+/**
+ * « Upgrade 1 card in play, paying as normal », « Spend {coin}{coin} to upgrade… », « Upgrade a person in play for
+ * free… » : on touche la carte à améliorer (cible), puis les cartes à défausser s'il y en a ; le coût de l'effet et
+ * celui de l'amélioration se paient ensemble, cartes engagées comprises (demande du 2026-10-03).
+ * Paramètres : targets = [carte améliorée, cartes défaussées…], option = rang de l'amélioration sur l'étape.
+ */
 const upgradeFactory = (o: { cost: ResourceId[]; free: boolean; keep: (d: Draft, id: InstanceId) => boolean; arrow: "rotate" | "flip" | null }): Factory => () => {
-  const choices = (d: Draft, card: InstanceId) => upgradeChoices(d, card, { free: o.free, keep: (id) => o.keep(d, id), extraCost: o.cost });
-  return effect({
+  const choices = (d: Draft, card: InstanceId, extraCost: ResourceId[]) => upgradeChoices(d, card, { free: o.free, keep: (id) => o.keep(d, id), extraCost });
+  const upgradeOf = (d: Draft, p: EffectParams) => {
+    const target = p.targets[0];
+    const u = target ? activeStage(d.catalog, d.s, target)?.upgrades[p.option ?? 0] : undefined;
+    return target && u ? { target, u } : null;
+  };
+  const legacy = effect({
     cost: o.cost,
-    usable: (d, card) => !restrictions(d.catalog, d.s).noUpgrade && choices(d, card).length > 0,
-    ask: steps((d, card) => askOption("Quelle amélioration ?", choices(d, card).map((c) => c.label))),
+    usable: (d, card) => !restrictions(d.catalog, d.s).noUpgrade && choices(d, card, o.cost).length > 0,
+    ask: steps((d, card) => askOption("Quelle amélioration ?", choices(d, card, o.cost).map((c) => c.label))),
     run: (d, card, a) => {
       // Le coût de l'effet est déjà payé : la même liste se recalcule sans lui.
-      const chosen = upgradeChoices(d, card, { free: o.free, keep: (id) => o.keep(d, id), extraCost: [] })[optionOf(a[0])];
+      const chosen = choices(d, card, [])[optionOf(a[0])];
       if (chosen) applyUpgradeChoice(d, chosen, o.free);
       if (o.arrow) turnCard(d, card, o.arrow);
     },
   });
+  return {
+    ...legacy,
+    legacyAsk: true,
+    params: (d, card) =>
+      restrictions(d.catalog, d.s).noUpgrade
+        ? []
+        : choices(d, card, o.cost).map((c) => ({
+            targets: [c.card, ...c.discard],
+            option: activeStage(d.catalog, d.s, c.card)?.upgrades.findIndex((u) => u.id === c.upgrade) ?? 0,
+          })),
+    costOf: (d, _card, p) => {
+      const chosen = p ? upgradeOf(d, p) : null;
+      return chosen && !o.free ? [...o.cost, ...upgradeCost(d.catalog, d.s, chosen.target, chosen.u)] : o.cost;
+    },
+    apply: (d, card, p) => {
+      const chosen = upgradeOf(d, p);
+      if (!chosen) return legacy.apply(d, card, p);
+      if (o.cost.length) payD(d, o.cost);
+      applyUpgradeChoice(d, { card: chosen.target, upgrade: chosen.u.id, discard: p.targets.slice(1), label: "" }, o.free);
+      if (o.arrow) turnCard(d, card, o.arrow);
+    },
+  };
 };
 
 /** Stickers de ressource 1 à 6 sur une carte choisie. */

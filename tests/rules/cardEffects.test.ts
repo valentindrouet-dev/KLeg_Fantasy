@@ -3,6 +3,7 @@ import { computeScore, exhaustedEffects, getLegalActions, isEffectExhausted, pro
 import { canPay } from "../../src/engine/state";
 import { checkKey } from "../../src/engine/ops";
 import { payPool, restrictionSources } from "../../src/engine/passives";
+import { planWithEngaged } from "../../src/engine/payment";
 import { loadCatalog } from "../helpers/catalog";
 import { arrange, fk, legal, run } from "../helpers/game";
 
@@ -316,5 +317,26 @@ describe("effets épuisés", async () => {
     let t = arrange(catalog, { play: [95, 1], deck: [2, 3], resources: { coin: 2 } });
     t = run(catalog, t, { type: "useEffect", card: fk(95), effect: "e1", targets: [], option: null }, { type: "choose", answer: { box: "c9" } });
     expect(t.cards[fk(95)]?.checkedBoxes).toEqual(["1/c9"]);
+  });
+
+  it("Priest : on vise la carte à améliorer ; 2 {coin} + le coût de l'amélioration, payables avec des cartes engagées ; le tour continue", () => {
+    const s = arrange(catalog, { play: [104, 1, 2, 3], deck: [4, 5, 6], resources: { coin: 2 } });
+    const options = legal(catalog, arrange(catalog, { play: [104, 1, 2, 3], resources: { coin: 9 } })).filter((a) => a.type === "useEffect" && a.card === fk(104));
+    expect(options.map((a) => (a.type === "useEffect" ? a.targets : []))).toEqual([[fk(1)], [fk(2)], [fk(3)]]);
+    // 2 {coin} en réserve ne suffisent pas pour 2 + 2 : les Wild Grass 2 et 3 produisent pour améliorer la 1.
+    const action: Action = { type: "useEffect", card: fk(104), effect: "e1", targets: [fk(1)], option: 0 };
+    const plan = planWithEngaged(catalog, s, action, [fk(2), fk(3)]);
+    expect(plan).not.toBeNull();
+    const after = run(catalog, s, ...(plan ?? []));
+    expect(after.cards[fk(1)]?.orientation).toEqual({ side: "front", rotation: 180 });
+    expect(after.turn).toBe(1);
+    expect(after.pending).toBeNull();
+  });
+
+  it("Priest : une partie enregistrée avec l'ancienne forme (effet sans cible, puis menu) se rejoue", () => {
+    let s = arrange(catalog, { play: [104, 1, 2], deck: [4, 5, 6], resources: { coin: 4 } });
+    s = run(catalog, s, { type: "useEffect", card: fk(104), effect: "e1", targets: [], option: null }, { type: "choose", answer: { option: 0 } });
+    expect(s.cards[fk(1)]?.orientation).toEqual({ side: "front", rotation: 180 });
+    expect(s.resources.coin).toBe(0);
   });
 });

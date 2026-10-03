@@ -3,6 +3,11 @@
 Chaque mise à jour publiée change de version (`package.json`, affichée dans l'appli en bas de l'écran « Mes royaumes »
 et dans la barre de la partie). Convention : `0.5.0` s'affiche **v0.05** ; un correctif `0.5.1` s'affiche **v0.05.1**.
 
+## v0.39 (3 octobre 2026)
+
+- Priest, Cardinal et les effets « upgrade 1 card in play » : on touche l'effet, puis la carte à améliorer (les cartes possibles s'allument), puis les cartes à défausser s'il y en a. Le coût de l'effet et celui de l'amélioration se paient ensemble, aussi avec des cartes engagées ; le tour continue. Avant, un menu s'ouvrait et l'amélioration ne pouvait pas se payer avec la production des cartes en jeu.
+- Pouvoir impossible pour l'instant (Lost Civilization sans 6 cartes amies, effet épuisé, ressources qui manquent…) : la carte fait « non » en rouge, comme un ennemi qui interdit un geste ; quand des ressources manquent, ce qui manque s'affiche aussi.
+
 ## v0.38 (3 octobre 2026)
 
 - Cases à cocher : une croix au feutre noir sur chaque case cochée, à sa place sur la carte (positions des 37 étapes à cases mesurées sur les images). Le compteur « ☑ n/N » disparaît.

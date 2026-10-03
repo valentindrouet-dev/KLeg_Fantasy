@@ -134,7 +134,13 @@ export function isLegal(catalog: Catalog, s: GameState, a: Action): boolean {
   // Réponse à une question : vérifiée contre la question (les réponses ne sont pas toutes énumérées).
   if (a.type === "choose") return s.phase === "playing" && s.pending?.kind === "choice" && isValidAnswer(s.pending.request, a.answer);
   const key = actionKey(a);
-  return getLegalActions(catalog, s).some((l) => actionKey(l) === key);
+  if (getLegalActions(catalog, s).some((l) => actionKey(l) === key)) return true;
+  // Parties enregistrées avant que l'effet prenne une cible (Priest, Cardinal, School…) : forme sans cible, puis questions.
+  if (a.type === "useEffect" && a.targets.length === 0 && a.option === null && s.phase === "playing" && !s.pending) {
+    const found = usableEffects(catalog, s, a.card).find((x) => x.effect.id === a.effect);
+    return Boolean(found?.impl.legacyAsk && found.impl.params({ catalog, s }, a.card).length > 0);
+  }
+  return false;
 }
 
 /** Applique une action légale et renvoie le nouvel état (l'état reçu n'est jamais modifié). */
@@ -205,7 +211,8 @@ function execute(d: Draft, a: Action): void {
     case "useEffect": {
       const found = usableEffects(catalog, s, a.card).find((x) => x.effect.id === a.effect);
       if (!found) throw new IllegalActionError(`Effet indisponible : ${a.effect}`);
-      const ask = found.impl.ask;
+      // Effet à cible choisie sur le plateau (Priest : la carte à améliorer) : pas de question.
+      const ask = a.targets.length ? undefined : found.impl.ask;
       if (ask) {
         const answers: Answer[] = [];
         const request = nextQuestion((x) => ask(d, a.card, x), answers);
