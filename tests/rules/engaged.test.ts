@@ -114,3 +114,19 @@ describe("productions qui dépendent des autres cartes", async () => {
     expect(after.cards[fk(26)]?.checkedBoxes).toContain("1/c3");
   });
 });
+
+describe("Export", async () => {
+  const catalog = await loadCatalog();
+  it("les cartes engagées qui produisent des marchandises paient Export, puis on choisit combien dépenser", () => {
+    // Exotic Fruit Trees (20 au stage 4) : 2 {tradeGood}.
+    const s = arrange(catalog, { play: [20, 1], permanent: [27], orientation: { 20: { side: "back", rotation: 0 } } });
+    const effect: Action = { type: "useEffect", card: fk(27), effect: "e1", targets: [], option: null };
+    expect(paymentCandidates(catalog, s, effect, [])).toEqual([fk(20)]);
+    const plan = planWithEngaged(catalog, s, effect, [fk(20)]);
+    expect(plan).not.toBeNull();
+    let after = (plan ?? []).reduce((st, a) => applyAction(catalog, st, a), s);
+    expect(after.pending).toMatchObject({ kind: "choice", request: { labels: ["2", "1"] } });
+    after = applyAction(catalog, after, { type: "choose", answer: { option: 0 } });
+    expect(after.cards[fk(27)]?.tallies).toEqual({ "1": 2 });
+  });
+});

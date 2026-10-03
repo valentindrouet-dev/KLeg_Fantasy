@@ -1,6 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { activeStage, cardName, usableEffects, type Action, type Catalog, type GameState, type InstanceId } from "../../engine";
-import { stageFr } from "../../data/translations";
 import { IconText } from "../common/IconText";
 import styles from "./Game.module.css";
 
@@ -47,9 +46,8 @@ export function CardActions({ catalog, state, card, anchor, options, engageLabel
     return () => window.removeEventListener("keydown", onKey);
   }, [onClose]);
 
-  const stage = activeStage(catalog, state, card);
-  const fr = stage ? stageFr(state.cards[card]?.templateId ?? "", stage.id) : undefined;
   const automated = new Set(usableEffects(catalog, state, card).map((e) => e.effect.id));
+  const stage = activeStage(catalog, state, card);
   const manual = (stage?.effects ?? []).filter((e) => ACTION_EFFECT_TYPES.includes(e.type) && !automated.has(e.id));
 
   return (
@@ -57,11 +55,6 @@ export function CardActions({ catalog, state, card, anchor, options, engageLabel
       <div className={styles.popoverBackdrop} onClick={onClose} />
       <div ref={ref} className={styles.popover} style={pos} role="menu" aria-label={`Actions : ${cardName(catalog, state, card)}`}>
         <h3>{cardName(catalog, state, card)}</h3>
-        {fr && (fr.text || fr.name !== stage?.name) && (
-          <p className={styles.translation}>
-            <strong>{fr.name}</strong> {fr.text && <IconText text={fr.text} />}
-          </p>
-        )}
         {engageLabel && (
           <section>
             <button className={styles.actionItem} onClick={onEngage}>

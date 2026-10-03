@@ -3,6 +3,13 @@
 Chaque mise à jour publiée change de version (`package.json`, affichée dans l'appli en bas de l'écran « Mes royaumes »
 et dans la barre de la partie). Convention : `0.5.0` s'affiche **v0.05** ; un correctif `0.5.1` s'affiche **v0.05.1**.
 
+## v0.28 (3 octobre 2026)
+
+- Export : se paie aussi avec des cartes engagées, ou en touchant Export puis les cartes qui brillent ; on choisit ensuite combien de {tradeGood} y dépenser.
+- Mode FR (bouton FR) : toucher une carte pose la traduction de la moitié touchée sur la carte elle-même, sans jouer ; décocher FR l'efface. Plus d'infobulle ni de traduction dans le menu des cartes. Une carte permanente touchée en mode FR s'ouvre en grand, traduisible.
+- Action impayable : « Il manque … » s'affiche sur la carte quelques secondes, plus de fenêtre.
+- Toucher le fond de la zone de jeu annule le choix des cartes qui paient (ou de la cible).
+
 ## v0.27 (3 octobre 2026)
 
 - Toucher une amélioration ou un effet impayable ouvre le menu de la carte, qui dit ce qui manque, avec la mention « la carte ne peut pas payer avec sa propre production » quand c'est le cas (une carte qui produit est défaussée : elle ne peut pas aussi s'améliorer).

@@ -21,8 +21,8 @@ Routage par hash (`src/ui/App.tsx`) : `#/` Mes royaumes, `#/partie/<id>` partie,
   du milieu, texte d'effet au centre ; toucher la zone fait l'action si elle est unique et payable. Au survol (souris,
   trackpad), la zone s'éclaire et une bulle annonce l'action.
 - **Pioche** : toucher le deck = Avancer.
-- **Traduction** : au survol d'une carte, bulle avec le nom et le texte en français du stage pointé (moitié haute =
-  stage actif, moitié basse = stage suivant). Sur iPad, la traduction du stage actif est dans la feuille d'actions.
+- **Mode FR** (bouton FR, demande du 2026-10-03) : toucher une carte pose la traduction de la moitié touchée sur la
+  carte (`translationNote.ts`, `CardView.note`), sans jouer ; décocher FR l'efface. Plus d'infobulle au survol.
   Textes : `data/translations/FeudalKingdom.fr.json` (aide à la lecture, les fiches restent en anglais).
 - **Ailleurs sur la carte** : feuille d'actions (engager, améliorations, effets payables avec les cartes engagées,
   raisons d'impossibilité).
@@ -41,7 +41,8 @@ Routage par hash (`src/ui/App.tsx`) : `#/` Mes royaumes, `#/partie/<id>` partie,
 - **Marque** : toucher une carte en jeu avec deux doigts (Alt + clic sur ordinateur) pose un contour bleu ; il tombe quand la carte quitte le jeu.
 - **Sauvegarde** : bouton ⤓ dans la partie (fichier JSON) ; « Importer » ⤒ sur l'accueil (`persistence/backup.ts`, partie rejouée à l'import).
 - **Messages** : aucun message après une action ni quand une action est impossible.
-- **Zone neutre** d'une carte : bulle de traduction de la moitié touchée, si FR est activé (sinon rien). La feuille d'actions ne s'ouvre que pour un choix (ex. Bazaar).
+- **Zone neutre** d'une carte : rien. La feuille d'actions ne s'ouvre que pour un choix (ex. Bazaar).
+- **Action impayable** : « Il manque … » posé sur la carte 4 s (note rouge).
 - **Appli iPad** : `public/manifest.webmanifest`, icônes pièce sur fond noir (`scripts/make-app-icons.ts`).
 - **Tri ⇅** : cartes en jeu par ressource (défaut), par type de terrain ou ordre d'arrivée (`sortCards.ts`, affichage seulement).
 - **Stats** : cartes par zone, par étape (1 à 4), production par ressource, gloire, types (en anglais), découvertes / détruites / boîte ; cases colorées (`engine/stats.ts`).

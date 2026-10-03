@@ -1,11 +1,9 @@
 import { useState, type ReactNode } from "react";
 import { cardImageUrl } from "../../data/loadCards";
 import type { CardTemplate, Orientation, StageId } from "../../data/schema";
-import { stageFr } from "../../data/translations";
 import { isFullImage, printedStage, stageIdAt, type StickerPlacement } from "../../engine";
 import { IconText, iconImage } from "../common/IconText";
 import { STICKER_SIZE, stickerSpots } from "./stickerLayout";
-import { usePrefs } from "../common/prefs";
 import { usePress, type TapPoint } from "../common/usePress";
 import { FULL_IMAGE_EFFECT_RECT, ZONE_RECTS, zoneAtCard, type ZoneKind } from "./cardZones";
 import styles from "./Game.module.css";
@@ -38,7 +36,17 @@ type Props = {
   stickers?: readonly StickerPlacement[];
   /** Seulement la moitié haute (carte au dernier stage ou qui reste en jeu : gain de place). */
   half?: boolean;
+  /** Texte posé sur la carte : traduction (mode FR) ou ce qui manque pour payer. */
+  note?: CardNote;
 };
+
+export type CardNote = { half: "top" | "bottom" | "full"; title?: string; text: string; tone: "fr" | "warn" };
+
+const NOTE_PLACES = {
+  top: { top: 0, height: "50%" },
+  bottom: { top: "50%", height: "50%" },
+  full: { top: 0, height: "100%" },
+} as const;
 
 /** Image d'un sticker : ressource, gloire, Knight, « Stays in play ». */
 function stickerIcon(st: StickerPlacement): { src: string | undefined; text: string } {
@@ -83,12 +91,6 @@ export const ANIM_MS = 700;
 
 type Hover = { zone: ZoneKind; half: "top" | "bottom"; x: number; y: number };
 
-/** Stage visible dans la moitié haute ou basse de la carte (image pleine : la même étape partout). */
-function stageInHalf(t: CardTemplate, o: Orientation, half: "top" | "bottom"): StageId | null {
-  if (isFullImage(t)) return stageIdAt(t, o);
-  return stageIdAt(t, half === "top" ? o : { side: o.side, rotation: o.rotation === 0 ? 180 : 0 });
-}
-
 /** Une face : image dans son orientation + numéros d'étape de chaque moitié. */
 function Face({
   template,
@@ -132,19 +134,15 @@ function Face({
 }
 
 export function CardView(props: Props) {
-  const { id, template, orientation, label, width, selected, engaged, targetable, dimBottom, flagged, onTwoFinger, dimmed, badge, onTap, onLongPress, zoneLabel, anim, stickers, half } =
+  const { id, template, orientation, label, width, selected, engaged, targetable, dimBottom, flagged, onTwoFinger, dimmed, badge, onTap, onLongPress, zoneLabel, anim, stickers, half, note } =
     props;
   // Demi-carte : les positions touchées sont ramenées à la carte entière (zones cliquables inchangées).
   const yScale = half ? 0.5 : 1;
   const press = usePress(onTap ? (p) => onTap({ ...p, y: p.y * yScale }) : () => {}, onLongPress, onTwoFinger);
   const [hover, setHover] = useState<Hover | null>(null);
   const [clicked, setClicked] = useState(false); // pas de bulle après un clic, jusqu'à la sortie du pointeur
-  const tooltipsFr = usePrefs((p) => p.tooltipsFr);
   const interactive = Boolean(onTap || onLongPress) && !anim;
 
-  const stageId = hover ? stageInHalf(template, orientation, hover.half) : null;
-  const stage = stageId ? template.stages[String(stageId) as "1" | "2" | "3" | "4"] : undefined;
-  const fr = stageId && tooltipsFr ? stageFr(template.id, stageId) : undefined;
   const action = hover && zoneLabel ? zoneLabel(hover.zone) : null;
   const fullImage = isFullImage(template);
   const rect =
@@ -222,30 +220,14 @@ export function CardView(props: Props) {
         />
       )}
       {badge && <span className={styles.badge}>{badge}</span>}
-      {hover && !anim && (fr || (action && tooltipsFr)) && (
+      {note && (
         <div
-          className={styles.tooltip}
-          style={{ left: Math.min(hover.x + 16, window.innerWidth - 336), top: Math.min(hover.y + 16, window.innerHeight - 160) }}
-          role="tooltip"
+          className={`${styles.cardNote} ${note.tone === "warn" ? styles.cardNoteWarn : ""} ${(width ?? 200) < 160 ? styles.cardNoteBelow : ""}`}
+          style={(width ?? 200) < 160 ? undefined : NOTE_PLACES[half ? "top" : note.half]}
+          role="note"
         >
-          {action && (
-            <p className={styles.tooltipAction}>
-              <IconText text={action} />
-            </p>
-          )}
-          {fr && (
-            <>
-              <strong>
-                {fr.name || stage?.name}
-                {stage?.name && fr.name !== stage.name ? <small> ({stage.name})</small> : null}
-              </strong>
-              {fr.text && (
-                <p>
-                  <IconText text={fr.text} />
-                </p>
-              )}
-            </>
-          )}
+          {note.title && <strong>{note.title}</strong>}
+          <IconText text={note.text} />
         </div>
       )}
     </div>

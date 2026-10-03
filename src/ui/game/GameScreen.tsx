@@ -41,8 +41,9 @@ const TOP_SPACER = 40;
 import type { TapPoint } from "../common/usePress";
 import { CardActions, type CardOption } from "./CardActions";
 import { zoneAtCard, type ZoneKind } from "./cardZones";
-import { ANIM_MS, CardView } from "./CardView";
-import { CardListDialog, ConfirmDialog, DecisionDialog, EndDialog, Inspector, StatsDialog, TranslationBubble } from "./Dialogs";
+import { ANIM_MS, CardView, type CardNote } from "./CardView";
+import { CardListDialog, ConfirmDialog, DecisionDialog, EndDialog, Inspector, StatsDialog } from "./Dialogs";
+import { frNote } from "./translationNote";
 import { useGame } from "./store";
 import { cardWidthFor, useFitArea } from "./useFitCards";
 import { useCardMotion } from "./useCardMotion";
@@ -116,7 +117,8 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
   const [inspect, setInspect] = useState<InstanceId | null>(null);
   const [discardOpen, setDiscardOpen] = useState(false);
   const [roundBanner, setRoundBanner] = useState<{ key: number; text: string } | null>(null);
-  const [bubble, setBubble] = useState<{ card: InstanceId; half: "top" | "bottom"; x: number; y: number } | null>(null);
+  /** Texte posé sur une carte : traduction en mode FR, ou ce qui manque pour payer. */
+  const [note, setNote] = useState<{ card: InstanceId; note: CardNote } | null>(null);
   const lastRound = useRef<number | null>(null);
   const [pending, setPending] = useState<Pending | null>(null);
   const [endClosed, setEndClosed] = useState(false);
@@ -233,17 +235,20 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
     return () => window.removeEventListener("keydown", onKey);
   }, [advance, pass, run, undo, pending, inspect, discardOpen, state?.pending, anim, targeting, paying]);
 
-  // Bulle de traduction : se ferme au toucher suivant ou après quelques secondes.
+  // Texte sur une carte : il part au toucher suivant (ou après 4 s pour « il manque ») ; le mode FR coupé l'efface.
   useEffect(() => {
-    if (!bubble) return;
-    const close = () => setBubble(null);
-    const t = window.setTimeout(close, 6000);
+    if (!note) return;
+    const close = () => setNote(null);
+    const t = note.note.tone === "warn" ? window.setTimeout(close, 4000) : undefined;
     window.addEventListener("pointerdown", close, { capture: true, once: true });
     return () => {
       window.clearTimeout(t);
       window.removeEventListener("pointerdown", close, { capture: true });
     };
-  }, [bubble]);
+  }, [note]);
+  useEffect(() => {
+    if (!tooltipsFr) setNote((n) => (n?.note.tone === "fr" ? null : n));
+  }, [tooltipsFr]);
 
   // Nouvelle manche : message central qui apparaît puis disparaît.
   const round = state?.round ?? null;
@@ -317,12 +322,15 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
   );
   const targetsInDiscard = [...targetOptions.keys()].filter((id) => state.zones.discard.includes(id));
 
+  /** Mode FR : la traduction de la moitié touchée s'affiche sur la carte. */
   const showTranslation = (card: InstanceId, p: TapPoint) => {
-    if (!tooltipsFr) return;
-    const r = playEl.current?.querySelector(`[data-card="${card}"]`)?.getBoundingClientRect();
-    if (!r) return;
-    setBubble({ card, half: p.y < 0.5 ? "top" : "bottom", x: r.left + p.x * r.width, y: r.top + p.y * r.height });
+    const n = frNote(tpl(card), instance(state, card).orientation, p.y < 0.5 ? "top" : "bottom");
+    if (n) setNote({ card, note: n });
   };
+
+  /** Action impayable : ce qui manque s'affiche sur la carte quelques secondes (pas de fenêtre). */
+  const showMissing = (card: InstanceId, o: CardOption, p: TapPoint) =>
+    setNote({ card, note: { half: p.y < 0.5 ? "top" : "bottom", text: o.reason ?? "Impossible pour l'instant", tone: "warn" } });
 
   /** Cartes qui peuvent payer l'action en attente de paiement. */
   const payers = new Set(paying ? paymentCandidates(catalog, state, paying.action, engagedNow) : []);
@@ -361,6 +369,11 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
       return;
     }
     if (!playing) return;
+    // Mode FR (bouton FR) : toucher une carte montre sa traduction, sans jouer.
+    if (tooltipsFr) {
+      showTranslation(card, p);
+      return;
+    }
     const zone = zoneAtCard(p.x, p.y, isFullImage(tpl(card)));
     if (zone === "production" && productionLabel(catalog, state, card)) {
       toggleEngaged(card);
@@ -371,7 +384,7 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
       const only = opts[0];
       if (opts.length === 1 && only) {
         if (only.plan) run(only.plan);
-        else if (!startPaying(card, only)) openMenu(card); // le menu dit ce qui manque
+        else if (!startPaying(card, only)) showMissing(card, only, p);
         return;
       }
       // Effet à cible unique (ex. « Discard a friendly card ») : toucher l'effet, puis la carte visée.
@@ -385,8 +398,6 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
       // Plusieurs choix sans cible (ex. Bazaar : bois ou pierre) : petit menu de choix.
       if (opts.length > 1) openMenu(card);
     }
-    // Zone neutre : bulle de traduction de la moitié touchée, si les infobulles FR sont activées.
-    showTranslation(card, p);
   };
 
   const card = (id: InstanceId, width: number | undefined, onTap?: (p: TapPoint) => void, inspectable = true, extra?: { engaged?: boolean; zones?: boolean }) => (
@@ -411,6 +422,7 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
       anim={anim?.card === id ? { kind: anim.kind, to: anim.to } : undefined}
       stickers={instance(state, id).stickers}
       half={extra?.zones ? showsTopHalfOnly(catalog, state, id) : undefined}
+      note={note?.card === id ? note.note : undefined}
     />
   );
 
@@ -426,11 +438,16 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
    * qui peuvent payer s'allument ; plusieurs effets : le menu. Sans effet : l'inspection (appui long aussi).
    */
   const tapPermanent = (id: InstanceId) => {
+    // Mode FR : l'inspection montre la carte en grand, traduite.
+    if (tooltipsFr) {
+      setInspect(id);
+      return;
+    }
     const opts = playing ? optionsFor(id) : [];
     const only = opts[0];
     if (opts.length === 1 && only) {
       if (only.plan) run(only.plan);
-      else if (!startPaying(id, only)) openMenu(id); // le menu dit ce qui manque
+      else if (!startPaying(id, only)) showMissing(id, only, { x: 0.5, y: 0.25 });
       return;
     }
     if (opts.length > 1) openMenu(id);
@@ -663,6 +680,12 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
           fitRef(node);
         }}
         aria-label="Zone de jeu"
+        onClick={(e) => {
+          // Toucher le fond de la zone de jeu annule le choix des cartes qui paient ou de la cible.
+          if (e.target !== e.currentTarget) return;
+          setPaying(null);
+          setTargeting(null);
+        }}
       >
         {ordered.map((id, i) => {
           const held = state.blocks?.[id] ?? [];
@@ -701,7 +724,6 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
         </button>
       </div>
 
-      {bubble && <TranslationBubble catalog={catalog} state={state} {...bubble} />}
 
       {selected && playing && (
         <CardActions

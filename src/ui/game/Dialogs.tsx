@@ -4,9 +4,7 @@ import {
   cardName,
   computeScore,
   instance,
-  isFullImage,
   kingdomStats,
-  stageIdAt,
   template,
   type Action,
   type Answer,
@@ -14,10 +12,12 @@ import {
   type GameState,
   type InstanceId,
 } from "../../engine";
-import { stageFr } from "../../data/translations";
 import { Dialog } from "../common/Dialog";
 import { Icon, IconText } from "../common/IconText";
-import { CardView } from "./CardView";
+import { CardView, type CardNote } from "./CardView";
+import { frNote } from "./translationNote";
+import { usePrefs } from "../common/prefs";
+import type { TapPoint } from "../common/usePress";
 import styles from "./Game.module.css";
 
 // Fenêtres de la partie : inspection, décisions en attente, défausse, fin de partie, confirmation.
@@ -49,11 +49,35 @@ export function Inspector({ catalog, state, card, onClose }: { catalog: Catalog;
   const c = instance(state, card);
   const t = template(catalog, c.templateId);
   const other = { side: c.orientation.side === "front" ? "back" : "front", rotation: c.orientation.rotation } as const;
+  // Mode FR : toucher une moitié pose sa traduction sur la carte ; toucher à nouveau l'enlève.
+  const tooltipsFr = usePrefs((p) => p.tooltipsFr);
+  const [note, setNote] = useState<{ face: 0 | 1; note: CardNote } | null>(null);
+  const tap = (face: 0 | 1, o: typeof c.orientation) => (p: TapPoint) => {
+    if (!tooltipsFr) return;
+    const n = frNote(t, o, p.y < 0.5 ? "top" : "bottom");
+    setNote(n && !(note?.face === face && note.note.half === n.half) ? { face, note: n } : null);
+  };
   return (
     <Dialog title={cardName(catalog, state, card)} onClose={onClose} wide>
       <div className={styles.inspector}>
-        <CardView template={t} orientation={c.orientation} label="Face visible" width={bigCard(2)} stickers={c.stickers} />
-        <CardView template={t} orientation={other} label="Autre face" width={bigCard(2)} stickers={c.stickers} />
+        <CardView
+          template={t}
+          orientation={c.orientation}
+          label="Face visible"
+          width={bigCard(2)}
+          stickers={c.stickers}
+          onTap={tap(0, c.orientation)}
+          note={tooltipsFr && note?.face === 0 ? note.note : undefined}
+        />
+        <CardView
+          template={t}
+          orientation={other}
+          label="Autre face"
+          width={bigCard(2)}
+          stickers={c.stickers}
+          onTap={tap(1, other)}
+          note={tooltipsFr && note?.face === 1 ? note.note : undefined}
+        />
       </div>
     </Dialog>
   );
@@ -515,40 +539,3 @@ const KEYWORD_TONES: Record<string, string> = {
 };
 
 /** Bulle de traduction d'une moitié de carte (toucher hors des zones d'action, infobulles FR activées). */
-export function TranslationBubble({
-  catalog,
-  state,
-  card,
-  half,
-  x,
-  y,
-}: {
-  catalog: Catalog;
-  state: GameState;
-  card: InstanceId;
-  half: "top" | "bottom";
-  x: number;
-  y: number;
-}) {
-  const c = instance(state, card);
-  const t = template(catalog, c.templateId);
-  // Image pleine : une seule étape par face, quelle que soit la moitié touchée.
-  const o = half === "top" || isFullImage(t) ? c.orientation : ({ side: c.orientation.side, rotation: c.orientation.rotation === 0 ? 180 : 0 } as const);
-  const stageId = stageIdAt(t, o);
-  const fr = stageId ? stageFr(t.id, stageId) : undefined;
-  if (!fr) return null;
-  const stage = stageId ? t.stages[String(stageId) as "1" | "2" | "3" | "4"] : undefined;
-  return (
-    <div className={styles.tooltip} style={{ left: Math.min(x + 12, window.innerWidth - 336), top: Math.min(y + 12, window.innerHeight - 180) }} role="tooltip">
-      <strong>
-        {fr.name || stage?.name}
-        {stage?.name && fr.name !== stage.name ? <small> ({stage.name})</small> : null}
-      </strong>
-      {fr.text && (
-        <p>
-          <IconText text={fr.text} />
-        </p>
-      )}
-    </div>
-  );
-}
