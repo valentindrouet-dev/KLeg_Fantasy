@@ -15,5 +15,6 @@ export { kingdomStats, type KingdomStats } from "./stats";
 export { manualEffects, validOrientations, checkKey, isManualOpValid } from "./manual";
 export { cardBadges, showsTopHalfOnly } from "./badges";
 export { exhaustedEffects, isEffectExhausted, type ExhaustedEffect } from "./exhausted";
-export { staysInPlay } from "./flow";
+export { staysInPlay, isStayInPlayCard } from "./flow";
 export { canPeekSecond, restrictions, restrictionSources } from "./passives";
+export { availableExpansions, expansionName, EXPANSION_SERIALS, inExpansion } from "./campaign";

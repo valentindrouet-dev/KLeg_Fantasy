@@ -48,6 +48,8 @@ export function describeAction(catalog: Catalog, s: GameState, a: Action): strin
       return describeAnswer(catalog, s, a.answer);
     case "cancelChoice":
       return "Annuler l'effet";
+    case "startExpansion":
+      return `Jouer la mini-extension ${template(catalog, instance(s, a.card).templateId).stages["1"]?.name.replace(/ \(expansion\)$/, "") ?? ""}`;
   }
 }
 
@@ -59,6 +61,7 @@ const ZONE_LABELS = {
   permanent: "Permanentes",
   destroyed: "Détruite",
   blocked: "Bloquée",
+  purged: "Purgée",
 } as const;
 
 function describeAnswer(catalog: Catalog, s: GameState, a: Answer): string {

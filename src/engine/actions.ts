@@ -16,6 +16,7 @@ import {
 } from "./flow";
 import { queueScript } from "./ops";
 import { payPool, restrictions } from "./passives";
+import { availableExpansions, startExpansion } from "./campaign";
 import { producedIcons, productionChoices, productionGroups } from "./production";
 import {
   activeStage,
@@ -63,7 +64,7 @@ export function usableEffects(catalog: Catalog, s: GameState, id: InstanceId): U
 }
 
 export function getLegalActions(catalog: Catalog, s: GameState): Action[] {
-  if (s.phase === "gameOver") return [];
+  if (s.phase === "gameOver") return availableExpansions(s).map((card) => ({ type: "startExpansion", card }));
   const p = s.pending;
   if (p) {
     switch (p.kind) {
@@ -262,6 +263,9 @@ function execute(d: Draft, a: Action): void {
       return;
     case "acknowledgeDiscoveries":
       s.pending = null;
+      return;
+    case "startExpansion":
+      startExpansion(d, a.card);
       return;
   }
 }

@@ -1,6 +1,6 @@
 import type { CardTemplate, Checkbox, ResourceId, StageId } from "../../data/schema";
 import { askCards, askOption, askResources, cardsOf, optionOf, resourcesOf } from "../choice";
-import { boxCardsBySerial, discardFromDeck, discoverNormally, discoverSerials, offerDiscovery, playCard } from "../flow";
+import { boxCardsBySerial, discardFromDeck, discoverNormally, discoverSerials, offerDiscovery, playCard, staysInPlay } from "../flow";
 import {
   addResourceStickerOf,
   addSticker,
@@ -49,6 +49,7 @@ import { cardCostOptions, upgradeCost, upgradeOptions } from "../upgrade";
 import { upgradeCard } from "../actions";
 import { NO_PARAMS, effectKey } from "./registry";
 import { FORTRESS_TEXT } from "./substitutes";
+import { EXPANSION_EFFECTS, EXPANSION_TRIGGERS } from "./expansions";
 
 // Effets des cartes de Feudal Kingdom (cartes 11 à 135), reconnus à leur texte imprimé exact : toutes les copies
 // d'une carte en profitent. Les questions au joueur passent par `ask` (une à la fois, avant tout paiement), puis
@@ -868,7 +869,8 @@ export function cardEffects(templates: Iterable<CardTemplate>): Map<string, Effe
       const sid = Number(key) as StageId;
       for (const e of stage.effects) {
         if (e.type === "triggeredForced" || e.type === "triggeredOptional") continue;
-        let factory: Factory | undefined = EXACT[e.text];
+        const expansion = EXPANSION_EFFECTS[e.text];
+        let factory: Factory | undefined = EXACT[e.text] ?? (expansion ? () => expansion() : undefined);
         if (!factory) {
           for (const [re, make] of PATTERNS) {
             const m = re.exec(e.text);
@@ -910,8 +912,10 @@ function stayTrigger(text: string): TriggerImpl | null {
   const includeSelf = m[3] === "this or another";
   const n = m[3] === "another" || m[3] === "this or another" ? 1 : Number(m[3]);
   const onlyPersons = (m[5] ?? "").startsWith("person");
+  // Jamais les ennemis, ni les cartes qui restent déjà en jeu (texte, sticker, gardées par une autre carte) : les
+  // proposer ne servirait à rien et prêtait à confusion (demande du 2026-10-03).
   const options = (d: Draft, self: InstanceId) =>
-    d.s.zones.play.filter((id) => (includeSelf || id !== self) && (!onlyPersons || isPerson(d, id)));
+    d.s.zones.play.filter((id) => (includeSelf || id !== self) && (!onlyPersons || isPerson(d, id)) && !isEnemy(d, id) && !staysInPlay(d, id));
   return trigger({
     timing: "endTurn",
     optional: true,
@@ -1330,7 +1334,7 @@ export function cardTriggers(templates: Iterable<CardTemplate>): Map<string, Tri
       if (!stage) continue;
       const sid = Number(key) as StageId;
       for (const e of stage.effects) {
-        const make = TRIGGERS[e.text];
+        const make = TRIGGERS[e.text] ?? EXPANSION_TRIGGERS[e.text];
         const impl = make?.() ?? stayTrigger(e.text) ?? playCountTrigger(e.text);
         if (impl) out.set(effectKey(t.id, sid, e.id), impl);
       }

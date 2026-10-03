@@ -3,6 +3,13 @@
 Chaque mise à jour publiée change de version (`package.json`, affichée dans l'appli en bas de l'écran « Mes royaumes »
 et dans la barre de la partie). Convention : `0.5.0` s'affiche **v0.05** ; un correctif `0.5.1` s'affiche **v0.05.1**.
 
+## v0.37 (3 octobre 2026)
+
+- Mini-extensions 136, 137, 138 : une fois la partie terminée, la fenêtre de fin propose de jouer Prosperity, The Water Mill ou Border Dispute (une seule fois chacune, les jouées sont grisées). Purge 12 (une carte amie par paquet de 12), purge d'une carte permanente, puis 4 manches sans découverte de début de manche ; la carte d'extension change d'étape à chaque fin de manche. Tous les effets des 12 étapes sont automatisés.
+- Purge : la gloire des cartes purgées s'ajoute au score pour toujours ; Aethan Estate peut sauver des cartes de la purge, Temple of Light vaut +10 {fame} par case cochée.
+- Chemin de score : score de la partie de base, puis après chaque mini-extension.
+- Cartes qui en gardent d'autres en jeu (Shrine, Temple, Villa…) : les ennemis et les cartes qui restent déjà en jeu ne sont plus proposés ; une carte gardée reste à sa place, en carte entière (elle passait dans la ligne du haut, coupée). Avec deux cartes de ce type, la seconde ne propose plus les cartes déjà gardées.
+
 ## v0.36 (3 octobre 2026)
 
 - Choix de cartes sur le plateau (Skilled Bandit qui bloque 3 cartes, cible d'un effet, coût en personnes) : une carte choisie a un contour vert et une coche, bien distincte des cartes encore possibles, et un compteur en haut dit combien sont choisies (« 3 cartes bloquées 2/3 »). Avant, rien ne montrait qu'une carte était choisie, et la toucher une deuxième fois l'annulait : le choix semblait bloqué.

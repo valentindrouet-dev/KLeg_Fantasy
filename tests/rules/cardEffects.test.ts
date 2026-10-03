@@ -287,4 +287,19 @@ describe("effets épuisés", async () => {
     t.zones.box = t.zones.box.filter((id) => id !== fk(84) && id !== fk(85));
     expect(exhaustedEffects(catalog, t, fk(15), 4)).toEqual([{ id: "e1", index: 0, count: 1 }]);
   });
+
+  it("deux cartes qui gardent d'autres cartes en jeu : sans ennemi ni carte déjà gardée, et le tour suivant commence normalement", () => {
+    const sanctuary = { side: "front", rotation: 180 } as const;
+    let s = arrange(catalog, { play: [82, 83, 1, 2, 56], deck: [3, 4, 5, 6, 7, 8, 9, 10], orientation: { 82: sanctuary, 56: { side: "back", rotation: 0 } } });
+    const pick = (answer: Answer): Action => ({ type: "choose", answer });
+    s = run(catalog, s, { type: "pass" }, pick({ option: 0 }));
+    // Sanctuary : ni l'ennemi (Enemy Soldier), ni elle-même.
+    expect(s.pending?.kind === "choice" && s.pending.request).toMatchObject({ type: "cards", options: [fk(83), fk(1), fk(2)] });
+    s = run(catalog, s, pick({ cards: [fk(1), fk(2)] }));
+    // Shrine : les cartes déjà gardées ne sont plus proposées ; il ne reste rien à garder, pas de question.
+    expect(s.pending).toBeNull();
+    expect(s.turn).toBe(2);
+    expect(s.zones.play).toEqual(expect.arrayContaining([fk(1), fk(2)]));
+    expect(s.zones.play).toHaveLength(7); // 1, 2, Enemy Soldier (Stays in play) et 4 nouvelles cartes
+  });
 });

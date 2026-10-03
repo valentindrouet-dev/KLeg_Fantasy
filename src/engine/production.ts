@@ -1,6 +1,6 @@
 import type { ProductionGroup, ResourceId } from "../data/schema";
-import { activeStage, instance, stageIdAt, template } from "./state";
-import { coinMalus, productionBonus } from "./passives";
+import { activeStage, hasKeyword, instance, stageIdAt, template } from "./state";
+import { coinMalus, productionBonus, surplusActive } from "./passives";
 import type { Catalog, GameState, InstanceId, StickerPlacement } from "./types";
 
 // Production d'une carte : groupes imprimés non rayés + stickers de ressource du stage actif.
@@ -22,7 +22,26 @@ export function productionGroups(catalog: Catalog, s: GameState, id: InstanceId)
     .filter((st) => st.stage === stage.id && st.resource !== undefined)
     .map((st, i): ProductionGroup => ({ id: `sticker${i}`, options: [[st.resource as ResourceId]] }));
   const bonus = productionBonus(catalog, s, id).map((o, i): ProductionGroup => ({ id: `bonus${i}`, options: [o] }));
-  return withoutCoins([...printed, ...stickers, ...bonus], coinMalus(catalog, s));
+  const groups = withoutCoins([...printed, ...stickers, ...bonus], coinMalus(catalog, s));
+  return surplusActive(catalog, s) && hasKeyword(catalog, s, id, "Land") ? groups.map(withSurplus) : groups;
+}
+
+/** Surplus : chaque {coin} d'une terre peut devenir {tradeGood} ; options dédoublonnées. */
+function withSurplus(g: ProductionGroup): ProductionGroup {
+  const seen = new Set<string>();
+  const options: ResourceId[][] = [];
+  for (const o of g.options) {
+    const coins = o.filter((r) => r === "coin").length;
+    const rest = o.filter((r) => r !== "coin");
+    for (let k = 0; k <= coins; k++) {
+      const opt = [...rest, ...Array.from({ length: coins - k }, (): ResourceId => "coin"), ...Array.from({ length: k }, (): ResourceId => "tradeGood")];
+      const key = [...opt].sort().join(",");
+      if (seen.has(key)) continue;
+      seen.add(key);
+      options.push(opt);
+    }
+  }
+  return { id: g.id, options };
 }
 
 /** Retire `n` icônes {coin} de la production (Pirate) : une par passage, dans le premier groupe qui en a. */

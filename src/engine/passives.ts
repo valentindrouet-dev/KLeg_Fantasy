@@ -18,6 +18,8 @@ const T = {
   woodShipment: "{tradeGood} and {wood} may be used interchangeably.",
   bloodCurse: "When you advance, play 2 additional cards.",
   prosperity: "Play 1 round where all friendly cards have +{coin} production. Then {rotate}.",
+  surplus: "Play 1 round where lands that produce {coin} may produce {tradeGood} instead. Then {rotate}.",
+  borderDispute: "Play 1 round where all lands stay in play. Then {rotate}.",
 } as const;
 
 /** Effets actifs (non rayés) du stage visible d'une carte. */
@@ -77,3 +79,9 @@ export const canPeekSecond = (catalog: Catalog, s: GameState): boolean => countS
 
 /** Cartes jouées en plus quand on avance (Blood Curse). */
 export const extraAdvance = (catalog: Catalog, s: GameState): number => 2 * countSources(catalog, s, T.bloodCurse, ["play"]);
+
+/** Surplus (mini-extension 137) : les terres peuvent produire {tradeGood} à la place de {coin}. */
+export const surplusActive = (catalog: Catalog, s: GameState): boolean => countSources(catalog, s, T.surplus, ["permanent"]) > 0;
+
+/** Border Dispute (mini-extension 138) : toutes les terres restent en jeu. */
+export const landsStayInPlay = (catalog: Catalog, s: GameState): boolean => countSources(catalog, s, T.borderDispute, ["permanent"]) > 0;

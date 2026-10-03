@@ -1,4 +1,4 @@
-import { staysInPlay } from "./flow";
+import { isStayInPlayCard } from "./flow";
 import { activeStage, instance, isFullImageFace, template } from "./state";
 import type { Catalog, GameState, InstanceId } from "./types";
 
@@ -37,5 +37,5 @@ export function cardBadges(catalog: Catalog, s: GameState, id: InstanceId): stri
  */
 export function showsTopHalfOnly(catalog: Catalog, s: GameState, id: InstanceId): boolean {
   if (!s.zones.play.includes(id) || isFullImageFace(template(catalog, instance(s, id).templateId), instance(s, id).orientation.side)) return false;
-  return staysInPlay({ catalog, s }, id);
+  return isStayInPlayCard({ catalog, s }, id);
 }

@@ -1,4 +1,5 @@
 import type { CardTemplate, ResourceId } from "../data/schema";
+import { campaignScripts } from "./campaign";
 import { cardEffects, cardTriggers } from "./effects/cards";
 import { textEffects } from "./effects/textEffects";
 import { runQueue } from "./flow";
@@ -17,7 +18,7 @@ export function createCatalog(templates: readonly CardTemplate[], resources: rea
     resources,
     effects: new Map([...textEffects(templates, resources), ...cardEffects(templates)]),
     parchments: feudalKingdomParchments,
-    triggers: cardTriggers(templates),
+    triggers: new Map([...cardTriggers(templates), ...campaignScripts()]),
   };
 }
 
@@ -49,7 +50,7 @@ export function createGame(catalog: Catalog, config: GameConfig): GameState {
     turn: 0,
     phase: "playing",
     finalRound: false,
-    zones: { box: templates.map((t) => t.id), deck: [], play: [], discard: [], permanent: [], destroyed: [], blocked: [] },
+    zones: { box: templates.map((t) => t.id), deck: [], play: [], discard: [], permanent: [], destroyed: [], blocked: [], purged: [] },
     blocks: {},
     keepInPlay: [],
     cards,

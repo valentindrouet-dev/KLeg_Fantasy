@@ -130,6 +130,11 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
   const lastRound = useRef<number | null>(null);
   const [pending, setPending] = useState<Pending | null>(null);
   const [endClosed, setEndClosed] = useState(false);
+  // Une mini-extension relance la partie : sa fin rouvrira la fenêtre de fin.
+  const playingNow = session ? current(session).phase === "playing" : false;
+  useEffect(() => {
+    if (playingNow) setEndClosed(false);
+  }, [playingNow]);
   const [anim, setAnim] = useState<Anim | null>(null);
   const [targeting, setTargeting] = useState<{ source: InstanceId; options: CardOption[] } | null>(null);
   /** Cartes déjà touchées pendant un ciblage à plusieurs cartes (amélioration qui coûte 2 personnes…). */
@@ -955,7 +960,13 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
       {state.pending && !boardChoice && <DecisionDialog catalog={catalog} state={state} onAction={(a) => perform([a])} onRestart={restart} onInspect={setInspect} />}
       {inspect && <Inspector catalog={catalog} state={state} card={inspect} onClose={() => setInspect(null)} />}
       {state.phase === "gameOver" && !endClosed && (
-        <EndDialog catalog={catalog} state={state} onBack={() => (window.location.hash = "#/")} onClose={() => setEndClosed(true)} />
+        <EndDialog
+          catalog={catalog}
+          state={state}
+          onBack={() => (window.location.hash = "#/")}
+          onClose={() => setEndClosed(true)}
+          onAction={(a) => perform([a], "")}
+        />
       )}
       {pending && (
         <ConfirmDialog

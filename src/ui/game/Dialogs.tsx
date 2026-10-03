@@ -1,7 +1,10 @@
 import { Fragment, useState, type ReactNode } from "react";
 import {
+  availableExpansions,
   canRestartKingdom,
+  EXPANSION_SERIALS,
   exhaustedEffects,
+  expansionName,
   cardName,
   computeScore,
   instance,
@@ -392,13 +395,32 @@ function ChoiceDialog({ catalog, state, onAction }: { catalog: Catalog; state: G
   );
 }
 
-export function EndDialog({ catalog, state, onBack, onClose }: { catalog: Catalog; state: GameState; onBack: () => void; onClose: () => void }) {
+export function EndDialog({
+  catalog,
+  state,
+  onBack,
+  onClose,
+  onAction,
+}: {
+  catalog: Catalog;
+  state: GameState;
+  onBack: () => void;
+  onClose: () => void;
+  onAction: (a: Action) => void;
+}) {
   const score = computeScore(catalog, state);
   const lines = score.lines.filter((l) => l.fame !== 0 || l.variable).sort((a, b) => b.fame - a.fame);
+  const camp = state.campaign;
+  // Mini-extensions (spec 4.7) : 136, 137, 138, une seule fois par royaume ; celles déjà jouées sont grisées.
+  const available = new Set(availableExpansions(state));
+  const expansions = Object.values(state.cards)
+    .filter((c) => (EXPANSION_SERIALS as readonly number[]).includes(c.serial))
+    .sort((a, b) => a.serial - b.serial);
   return (
     <Dialog
-      title="Fin de la partie"
+      title={camp?.played.length ? "Fin de la mini-extension" : "Fin de la partie"}
       onClose={onClose}
+      wide
       actions={
         <>
           <button className="btn" onClick={onClose}>
@@ -413,6 +435,32 @@ export function EndDialog({ catalog, state, onBack, onClose }: { catalog: Catalo
       <p className={styles.bigScore}>
         <IconText text={`${score.total} {fame}`} />
       </p>
+      {camp && camp.base !== null && (
+        <ol className={styles.scorePath} aria-label="Chemin de score">
+          <li>
+            <span>Partie de base</span> <IconText text={`${camp.base} {fame}`} />
+          </li>
+          {camp.played.map((p) => (
+            <li key={p.serial}>
+              <span>{p.name}</span> <IconText text={`${p.score} {fame}`} />
+            </li>
+          ))}
+        </ol>
+      )}
+      <div className={styles.expansionChoice}>
+        {expansions.map((c) => {
+          const name = expansionName({ catalog, s: state }, c.instanceId);
+          const open = available.has(c.instanceId);
+          return (
+            <figure key={c.instanceId} className={`${styles.choice} ${open ? "" : styles.expansionDone}`}>
+              <CardView template={template(catalog, c.templateId)} orientation={{ side: "front", rotation: 0 }} label={name} width={150} />
+              <button className="btn btn-primary" disabled={!open} onClick={() => onAction({ type: "startExpansion", card: c.instanceId })}>
+                {open ? `Jouer ${name}` : "Déjà jouée"}
+              </button>
+            </figure>
+          );
+        })}
+      </div>
       <table className={styles.scoreTable}>
         <tbody>
           {lines.map((l) => (

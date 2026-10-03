@@ -72,3 +72,20 @@ ne tranchent pas ; à confirmer par l'utilisateur.
 - **Décision** (demande du joueur) : une carte découverte arrive toujours côté recto, qu'elle vienne d'une manche ou d'un effet. On choisit la face seulement quand une instruction le dit : le parchemin 37 (« For each card, you need to choose one of its sides now ») pour les cartes 38 à 42. Une carte découverte par un effet est présentée (fenêtre « Nouvelle carte », bouton « Ajouter au deck ») ; une carte choisie dans une fenêtre de découverte ne l'est pas une seconde fois.
 - **Anciennes parties** : au rejeu, un choix de face devenu sans objet est ignoré.
 - **Cartes** : toutes celles à flèches rouges (13, 41, 42, 55, 69, 70, 92, 94, 95, 100, 101, 102, 107, 116, 121, 122, 126, 127), 37, 38 à 42.
+
+## 2026-10-03 : purge et mini-extensions (v0.37)
+
+Choix faits pour ce que les cartes et la spec ne précisent pas ; à confirmer.
+
+- **Purge 12** : le royaume non permanent est rassemblé et mélangé, puis parcouru par paquets de 12 ; dans chaque paquet complet on choisit 1 carte amie à purger (ni ennemie ni indestructible, ni « cannot be purged » comme Ether Crystal). Les dernières cartes, moins de 12, ne sont pas purgées. Puis 1 carte permanente amie. Un paquet sans carte amie ne purge rien.
+- **Aethan Estate** (« save N other cards from being purged ») : si elle est purgée, on choisit jusqu'à N autres cartes parmi celles choisies pour la purge ; elles restent dans le royaume.
+- **Temple of Light** : à la purge, +10 {fame} par case cochée en plus de sa gloire.
+- **Gloire purgée** : somme de la gloire des cartes purgées, ajoutée au score pour toujours ; les cartes vont dans une zone « purgées ».
+- **Déroulement** : la carte d'extension rejoint les permanentes côté recto ; 4 manches sans découverte de début de manche ; à chaque fin de manche, après les effets « End of Round », elle passe à l'étape suivante (« Then {rotate} / {flip} ») ; à la 4e, elle est détruite et l'extension se termine. Le score de la partie de base, puis celui après chaque extension, forment le chemin de score.
+- **Uprising** : chaque personne jouée alors qu'au moins une personne est déjà en jeu (y compris une jouée en même temps juste avant) coche 1 case.
+- **Royal Decree** : pour chaque case cochée sur Uprising, 1 production rayée sur une carte du royaume au choix (la même carte peut être choisie plusieurs fois).
+- **Obsolete Farms** : la carte détruite est choisie dans tout le royaume, parmi celles dont la production imprimée contient {coin}.
+- **Espionage** : les 2 cartes amies défaussées sont prises en jeu.
+- **Resistance** : comme Export, les épées restantes y sont dépensées automatiquement en fin de tour ; en fin de manche, le sticker 16 (gloire = total, 100 au plus) va sur une terre du royaume au choix.
+- **Hoarding** : à chaque fin de tour, on peut garder 1 carte en jeu.
+- **Garder des cartes en jeu** (Shrine, Temple, Villa…, demande du 2026-10-03) : les ennemis et les cartes qui restent déjà en jeu ne sont jamais proposés. Une carte gardée reste une carte ordinaire (pas une demi-carte de la ligne du haut).

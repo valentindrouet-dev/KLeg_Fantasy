@@ -74,7 +74,8 @@ describe("manches et découvertes", async () => {
     expect([...s.zones.deck, ...s.zones.play, ...s.zones.discard].sort()).toEqual([1, 9, 69, 70].map(fk).sort());
     s = passUntil(catalog, s, (x) => x.phase === "gameOver");
     expect(s.phase).toBe("gameOver");
-    expect(legal(catalog, s)).toEqual([]);
+    // Partie terminée : seules les mini-extensions restent possibles.
+    expect(legal(catalog, s)).toEqual([136, 137, 138].map((n) => ({ type: "startExpansion", card: fk(n) })));
     // Castle 12 + Royal Visit 2 (Wild Grass et Finishing Touch : 0).
     expect(computeScore(catalog, s).total).toBe(14);
   });

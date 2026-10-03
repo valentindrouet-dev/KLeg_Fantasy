@@ -1,8 +1,9 @@
 import type { Side } from "../data/schema";
+import { expansionEnd, expansionRoundStart, inExpansion } from "./campaign";
 import { askOption, nextQuestion } from "./choice";
 import { effectKey } from "./effects/registry";
 import { isEffectExhausted } from "./exhausted";
-import { extraAdvance } from "./passives";
+import { extraAdvance, landsStayInPlay } from "./passives";
 import { shuffle } from "./rng";
 import { computeScore } from "./score";
 import {
@@ -11,6 +12,7 @@ import {
   clearResources,
   destroy,
   discard,
+  hasKeyword,
   instance,
   log,
   moveTo,
@@ -30,6 +32,7 @@ const CARDS_PER_DISCOVERY = 2;
 /** Complète un état enregistré par une version antérieure (champs ajoutés depuis). */
 export function normalizeState(s: Draft["s"]): void {
   s.zones.blocked ??= [];
+  s.zones.purged ??= [];
   s.blocks ??= {};
   s.keepInPlay ??= [];
 }
@@ -70,6 +73,8 @@ function runStep(d: Draft, step: FlowStep): void {
       return nextRound(d);
     case "reviewDiscoveries":
       return reviewDiscoveries(d, step.since);
+    case "expansionEnd":
+      return expansionEnd(d);
   }
 }
 
@@ -148,7 +153,8 @@ export function continueTrigger(d: Draft, card: InstanceId, script: string, answ
  */
 export function playCards(d: Draft, ids: readonly InstanceId[]): void {
   if (ids.length === 0) return;
-  const watchers = d.s.zones.play.filter((id) => !ids.includes(id));
+  // Cartes qui surveillent les arrivées : en jeu, et permanentes (mini-extensions : Uprising, Espionage).
+  const watchers = [...d.s.zones.play.filter((id) => !ids.includes(id)), ...d.s.zones.permanent];
   for (const id of ids) {
     if (d.s.zones.deck.includes(id)) d.s.revealCount += 1;
     moveTo(d.s, id, "play");
@@ -209,9 +215,18 @@ function runEndTurn(d: Draft): void {
 
 /** Une carte reste-t-elle en jeu à la fin du tour ? (texte, sticker 7, effet « make … stay in play ») */
 export function staysInPlay(d: Draft, id: InstanceId): boolean {
+  if ((d.s.keepInPlay ?? []).includes(id) || isStayInPlayCard(d, id)) return true;
+  return landsStayInPlay(d.catalog, d.s) && hasKeyword(d.catalog, d.s, id, "Land");
+}
+
+/**
+ * Carte « Stays in play » par elle-même (texte, sticker 7) : c'est elle qui va sur la ligne du haut, en demi-carte.
+ * Une carte gardée un tour par une autre (Shrine, Temple…) ou par une règle (Border Dispute) reste une carte ordinaire.
+ */
+export function isStayInPlayCard(d: Draft, id: InstanceId): boolean {
   const stage = activeStage(d.catalog, d.s, id);
   if (!stage) return false;
-  if (stage.staysInPlay || (d.s.keepInPlay ?? []).includes(id)) return true;
+  if (stage.staysInPlay) return true;
   return instance(d.s, id).stickers.some((st) => st.stage === stage.id && st.staysInPlay);
 }
 
@@ -244,11 +259,21 @@ function endRound(d: Draft): void {
   const held: Record<InstanceId, InstanceId[]> = {};
   for (const id of wasInPlay) held[id] = discardWithBlocked(d, id);
   log(d.s, `Fin de la manche ${d.s.round}`);
-  pushFront(d, { kind: "nextRound" });
+  pushFront(d, ...(inExpansion(d.s) ? [{ kind: "expansionEnd" } as const] : []), { kind: "nextRound" });
   queueTriggers(d, "endRound", [...wasInPlay, ...d.s.zones.permanent], (card) => ({ cards: held[card] ?? [] }));
 }
 
 function nextRound(d: Draft): void {
+  // Mini-extension : 4 manches sans découverte de 2 cartes ; elle se termine quand sa carte est détruite.
+  if (inExpansion(d.s)) {
+    if (expansionRoundStart(d)) return;
+    d.s.round += 1;
+    d.s.turn = 0;
+    log(d.s, `Manche ${d.s.round} (mini-extension, manche ${d.s.campaign?.rounds ?? 0}/4)`);
+    pushFront(d, { kind: "shuffle" }, { kind: "startTurn" });
+    queueTriggers(d, "betweenRounds", [...d.s.zones.permanent]);
+    return;
+  }
   if (d.s.finalRound) {
     d.s.phase = "gameOver";
     d.s.queue = [];

@@ -6,8 +6,9 @@ import type { CardTemplate, Orientation, ResourceId, Side, StageId } from "../da
 export type InstanceId = string;
 
 // « blocked » : cartes bloquées, posées sous leur bloquante (GameState.blocks) ; elles n'existent plus pour le jeu.
-export type Zone = "box" | "deck" | "play" | "discard" | "permanent" | "destroyed" | "blocked";
-export const ZONES: readonly Zone[] = ["box", "deck", "play", "discard", "permanent", "destroyed", "blocked"];
+// « purged » : cartes purgées (mini-extensions), leur gloire est passée dans GameState.purgedFame.
+export type Zone = "box" | "deck" | "play" | "discard" | "permanent" | "destroyed" | "blocked" | "purged";
+export const ZONES: readonly Zone[] = ["box", "deck", "play", "discard", "permanent", "destroyed", "blocked", "purged"];
 
 /** Sticker posé : ressource (production), gloire, mot-clé (Knight) ou effet « Stays in play » (sticker 7). */
 export type StickerPlacement = {
@@ -92,7 +93,20 @@ export type FlowStep =
   | { kind: "cleanupTurn" }
   | { kind: "endRound" }
   | { kind: "nextRound" }
-  | { kind: "reviewDiscoveries"; since: number }; // montre les cartes découvertes depuis discoveries[since]
+  | { kind: "reviewDiscoveries"; since: number } // montre les cartes découvertes depuis discoveries[since]
+  | { kind: "expansionEnd" }; // fin de manche d'une mini-extension : la carte change d'étape (ou est détruite)
+
+/**
+ * Suivi du royaume après la partie de base (spec 4.7) : score de la partie de base, mini-extensions jouées et leur
+ * score (chemin de score), mini-extension en cours.
+ */
+export type Campaign = {
+  base: number | null;
+  played: { serial: number; name: string; score: number }[];
+  current: InstanceId | null;
+  rounds: number; // manches jouées dans la mini-extension en cours
+  stageAtRoundStart: number | null; // étape de la carte d'extension au début de la manche
+};
 
 export type LogEntry = { round: number; turn: number; text: string };
 
@@ -115,6 +129,7 @@ export type GameState = {
   log: LogEntry[];
   blocks?: Record<InstanceId, InstanceId[]>; // bloquante → cartes bloquées
   keepInPlay?: InstanceId[]; // cartes qu'un effet « make … stay in play » garde jusqu'au prochain tour
+  campaign?: Campaign;
 };
 
 export type Action =
@@ -127,6 +142,7 @@ export type Action =
   | { type: "chooseSide"; side: Side }
   | { type: "acknowledgeParchment" }
   | { type: "acknowledgeDiscoveries" }
+  | { type: "startExpansion"; card: InstanceId } // partie terminée : jouer une mini-extension (136, 137, 138)
   | { type: "manual"; op: ManualOp }
   | { type: "choose"; answer: Answer }
   | { type: "cancelChoice" };

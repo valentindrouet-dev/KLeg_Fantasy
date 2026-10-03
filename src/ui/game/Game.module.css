@@ -1303,3 +1303,35 @@
   color: var(--ok);
   font-size: 1.15rem;
 }
+
+/* Fin de partie : chemin de score et mini-extensions */
+.scorePath {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-3);
+  padding: 0;
+  list-style: none;
+}
+
+.scorePath li {
+  padding: 4px 12px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface-2);
+  font-weight: 600;
+}
+
+.expansionChoice {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
+.expansionDone {
+  opacity: 0.45;
+  filter: grayscale(0.7);
+}

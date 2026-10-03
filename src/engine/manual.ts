@@ -18,6 +18,7 @@ const ZONE_FR: Record<Zone, string> = {
   permanent: "les permanentes",
   destroyed: "les cartes détruites",
   blocked: "les cartes bloquées",
+  purged: "les cartes purgées",
 };
 
 /** Clé d'une case cochée dans CardInstance.checkedBoxes. */

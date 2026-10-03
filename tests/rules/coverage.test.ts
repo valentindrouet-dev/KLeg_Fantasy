@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { effectKey } from "../../src/engine/effects/registry";
 import { loadCatalog } from "../helpers/catalog";
 
-// Tous les effets des cartes de Feudal Kingdom jouables dans la partie de base (1 à 135) sont automatisés :
+// Tous les effets des cartes de Feudal Kingdom (1 à 135) et des mini-extensions (136 à 138) sont automatisés :
 // action (catalog.effects), déclencheur (catalog.triggers), parchemin (catalog.parchments) ou règle passive.
 const RULES_ELSEWHERE = new Set([
   // passives.ts
@@ -21,16 +21,22 @@ const RULES_ELSEWHERE = new Set([
   "When discarding a person, you may reset this instead.",
   // Interface : la 2e carte de la pioche est montrée tant que Watchtower est en jeu.
   "You may look at the top 2 cards of your deck.",
+  // Mini-extensions : passives.ts (Prosperity, Surplus), flow.ts (Border Dispute), campaign.ts (fins d'étape).
+  "Play 1 round where all friendly cards have +{coin} production. Then {rotate}.",
+  "Play 1 round where lands that produce {coin} may produce {tradeGood} instead. Then {rotate}.",
+  "Play 1 round where all lands stay in play. Then {rotate}.",
+  "Play 1 round. Then, for each {mark} on Uprising, you must cross out 1 production on 1 card. Then destroy this.",
+  "Play 1 round. Then destroy this and 1 card with {coin} production.",
 ]);
-// Purge (phase P4) : Aethan Estate.
+// Purge (campaign.ts) : Aethan Estate.
 const PURGE = /^When you purge this card/;
 
 describe("couverture des effets", async () => {
   const catalog = await loadCatalog();
-  it("chaque effet des cartes 1 à 135 est automatisé", () => {
+  it("chaque effet des cartes 1 à 138 est automatisé", () => {
     const missing: string[] = [];
     for (const t of catalog.templates.values()) {
-      if (t.serial < 1 || t.serial > 135 || t.isParchment) continue;
+      if (t.serial < 1 || t.serial > 138 || t.isParchment) continue;
       for (const [k, stage] of Object.entries(t.stages)) {
         for (const e of stage?.effects ?? []) {
           const key = effectKey(t.id, Number(k) as 1, e.id);

@@ -1,5 +1,5 @@
 import type { Category } from "../../data/schema";
-import { activeStage, instance, productionGroups, staysInPlay, type Catalog, type GameState, type InstanceId } from "../../engine";
+import { activeStage, instance, productionGroups, isStayInPlayCard, type Catalog, type GameState, type InstanceId } from "../../engine";
 
 // Ordre d'affichage des cartes en jeu (demande du 2026-10-02) : par ressource produite, ou par type de carte.
 // Purement visuel : l'ordre du moteur (ordre d'arrivée) ne change pas.
@@ -31,7 +31,7 @@ export type PlayLayout = { enemies: InstanceId[]; stays: InstanceId[]; others: I
 export function playLayout(catalog: Catalog, s: GameState, ids: readonly InstanceId[], mode: SortMode): PlayLayout {
   const sorted = sortPlay(catalog, s, ids, mode);
   const enemies = sorted.filter((id) => isEnemy(catalog, s, id));
-  const stays = sorted.filter((id) => !isEnemy(catalog, s, id) && staysInPlay({ catalog, s }, id));
+  const stays = sorted.filter((id) => !isEnemy(catalog, s, id) && isStayInPlayCard({ catalog, s }, id));
   return { enemies, stays, others: sorted.filter((id) => !enemies.includes(id) && !stays.includes(id)) };
 }
 
