@@ -3,6 +3,13 @@
 Chaque mise à jour publiée change de version (`package.json`, affichée dans l'appli en bas de l'écran « Mes royaumes »
 et dans la barre de la partie). Convention : `0.5.0` s'affiche **v0.05** ; un correctif `0.5.1` s'affiche **v0.05.1**.
 
+## v0.33 (3 octobre 2026)
+
+- Carte permanente dont on a choisi la face (objectifs) : l'inspection ne montre que cette face.
+- Pastilles des pistes (Army, Treasury…) sur deux lignes, le coût au-dessus de la gloire : plus étroites, elles ne se chevauchent plus.
+- Cartes permanentes triées : à gauche celles où l'on accumule des ressources (Army, Treasury, Export, A Perfect Tower…), à droite les objectifs, les autres entre les deux.
+- Nouvelles cartes de la manche : recto et verso de chacune côte à côte, les cartes l'une au-dessus de l'autre.
+
 ## v0.32 (3 octobre 2026)
 
 - Bouton « bug » dans la barre du haut (en partie, au-dessus des fenêtres, et sur « Mes royaumes ») : on décrit le problème, il est enregistré avec la partie (rejouable), son état et ce qui était ouvert à l'écran. « Partager » envoie le fichier de tous les bugs (Mail, Fichiers, AirDrop…), « Copier » le met dans le presse-papiers. Il remplace le lien « signaler un bug » vers GitHub.

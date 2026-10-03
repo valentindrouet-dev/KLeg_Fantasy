@@ -21,7 +21,8 @@ export function cardBadges(catalog: Catalog, s: GameState, id: InstanceId): stri
     const r = next.cost[0] ?? "";
     const same = next.cost.every((x) => x === r);
     const cost = same ? `${next.cost.length}{${r}}` : next.cost.map((x) => `{${x}}`).join("");
-    out.push(next.fame !== undefined ? `${cost} → {fame}${next.fame}` : cost);
+    // Coût au-dessus de la gloire (demande du 2026-10-03 : pastilles moins larges).
+    out.push(next.fame !== undefined ? `${cost}\n→ {fame}${next.fame}` : cost);
   } else if (boxes.length) {
     out.push(`☑ ${boxes.filter((b) => c.checkedBoxes.includes(`${stage.id}/${b.id}`)).length}/${boxes.length}`);
   } else if (tally) out.push(`{tradeGood} ${tally}`);

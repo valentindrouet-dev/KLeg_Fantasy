@@ -39,6 +39,13 @@ function pairWidth(): number {
   return Math.floor(Math.max(130, Math.min(320, byWidth, byHeight)));
 }
 
+/** Largeur des cartes empilées en rangées (recto + verso par rangée) : toutes les rangées tiennent sans défiler. */
+function stackedWidth(rows: number): number {
+  const byHeight = ((window.innerHeight - 230 - (rows - 1) * 16) / Math.max(1, rows)) * (373 / 520);
+  const byWidth = (Math.min(window.innerWidth, 1500) - 140 - 16) / 2;
+  return Math.floor(Math.max(120, Math.min(420, byHeight, byWidth)));
+}
+
 /** Largeur d'une grande carte dans une fenêtre : `count` cartes côte à côte, la plus grande qui tient. */
 function bigCard(count = 1): number {
   const byHeight = (window.innerHeight - 200) * (373 / 520);
@@ -62,6 +69,8 @@ export function Inspector({ catalog, state, card, onClose }: { catalog: Catalog;
     const n = frNote(t, o, p.y < 0.5 ? "top" : "bottom");
     setNote(n && !(note?.face === face && note.note.half === n.half) ? { face, note: n } : null);
   };
+  // Carte permanente dont on a choisi la face (objectifs…) : l'autre face ne servira plus, on ne la montre pas.
+  const single = t.chooseSideOnDiscover && state.zones.permanent.includes(card);
   return (
     <Dialog title={cardName(catalog, state, card)} onClose={onClose} wide>
       <div className={styles.inspector}>
@@ -69,22 +78,24 @@ export function Inspector({ catalog, state, card, onClose }: { catalog: Catalog;
           template={t}
           orientation={c.orientation}
           label="Face visible"
-          width={bigCard(2)}
+          width={bigCard(single ? 1 : 2)}
           stickers={c.stickers}
           onTap={tap(0, c.orientation)}
           exhausted={(stage) => exhaustedEffects(catalog, state, card, stage)}
           note={tooltipsFr && note?.face === 0 ? note.note : undefined}
         />
-        <CardView
-          template={t}
-          orientation={other}
-          label="Autre face"
-          width={bigCard(2)}
-          stickers={c.stickers}
-          onTap={tap(1, other)}
-          exhausted={(stage) => exhaustedEffects(catalog, state, card, stage)}
-          note={tooltipsFr && note?.face === 1 ? note.note : undefined}
-        />
+        {!single && (
+          <CardView
+            template={t}
+            orientation={other}
+            label="Autre face"
+            width={bigCard(2)}
+            stickers={c.stickers}
+            onTap={tap(1, other)}
+            exhausted={(stage) => exhaustedEffects(catalog, state, card, stage)}
+            note={tooltipsFr && note?.face === 1 ? note.note : undefined}
+          />
+        )}
       </div>
     </Dialog>
   );
@@ -160,7 +171,8 @@ export function DecisionDialog({
   }
 
   if (p.kind === "newCards") {
-    const width = bigCard(p.cards.length);
+    // Recto et verso de chaque carte côte à côte, les cartes l'une au-dessus de l'autre (demande du 2026-10-03).
+    const width = stackedWidth(p.cards.length);
     return (
       <Dialog
         title={p.cards.length > 1 ? "Nouvelles cartes" : "Nouvelle carte"}
@@ -171,17 +183,21 @@ export function DecisionDialog({
           </button>
         }
       >
-        <div className={styles.decisionRow}>
+        <div className={styles.newCards}>
           {p.cards.map((id) => (
-            <CardView
-              key={id}
-              template={tOf(id)}
-              orientation={instance(state, id).orientation}
-              label={cardName(catalog, state, id)}
-              width={width}
-              onLongPress={() => onInspect(id)}
-              exhausted={exhaustedOf(catalog, state, id)}
-            />
+            <div key={id} className={styles.bothSides}>
+              {(["front", "back"] as const).map((side) => (
+                <CardView
+                  key={side}
+                  template={tOf(id)}
+                  orientation={{ side, rotation: 0 }}
+                  label={side === "front" ? "Recto" : "Verso"}
+                  width={width}
+                  onLongPress={() => onInspect(id)}
+                  exhausted={exhaustedOf(catalog, state, id)}
+                />
+              ))}
+            </div>
           ))}
         </div>
       </Dialog>

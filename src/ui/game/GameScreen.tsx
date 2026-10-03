@@ -486,7 +486,17 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
   const badgeFor = (id: InstanceId, isEngaged: boolean) => {
     const parts = cardBadges(catalog, state, id);
     if (isEngaged) parts.unshift(`engagée ${productionLabel(catalog, state, id) ?? ""}`);
-    return parts.length ? <IconText text={parts.join(" · ")} /> : undefined;
+    // Une ligne par information : la pastille reste étroite, même sur les petites cartes permanentes.
+    const lines = parts.flatMap((p) => p.split("\n"));
+    return lines.length ? (
+      <>
+        {lines.map((l, i) => (
+          <span key={i} className={styles.badgeLine}>
+            <IconText text={l} />
+          </span>
+        ))}
+      </>
+    ) : undefined;
   };
 
   /**
@@ -511,6 +521,18 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
   };
 
   const fame = computeScore(catalog, state).total;
+  // Permanentes (demande du 2026-10-03) : à gauche celles où l'on accumule des ressources (Army, Treasury, Export…),
+  // à droite les objectifs, les autres entre les deux.
+  const permanentGroups = (() => {
+    const out = { accumulate: [] as InstanceId[], other: [] as InstanceId[], goals: [] as InstanceId[] };
+    for (const id of state.zones.permanent) {
+      const stage = activeStage(catalog, state, id);
+      if (stage?.keywords.includes("Goal")) out.goals.push(id);
+      else if (stage && (stage.checkboxes.length > 0 || stage.effects.some((e) => /keep track/i.test(e.text)))) out.accumulate.push(id);
+      else out.other.push(id);
+    }
+    return out;
+  })();
   const top = state.zones.deck[0];
   const second = canPeekSecond(catalog, state) ? state.zones.deck[1] : undefined;
   const lastDiscard = state.zones.discard.at(-1);
@@ -700,7 +722,10 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
 
       {state.zones.permanent.length > 0 && (
         <section className={styles.permanents} aria-label="Cartes permanentes">
-          {state.zones.permanent.map((id) => card(id, 72, () => tapPermanent(id)))}
+          {permanentGroups.accumulate.map((id) => card(id, 72, () => tapPermanent(id)))}
+          {permanentGroups.other.map((id) => card(id, 72, () => tapPermanent(id)))}
+          {permanentGroups.goals.length > 0 && <span className={styles.permanentSpacer} />}
+          {permanentGroups.goals.map((id) => card(id, 72, () => tapPermanent(id)))}
         </section>
       )}
 
