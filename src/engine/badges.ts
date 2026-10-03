@@ -23,9 +23,8 @@ export function cardBadges(catalog: Catalog, s: GameState, id: InstanceId): stri
     const cost = same ? `${next.cost.length}{${r}}` : next.cost.map((x) => `{${x}}`).join("");
     // Coût au-dessus de la gloire (demande du 2026-10-03 : pastilles moins larges).
     out.push(next.fame !== undefined ? `${cost}\n→ {fame}${next.fame}` : cost);
-  } else if (boxes.length) {
-    out.push(`☑ ${boxes.filter((b) => c.checkedBoxes.includes(`${stage.id}/${b.id}`)).length}/${boxes.length}`);
   } else if (tally) out.push(`{tradeGood} ${tally}`);
+  // Cases cochées : dessinées sur la carte (croix), plus de compteur (demande du 2026-10-03).
   const written = Object.entries(c.written ?? {}).filter(([k]) => k.startsWith(`${stage.id}/`)).reduce((sum, [, n]) => sum + n, 0);
   if (written) out.push(`✎ {fame}${written}`);
   return out;

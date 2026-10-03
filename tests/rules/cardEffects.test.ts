@@ -302,4 +302,19 @@ describe("effets épuisés", async () => {
     expect(s.zones.play).toEqual(expect.arrayContaining([fk(1), fk(2)]));
     expect(s.zones.play).toHaveLength(7); // 1, 2, Enemy Soldier (Stays in play) et 4 nouvelles cartes
   });
+
+  it("toucher une case : c'est la case touchée qui est cochée et qui donne son bonus (Merchant), même entre cases identiques (Astronomer)", () => {
+    const merchant = { side: "back", rotation: 0 } as const;
+    const mark: Action = { type: "useEffect", card: fk(41), effect: "e1", targets: [], option: null };
+    let s = arrange(catalog, { play: [41, 1], orientation: { 41: merchant }, deck: [2, 3] });
+    s = run(catalog, s, mark);
+    expect(s.pending?.kind === "choice" && s.pending.request.type === "option" && s.pending.request.boxes).toHaveLength(24);
+    s = run(catalog, s, { type: "choose", answer: { box: "c12" } }, { type: "choose", answer: { box: "c21" } });
+    expect(s.cards[fk(41)]?.checkedBoxes).toEqual(["4/c12", "4/c21"]);
+    expect(s.resources).toMatchObject({ wood: 1, stone: 1 });
+    // Astronomer : 16 cases identiques, la question est posée (pas de réponse d'office).
+    let t = arrange(catalog, { play: [95, 1], deck: [2, 3], resources: { coin: 2 } });
+    t = run(catalog, t, { type: "useEffect", card: fk(95), effect: "e1", targets: [], option: null }, { type: "choose", answer: { box: "c9" } });
+    expect(t.cards[fk(95)]?.checkedBoxes).toEqual(["1/c9"]);
+  });
 });

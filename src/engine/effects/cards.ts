@@ -1,5 +1,5 @@
 import type { CardTemplate, Checkbox, ResourceId, StageId } from "../../data/schema";
-import { askCards, askOption, askResources, cardsOf, optionOf, resourcesOf } from "../choice";
+import { askBox, askCards, askOption, askResources, boxOf, cardsOf, optionOf, resourcesOf } from "../choice";
 import { boxCardsBySerial, discardFromDeck, discoverNormally, discoverSerials, offerDiscovery, playCard, staysInPlay } from "../flow";
 import {
   addResourceStickerOf,
@@ -335,26 +335,34 @@ const distinctBoxes = (d: Draft, card: InstanceId, without: string | null) =>
 
 /**
  * « Mark 1 {mark}. », « Mark 1-2 {mark}. », « Spend … to mark 1-2 {mark}. » : le joueur choisit librement les cases
- * (demande du 2026-10-02 : Merchant doit pouvoir cocher toutes les ressources). Les pistes « from left to right »
- * restent dans l'ordre (markNext).
+ * (demande du 2026-10-02 : Merchant doit pouvoir cocher toutes les ressources). On touche la case sur la carte
+ * (réponse { box }, demande du 2026-10-03) ; les options, une par contenu, restent pour les parties enregistrées.
+ * Les pistes « from left to right » restent dans l'ordre (markNext).
  */
 function freeMark(count: 1 | 2, cost: ResourceId[]): EffectImpl {
+  /** Case choisie par une réponse : la case touchée, ou la première case libre de l'option. */
+  const picked = (d: Draft, card: InstanceId, ans: Answer | undefined, without: string | null) => {
+    const box = boxOf(ans);
+    if (box !== null) return unmarkedBoxes(d, card).find((b) => b.id === box && b.id !== without);
+    return distinctBoxes(d, card, without)[optionOf(ans)];
+  };
+  const free = (d: Draft, card: InstanceId, without: string | null) => unmarkedBoxes(d, card).filter((b) => b.id !== without).map((b) => b.id);
   return effect({
     cost,
     usable: (d, card) => unmarkedBoxes(d, card).length > 0,
     ask: (d, card, a) => {
-      if (a.length === 0) return askOption("Quelle case cocher ?", distinctBoxes(d, card, null).map(boxLabel));
+      if (a.length === 0) return askBox("Quelle case cocher ?", distinctBoxes(d, card, null).map(boxLabel), free(d, card, null));
       if (a.length === 1 && count === 2) {
-        const first = distinctBoxes(d, card, null)[optionOf(a[0])];
+        const first = picked(d, card, a[0], null);
         const rest = distinctBoxes(d, card, first?.id ?? null);
-        return rest.length ? askOption("Une deuxième case ?", [...rest.map(boxLabel), "Non"]) : null;
+        return rest.length ? askBox("Une deuxième case ?", [...rest.map(boxLabel), "Non"], free(d, card, first?.id ?? null)) : null;
       }
       return null;
     },
     run: (d, card, a) => {
-      const first = distinctBoxes(d, card, null)[optionOf(a[0])];
+      const first = picked(d, card, a[0], null);
       if (!first) return;
-      const second = count === 2 ? distinctBoxes(d, card, first.id)[optionOf(a[1])] : undefined;
+      const second = count === 2 ? picked(d, card, a[1], first.id) : undefined;
       for (const b of [first, second]) {
         if (!b) continue;
         markBox(d, card, b.stage, b.id);
@@ -562,10 +570,16 @@ const EXACT: Record<string, Factory> = {
       usable: (d, card) => enemies(d, card).length > 0 && unmarkedBoxes(d, card).length > 0,
       ask: steps(
         (d, card) => askCards("Ennemi à défausser", enemies(d, card), 1),
-        (d, card) => askOption("Quelle case ?", unmarkedBoxes(d, card).map((b) => (b.gain?.length ? `+${b.gain.map(icon).join("")}` : "—"))),
+        (d, card) =>
+          askBox(
+            "Quelle case ?",
+            unmarkedBoxes(d, card).map((b) => (b.gain?.length ? `+${b.gain.map(icon).join("")}` : "—")),
+            unmarkedBoxes(d, card).map((b) => b.id),
+          ),
       ),
       run: (d, card, a) => {
-        const box = unmarkedBoxes(d, card)[optionOf(a[1])];
+        const touched = boxOf(a[1]);
+        const box = touched !== null ? unmarkedBoxes(d, card).find((b) => b.id === touched) : unmarkedBoxes(d, card)[optionOf(a[1])];
         if (box) markBox(d, card, box.stage, box.id);
         discardCards(d, cardsOf(a[0]));
       },

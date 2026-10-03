@@ -1,7 +1,8 @@
 import { useState, type ReactNode } from "react";
 import { cardImageUrl } from "../../data/loadCards";
 import type { CardTemplate, Orientation, StageId } from "../../data/schema";
-import { isFullImageFace, printedStage, stageIdAt, type ExhaustedEffect, type StickerPlacement } from "../../engine";
+import { isFullImageFace, printedStage, stageIdAt, type BoxView, type ExhaustedEffect, type StickerPlacement } from "../../engine";
+import { boxRects } from "../../data/checkboxes";
 import { effectLines, type TextLine } from "../../data/textLines";
 import { IconText, iconImage } from "../common/IconText";
 import { STICKER_SIZE, stickerSpots } from "./stickerLayout";
@@ -43,6 +44,10 @@ type Props = {
   exhausted?: (stage: StageId) => ExhaustedEffect[];
   /** Tremble « non » : cette carte interdit le geste tenté. */
   shake?: boolean;
+  /** Cases à cocher d'une étape : croix sur les cochées, halo sur la prochaine d'une piste. */
+  boxes?: (stage: StageId) => BoxView[];
+  /** Cases à toucher pour répondre à la question en cours (identifiants des cases de l'étape visible en haut). */
+  pickBoxes?: readonly string[];
   /** Choisie pour un effet en cours (cible, carte à bloquer, coût) : contour vert et coche. */
   picked?: boolean;
 };
@@ -76,6 +81,31 @@ function Strikes({ template, full, stage, list, half }: { template: CardTemplate
         const center = from + ((index + 0.5) * (to - from)) / count;
         const y = half === "top" ? center : 1 - center;
         return [<span key={id} className={`${styles.strike} ${half === "bottom" ? styles.strikeBottom : ""}`} style={{ top: `${y * 100}%` }} />];
+      })}
+    </>
+  );
+}
+
+/**
+ * Cases d'une moitié (positions mesurées, data/checkboxes) : croix au feutre sur les cases cochées, halo sur la
+ * prochaine case d'une piste, contour clignotant sur les cases à toucher. La moitié basse est lue à l'envers.
+ */
+function Boxes({ template, stage, views, half, pick }: { template: CardTemplate; stage: StageId | null; views: BoxView[]; half: "top" | "bottom"; pick?: readonly string[] }) {
+  if (stage === null || views.length === 0) return null;
+  const rects = boxRects(template.expansion, template.serial, stage);
+  if (!rects) return null;
+  return (
+    <>
+      {views.map((v, i) => {
+        const r = rects[i];
+        if (!r) return null;
+        const [x, y, w, h] = half === "top" ? r : [1 - r[0] - r[2], 1 - r[1] - r[3], r[2], r[3]];
+        const style = { left: `${x * 100}%`, top: `${y * 100}%`, width: `${w * 100}%`, height: `${h * 100}%` };
+        const picking = half === "top" && (pick ?? []).includes(v.id);
+        if (!v.checked && !v.next && !picking) return null;
+        return (
+          <span key={v.id} className={`${styles.box} ${v.checked ? styles.boxChecked : ""} ${v.next ? styles.boxNext : ""} ${picking ? styles.boxPick : ""}`} style={style} />
+        );
       })}
     </>
   );
@@ -141,6 +171,8 @@ function Face({
   dimBottom,
   stickers,
   exhausted,
+  boxes,
+  pickBoxes,
 }: {
   template: CardTemplate;
   orientation: Orientation;
@@ -149,6 +181,8 @@ function Face({
   dimBottom?: boolean;
   stickers?: readonly StickerPlacement[];
   exhausted?: (stage: StageId) => ExhaustedEffect[];
+  boxes?: (stage: StageId) => BoxView[];
+  pickBoxes?: readonly string[];
 }) {
   const url = cardImageUrl(orientation.side === "front" ? template.images.front : template.images.back);
   // Moitiés réellement imprimées : une carte à image pleine n'a pas de moitié basse (pas de grisé, un seul numéro).
@@ -180,6 +214,12 @@ function Face({
           <Stickers template={template} stage={bottomId} stickers={stickers} half="bottom" />
         </>
       )}
+      {boxes && (
+        <>
+          <Boxes template={template} stage={topId} views={topId === null ? [] : boxes(topId)} half="top" pick={pickBoxes} />
+          <Boxes template={template} stage={bottomId} views={bottomId === null ? [] : boxes(bottomId)} half="bottom" />
+        </>
+      )}
       {/* Grisé du bas par-dessus tout ce qui est posé sur cette moitié (stickers, traits). */}
       {dimBottom && top !== null && bottom !== null && <span className={styles.bottomShade} />}
     </div>
@@ -187,7 +227,7 @@ function Face({
 }
 
 export function CardView(props: Props) {
-  const { id, template, orientation, label, width, selected, engaged, targetable, dimBottom, flagged, onTwoFinger, dimmed, badge, onTap, onLongPress, zoneLabel, anim, stickers, half, note, exhausted, shake, picked } =
+  const { id, template, orientation, label, width, selected, engaged, targetable, dimBottom, flagged, onTwoFinger, dimmed, badge, onTap, onLongPress, zoneLabel, anim, stickers, half, note, exhausted, shake, picked, boxes, pickBoxes } =
     props;
   // Demi-carte : les positions touchées sont ramenées à la carte entière (zones cliquables inchangées).
   const yScale = half ? 0.5 : 1;
@@ -256,12 +296,12 @@ export function CardView(props: Props) {
       {anim?.kind === "flip" ? (
         // Retournement : deux faces dos à dos, la carte pivote d'un seul mouvement.
         <div className={styles.flipInner}>
-          <Face template={template} orientation={orientation} label={label} stickers={stickers} exhausted={exhausted} />
-          <Face template={template} orientation={anim.to} label={label} className={styles.backFace} stickers={stickers} exhausted={exhausted} />
+          <Face template={template} orientation={orientation} label={label} stickers={stickers} exhausted={exhausted} boxes={boxes} pickBoxes={pickBoxes} />
+          <Face template={template} orientation={anim.to} label={label} className={styles.backFace} stickers={stickers} exhausted={exhausted} boxes={boxes} pickBoxes={pickBoxes} />
         </div>
       ) : (
         // Pendant une rotation, la carte n'est plus grisée (sinon la moitié grisée passe en haut).
-        <Face template={template} orientation={orientation} label={label} dimBottom={dimBottom && !anim && !half} stickers={stickers} exhausted={exhausted} />
+        <Face template={template} orientation={orientation} label={label} dimBottom={dimBottom && !anim && !half} stickers={stickers} exhausted={exhausted} boxes={boxes} pickBoxes={pickBoxes} />
       )}
       {rect && !anim && (
         <span

@@ -1,6 +1,7 @@
 import { Fragment, useState, type ReactNode } from "react";
 import {
   availableExpansions,
+  boxViews,
   canRestartKingdom,
   EXPANSION_SERIALS,
   exhaustedEffects,
@@ -85,6 +86,7 @@ export function Inspector({ catalog, state, card, onClose }: { catalog: Catalog;
           stickers={c.stickers}
           onTap={tap(0, c.orientation)}
           exhausted={(stage) => exhaustedEffects(catalog, state, card, stage)}
+          boxes={(stage) => boxViews(catalog, state, card, stage)}
           note={tooltipsFr && note?.face === 0 ? note.note : undefined}
         />
         {!single && (
@@ -96,6 +98,7 @@ export function Inspector({ catalog, state, card, onClose }: { catalog: Catalog;
             stickers={c.stickers}
             onTap={tap(1, other)}
             exhausted={(stage) => exhaustedEffects(catalog, state, card, stage)}
+          boxes={(stage) => boxViews(catalog, state, card, stage)}
             note={tooltipsFr && note?.face === 1 ? note.note : undefined}
           />
         )}
@@ -147,7 +150,8 @@ export function DecisionDialog({
         <div className={styles.decisionRow}>
           <CardView template={t} orientation={{ side: "front", rotation: 0 }} label={`Parchemin #${t.serial}`} width={width} />
           {preview.map((id) => (
-            <CardView key={id} template={tOf(id)} orientation={{ side: "front", rotation: 0 }} label={`#${instance(state, id).serial}`} width={width} exhausted={exhaustedOf(catalog, state, id)} />
+            <CardView key={id} template={tOf(id)} orientation={{ side: "front", rotation: 0 }} label={`#${instance(state, id).serial}`} width={width} exhausted={exhaustedOf(catalog, state, id)}
+              boxes={(stage) => boxViews(catalog, state, id, stage)} />
           ))}
           {!catalog.parchments.has(t.id) && <p className={styles.warning}>À appliquer à la main</p>}
         </div>
@@ -162,7 +166,8 @@ export function DecisionDialog({
         <div className={styles.decisionRow}>
           {(["front", "back"] as const).map((side) => (
             <figure key={side} className={styles.choice}>
-              <CardView template={t} orientation={{ side, rotation: 0 }} label={side} width={bigCard(2)} onTap={() => onAction({ type: "chooseSide", side })} exhausted={exhaustedOf(catalog, state, p.card)} />
+              <CardView template={t} orientation={{ side, rotation: 0 }} label={side} width={bigCard(2)} onTap={() => onAction({ type: "chooseSide", side })} exhausted={exhaustedOf(catalog, state, p.card)}
+              boxes={(stage) => boxViews(catalog, state, p.card, stage)} />
               <button className="btn btn-primary" onClick={() => onAction({ type: "chooseSide", side })}>
                 {side === "front" ? "Recto" : "Verso"}
               </button>
@@ -199,6 +204,7 @@ export function DecisionDialog({
                   width={width}
                   onLongPress={() => onInspect(id)}
                   exhausted={exhaustedOf(catalog, state, id)}
+              boxes={(stage) => boxViews(catalog, state, id, stage)}
                 />
               ))}
             </div>
@@ -221,8 +227,10 @@ export function DecisionDialog({
           return (
             <figure key={id} className={styles.choice}>
               <div className={styles.bothSides}>
-                <CardView template={t} orientation={{ side: "front", rotation: 0 }} label="Recto" width={width} onLongPress={() => onInspect(id)} exhausted={exhaustedOf(catalog, state, id)} />
-                <CardView template={t} orientation={{ side: "back", rotation: 0 }} label="Verso" width={width} onLongPress={() => onInspect(id)} exhausted={exhaustedOf(catalog, state, id)} />
+                <CardView template={t} orientation={{ side: "front", rotation: 0 }} label="Recto" width={width} onLongPress={() => onInspect(id)} exhausted={exhaustedOf(catalog, state, id)}
+              boxes={(stage) => boxViews(catalog, state, id, stage)} />
+                <CardView template={t} orientation={{ side: "back", rotation: 0 }} label="Verso" width={width} onLongPress={() => onInspect(id)} exhausted={exhaustedOf(catalog, state, id)}
+              boxes={(stage) => boxViews(catalog, state, id, stage)} />
               </div>
               <button className="btn btn-primary" disabled={picked} onClick={() => onAction({ type: "chooseDiscovery", card: id })}>
                 {picked ? "Choisie" : `#${t.serial}`}
@@ -266,6 +274,7 @@ export function CardListDialog({
               onTap={() => onInspect(id)}
               onLongPress={() => onInspect(id)}
               exhausted={exhaustedOf(catalog, state, id)}
+              boxes={(stage) => boxViews(catalog, state, id, stage)}
             />
           ))}
         </div>
@@ -288,7 +297,8 @@ function ChoiceDialog({ catalog, state, onAction }: { catalog: Catalog; state: G
   };
   const source = state.cards[p.source];
   const sourceView = source && (
-    <CardView template={template(catalog, source.templateId)} orientation={source.orientation} label={cardName(catalog, state, p.source)} width={150} exhausted={exhaustedOf(catalog, state, p.source)} />
+    <CardView template={template(catalog, source.templateId)} orientation={source.orientation} label={cardName(catalog, state, p.source)} width={150} exhausted={exhaustedOf(catalog, state, p.source)}
+              boxes={(stage) => boxViews(catalog, state, p.source, stage)} />
   );
   const cancel = p.cancellable && (
     <button className="btn" onClick={() => onAction({ type: "cancelChoice" })}>
@@ -381,6 +391,7 @@ function ChoiceDialog({ catalog, state, onAction }: { catalog: Catalog; state: G
                 width={listCard()}
                 selected={picked}
                 exhausted={exhaustedOf(catalog, state, id)}
+              boxes={(stage) => boxViews(catalog, state, id, stage)}
                 onTap={() => {
                   if (one) return answer({ cards: [id] });
                   if (picked) setCards(cards.filter((c) => c !== id));

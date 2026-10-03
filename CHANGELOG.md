@@ -3,6 +3,13 @@
 Chaque mise à jour publiée change de version (`package.json`, affichée dans l'appli en bas de l'écran « Mes royaumes »
 et dans la barre de la partie). Convention : `0.5.0` s'affiche **v0.05** ; un correctif `0.5.1` s'affiche **v0.05.1**.
 
+## v0.38 (3 octobre 2026)
+
+- Cases à cocher : une croix au feutre noir sur chaque case cochée, à sa place sur la carte (positions des 37 étapes à cases mesurées sur les images). Le compteur « ☑ n/N » disparaît.
+- C'est la case touchée qui est cochée et qui donne son bonus (Merchant, Jester, Mercenary, Lord Aethan, Prison, Astronomer…) : toucher une case lance l'effet ; pour une 2e case, les cases possibles clignotent, toucher ailleurs = non.
+- Pistes à ordre imposé (Army, Treasury, Quests, Young Forest…) : la prochaine case libre est entourée d'un léger halo ; toucher une case de la piste lance l'effet.
+- Cartes permanentes : la pastille passe sous la carte, la piste reste visible.
+
 ## v0.37 (3 octobre 2026)
 
 - Mini-extensions 136, 137, 138 : une fois la partie terminée, la fenêtre de fin propose de jouer Prosperity, The Water Mill ou Border Dispute (une seule fois chacune, les jouées sont grisées). Purge 12 (une carte amie par paquet de 12), purge d'une carte permanente, puis 4 manches sans découverte de début de manche ; la carte d'extension change d'étape à chaque fin de manche. Tous les effets des 12 étapes sont automatisés.

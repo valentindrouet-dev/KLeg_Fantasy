@@ -15,6 +15,7 @@ export function isValidAnswer(req: ChoiceRequest, a: Answer): boolean {
     case "resources":
       return "resources" in a && a.resources.length === req.count && a.resources.every((r) => req.options.includes(r));
     case "option":
+      if ("box" in a) return (req.boxes ?? []).includes(a.box);
       return "option" in a && Number.isInteger(a.option) && a.option >= 0 && a.option < req.labels.length;
   }
 }
@@ -55,7 +56,8 @@ export function forcedAnswer(req: ChoiceRequest): Answer | null {
     case "resources":
       return req.options.length === 1 ? { resources: Array.from({ length: req.count }, () => req.options[0] ?? "") } : null;
     case "option":
-      return req.labels.length === 1 ? { option: 0 } : null;
+      // Plusieurs cases à toucher (Astronomer : cases identiques) : c'est le joueur qui choisit la case.
+      return req.labels.length === 1 && (req.boxes?.length ?? 0) <= 1 ? { option: 0 } : null;
   }
 }
 
@@ -95,3 +97,7 @@ export const askOption = (prompt: string, labels: string[]): ChoiceRequest => ({
 export const cardsOf = (a: Answer | undefined): InstanceId[] => (a && "cards" in a ? a.cards : []);
 export const resourcesOf = (a: Answer | undefined): ResourceId[] => (a && "resources" in a ? a.resources : []);
 export const optionOf = (a: Answer | undefined): number => (a && "option" in a ? a.option : -1);
+export const boxOf = (a: Answer | undefined): string | null => (a && "box" in a ? a.box : null);
+
+/** Question « quelle case ? » : options (libellés) et cases à toucher sur la carte. */
+export const askBox = (prompt: string, labels: string[], boxes: string[]): ChoiceRequest => ({ type: "option", prompt, labels, boxes });

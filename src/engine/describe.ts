@@ -67,6 +67,7 @@ const ZONE_LABELS = {
 function describeAnswer(catalog: Catalog, s: GameState, a: Answer): string {
   if ("cards" in a) return a.cards.length ? a.cards.map((id) => cardName(catalog, s, id)).join(", ") : "Aucune carte";
   if ("resources" in a) return formatIcons(a.resources);
+  if ("box" in a) return `Case ${a.box}`;
   const p = s.pending;
   return p?.kind === "choice" && p.request.type === "option" ? (p.request.labels[a.option] ?? String(a.option)) : String(a.option);
 }

@@ -10,6 +10,8 @@ import {
   paymentCandidates,
   canPeekSecond,
   restrictionSources,
+  boxViews,
+  isOrderedTrack,
   cardBadges,
   showsTopHalfOnly,
   canUndo,
@@ -35,6 +37,7 @@ import { AdvanceIcon, CastleIcon, PassIcon, SaveIcon, SettingsIcon, SortIcon, St
 import { downloadText } from "../common/download";
 import { BugButton } from "../common/BugButton";
 import { effectLines } from "../../data/textLines";
+import { boxRects } from "../../data/checkboxes";
 import { backupFileName, exportKingdom } from "../../persistence/backup";
 import { playLayout } from "./sortCards";
 import { BLOCKED_PEEK, CARD_ASPECT, type Slot } from "./fitCards";
@@ -195,6 +198,14 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
   }, [state, anim]);
   const [picked, setPicked] = useState<InstanceId[]>([]);
   useEffect(() => setPicked([]), [state?.pending]);
+  // Question « quelle case ? » d'une carte sur le plateau (Merchant, Prison…) : on touche la case sur la carte.
+  const boxChoice = useMemo(() => {
+    const p = state?.pending;
+    if (!state || anim || p?.kind !== "choice" || p.request.type !== "option" || !p.request.boxes?.length) return null;
+    if (!state.zones.play.includes(p.source) && !state.zones.permanent.includes(p.source)) return null;
+    const decline = p.request.labels.lastIndexOf("Non");
+    return { source: p.source, boxes: p.request.boxes, decline: decline >= 0 ? decline : null, cancellable: p.cancellable };
+  }, [state, anim]);
 
   const optionsFor = useCallback(
     (card: InstanceId): CardOption[] => {
@@ -453,6 +464,63 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
     return true;
   };
 
+  /** Case de l'étape visible touchée (positions mesurées, marge pour le doigt), ou null. */
+  const boxAt = (card: InstanceId, p: TapPoint): string | null => {
+    const stage = activeStage(catalog, state, card);
+    const t = tpl(card);
+    const rects = stage ? boxRects(t.expansion, t.serial, stage.id) : undefined;
+    if (!stage || !rects) return null;
+    let best: { id: string; d: number } | null = null;
+    stage.checkboxes.forEach((b, i) => {
+      const r = rects[i];
+      if (!r) return;
+      const [cx, cy] = [r[0] + r[2] / 2, r[1] + r[3] / 2];
+      const inside = Math.abs(p.x - cx) <= r[2] * 0.85 && Math.abs(p.y - cy) <= r[3] * 0.85;
+      const d = Math.hypot(p.x - cx, p.y - cy);
+      if (inside && (!best || d < best.d)) best = { id: b.id, d };
+    });
+    return (best as { id: string } | null)?.id ?? null;
+  };
+
+  /**
+   * Toucher une case (demande du 2026-10-03) : répond à la question « quelle case ? » en cours ; sinon lance l'effet
+   * de la carte qui coche des cases, la case touchée choisissant le bonus. Renvoie true si le toucher est pris.
+   */
+  const tapBox = (card: InstanceId, p: TapPoint): boolean => {
+    if (boxChoice) {
+      const box = card === boxChoice.source ? boxAt(card, p) : null;
+      if (box && boxChoice.boxes.includes(box)) run([{ type: "choose", answer: { box } }]);
+      else if (boxChoice.decline !== null) run([{ type: "choose", answer: { option: boxChoice.decline } }]);
+      else if (boxChoice.cancellable) perform([{ type: "cancelChoice" }]);
+      return true;
+    }
+    if (!playing || tooltipsFr) return false;
+    const box = boxAt(card, p);
+    if (!box) return false;
+    const stage = activeStage(catalog, state, card);
+    const marking = optionsFor(card).filter(
+      (o) => o.action.type === "useEffect" && stage?.effects.some((e) => o.action.type === "useEffect" && e.id === o.action.effect && e.text.includes("{mark}")),
+    );
+    const o = marking[0];
+    if (!o) return false;
+    if (!o.plan) {
+      if (!startPaying(card, o)) showMissing(card, o, p);
+      return true;
+    }
+    // Case au choix : la case touchée répond à la question « quelle case ? » de l'effet, dès qu'elle est posée (Prison
+    // demande d'abord l'ennemi : la case touchée attend). Piste ordonnée : c'est la case suivante qui est cochée.
+    if (stage && !isOrderedTrack(stage)) {
+      const after = o.plan.reduce((st, a) => applyAction(catalog, st, a), state);
+      const req = after.pending?.kind === "choice" ? after.pending.request : null;
+      if (req?.type === "option" && req.boxes?.includes(box)) {
+        run([...o.plan, { type: "choose", answer: { box } }]);
+        return true;
+      }
+    }
+    run(o.plan);
+    return true;
+  };
+
   /** Choix sur le plateau : la carte touchée est choisie (ou rendue) ; le compte atteint, la réponse part. */
   const pickOnBoard = (card: InstanceId): boolean => {
     if (!boardChoice) return false;
@@ -470,6 +538,7 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
 
   const tapCard = (card: InstanceId, p: TapPoint) => {
     if (pickOnBoard(card)) return;
+    if (!paying && !targeting && tapBox(card, p)) return;
     if (paying) {
       if (!payers.has(card)) {
         setPaying(null);
@@ -580,6 +649,8 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
       half={extra?.zones ? showsTopHalfOnly(catalog, state, id) : undefined}
       note={note?.card === id ? note.note : undefined}
       exhausted={(stage) => exhaustedEffects(catalog, state, id, stage)}
+      boxes={(stage) => boxViews(catalog, state, id, stage)}
+      pickBoxes={boxChoice?.source === id ? boxChoice.boxes : undefined}
       shake={shaking.includes(id)}
     />
   );
@@ -607,6 +678,7 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
    */
   const tapPermanent = (id: InstanceId, p?: TapPoint) => {
     if (pickOnBoard(id)) return;
+    if (p && !paying && !targeting && tapBox(id, p)) return;
     // Mode FR : l'inspection montre la carte en grand, traduite.
     if (tooltipsFr) {
       setInspect(id);
@@ -690,6 +762,11 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
   ];
   const resources = (
     <div className={styles.resources} aria-label="Ressources">
+      {boxChoice && state.pending?.kind === "choice" && (
+        <div className={styles.pickCounter}>
+          <IconText text={state.pending.request.prompt} />
+        </div>
+      )}
       {boardChoice && state.pending?.kind === "choice" && (
         // Choix sur le plateau en cours : ce qu'il faut toucher et combien de cartes sont déjà choisies.
         <div className={styles.pickCounter}>
@@ -957,7 +1034,7 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
       {discardOpen && (
         <CardListDialog catalog={catalog} state={state} title="Défausse" cards={state.zones.discard} onInspect={setInspect} onClose={() => setDiscardOpen(false)} />
       )}
-      {state.pending && !boardChoice && <DecisionDialog catalog={catalog} state={state} onAction={(a) => perform([a])} onRestart={restart} onInspect={setInspect} />}
+      {state.pending && !boardChoice && !boxChoice && <DecisionDialog catalog={catalog} state={state} onAction={(a) => perform([a])} onRestart={restart} onInspect={setInspect} />}
       {inspect && <Inspector catalog={catalog} state={state} card={inspect} onClose={() => setInspect(null)} />}
       {state.phase === "gameOver" && !endClosed && (
         <EndDialog

@@ -74,9 +74,10 @@ export type PendingDecision =
 export type ChoiceRequest =
   | { type: "cards"; prompt: string; options: InstanceId[]; min: number; max: number }
   | { type: "resources"; prompt: string; options: ResourceId[]; count: number } // `count` ressources, répétitions permises
-  | { type: "option"; prompt: string; labels: string[] };
+  // boxes : cases de la carte source qu'on peut toucher pour répondre (réponse { box }), en plus des options.
+  | { type: "option"; prompt: string; labels: string[]; boxes?: string[] };
 
-export type Answer = { cards: InstanceId[] } | { resources: ResourceId[] } | { option: number };
+export type Answer = { cards: InstanceId[] } | { resources: ResourceId[] } | { option: number } | { box: string };
 
 /** Contexte d'un déclencheur : cartes jouées ensemble, cartes bloquées par la source… */
 export type TriggerCtx = { cards?: InstanceId[] };
