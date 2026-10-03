@@ -3,6 +3,12 @@
 Chaque mise à jour publiée change de version (`package.json`, affichée dans l'appli en bas de l'écran « Mes royaumes »
 et dans la barre de la partie). Convention : `0.5.0` s'affiche **v0.05** ; un correctif `0.5.1` s'affiche **v0.05.1**.
 
+## v0.34 (3 octobre 2026)
+
+- Carte à plusieurs effets (Witch Cabin…) : toucher le texte d'un effet lance cet effet-là, sans menu.
+- Effet qui demande de choisir des cartes en jeu (« Destroy 1 person… », « Discard 1 person… ») : plus de fenêtre, les cartes possibles s'allument et on touche celle(s) qu'on veut ; toucher ailleurs annule.
+- Cartes à image pleine : le numéro d'étape est dans le coin inférieur gauche.
+
 ## v0.33 (3 octobre 2026)
 
 - Carte permanente dont on a choisi la face (objectifs) : l'inspection ne montre que cette face.

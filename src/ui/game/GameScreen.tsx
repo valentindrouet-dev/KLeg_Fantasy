@@ -34,6 +34,7 @@ import { IconText } from "../common/IconText";
 import { AdvanceIcon, CastleIcon, PassIcon, SaveIcon, SettingsIcon, SortIcon, StatsIcon, TranslateIcon, UndoIcon } from "../common/UiIcons";
 import { downloadText } from "../common/download";
 import { BugButton } from "../common/BugButton";
+import { effectLines } from "../../data/textLines";
 import { backupFileName, exportKingdom } from "../../persistence/backup";
 import { playLayout } from "./sortCards";
 import { BLOCKED_PEEK, CARD_ASPECT, type Slot } from "./fitCards";
@@ -170,6 +171,17 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
   }, [ordered, topCount, spacerAt, state, area, zoom]);
   useCardMotion(catalog, state, playEl);
   const playing = state?.phase === "playing" && !state.pending && !anim;
+  // Choix de cartes en jeu demandé par un effet (« Destroy 1 person… ») : on touche les cartes sur le plateau, sans
+  // fenêtre (demande du 2026-10-03). Seulement quand le nombre est imposé ; sinon la fenêtre de choix reste.
+  const boardChoice = useMemo(() => {
+    const p = state?.pending;
+    if (!state || anim || p?.kind !== "choice" || p.request.type !== "cards") return null;
+    const r = p.request;
+    const onBoard = r.options.every((id) => state.zones.play.includes(id) || state.zones.permanent.includes(id));
+    return onBoard && r.min === r.max && r.min >= 1 ? { options: new Set(r.options), count: r.min, cancellable: p.cancellable, source: p.source } : null;
+  }, [state, anim]);
+  const [picked, setPicked] = useState<InstanceId[]>([]);
+  useEffect(() => setPicked([]), [state?.pending]);
 
   const optionsFor = useCallback(
     (card: InstanceId): CardOption[] => {
@@ -340,6 +352,23 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
     return [];
   };
 
+  /** Effet dont le texte est à la hauteur touchée (lignes mesurées sur l'image), ou null. */
+  const effectAt = (card: InstanceId, y: number): string | null => {
+    const stage = activeStage(catalog, state, card);
+    const t = tpl(card);
+    if (!stage) return null;
+    let best: { id: string; d: number } | null = null;
+    for (const e of stage.effects) {
+      const lines = effectLines(t.expansion, t.serial, stage.id, e.id);
+      if (!lines?.length) continue;
+      const top = Math.min(...lines.map((l) => l[0])) - 0.012;
+      const bottom = Math.max(...lines.map((l) => l[1])) + 0.012;
+      const d = y < top ? top - y : y > bottom ? y - bottom : 0;
+      if (d < 0.05 && (!best || d < best.d)) best = { id: e.id, d };
+    }
+    return best?.id ?? null;
+  };
+
   /** Ennemis qui interdisent la zone touchée (Dark Prince : ni amélioration ni effet {time}). */
   const forbiddenBy = (card: InstanceId, zone: ZoneKind): InstanceId[] => {
     const stage = activeStage(catalog, state, card);
@@ -399,7 +428,23 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
     return true;
   };
 
+  /** Choix sur le plateau : la carte touchée est choisie (ou rendue) ; le compte atteint, la réponse part. */
+  const pickOnBoard = (card: InstanceId): boolean => {
+    if (!boardChoice) return false;
+    if (!boardChoice.options.has(card)) {
+      if (boardChoice.cancellable) perform([{ type: "cancelChoice" }]);
+      return true;
+    }
+    const next = picked.includes(card) ? picked.filter((c) => c !== card) : [...picked, card];
+    if (next.length === boardChoice.count) {
+      setPicked([]);
+      run([{ type: "choose", answer: { cards: next } }]);
+    } else setPicked(next);
+    return true;
+  };
+
   const tapCard = (card: InstanceId, p: TapPoint) => {
+    if (pickOnBoard(card)) return;
     if (paying) {
       if (!payers.has(card)) {
         setPaying(null);
@@ -433,7 +478,14 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
       return;
     }
     if (zone === "upgradeFlip" || zone === "upgradeRotate" || zone === "effect") {
-      const opts = zoneOptions(card, zone);
+      let opts = zoneOptions(card, zone);
+      // Plusieurs effets sur la carte (Witch Cabin…) : celui dont on a touché le texte, sans menu.
+      const effects = new Set(opts.map((o) => (o.action.type === "useEffect" ? o.action.effect : "")));
+      if (zone === "effect" && effects.size > 1) {
+        const at = effectAt(card, p.y);
+        if (at) opts = opts.filter((o) => o.action.type === "useEffect" && o.action.effect === at);
+        if (opts.length === 0) return;
+      }
       if (opts.length === 0 && refuse(forbiddenBy(card, zone))) return;
       const only = opts[0];
       if (opts.length === 1 && only) {
@@ -462,13 +514,21 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
       orientation={instance(state, id).orientation}
       label={cardName(catalog, state, id)}
       width={width}
-      selected={selected?.card === id}
+      selected={selected?.card === id || picked.includes(id)}
       engaged={extra?.engaged}
       flagged={extra?.zones ? flagged.includes(id) : undefined}
       onTwoFinger={extra?.zones ? () => toggleFlag(id) : undefined}
       dimBottom={dimBottom && extra?.zones !== false}
-      targetable={targeting ? targetOptions.has(id) : paying ? payers.has(id) : undefined}
-      dimmed={targeting ? !targetOptions.has(id) && id !== targeting.source : paying ? !payers.has(id) && id !== paying.source : undefined}
+      targetable={boardChoice ? boardChoice.options.has(id) && !picked.includes(id) : targeting ? targetOptions.has(id) : paying ? payers.has(id) : undefined}
+      dimmed={
+        boardChoice
+          ? !boardChoice.options.has(id) && id !== boardChoice.source
+          : targeting
+            ? !targetOptions.has(id) && id !== targeting.source
+            : paying
+              ? !payers.has(id) && id !== paying.source
+              : undefined
+      }
       badge={badgeFor(id, extra?.engaged ?? false)}
       onTap={onTap}
       onLongPress={inspectable ? () => setInspect(id) : undefined}
@@ -504,6 +564,7 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
    * qui peuvent payer s'allument ; plusieurs effets : le menu. Sans effet : l'inspection (appui long aussi).
    */
   const tapPermanent = (id: InstanceId) => {
+    if (pickOnBoard(id)) return;
     // Mode FR : l'inspection montre la carte en grand, traduite.
     if (tooltipsFr) {
       setInspect(id);
@@ -759,6 +820,7 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
           if (e.target !== e.currentTarget) return;
           setPaying(null);
           setTargeting(null);
+          if (boardChoice?.cancellable) perform([{ type: "cancelChoice" }]);
         }}
       >
         {ordered.map((id, i) => {
@@ -841,7 +903,7 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
       {discardOpen && (
         <CardListDialog catalog={catalog} state={state} title="Défausse" cards={state.zones.discard} onInspect={setInspect} onClose={() => setDiscardOpen(false)} />
       )}
-      {state.pending && <DecisionDialog catalog={catalog} state={state} onAction={(a) => perform([a])} onRestart={restart} onInspect={setInspect} />}
+      {state.pending && !boardChoice && <DecisionDialog catalog={catalog} state={state} onAction={(a) => perform([a])} onRestart={restart} onInspect={setInspect} />}
       {inspect && <Inspector catalog={catalog} state={state} card={inspect} onClose={() => setInspect(null)} />}
       {state.phase === "gameOver" && !endClosed && (
         <EndDialog catalog={catalog} state={state} onBack={() => (window.location.hash = "#/")} onClose={() => setEndClosed(true)} />

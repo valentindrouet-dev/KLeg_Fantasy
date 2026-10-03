@@ -512,6 +512,10 @@
   opacity: 0.8;
 }
 
+.stageCorner {
+  bottom: 2%;
+}
+
 /* --- Animations d'orientation (fluides : un seul mouvement, propriétés rotate / scale séparées) --- */
 .face {
   position: absolute;
