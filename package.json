@@ -1,7 +1,7 @@
 {
   "name": "kleg-fantasy",
   "private": true,
-  "version": "0.30.0",
+  "version": "0.31.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -13,7 +13,8 @@
     "play": "tsx scripts/play.ts",
     "scrape": "tsx scripts/scrape.ts",
     "images": "tsx scripts/optimize-images.ts",
-    "validate": "tsx scripts/validate-cards.ts"
+    "validate": "tsx scripts/validate-cards.ts",
+    "text-lines": "tsx scripts/text-lines.ts"
   },
   "dependencies": {
     "dexie": "^4.4.6",
@@ -23,6 +24,7 @@
     "zustand": "^5.0.15"
   },
   "devDependencies": {
+    "@tesseract.js-data/eng": "^1.0.0",
     "@types/node": "^26.6.4",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
@@ -30,6 +32,7 @@
     "cheerio": "^1.2.0",
     "fake-indexeddb": "^6.2.5",
     "sharp": "^0.35.5",
+    "tesseract.js": "^7.0.0",
     "tsx": "^4.23.15",
     "typescript": "^7.0.2",
     "vite": "^8.3.2",

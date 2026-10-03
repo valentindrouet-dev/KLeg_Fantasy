@@ -13,6 +13,7 @@ import {
   type GameState,
   type InstanceId,
 } from "../../engine";
+import type { StageId } from "../../data/schema";
 import { Dialog } from "../common/Dialog";
 import { Icon, IconText } from "../common/IconText";
 import { CardView, type CardNote } from "./CardView";
@@ -22,6 +23,9 @@ import type { TapPoint } from "../common/usePress";
 import styles from "./Game.module.css";
 
 // Fenêtres de la partie : inspection, décisions en attente, défausse, fin de partie, confirmation.
+
+/** Effets épuisés d'une carte, à barrer partout où elle est dessinée. */
+const exhaustedOf = (catalog: Catalog, state: GameState, id: InstanceId) => (stage: StageId) => exhaustedEffects(catalog, state, id, stage);
 
 /** Largeur des cartes d'une liste (défausse) : environ 5 par rangée. */
 function listCard(): number {
@@ -129,7 +133,7 @@ export function DecisionDialog({
         <div className={styles.decisionRow}>
           <CardView template={t} orientation={{ side: "front", rotation: 0 }} label={`Parchemin #${t.serial}`} width={width} />
           {preview.map((id) => (
-            <CardView key={id} template={tOf(id)} orientation={{ side: "front", rotation: 0 }} label={`#${instance(state, id).serial}`} width={width} />
+            <CardView key={id} template={tOf(id)} orientation={{ side: "front", rotation: 0 }} label={`#${instance(state, id).serial}`} width={width} exhausted={exhaustedOf(catalog, state, id)} />
           ))}
           {!catalog.parchments.has(t.id) && <p className={styles.warning}>À appliquer à la main</p>}
         </div>
@@ -144,7 +148,7 @@ export function DecisionDialog({
         <div className={styles.decisionRow}>
           {(["front", "back"] as const).map((side) => (
             <figure key={side} className={styles.choice}>
-              <CardView template={t} orientation={{ side, rotation: 0 }} label={side} width={bigCard(2)} onTap={() => onAction({ type: "chooseSide", side })} />
+              <CardView template={t} orientation={{ side, rotation: 0 }} label={side} width={bigCard(2)} onTap={() => onAction({ type: "chooseSide", side })} exhausted={exhaustedOf(catalog, state, p.card)} />
               <button className="btn btn-primary" onClick={() => onAction({ type: "chooseSide", side })}>
                 {side === "front" ? "Recto" : "Verso"}
               </button>
@@ -176,6 +180,7 @@ export function DecisionDialog({
               label={cardName(catalog, state, id)}
               width={width}
               onLongPress={() => onInspect(id)}
+              exhausted={exhaustedOf(catalog, state, id)}
             />
           ))}
         </div>
@@ -196,8 +201,8 @@ export function DecisionDialog({
           return (
             <figure key={id} className={styles.choice}>
               <div className={styles.bothSides}>
-                <CardView template={t} orientation={{ side: "front", rotation: 0 }} label="Recto" width={width} onLongPress={() => onInspect(id)} />
-                <CardView template={t} orientation={{ side: "back", rotation: 0 }} label="Verso" width={width} onLongPress={() => onInspect(id)} />
+                <CardView template={t} orientation={{ side: "front", rotation: 0 }} label="Recto" width={width} onLongPress={() => onInspect(id)} exhausted={exhaustedOf(catalog, state, id)} />
+                <CardView template={t} orientation={{ side: "back", rotation: 0 }} label="Verso" width={width} onLongPress={() => onInspect(id)} exhausted={exhaustedOf(catalog, state, id)} />
               </div>
               <button className="btn btn-primary" disabled={picked} onClick={() => onAction({ type: "chooseDiscovery", card: id })}>
                 {picked ? "Choisie" : `#${t.serial}`}
@@ -240,6 +245,7 @@ export function CardListDialog({
               width={listCard()}
               onTap={() => onInspect(id)}
               onLongPress={() => onInspect(id)}
+              exhausted={exhaustedOf(catalog, state, id)}
             />
           ))}
         </div>
@@ -262,7 +268,7 @@ function ChoiceDialog({ catalog, state, onAction }: { catalog: Catalog; state: G
   };
   const source = state.cards[p.source];
   const sourceView = source && (
-    <CardView template={template(catalog, source.templateId)} orientation={source.orientation} label={cardName(catalog, state, p.source)} width={150} />
+    <CardView template={template(catalog, source.templateId)} orientation={source.orientation} label={cardName(catalog, state, p.source)} width={150} exhausted={exhaustedOf(catalog, state, p.source)} />
   );
   const cancel = p.cancellable && (
     <button className="btn" onClick={() => onAction({ type: "cancelChoice" })}>
@@ -354,6 +360,7 @@ function ChoiceDialog({ catalog, state, onAction }: { catalog: Catalog; state: G
                 label={cardName(catalog, state, id)}
                 width={listCard()}
                 selected={picked}
+                exhausted={exhaustedOf(catalog, state, id)}
                 onTap={() => {
                   if (one) return answer({ cards: [id] });
                   if (picked) setCards(cards.filter((c) => c !== id));

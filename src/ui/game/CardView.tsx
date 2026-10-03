@@ -1,7 +1,8 @@
 import { useState, type ReactNode } from "react";
 import { cardImageUrl } from "../../data/loadCards";
 import type { CardTemplate, Orientation, StageId } from "../../data/schema";
-import { isFullImageFace, printedStage, stageIdAt, type StickerPlacement } from "../../engine";
+import { isFullImageFace, printedStage, stageIdAt, type ExhaustedEffect, type StickerPlacement } from "../../engine";
+import { effectLines, type TextLine } from "../../data/textLines";
 import { IconText, iconImage } from "../common/IconText";
 import { STICKER_SIZE, stickerSpots } from "./stickerLayout";
 import { usePress, type TapPoint } from "../common/usePress";
@@ -39,22 +40,38 @@ type Props = {
   /** Texte posé sur la carte : traduction (mode FR) ou ce qui manque pour payer. */
   note?: CardNote;
   /** Effets épuisés d'un stage (rang parmi ses effets) : barrés au feutre noir sur la carte. */
-  exhausted?: (stage: StageId) => { index: number; count: number }[];
+  exhausted?: (stage: StageId) => ExhaustedEffect[];
 };
 
 /**
- * Trait de feutre sur le texte d'un effet épuisé. Repères relevés sur les images : texte des effets entre 27 % et 47 %
- * de la hauteur (moitié haute), entre 58 % et 88 % pour une carte à image pleine ; un effet par bande.
+ * Traits de feutre sur le texte d'un effet épuisé : un trait par ligne, aux positions mesurées sur l'image
+ * (data/textLines). Sans mesure, un trait estimé : texte des effets entre 27 % et 47 % de la hauteur (moitié haute),
+ * entre 58 % et 88 % pour une face à image pleine, un effet par bande. La moitié basse est lue à l'envers.
  */
-function Strikes({ full, stage, list, half }: { full: boolean; stage: StageId | null; list: { index: number; count: number }[]; half: "top" | "bottom" }) {
+function Strikes({ template, full, stage, list, half }: { template: CardTemplate; full: boolean; stage: StageId | null; list: ExhaustedEffect[]; half: "top" | "bottom" }) {
   if (stage === null || list.length === 0) return null;
   const [from, to] = full ? [0.6, 0.86] : [0.28, 0.46];
+  // Milieu des lettres : un peu sous le milieu de la ligne mesurée (qui compte les hampes des b, d, l).
+  const place = (l: TextLine) => {
+    const y = l[0] + 0.58 * (l[1] - l[0]);
+    return half === "top" ? { y, x0: l[2], x1: l[3] } : { y: 1 - y, x0: 1 - l[3], x1: 1 - l[2] };
+  };
   return (
     <>
-      {list.map(({ index, count }) => {
+      {list.flatMap(({ id, index, count }) => {
+        const lines = effectLines(template.expansion, template.serial, stage, id);
+        if (lines?.length) {
+          return lines.map(place).map((l, i) => (
+            <span
+              key={`${id}-${i}`}
+              className={`${styles.strike} ${styles.strikeLine} ${half === "bottom" ? styles.strikeBottom : ""}`}
+              style={{ top: `${l.y * 100}%`, left: `${l.x0 * 100}%`, width: `${(l.x1 - l.x0) * 100}%` }}
+            />
+          ));
+        }
         const center = from + ((index + 0.5) * (to - from)) / count;
         const y = half === "top" ? center : 1 - center;
-        return <span key={index} className={`${styles.strike} ${half === "bottom" ? styles.strikeBottom : ""}`} style={{ top: `${y * 100}%` }} />;
+        return [<span key={id} className={`${styles.strike} ${half === "bottom" ? styles.strikeBottom : ""}`} style={{ top: `${y * 100}%` }} />];
       })}
     </>
   );
@@ -127,7 +144,7 @@ function Face({
   className?: string;
   dimBottom?: boolean;
   stickers?: readonly StickerPlacement[];
-  exhausted?: (stage: StageId) => { index: number; count: number }[];
+  exhausted?: (stage: StageId) => ExhaustedEffect[];
 }) {
   const url = cardImageUrl(orientation.side === "front" ? template.images.front : template.images.back);
   // Moitiés réellement imprimées : une carte à image pleine n'a pas de moitié basse (pas de grisé, un seul numéro).
@@ -147,8 +164,8 @@ function Face({
       {bottom !== null && <span className={`${styles.stageNumber} ${styles.stageBottom} ${styles[`stage${bottom}`]}`}>{bottom}</span>}
       {exhausted && (
         <>
-          <Strikes full={isFullImageFace(template, orientation.side)} stage={topId} list={topId === null ? [] : exhausted(topId)} half="top" />
-          <Strikes full={false} stage={bottomId} list={bottomId === null ? [] : exhausted(bottomId)} half="bottom" />
+          <Strikes template={template} full={isFullImageFace(template, orientation.side)} stage={topId} list={topId === null ? [] : exhausted(topId)} half="top" />
+          <Strikes template={template} full={false} stage={bottomId} list={bottomId === null ? [] : exhausted(bottomId)} half="bottom" />
         </>
       )}
       {stickers && stickers.length > 0 && (

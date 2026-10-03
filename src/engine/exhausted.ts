@@ -30,8 +30,10 @@ export function isEffectExhausted(catalog: Catalog, s: GameState, id: InstanceId
   return false;
 }
 
-/** Effets épuisés d'un stage, avec leur rang parmi les effets du stage (pour les barrer à leur place). */
-export function exhaustedEffects(catalog: Catalog, s: GameState, id: InstanceId, stage: StageId): { index: number; count: number }[] {
+/** Effets épuisés d'un stage, avec leur identifiant et leur rang parmi les effets du stage (pour les barrer à leur place). */
+export function exhaustedEffects(catalog: Catalog, s: GameState, id: InstanceId, stage: StageId): ExhaustedEffect[] {
   const effects = template(catalog, instance(s, id).templateId).stages[String(stage) as "1"]?.effects ?? [];
-  return effects.flatMap((e, index) => (isEffectExhausted(catalog, s, id, stage, e) ? [{ index, count: effects.length }] : []));
+  return effects.flatMap((e, index) => (isEffectExhausted(catalog, s, id, stage, e) ? [{ id: e.id, index, count: effects.length }] : []));
 }
+
+export type ExhaustedEffect = { id: string; index: number; count: number };

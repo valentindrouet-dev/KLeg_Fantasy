@@ -3,6 +3,11 @@
 Chaque mise à jour publiée change de version (`package.json`, affichée dans l'appli en bas de l'écran « Mes royaumes »
 et dans la barre de la partie). Convention : `0.5.0` s'affiche **v0.05** ; un correctif `0.5.1` s'affiche **v0.05.1**.
 
+## v0.31 (3 octobre 2026)
+
+- Effets épuisés : un trait de feutre par ligne de texte, à sa place et à sa largeur (Mason : ses deux lignes). Les lignes de chaque effet ont été mesurées sur les images des cartes (`npm run text-lines`).
+- Les traits apparaissent partout où la carte est dessinée : zone de jeu, défausse, pioche, inspection, nouvelles cartes, choix d'une carte, carte qui pose une question.
+
 ## v0.30 (3 octobre 2026)
 
 - Bug : sur les cartes qui ont un recto à image pleine et un verso à deux étapes (Mason 43, et 28, 32, 45, 58, 61, 66, 67), toucher le texte de l'effet en bas de l'image ne lançait rien. Les zones, la traduction FR, les traits des effets épuisés et la demi-carte se règlent maintenant sur la face visible.

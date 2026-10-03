@@ -224,7 +224,7 @@ describe("effets épuisés", async () => {
     s.zones.box = s.zones.box.filter((id) => id !== fk(103));
     s.zones.discard.push(fk(103));
     expect(getLegalActions(catalog, s).some((a) => a.type === "useEffect")).toBe(false);
-    expect(exhaustedEffects(catalog, s, fk(17), 2)).toEqual([{ index: 0, count: 1 }]);
+    expect(exhaustedEffects(catalog, s, fk(17), 2)).toEqual([{ id: "e1", index: 0, count: 1 }]);
   });
 
   it("un effet à usage unique utilisé, une piste complète : épuisés ; Army avant la fin : non", () => {
@@ -232,6 +232,6 @@ describe("effets épuisés", async () => {
     s.cards[fk(25)]!.checkedBoxes = ["1/c1"];
     expect(exhaustedEffects(catalog, s, fk(25), 1)).toEqual([]);
     s.cards[fk(25)]!.checkedBoxes = Array.from({ length: 10 }, (_, i) => `1/c${i + 1}`);
-    expect(exhaustedEffects(catalog, s, fk(25), 1)).toEqual([{ index: 0, count: 1 }]);
+    expect(exhaustedEffects(catalog, s, fk(25), 1)).toEqual([{ id: "e1", index: 0, count: 1 }]);
   });
 });

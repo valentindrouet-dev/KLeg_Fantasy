@@ -1169,3 +1169,14 @@
 .strikeBottom {
   transform: rotate(178.4deg);
 }
+
+/* Un trait par ligne de texte mesurée : plus fin, à la largeur de la ligne. */
+.strikeLine {
+  height: 2.3%;
+  margin-top: 0;
+  transform: translateY(-50%) rotate(-0.7deg);
+}
+
+.strikeLine.strikeBottom {
+  transform: translateY(-50%) rotate(179.3deg);
+}

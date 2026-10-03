@@ -1,6 +1,6 @@
 # Extraction des cartes
 
-Chaîne : `npm run scrape` → `data/raw/` (HTML en cache, JSON brut, images JPEG, hors dépôt) → lecture visuelle des images par lots d'environ 10 cartes → `data/cards/{Expansion}/{n}.json` (schéma `src/data/schema.ts`) → `npm run images` (WebP dans `data/images/`) → `npm run validate`.
+Chaîne : `npm run scrape` → `data/raw/` (HTML en cache, JSON brut, images JPEG, hors dépôt) → lecture visuelle des images par lots d'environ 10 cartes → `data/cards/{Expansion}/{n}.json` (schéma `src/data/schema.ts`) → `npm run images` (WebP dans `data/images/`) → `npm run validate` → `npm run text-lines` (position des lignes de texte de chaque effet, mesurée sur les images WebP et lue par OCR, dans `data/textLines/` : sert à barrer un effet épuisé ligne par ligne ; `--sheet` écrit des planches de contrôle dans `data/raw/sheets/lines`).
 
 ## Ce que donne le site
 
