@@ -152,6 +152,8 @@ export type EffectImpl = {
   apply: (d: Draft, card: InstanceId, p: EffectParams) => void;
   /** Ressources que l'effet dépense (pour payer avec des cartes engagées). */
   cost?: readonly string[];
+  /** Payer avec toutes les cartes engagées utiles, pas seulement le minimum (Export : tout dépenser). */
+  useAllEngaged?: boolean;
   /** Coût qui dépend de l'état (piste : la case suivante). */
   costOf?: (d: Draft, card: InstanceId) => readonly string[];
   /** Questions au joueur, une à la fois, avant tout paiement ; null quand tout est choisi (réponses dans p.answers). */

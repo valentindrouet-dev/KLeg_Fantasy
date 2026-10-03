@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { computeScore, getLegalActions, productionGroups, type Action, type Answer, type GameState } from "../../src/engine";
+import { computeScore, exhaustedEffects, getLegalActions, isEffectExhausted, productionGroups, type Action, type Answer, type GameState } from "../../src/engine";
 import { canPay } from "../../src/engine/state";
 import { checkKey } from "../../src/engine/ops";
 import { payPool } from "../../src/engine/passives";
@@ -212,5 +212,26 @@ describe("effets des cartes", async () => {
     s = run(catalog, s, choose({ option: 3 }), choose({ option: 2 }));
     expect(s.resources).toMatchObject({ metal: 1, stone: 1, coin: 0 });
     expect(s.cards[fk(41)]?.checkedBoxes).toEqual([checkKey(4, "c7"), checkKey(4, "c5")]);
+  });
+});
+
+describe("effets épuisés", async () => {
+  const catalog = await loadCatalog();
+  it("une découverte dont la carte a quitté la boîte n'est plus proposée", () => {
+    // Chapel (17 au stage 2) : « Spend {coin}{coin}{coin} to discover Missionary (103). »
+    const s = arrange(catalog, { play: [17], orientation: { 17: { side: "front", rotation: 180 } }, resources: { coin: 3 } });
+    expect(isEffectExhausted(catalog, s, fk(17), 2, catalog.templates.get(fk(17))!.stages["2"]!.effects[0]!)).toBe(false);
+    s.zones.box = s.zones.box.filter((id) => id !== fk(103));
+    s.zones.discard.push(fk(103));
+    expect(getLegalActions(catalog, s).some((a) => a.type === "useEffect")).toBe(false);
+    expect(exhaustedEffects(catalog, s, fk(17), 2)).toEqual([{ index: 0, count: 1 }]);
+  });
+
+  it("un effet à usage unique utilisé, une piste complète : épuisés ; Army avant la fin : non", () => {
+    const s = arrange(catalog, { play: [1], permanent: [25] });
+    s.cards[fk(25)]!.checkedBoxes = ["1/c1"];
+    expect(exhaustedEffects(catalog, s, fk(25), 1)).toEqual([]);
+    s.cards[fk(25)]!.checkedBoxes = Array.from({ length: 10 }, (_, i) => `1/c${i + 1}`);
+    expect(exhaustedEffects(catalog, s, fk(25), 1)).toEqual([{ index: 0, count: 1 }]);
   });
 });

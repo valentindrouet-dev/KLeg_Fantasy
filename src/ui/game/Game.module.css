@@ -1151,3 +1151,21 @@
   font-size: 0.85rem;
   z-index: 30;
 }
+
+/* Effet épuisé : trait de feutre noir sur son texte. */
+.strike {
+  position: absolute;
+  left: 13%;
+  width: 74%;
+  height: 3.6%;
+  margin-top: -1.8%;
+  border-radius: 40% 60% 55% 45% / 60% 40% 60% 40%;
+  background: rgb(14 12 10 / 0.88);
+  box-shadow: 0 0 1px rgb(14 12 10 / 0.6);
+  transform: rotate(-1.6deg);
+  pointer-events: none;
+}
+
+.strikeBottom {
+  transform: rotate(178.4deg);
+}

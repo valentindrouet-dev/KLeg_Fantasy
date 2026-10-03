@@ -1,6 +1,7 @@
 import { Fragment, useState, type ReactNode } from "react";
 import {
   canRestartKingdom,
+  exhaustedEffects,
   cardName,
   computeScore,
   instance,
@@ -67,6 +68,7 @@ export function Inspector({ catalog, state, card, onClose }: { catalog: Catalog;
           width={bigCard(2)}
           stickers={c.stickers}
           onTap={tap(0, c.orientation)}
+          exhausted={(stage) => exhaustedEffects(catalog, state, card, stage)}
           note={tooltipsFr && note?.face === 0 ? note.note : undefined}
         />
         <CardView
@@ -76,6 +78,7 @@ export function Inspector({ catalog, state, card, onClose }: { catalog: Catalog;
           width={bigCard(2)}
           stickers={c.stickers}
           onTap={tap(1, other)}
+          exhausted={(stage) => exhaustedEffects(catalog, state, card, stage)}
           note={tooltipsFr && note?.face === 1 ? note.note : undefined}
         />
       </div>

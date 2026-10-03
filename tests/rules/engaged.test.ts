@@ -117,16 +117,16 @@ describe("productions qui dépendent des autres cartes", async () => {
 
 describe("Export", async () => {
   const catalog = await loadCatalog();
-  it("les cartes engagées qui produisent des marchandises paient Export, puis on choisit combien dépenser", () => {
-    // Exotic Fruit Trees (20 au stage 4) : 2 {tradeGood}.
-    const s = arrange(catalog, { play: [20, 1], permanent: [27], orientation: { 20: { side: "back", rotation: 0 } } });
+  it("toutes les cartes engagées qui produisent des marchandises produisent, et tout part dans Export", () => {
+    // Exotic Fruit Trees (20 et 21 au stage 4) : 2 {tradeGood} chacune.
+    const s = arrange(catalog, { play: [20, 21, 1], permanent: [27], orientation: { 20: { side: "back", rotation: 0 }, 21: { side: "back", rotation: 0 } } });
     const effect: Action = { type: "useEffect", card: fk(27), effect: "e1", targets: [], option: null };
-    expect(paymentCandidates(catalog, s, effect, [])).toEqual([fk(20)]);
-    const plan = planWithEngaged(catalog, s, effect, [fk(20)]);
-    expect(plan).not.toBeNull();
-    let after = (plan ?? []).reduce((st, a) => applyAction(catalog, st, a), s);
-    expect(after.pending).toMatchObject({ kind: "choice", request: { labels: ["2", "1"] } });
-    after = applyAction(catalog, after, { type: "choose", answer: { option: 0 } });
-    expect(after.cards[fk(27)]?.tallies).toEqual({ "1": 2 });
+    expect(paymentCandidates(catalog, s, effect, [])).toEqual([fk(20), fk(21)]);
+    const plan = planWithEngaged(catalog, s, effect, [fk(20), fk(21)]);
+    expect(plan?.filter((a) => a.type === "produce").length).toBe(2);
+    const after = (plan ?? []).reduce((st, a) => applyAction(catalog, st, a), s);
+    expect(after.pending).toBeNull();
+    expect(after.cards[fk(27)]?.tallies).toEqual({ "1": 4 });
+    expect(after.resources.tradeGood).toBe(0);
   });
 });

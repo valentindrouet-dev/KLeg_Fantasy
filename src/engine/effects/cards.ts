@@ -798,19 +798,17 @@ const EXACT: Record<string, Factory> = {
 };
 
 /**
- * Export : dépenser des marchandises ici (compteur par stage). Coût minimal 1 {tradeGood} : les cartes engagées qui
- * produisent des marchandises paient d'abord ; ensuite on choisit combien en dépenser (toutes, par défaut en premier).
+ * Export : dépenser des marchandises ici (compteur par stage). Coût minimal 1 {tradeGood} : toutes les cartes engagées
+ * qui produisent des marchandises produisent d'abord, puis tout part dans Export.
  */
 const tallyEffect: EffectImpl = {
+  // Toujours toutes les marchandises (demande du 2026-10-03), celles de toutes les cartes engagées comprises.
   ...effect({
     usable: (d) => (d.s.resources.tradeGood ?? 0) > 0,
-    ask: steps((d) => {
-      const n = d.s.resources.tradeGood ?? 0;
-      return askOption("Combien de {tradeGood} ?", Array.from({ length: n }, (_, i) => String(n - i)));
-    }),
-    run: (d, card, a) => deposit(d, card, (d.s.resources.tradeGood ?? 0) - optionOf(a[0])),
+    run: (d, card) => deposit(d, card, d.s.resources.tradeGood ?? 0),
   }),
   cost: ["tradeGood"],
+  useAllEngaged: true,
 };
 
 function deposit(d: Draft, card: InstanceId, n: number): void {

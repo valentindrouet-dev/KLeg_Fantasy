@@ -1,6 +1,7 @@
 import type { Side } from "../data/schema";
 import { askOption, nextQuestion } from "./choice";
 import { effectKey } from "./effects/registry";
+import { isEffectExhausted } from "./exhausted";
 import { extraAdvance } from "./passives";
 import { shuffle } from "./rng";
 import { computeScore } from "./score";
@@ -80,7 +81,7 @@ export function triggersOf(d: Draft, card: InstanceId, timing: TriggerTiming): s
   if (!stage) return [];
   const c = instance(d.s, card);
   return stage.effects
-    .filter((e) => !c.crossedOutEffects.includes(`${stage.id}/${e.id}`))
+    .filter((e) => !isEffectExhausted(d.catalog, d.s, card, stage.id, e))
     .map((e) => effectKey(c.templateId, stage.id, e.id))
     .filter((key) => {
       const t = d.catalog.triggers.get(key)?.timing;

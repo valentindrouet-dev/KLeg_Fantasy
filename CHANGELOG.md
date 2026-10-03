@@ -3,6 +3,11 @@
 Chaque mise à jour publiée change de version (`package.json`, affichée dans l'appli en bas de l'écran « Mes royaumes »
 et dans la barre de la partie). Convention : `0.5.0` s'affiche **v0.05** ; un correctif `0.5.1` s'affiche **v0.05.1**.
 
+## v0.29 (3 octobre 2026)
+
+- Export : toujours le maximum ; toutes les cartes engagées qui produisent des {tradeGood} produisent, et tout part dans Export, sans question.
+- Effets épuisés barrés d'un trait de feutre noir sur la carte, et plus proposés : effet à usage unique déjà utilisé, découverte dont les cartes ont toutes quitté la boîte (ex. Discover Missionary (103) une fois 103 découverte), cases à cocher toutes remplies.
+
 ## v0.28 (3 octobre 2026)
 
 - Export : se paie aussi avec des cartes engagées, ou en touchant Export puis les cartes qui brillent ; on choisit ensuite combien de {tradeGood} y dépenser.

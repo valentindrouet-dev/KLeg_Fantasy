@@ -52,12 +52,18 @@ export function planWithEngaged(
   const candidates = engaged.filter(
     (id) => s.zones.play.includes(id) && !excluded.has(id) && productionGroups(catalog, s, id).length > 0,
   );
-  for (let size = 1; size <= candidates.length; size++) {
+  // Export : toutes les cartes engagées qui produisent une ressource du coût produisent (tout est dépensé).
+  const impl = action.type === "useEffect" ? usableEffects(catalog, s, action.card).find((e) => e.effect.id === action.effect)?.impl : undefined;
+  const all = impl?.useAllEngaged
+    ? candidates.filter((id) => productionGroups(catalog, s, id).some((g) => g.options.some((o) => o.some((r) => cost.includes(r)))))
+    : [];
+  // Meilleure production (le moins de ressources perdues) parmi ces groupes de cartes, vérifiée sur le vrai moteur.
+  const tryGroups = (groups: readonly (readonly InstanceId[])[]): Action[] | null => {
     let best: { produce: Action[]; waste: number } | null = null;
-    for (const subset of combinations(candidates, size)) {
+    for (const subset of groups) {
       // La production d'une carte peut dépendre des autres cartes en jeu (Cathedral : +1 {coin} par personne) :
       // on produit carte par carte, dans chaque ordre possible, en recalculant à chaque fois.
-      for (const order of size <= 4 ? permutations(subset) : [subset]) {
+      for (const order of subset.length <= 4 ? permutations(subset) : [[...subset]]) {
         for (const produce of producePlans(catalog, s, order)) {
           const sim = simulate(catalog, s, produce);
           if (!sim || !covers(sim.resources, cost)) continue;
@@ -68,16 +74,22 @@ export function planWithEngaged(
         }
       }
     }
-    if (best) {
-      // Vérification sur le vrai moteur (déclencheurs compris) ; un plan qui échoue n'est jamais proposé.
-      try {
-        let next = s;
-        for (const p of best.produce) next = applyAction(catalog, next, p);
-        if (isLegal(catalog, next, action)) return [...best.produce, action];
-      } catch {
-        // essayer avec plus de cartes
-      }
+    if (!best) return null;
+    try {
+      let next = s;
+      for (const p of best.produce) next = applyAction(catalog, next, p);
+      return isLegal(catalog, next, action) ? [...best.produce, action] : null;
+    } catch {
+      return null;
     }
+  };
+  if (all.length) {
+    const plan = tryGroups([all]);
+    if (plan) return plan;
+  }
+  for (let size = 1; size <= candidates.length; size++) {
+    const plan = tryGroups(combinations(candidates, size));
+    if (plan) return plan;
   }
   return null;
 }

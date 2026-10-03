@@ -1,6 +1,7 @@
 import type { Effect, Stage, Upgrade } from "../data/schema";
 import { enumerateAnswers, isValidAnswer, nextQuestion } from "./choice";
 import { effectKey } from "./effects/registry";
+import { isEffectExhausted } from "./exhausted";
 import { substituteScript } from "./effects/substitutes";
 import {
   advance,
@@ -55,7 +56,7 @@ export function usableEffects(catalog: Catalog, s: GameState, id: InstanceId): U
   if (!stage) return [];
   const c = instance(s, id);
   return stage.effects.flatMap((effect) => {
-    if (c.crossedOutEffects.includes(`${stage.id}/${effect.id}`)) return [];
+    if (isEffectExhausted(catalog, s, id, stage.id, effect)) return [];
     const impl = catalog.effects.get(effectKey(c.templateId, stage.id, effect.id));
     return impl ? [{ stage, effect, impl }] : [];
   });

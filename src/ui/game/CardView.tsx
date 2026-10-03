@@ -38,7 +38,27 @@ type Props = {
   half?: boolean;
   /** Texte posé sur la carte : traduction (mode FR) ou ce qui manque pour payer. */
   note?: CardNote;
+  /** Effets épuisés d'un stage (rang parmi ses effets) : barrés au feutre noir sur la carte. */
+  exhausted?: (stage: StageId) => { index: number; count: number }[];
 };
+
+/**
+ * Trait de feutre sur le texte d'un effet épuisé. Repères relevés sur les images : texte des effets entre 27 % et 47 %
+ * de la hauteur (moitié haute), entre 58 % et 88 % pour une carte à image pleine ; un effet par bande.
+ */
+function Strikes({ full, stage, list, half }: { full: boolean; stage: StageId | null; list: { index: number; count: number }[]; half: "top" | "bottom" }) {
+  if (stage === null || list.length === 0) return null;
+  const [from, to] = full ? [0.6, 0.86] : [0.28, 0.46];
+  return (
+    <>
+      {list.map(({ index, count }) => {
+        const center = from + ((index + 0.5) * (to - from)) / count;
+        const y = half === "top" ? center : 1 - center;
+        return <span key={index} className={`${styles.strike} ${half === "bottom" ? styles.strikeBottom : ""}`} style={{ top: `${y * 100}%` }} />;
+      })}
+    </>
+  );
+}
 
 export type CardNote = { half: "top" | "bottom" | "full"; title?: string; text: string; tone: "fr" | "warn" };
 
@@ -99,6 +119,7 @@ function Face({
   className,
   dimBottom,
   stickers,
+  exhausted,
 }: {
   template: CardTemplate;
   orientation: Orientation;
@@ -106,6 +127,7 @@ function Face({
   className?: string;
   dimBottom?: boolean;
   stickers?: readonly StickerPlacement[];
+  exhausted?: (stage: StageId) => { index: number; count: number }[];
 }) {
   const url = cardImageUrl(orientation.side === "front" ? template.images.front : template.images.back);
   // Moitiés réellement imprimées : une carte à image pleine n'a pas de moitié basse (pas de grisé, un seul numéro).
@@ -123,6 +145,12 @@ function Face({
       {dimBottom && top !== null && bottom !== null && <span className={styles.bottomShade} />}
       {top !== null && <span className={`${styles.stageNumber} ${styles.stageTop} ${styles[`stage${top}`]}`}>{top}</span>}
       {bottom !== null && <span className={`${styles.stageNumber} ${styles.stageBottom} ${styles[`stage${bottom}`]}`}>{bottom}</span>}
+      {exhausted && (
+        <>
+          <Strikes full={isFullImage(template)} stage={topId} list={topId === null ? [] : exhausted(topId)} half="top" />
+          <Strikes full={false} stage={bottomId} list={bottomId === null ? [] : exhausted(bottomId)} half="bottom" />
+        </>
+      )}
       {stickers && stickers.length > 0 && (
         <>
           <Stickers template={template} stage={topId} stickers={stickers} half="top" />
@@ -134,7 +162,7 @@ function Face({
 }
 
 export function CardView(props: Props) {
-  const { id, template, orientation, label, width, selected, engaged, targetable, dimBottom, flagged, onTwoFinger, dimmed, badge, onTap, onLongPress, zoneLabel, anim, stickers, half, note } =
+  const { id, template, orientation, label, width, selected, engaged, targetable, dimBottom, flagged, onTwoFinger, dimmed, badge, onTap, onLongPress, zoneLabel, anim, stickers, half, note, exhausted } =
     props;
   // Demi-carte : les positions touchées sont ramenées à la carte entière (zones cliquables inchangées).
   const yScale = half ? 0.5 : 1;
@@ -201,12 +229,12 @@ export function CardView(props: Props) {
       {anim?.kind === "flip" ? (
         // Retournement : deux faces dos à dos, la carte pivote d'un seul mouvement.
         <div className={styles.flipInner}>
-          <Face template={template} orientation={orientation} label={label} stickers={stickers} />
-          <Face template={template} orientation={anim.to} label={label} className={styles.backFace} stickers={stickers} />
+          <Face template={template} orientation={orientation} label={label} stickers={stickers} exhausted={exhausted} />
+          <Face template={template} orientation={anim.to} label={label} className={styles.backFace} stickers={stickers} exhausted={exhausted} />
         </div>
       ) : (
         // Pendant une rotation, la carte n'est plus grisée (sinon la moitié grisée passe en haut).
-        <Face template={template} orientation={orientation} label={label} dimBottom={dimBottom && !anim && !half} stickers={stickers} />
+        <Face template={template} orientation={orientation} label={label} dimBottom={dimBottom && !anim && !half} stickers={stickers} exhausted={exhausted} />
       )}
       {rect && !anim && (
         <span

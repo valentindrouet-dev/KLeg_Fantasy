@@ -5,6 +5,7 @@ import {
   activeStage,
   applyAction,
   candidateActions,
+  exhaustedEffects,
   isFullImage,
   paymentCandidates,
   canPeekSecond,
@@ -423,6 +424,7 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
       stickers={instance(state, id).stickers}
       half={extra?.zones ? showsTopHalfOnly(catalog, state, id) : undefined}
       note={note?.card === id ? note.note : undefined}
+      exhausted={(stage) => exhaustedEffects(catalog, state, id, stage)}
     />
   );
 

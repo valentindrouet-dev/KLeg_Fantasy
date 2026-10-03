@@ -59,5 +59,9 @@ ne tranchent pas ; à confirmer par l'utilisateur.
   = la défausse à ce moment-là.
 - **Watchtower** : la deuxième carte de la pioche est montrée sous la pioche.
 - **Wood Shipment** : bois et marchandises interchangeables pour payer.
+- **Effet épuisé** (2026-10-03) : un effet dont toutes les cartes à découvrir ont quitté la boîte n'est plus utilisable
+  (sauf découverte conditionnelle « When complete » ou avec une autre issue « or gain ») ; idem pour un effet « {mark} »
+  dont toutes les cases sont cochées.
+- **Export** (2026-10-03) : on y dépense toujours toutes ses marchandises.
 - **Hors partie de base (phase P4)** : purge (Aethan Estate, bonus de Temple of Light) et mini-extensions 136 à 138.
 - **Cartes** : 11 à 135.
