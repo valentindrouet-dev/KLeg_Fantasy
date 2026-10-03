@@ -32,10 +32,28 @@ export function isEffectExhausted(catalog: Catalog, s: GameState, id: InstanceId
   return false;
 }
 
-/** Effets épuisés d'un stage, avec leur identifiant et leur rang parmi les effets du stage (pour les barrer à leur place). */
-export function exhaustedEffects(catalog: Catalog, s: GameState, id: InstanceId, stage: StageId): ExhaustedEffect[] {
-  const effects = template(catalog, instance(s, id).templateId).stages[String(stage) as "1"]?.effects ?? [];
-  return effects.flatMap((e, index) => (isEffectExhausted(catalog, s, id, stage, e) ? [{ id: e.id, index, count: effects.length }] : []));
+/**
+ * Options d'un effet à liste (« Destroy one of the following cards…; Lumberjack - discover card 100 … ») : une par
+ * ligne, en fin de texte ; une option est épuisée quand sa carte a quitté la boîte.
+ */
+function exhaustedOptions(s: GameState, effect: Effect): { done: number[]; count: number } | null {
+  const items = [...effect.text.matchAll(/ - discover card (\d+)/g)].map((m) => Number(m[1]));
+  if (items.length < 2) return null;
+  const inBox = new Set(s.zones.box.map((b) => instance(s, b).serial));
+  return { done: items.flatMap((n, i) => (inBox.has(n) ? [] : [i])), count: items.length };
 }
 
-export type ExhaustedEffect = { id: string; index: number; count: number };
+/**
+ * Effets épuisés d'un stage, avec leur identifiant et leur rang parmi les effets du stage (pour les barrer à leur place).
+ * Effet à liste en partie épuisé : `options` dit quelles lignes de la liste barrer (demande du 2026-10-04).
+ */
+export function exhaustedEffects(catalog: Catalog, s: GameState, id: InstanceId, stage: StageId): ExhaustedEffect[] {
+  const effects = template(catalog, instance(s, id).templateId).stages[String(stage) as "1"]?.effects ?? [];
+  return effects.flatMap((e, index): ExhaustedEffect[] => {
+    if (isEffectExhausted(catalog, s, id, stage, e)) return [{ id: e.id, index, count: effects.length }];
+    const opts = exhaustedOptions(s, e);
+    return opts && opts.done.length ? [{ id: e.id, index, count: effects.length, options: opts }] : [];
+  });
+}
+
+export type ExhaustedEffect = { id: string; index: number; count: number; options?: { done: number[]; count: number } };

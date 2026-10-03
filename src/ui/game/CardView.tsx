@@ -72,8 +72,11 @@ function Strikes({ template, full, stage, list, half }: { template: CardTemplate
   };
   return (
     <>
-      {list.flatMap(({ id, index, count }) => {
-        const lines = effectLines(template.expansion, template.serial, stage, id);
+      {list.flatMap(({ id, index, count, options }) => {
+        const all = effectLines(template.expansion, template.serial, stage, id);
+        // Effet à liste en partie épuisé : seulement les lignes des options épuisées (les dernières lignes de l'effet).
+        const lines = options ? all?.filter((_, i) => options.done.includes(i - ((all?.length ?? 0) - options.count))) : all;
+        if (options && !lines?.length) return [];
         if (lines?.length) {
           return lines.map(place).map((l, i) => (
             <span

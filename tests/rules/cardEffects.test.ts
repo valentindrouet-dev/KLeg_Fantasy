@@ -348,4 +348,15 @@ describe("effets épuisés", async () => {
     s = run(catalog, s, { type: "choose", answer: { box: "1/u1/1" } });
     expect(s.cards[fk(9)]?.crossedOutCosts).toEqual(["1/u1/1"]);
   });
+
+  it("Engineer : chaque option de la liste se barre quand sa carte a quitté la boîte, et n'est plus proposée", () => {
+    const s = arrange(catalog, { play: [33, 11], deck: [2, 3] });
+    const lumberjack = s.zones.play.find((id) => id === fk(11));
+    expect(lumberjack).toBeDefined();
+    s.zones.box = s.zones.box.filter((id) => id !== fk(100));
+    s.zones.discard.push(fk(100));
+    expect(exhaustedEffects(catalog, s, fk(33), 1)).toEqual([{ id: "e1", index: 0, count: 1, options: { done: [0], count: 3 } }]);
+    s.zones.box = s.zones.box.filter((id) => id !== fk(101) && id !== fk(102));
+    expect(exhaustedEffects(catalog, s, fk(33), 1)).toEqual([{ id: "e1", index: 0, count: 1 }]);
+  });
 });

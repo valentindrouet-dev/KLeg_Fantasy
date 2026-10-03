@@ -3,6 +3,10 @@
 Chaque mise à jour publiée change de version (`package.json`, affichée dans l'appli en bas de l'écran « Mes royaumes »
 et dans la barre de la partie). Convention : `0.5.0` s'affiche **v0.05** ; un correctif `0.5.1` s'affiche **v0.05.1**.
 
+## v0.41 (4 octobre 2026)
+
+- Engineer (33) et la carte 49 (« Destroy one of the following cards… ») : chaque option se barre ligne par ligne dès que sa carte a été découverte, et n'est plus proposée (la carte en jeu correspondante ne peut plus être détruite pour rien). Toutes les options faites : tout l'effet est barré.
+
 ## v0.40 (3 octobre 2026)
 
 - Royal Visit (et les effets qui rayent une icône de coût) : après avoir touché la carte visée, les icônes de son coût d'amélioration clignotent ; on touche celle à rayer, sans fenêtre. L'icône rayée porte une croix au feutre, comme les cases cochées (positions des icônes mesurées sur les images ; quelques boîtes très chargées peuvent être approximatives).

@@ -240,8 +240,10 @@ const playFromDiscard = (label: string, keep: (d: Draft, id: InstanceId) => bool
 /** « Destroy one of the following cards in play to discover an improved version of it; Lumberjack - discover card 100 … » */
 function improveFactory(text: string): Factory {
   const pairs = [...text.matchAll(/([A-Z][A-Za-z' ]+?) - discover card (\d+)/g)].map((m) => ({ name: (m[1] ?? "").trim(), serial: Number(m[2]) }));
+  // Une option dont la carte améliorée a déjà quitté la boîte n'est plus proposée (on détruirait pour rien).
+  const open = (d: Draft) => pairs.filter((p) => boxCardsBySerial(d, [p.serial]).length > 0);
   const targets = (d: Draft, self: InstanceId) =>
-    otherInPlay(d, self, (id) => pairs.some((p) => p.name === stageName(d, id)) && canBeDestroyed(d, id));
+    otherInPlay(d, self, (id) => open(d).some((p) => p.name === stageName(d, id)) && canBeDestroyed(d, id));
   return () =>
     effect({
       usable: (d, card) => targets(d, card).length > 0,
