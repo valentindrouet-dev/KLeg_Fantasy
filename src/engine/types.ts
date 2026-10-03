@@ -75,7 +75,9 @@ export type ChoiceRequest =
   | { type: "cards"; prompt: string; options: InstanceId[]; min: number; max: number }
   | { type: "resources"; prompt: string; options: ResourceId[]; count: number } // `count` ressources, répétitions permises
   // boxes : cases de la carte source qu'on peut toucher pour répondre (réponse { box }), en plus des options.
-  | { type: "option"; prompt: string; labels: string[]; boxes?: string[] };
+  // boxes : cases de la carte source qu'on peut toucher pour répondre (réponse { box }), en plus des options ;
+  // card + spots « cost » : icônes de coût d'amélioration de cette carte (clés `${étape}/${amélioration}/${indice}`).
+  | { type: "option"; prompt: string; labels: string[]; boxes?: string[]; card?: InstanceId; spots?: "checkbox" | "cost" };
 
 export type Answer = { cards: InstanceId[] } | { resources: ResourceId[] } | { option: number } | { box: string };
 

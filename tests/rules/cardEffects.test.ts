@@ -339,4 +339,13 @@ describe("effets épuisés", async () => {
     expect(s.cards[fk(1)]?.orientation).toEqual({ side: "front", rotation: 180 });
     expect(s.resources.coin).toBe(0);
   });
+
+  it("Royal Visit : on touche l'icône du coût à rayer sur la carte visée", () => {
+    let s = arrange(catalog, { play: [70, 9, 1], deck: [2, 3] });
+    s = run(catalog, s, { type: "useEffect", card: fk(70), effect: "e1", targets: [], option: null }, { type: "choose", answer: { cards: [fk(9)] } });
+    const req = s.pending?.kind === "choice" ? s.pending.request : null;
+    expect(req).toMatchObject({ type: "option", card: fk(9), spots: "cost", boxes: ["1/u1/0", "1/u1/1", "1/u1/2", "1/u1/3"] });
+    s = run(catalog, s, { type: "choose", answer: { box: "1/u1/1" } });
+    expect(s.cards[fk(9)]?.crossedOutCosts).toEqual(["1/u1/1"]);
+  });
 });

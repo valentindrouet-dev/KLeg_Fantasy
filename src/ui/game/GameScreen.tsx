@@ -38,6 +38,7 @@ import { downloadText } from "../common/download";
 import { BugButton } from "../common/BugButton";
 import { effectLines } from "../../data/textLines";
 import { boxRects } from "../../data/checkboxes";
+import { costIconRects } from "../../data/upgradeIcons";
 import { backupFileName, exportKingdom } from "../../persistence/backup";
 import { playLayout } from "./sortCards";
 import { BLOCKED_PEEK, CARD_ASPECT, type Slot } from "./fitCards";
@@ -202,9 +203,10 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
   const boxChoice = useMemo(() => {
     const p = state?.pending;
     if (!state || anim || p?.kind !== "choice" || p.request.type !== "option" || !p.request.boxes?.length) return null;
-    if (!state.zones.play.includes(p.source) && !state.zones.permanent.includes(p.source)) return null;
+    const card = p.request.card ?? p.source;
+    if (!state.zones.play.includes(card) && !state.zones.permanent.includes(card)) return null;
     const decline = p.request.labels.lastIndexOf("Non");
-    return { source: p.source, boxes: p.request.boxes, decline: decline >= 0 ? decline : null, cancellable: p.cancellable };
+    return { source: card, boxes: p.request.boxes, spots: p.request.spots ?? "checkbox", decline: decline >= 0 ? decline : null, cancellable: p.cancellable };
   }, [state, anim]);
 
   const optionsFor = useCallback(
@@ -493,13 +495,31 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
     return (best as { id: string } | null)?.id ?? null;
   };
 
+  /** Icône de coût la plus proche du doigt, parmi celles proposées (Royal Visit). */
+  const costAt = (card: InstanceId, p: TapPoint, keys: readonly string[]): string | null => {
+    const stage = activeStage(catalog, state, card);
+    const t = tpl(card);
+    if (!stage) return null;
+    let best: { key: string; d: number } | null = null;
+    for (const key of keys) {
+      const [, u, i] = key.split("/");
+      const r = costIconRects(t.expansion, t.serial, stage.id, u ?? "")?.[Number(i)];
+      if (!r) continue;
+      const d = Math.hypot(p.x - (r[0] + r[2] / 2), p.y - (r[1] + r[3] / 2));
+      if (d < 0.12 && (!best || d < best.d)) best = { key, d };
+    }
+    // Icônes non mesurées : la première proposée.
+    if (!best && keys.every((k) => !costIconRects(t.expansion, t.serial, stage.id, k.split("/")[1] ?? ""))) return keys[0] ?? null;
+    return best?.key ?? null;
+  };
+
   /**
    * Toucher une case (demande du 2026-10-03) : répond à la question « quelle case ? » en cours ; sinon lance l'effet
    * de la carte qui coche des cases, la case touchée choisissant le bonus. Renvoie true si le toucher est pris.
    */
   const tapBox = (card: InstanceId, p: TapPoint): boolean => {
     if (boxChoice) {
-      const box = card === boxChoice.source ? boxAt(card, p) : null;
+      const box = card !== boxChoice.source ? null : boxChoice.spots === "cost" ? costAt(card, p, boxChoice.boxes) : boxAt(card, p);
       if (box && boxChoice.boxes.includes(box)) run([{ type: "choose", answer: { box } }]);
       else if (boxChoice.decline !== null) run([{ type: "choose", answer: { option: boxChoice.decline } }]);
       else if (boxChoice.cancellable) perform([{ type: "cancelChoice" }]);
@@ -666,7 +686,9 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
       note={note?.card === id ? note.note : undefined}
       exhausted={(stage) => exhaustedEffects(catalog, state, id, stage)}
       boxes={(stage) => boxViews(catalog, state, id, stage)}
-      pickBoxes={boxChoice?.source === id ? boxChoice.boxes : undefined}
+      pickBoxes={boxChoice?.source === id && boxChoice.spots === "checkbox" ? boxChoice.boxes : undefined}
+      pickCosts={boxChoice?.source === id && boxChoice.spots === "cost" ? boxChoice.boxes : undefined}
+      crossedCosts={instance(state, id).crossedOutCosts}
       shake={shaking.includes(id)}
     />
   );

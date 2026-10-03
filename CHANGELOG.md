@@ -3,6 +3,11 @@
 Chaque mise à jour publiée change de version (`package.json`, affichée dans l'appli en bas de l'écran « Mes royaumes »
 et dans la barre de la partie). Convention : `0.5.0` s'affiche **v0.05** ; un correctif `0.5.1` s'affiche **v0.05.1**.
 
+## v0.40 (3 octobre 2026)
+
+- Royal Visit (et les effets qui rayent une icône de coût) : après avoir touché la carte visée, les icônes de son coût d'amélioration clignotent ; on touche celle à rayer, sans fenêtre. L'icône rayée porte une croix au feutre, comme les cases cochées (positions des icônes mesurées sur les images ; quelques boîtes très chargées peuvent être approximatives).
+- Purge (et tout choix de cartes dans une fenêtre) : maintenir une carte appuyée l'ouvre en grand, recto et verso.
+
 ## v0.39 (3 octobre 2026)
 
 - Priest, Cardinal et les effets « upgrade 1 card in play » : on touche l'effet, puis la carte à améliorer (les cartes possibles s'allument), puis les cartes à défausser s'il y en a. Le coût de l'effet et celui de l'amélioration se paient ensemble, aussi avec des cartes engagées ; le tour continue. Avant, un menu s'ouvrait et l'amélioration ne pouvait pas se payer avec la production des cartes en jeu.

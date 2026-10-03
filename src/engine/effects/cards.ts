@@ -467,12 +467,14 @@ const EXACT: Record<string, Factory> = {
         (d, card) => askCards("Carte dont le coût baisse", targets(d, card), 1),
         (d, _card, a) => {
           const id = cardsOf(a[0])[0];
-          return id ? askOption("Icône à rayer", options(d, id).map((o) => o.label)) : null;
+          // On touche l'icône sur la carte (demande du 2026-10-03) ; les options restent pour les parties enregistrées.
+          return id ? { ...askOption("Icône à rayer", options(d, id).map((o) => o.label)), boxes: costIcons(d, id).map((o) => o.key), card: id, spots: "cost" } : null;
         },
       ),
       run: (d, _card, a) => {
         const id = cardsOf(a[0])[0];
-        const o = id ? options(d, id)[optionOf(a[1])] : undefined;
+        const touched = boxOf(a[1]);
+        const o = id ? (touched !== null ? costIcons(d, id).find((x) => x.key === touched) : options(d, id)[optionOf(a[1])]) : undefined;
         if (!id || !o) return;
         const c = instance(d.s, id);
         c.crossedOutCosts = [...(c.crossedOutCosts ?? []), o.key];

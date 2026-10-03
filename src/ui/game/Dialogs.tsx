@@ -214,7 +214,7 @@ export function DecisionDialog({
     );
   }
 
-  if (p.kind === "choice") return <ChoiceDialog key={`${p.source}/${p.script}/${p.answers.length}`} catalog={catalog} state={state} onAction={onAction} />;
+  if (p.kind === "choice") return <ChoiceDialog key={`${p.source}/${p.script}/${p.answers.length}`} catalog={catalog} state={state} onAction={onAction} onInspect={onInspect} />;
 
   return (
     <Dialog title={`Découvrir ${p.remaining} carte${p.remaining > 1 ? "s" : ""}`} wide>
@@ -284,7 +284,7 @@ export function CardListDialog({
 }
 
 /** Question posée par un effet (spec 4.1) : cartes, ressources ou option. */
-function ChoiceDialog({ catalog, state, onAction }: { catalog: Catalog; state: GameState; onAction: (a: Action) => void }) {
+function ChoiceDialog({ catalog, state, onAction, onInspect }: { catalog: Catalog; state: GameState; onAction: (a: Action) => void; onInspect: (card: InstanceId) => void }) {
   const p = state.pending;
   const [cards, setCards] = useState<InstanceId[]>([]);
   const [resources, setResources] = useState<string[]>([]);
@@ -390,6 +390,7 @@ function ChoiceDialog({ catalog, state, onAction }: { catalog: Catalog; state: G
                 label={cardName(catalog, state, id)}
                 width={listCard()}
                 selected={picked}
+                onLongPress={() => onInspect(id)}
                 exhausted={exhaustedOf(catalog, state, id)}
               boxes={(stage) => boxViews(catalog, state, id, stage)}
                 onTap={() => {

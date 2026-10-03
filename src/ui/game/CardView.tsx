@@ -3,6 +3,7 @@ import { cardImageUrl } from "../../data/loadCards";
 import type { CardTemplate, Orientation, StageId } from "../../data/schema";
 import { isFullImageFace, printedStage, stageIdAt, type BoxView, type ExhaustedEffect, type StickerPlacement } from "../../engine";
 import { boxRects } from "../../data/checkboxes";
+import { costIconRects } from "../../data/upgradeIcons";
 import { effectLines, type TextLine } from "../../data/textLines";
 import { IconText, iconImage } from "../common/IconText";
 import { STICKER_SIZE, stickerSpots } from "./stickerLayout";
@@ -48,6 +49,10 @@ type Props = {
   boxes?: (stage: StageId) => BoxView[];
   /** Cases à toucher pour répondre à la question en cours (identifiants des cases de l'étape visible en haut). */
   pickBoxes?: readonly string[];
+  /** Icônes de coût rayées (clés `${étape}/${amélioration}/${indice}`) : croix au feutre. */
+  crossedCosts?: readonly string[];
+  /** Icônes de coût à toucher pour répondre à la question en cours (mêmes clés). */
+  pickCosts?: readonly string[];
   /** Choisie pour un effet en cours (cible, carte à bloquer, coût) : contour vert et coche. */
   picked?: boolean;
 };
@@ -107,6 +112,34 @@ function Boxes({ template, stage, views, half, pick }: { template: CardTemplate;
           <span key={v.id} className={`${styles.box} ${v.checked ? styles.boxChecked : ""} ${v.next ? styles.boxNext : ""} ${picking ? styles.boxPick : ""}`} style={style} />
         );
       })}
+    </>
+  );
+}
+
+/** Icônes de coût d'amélioration (positions mesurées, data/upgradeIcons) : croix sur les rayées, contour sur celles à toucher. */
+function CostIcons({ template, stage, half, crossed, pick }: { template: CardTemplate; stage: StageId | null; half: "top" | "bottom"; crossed: readonly string[]; pick: readonly string[] }) {
+  if (stage === null) return null;
+  const st = template.stages[String(stage) as "1"];
+  if (!st) return null;
+  return (
+    <>
+      {st.upgrades.flatMap((u) =>
+        u.cost.map((_, i) => {
+          const key = `${stage}/${u.id}/${i}`;
+          const isCrossed = crossed.includes(key);
+          const picking = pick.includes(key);
+          const r = costIconRects(template.expansion, template.serial, stage, u.id)?.[i];
+          if ((!isCrossed && !picking) || !r) return null;
+          const [x, y, w, h] = half === "top" ? r : [1 - r[0] - r[2], 1 - r[1] - r[3], r[2], r[3]];
+          return (
+            <span
+              key={key}
+              className={`${styles.box} ${isCrossed ? styles.boxChecked : ""} ${picking ? styles.boxPick : ""}`}
+              style={{ left: `${x * 100}%`, top: `${y * 100}%`, width: `${w * 100}%`, height: `${h * 100}%` }}
+            />
+          );
+        }),
+      )}
     </>
   );
 }
@@ -173,6 +206,8 @@ function Face({
   exhausted,
   boxes,
   pickBoxes,
+  crossedCosts,
+  pickCosts,
 }: {
   template: CardTemplate;
   orientation: Orientation;
@@ -183,6 +218,8 @@ function Face({
   exhausted?: (stage: StageId) => ExhaustedEffect[];
   boxes?: (stage: StageId) => BoxView[];
   pickBoxes?: readonly string[];
+  crossedCosts?: readonly string[];
+  pickCosts?: readonly string[];
 }) {
   const url = cardImageUrl(orientation.side === "front" ? template.images.front : template.images.back);
   // Moitiés réellement imprimées : une carte à image pleine n'a pas de moitié basse (pas de grisé, un seul numéro).
@@ -220,6 +257,12 @@ function Face({
           <Boxes template={template} stage={bottomId} views={bottomId === null ? [] : boxes(bottomId)} half="bottom" />
         </>
       )}
+      {((crossedCosts?.length ?? 0) > 0 || (pickCosts?.length ?? 0) > 0) && (
+        <>
+          <CostIcons template={template} stage={topId} half="top" crossed={crossedCosts ?? []} pick={pickCosts ?? []} />
+          <CostIcons template={template} stage={bottomId} half="bottom" crossed={crossedCosts ?? []} pick={[]} />
+        </>
+      )}
       {/* Grisé du bas par-dessus tout ce qui est posé sur cette moitié (stickers, traits). */}
       {dimBottom && top !== null && bottom !== null && <span className={styles.bottomShade} />}
     </div>
@@ -227,7 +270,7 @@ function Face({
 }
 
 export function CardView(props: Props) {
-  const { id, template, orientation, label, width, selected, engaged, targetable, dimBottom, flagged, onTwoFinger, dimmed, badge, onTap, onLongPress, zoneLabel, anim, stickers, half, note, exhausted, shake, picked, boxes, pickBoxes } =
+  const { id, template, orientation, label, width, selected, engaged, targetable, dimBottom, flagged, onTwoFinger, dimmed, badge, onTap, onLongPress, zoneLabel, anim, stickers, half, note, exhausted, shake, picked, boxes, pickBoxes, crossedCosts, pickCosts } =
     props;
   // Demi-carte : les positions touchées sont ramenées à la carte entière (zones cliquables inchangées).
   const yScale = half ? 0.5 : 1;
@@ -296,12 +339,12 @@ export function CardView(props: Props) {
       {anim?.kind === "flip" ? (
         // Retournement : deux faces dos à dos, la carte pivote d'un seul mouvement.
         <div className={styles.flipInner}>
-          <Face template={template} orientation={orientation} label={label} stickers={stickers} exhausted={exhausted} boxes={boxes} pickBoxes={pickBoxes} />
-          <Face template={template} orientation={anim.to} label={label} className={styles.backFace} stickers={stickers} exhausted={exhausted} boxes={boxes} pickBoxes={pickBoxes} />
+          <Face template={template} orientation={orientation} label={label} stickers={stickers} exhausted={exhausted} boxes={boxes} pickBoxes={pickBoxes} crossedCosts={crossedCosts} pickCosts={pickCosts} />
+          <Face template={template} orientation={anim.to} label={label} className={styles.backFace} stickers={stickers} exhausted={exhausted} boxes={boxes} pickBoxes={pickBoxes} crossedCosts={crossedCosts} pickCosts={pickCosts} />
         </div>
       ) : (
         // Pendant une rotation, la carte n'est plus grisée (sinon la moitié grisée passe en haut).
-        <Face template={template} orientation={orientation} label={label} dimBottom={dimBottom && !anim && !half} stickers={stickers} exhausted={exhausted} boxes={boxes} pickBoxes={pickBoxes} />
+        <Face template={template} orientation={orientation} label={label} dimBottom={dimBottom && !anim && !half} stickers={stickers} exhausted={exhausted} boxes={boxes} pickBoxes={pickBoxes} crossedCosts={crossedCosts} pickCosts={pickCosts} />
       )}
       {rect && !anim && (
         <span
