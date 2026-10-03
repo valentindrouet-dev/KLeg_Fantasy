@@ -43,6 +43,8 @@ type Props = {
   exhausted?: (stage: StageId) => ExhaustedEffect[];
   /** Tremble « non » : cette carte interdit le geste tenté. */
   shake?: boolean;
+  /** Choisie pour un effet en cours (cible, carte à bloquer, coût) : contour vert et coche. */
+  picked?: boolean;
 };
 
 /**
@@ -185,7 +187,7 @@ function Face({
 }
 
 export function CardView(props: Props) {
-  const { id, template, orientation, label, width, selected, engaged, targetable, dimBottom, flagged, onTwoFinger, dimmed, badge, onTap, onLongPress, zoneLabel, anim, stickers, half, note, exhausted, shake } =
+  const { id, template, orientation, label, width, selected, engaged, targetable, dimBottom, flagged, onTwoFinger, dimmed, badge, onTap, onLongPress, zoneLabel, anim, stickers, half, note, exhausted, shake, picked } =
     props;
   // Demi-carte : les positions touchées sont ramenées à la carte entière (zones cliquables inchangées).
   const yScale = half ? 0.5 : 1;
@@ -214,6 +216,7 @@ export function CardView(props: Props) {
     anim && (anim.kind === "rotate" ? styles.animRotate : styles.animFlip),
     half && !anim && styles.half,
     shake && !anim && styles.shake,
+    picked && styles.picked,
   ].filter(Boolean);
 
   return (
@@ -272,6 +275,7 @@ export function CardView(props: Props) {
         />
       )}
       {badge && <span className={styles.badge}>{badge}</span>}
+      {picked && <span className={styles.pickedMark} aria-hidden="true">✓</span>}
       {note && (
         <div
           className={`${styles.cardNote} ${note.tone === "warn" ? styles.cardNoteWarn : ""} ${(width ?? 200) < 160 ? styles.cardNoteBelow : ""}`}

@@ -146,6 +146,42 @@ function ghostTo(catalog: Catalog, state: GameState, id: InstanceId, from: DOMRe
   });
 }
 
+const SHATTER = 1500;
+// Cassure en zigzag au milieu de la carte : la moitié haute garde le dessus du zigzag, la basse le dessous.
+const CRACK = "0% 52%, 12% 46%, 24% 54%, 38% 45%, 50% 53%, 63% 46%, 76% 55%, 88% 47%, 100% 51%";
+const TOP_HALF = `polygon(0% 0%, 100% 0%, ${CRACK.split(", ").reverse().join(", ")})`;
+const BOTTOM_HALF = `polygon(${CRACK}, 100% 100%, 0% 100%)`;
+
+/**
+ * Carte détruite (demande du 2026-10-03) : elle apparaît au milieu de l'écran, se brise en deux et ses deux moitiés
+ * tombent vers le bas.
+ */
+function shatter(catalog: Catalog, state: GameState, id: InstanceId, i: number, count: number): void {
+  const w = Math.min(260, (window.innerWidth - 80) / Math.max(1, count));
+  const h = w / (373 / 520);
+  const rect = new DOMRect(window.innerWidth / 2 - (count * w) / 2 + i * w, window.innerHeight / 2 - h / 2, w, h);
+  const fall = window.innerHeight - rect.top + 40;
+  ([
+    [TOP_HALF, -1],
+    [BOTTOM_HALF, 1],
+  ] as const).forEach(([clip, dir]) => {
+    const el = flyer(catalog, state, id, rect, 80);
+    if (!el) return;
+    el.style.clipPath = clip;
+    animateAndRemove(
+      el,
+      [
+        { transform: "scale(0.6)", opacity: 0, offset: 0 },
+        { transform: "scale(1)", opacity: 1, offset: 0.18, easing: "ease-out" },
+        { transform: "scale(1)", opacity: 1, offset: 0.42 },
+        { transform: `translate(${dir * 8}px, ${dir * 5}px) rotate(${dir * 4}deg)`, opacity: 1, offset: 0.52, easing: "ease-in" },
+        { transform: `translate(${dir * 70}px, ${fall + (dir > 0 ? 60 : 0)}px) rotate(${dir * 28}deg)`, opacity: 0.85, offset: 1 },
+      ],
+      { duration: SHATTER, delay: i * 220 },
+    );
+  });
+}
+
 export function useCardMotion(catalog: Catalog, state: GameState | null, play: RefObject<HTMLElement | null>): void {
   const prev = useRef<Snapshot | null>(null);
 
@@ -182,11 +218,18 @@ export function useCardMotion(catalog: Catalog, state: GameState | null, play: R
       found.forEach((id, i) => ghostTo(catalog, state, id, centerRect(found.length, i), discard, 250 + i * 120));
     }
 
-    // Cartes parties : vers la défausse, vers la pioche, ou effacées (détruites, permanentes…).
+    // Cartes détruites (hors parchemins lus et cartes jamais sorties de la boîte) : elles se brisent au centre.
+    const destroyed = state.zones.destroyed.filter(
+      (id) => !before.state.zones.destroyed.includes(id) && zoneOf(before.state, id) !== "box" && !template(catalog, instance(state, id).templateId).isParchment,
+    );
+    destroyed.forEach((id, n) => shatter(catalog, state, id, n, destroyed.length));
+
+    // Cartes parties : vers la défausse, vers la pioche, ou effacées (permanentes…).
     let out = 0;
     for (const [id, from] of shuffled ? [] : before.rects) {
       if (els.has(id)) continue;
       const where = zoneOf(state, id);
+      if (where === "destroyed") continue; // déjà brisée au centre
       const to = where === "discard" ? discard : where === "deck" ? deck : null;
       ghost(catalog, state, id, from, to, out++ * 40);
     }

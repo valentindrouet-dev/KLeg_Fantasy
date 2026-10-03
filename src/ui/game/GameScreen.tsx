@@ -550,7 +550,8 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
       orientation={instance(state, id).orientation}
       label={cardName(catalog, state, id)}
       width={width}
-      selected={selected?.card === id || picked.includes(id) || targetPicks.includes(id)}
+      selected={selected?.card === id}
+      picked={picked.includes(id) || targetPicks.includes(id)}
       engaged={extra?.engaged}
       flagged={extra?.zones ? flagged.includes(id) : undefined}
       onTwoFinger={extra?.zones ? () => toggleFlag(id) : undefined}
@@ -684,6 +685,12 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
   ];
   const resources = (
     <div className={styles.resources} aria-label="Ressources">
+      {boardChoice && state.pending?.kind === "choice" && (
+        // Choix sur le plateau en cours : ce qu'il faut toucher et combien de cartes sont déjà choisies.
+        <div className={styles.pickCounter}>
+          <IconText text={state.pending.request.prompt} /> <strong>{picked.length}/{boardChoice.count}</strong>
+        </div>
+      )}
       {counters.length > 0 && (
         <div className={styles.reachable}>
           {counters.map((c) => (

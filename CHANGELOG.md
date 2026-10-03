@@ -3,6 +3,12 @@
 Chaque mise à jour publiée change de version (`package.json`, affichée dans l'appli en bas de l'écran « Mes royaumes »
 et dans la barre de la partie). Convention : `0.5.0` s'affiche **v0.05** ; un correctif `0.5.1` s'affiche **v0.05.1**.
 
+## v0.36 (3 octobre 2026)
+
+- Choix de cartes sur le plateau (Skilled Bandit qui bloque 3 cartes, cible d'un effet, coût en personnes) : une carte choisie a un contour vert et une coche, bien distincte des cartes encore possibles, et un compteur en haut dit combien sont choisies (« 3 cartes bloquées 2/3 »). Avant, rien ne montrait qu'une carte était choisie, et la toucher une deuxième fois l'annulait : le choix semblait bloqué.
+- Carte détruite : elle apparaît au milieu de l'écran, se brise en deux et ses moitiés tombent vers le bas.
+- Même pouvoir sur plusieurs cartes (Shallow Mine 05 et 06…) : vérifié par un test, utiliser l'une ne barre pas l'autre tant qu'une carte reste à découvrir.
+
 ## v0.35 (3 octobre 2026)
 
 - Carte découverte par un effet (Magistrate → Border 130…) : présentée dans la fenêtre « Nouvelle carte » (recto et verso), bouton « Ajouter au deck » en bas à droite.

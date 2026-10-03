@@ -271,4 +271,20 @@ describe("effets épuisés", async () => {
     expect(legal(catalog, s).some((a) => a.type === "useEffect" && a.card === fk(43))).toBe(false);
     expect(exhaustedEffects(catalog, s, fk(43), 4)).toEqual([{ id: "e1", index: 0, count: 1 }]);
   });
+
+  it("même pouvoir sur deux cartes (Shallow Mine 05 et 06) : utiliser l'une n'épuise pas l'autre tant qu'une Mine reste à découvrir", () => {
+    const back = { side: "back", rotation: 0 } as const;
+    const useMine = (n: number): Action => ({ type: "useEffect", card: fk(n), effect: "e1", targets: [], option: null });
+    let s = arrange(catalog, { play: [5, 6, 1], orientation: { 5: back, 6: back }, deck: [2, 3] });
+    s = run(catalog, s, useMine(5), { type: "chooseDiscovery", card: fk(84) });
+    expect(s.zones.box).toContain(fk(85));
+    expect(exhaustedEffects(catalog, s, fk(6), 4)).toEqual([]);
+    expect(legal(catalog, s)).toContainEqual(useMine(6));
+    s = run(catalog, s, useMine(6), { type: "acknowledgeDiscoveries" });
+    expect(s.zones.discard).toEqual(expect.arrayContaining([fk(84), fk(85)]));
+    // Les deux Mines sorties : le même pouvoir, sur une troisième copie (15), est épuisé.
+    const t = arrange(catalog, { play: [15, 1], orientation: { 15: back } });
+    t.zones.box = t.zones.box.filter((id) => id !== fk(84) && id !== fk(85));
+    expect(exhaustedEffects(catalog, t, fk(15), 4)).toEqual([{ id: "e1", index: 0, count: 1 }]);
+  });
 });

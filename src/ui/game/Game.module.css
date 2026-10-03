@@ -1261,3 +1261,45 @@
   background: color-mix(in srgb, var(--text-muted) 45%, transparent);
   cursor: default;
 }
+
+/* Carte choisie pour un effet en cours : bien distincte des cartes encore possibles (contour orange) */
+.picked {
+  outline: 5px solid var(--ok);
+  outline-offset: 2px;
+  box-shadow: 0 0 20px 4px color-mix(in srgb, var(--ok) 55%, transparent);
+}
+
+.pickedMark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: grid;
+  place-items: center;
+  width: 28%;
+  aspect-ratio: 1;
+  border: 3px solid #fff;
+  border-radius: 50%;
+  background: var(--ok);
+  color: #fff;
+  font-size: min(2.6rem, 14cqw);
+  font-weight: 800;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 4px 14px rgb(0 0 0 / 0.4);
+  pointer-events: none;
+}
+
+.pickCounter {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 6px 14px;
+  border: 2px solid var(--ok);
+  border-radius: 999px;
+  background: var(--surface);
+  font-weight: 600;
+}
+
+.pickCounter strong {
+  color: var(--ok);
+  font-size: 1.15rem;
+}
