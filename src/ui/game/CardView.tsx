@@ -166,11 +166,14 @@ function stickerIcon(st: StickerPlacement): { src: string | undefined; text: str
 /** Stickers d'une moitié : en haut à l'endroit, en bas à l'envers (même place, carte tournée de 180°). */
 function Stickers({ template, stage, stickers, half }: { template: CardTemplate; stage: StageId | null; stickers: readonly StickerPlacement[]; half: "top" | "bottom" }) {
   if (stage === null) return null;
-  const own = stickers.filter((st) => st.stage === stage);
-  if (own.length === 0) return null;
+  // « Stays in play » (sticker 7) : bandeau lisible au-dessus du texte des effets, pas dans la rangée des ressources.
+  const stays = stickers.some((st) => st.stage === stage && st.staysInPlay);
+  const own = stickers.filter((st) => st.stage === stage && !st.staysInPlay);
+  if (own.length === 0 && !stays) return null;
   const spots = stickerSpots(template.stages[String(stage) as "1"], own.length);
   return (
     <>
+      {stays && <StayBanner template={template} stage={stage} half={half} />}
       {own.map((st, i) => {
         const spot = spots[i];
         if (!spot) return null;
@@ -191,6 +194,27 @@ function Stickers({ template, stage, stickers, half }: { template: CardTemplate;
         );
       })}
     </>
+  );
+}
+
+/**
+ * Bandeau du sticker « Stays in play » : centré au-dessus du bloc d'effets (lignes mesurées sur l'image, sinon le haut
+ * de la zone d'effet), comme le texte imprimé des cartes qui restent en jeu.
+ */
+function StayBanner({ template, stage, half }: { template: CardTemplate; stage: StageId; half: "top" | "bottom" }) {
+  const st = template.stages[String(stage) as "1"];
+  const lines = (st?.effects ?? []).flatMap((e) => effectLines(template.expansion, template.serial, stage, e.id) ?? []);
+  const full = (["front", "back"] as const).some((side) => isFullImageFace(template, side) && [template.orientationToStage[`${side}-0`], template.orientationToStage[`${side}-180`]].includes(stage));
+  const textTop = lines.length ? Math.min(...lines.map((l) => l[0])) : full ? 0.6 : 0.33;
+  const center = lines.length ? (Math.min(...lines.map((l) => l[2])) + Math.max(...lines.map((l) => l[3]))) / 2 : 0.4;
+  const height = 0.055;
+  const top = Math.max(0.12, textTop - height - 0.008);
+  const y = half === "top" ? top : 1 - top - height;
+  const x = half === "top" ? center : 1 - center;
+  return (
+    <span className={`${styles.stayBanner} ${half === "bottom" ? styles.rotated : ""}`} style={{ top: `${y * 100}%`, left: `${x * 100}%`, height: `${height * 100}%` }}>
+      <b className={styles.stayInfinity}>∞</b> Stays in play.
+    </span>
   );
 }
 

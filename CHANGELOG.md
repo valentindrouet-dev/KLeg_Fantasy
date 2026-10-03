@@ -3,6 +3,10 @@
 Chaque mise à jour publiée change de version (`package.json`, affichée dans l'appli en bas de l'écran « Mes royaumes »
 et dans la barre de la partie). Convention : `0.5.0` s'affiche **v0.05** ; un correctif `0.5.1` s'affiche **v0.05.1**.
 
+## v0.42 (4 octobre 2026)
+
+- Sticker « Stays in play » (sticker 7) : un bandeau lisible « ∞ Stays in play. » au-dessus du texte des effets, comme sur les cartes imprimées, au lieu d'une petite pastille dans la rangée des ressources.
+
 ## v0.41 (4 octobre 2026)
 
 - Engineer (33) et la carte 49 (« Destroy one of the following cards… ») : chaque option se barre ligne par ligne dès que sa carte a été découverte, et n'est plus proposée (la carte en jeu correspondante ne peut plus être détruite pour rien). Toutes les options faites : tout l'effet est barré.
