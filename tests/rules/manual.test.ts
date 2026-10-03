@@ -56,11 +56,11 @@ describe("opérations à la main (rejeu des parties v0.17)", async () => {
     expect(isLegal(catalog, s, manual({ kind: "discover", card: fk(0) }))).toBe(false);
   });
 
-  it("découvrir une carte recto verso demande la face", () => {
+  it("découvrir une carte à flèches rouges la pose côté recto, sans choix de face (décision du 2026-10-03)", () => {
     const s = run(catalog, arrange(catalog, { play: [1] }), manual({ kind: "discover", card: fk(13) }));
-    expect(s.pending).toEqual({ kind: "chooseSide", card: fk(13) });
-    expect(legal(catalog, s).every((a) => a.type === "chooseSide")).toBe(true);
-    expect(isLegal(catalog, s, manual({ kind: "resource", resource: "coin", delta: 1 }))).toBe(false);
+    expect(s.pending?.kind).not.toBe("chooseSide");
+    expect(s.cards[fk(13)]?.orientation).toEqual({ side: "front", rotation: 0 });
+    expect(s.zones.discard).toContain(fk(13));
   });
 
   it("cocher puis décocher une case du stage actif", () => {

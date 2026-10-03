@@ -69,7 +69,8 @@ describe("manches et découvertes", async () => {
     s.zones.box = s.zones.box.filter((id) => (s.cards[id]?.serial ?? 0) >= 68 || s.cards[id]?.serial === 0);
     s = run(catalog, s, { type: "pass" });
     expect(s.finalRound).toBe(true);
-    s = run(catalog, s, { type: "acknowledgeParchment" }, { type: "chooseSide", side: "front" }, { type: "chooseSide", side: "front" });
+    // Les cartes découvertes arrivent côté recto, sans choix de face (décision du 2026-10-03).
+    s = run(catalog, s, { type: "acknowledgeParchment" });
     expect([...s.zones.deck, ...s.zones.play, ...s.zones.discard].sort()).toEqual([1, 9, 69, 70].map(fk).sort());
     s = passUntil(catalog, s, (x) => x.phase === "gameOver");
     expect(s.phase).toBe("gameOver");

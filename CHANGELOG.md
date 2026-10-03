@@ -3,6 +3,17 @@
 Chaque mise à jour publiée change de version (`package.json`, affichée dans l'appli en bas de l'écran « Mes royaumes »
 et dans la barre de la partie). Convention : `0.5.0` s'affiche **v0.05** ; un correctif `0.5.1` s'affiche **v0.05.1**.
 
+## v0.35 (3 octobre 2026)
+
+- Carte découverte par un effet (Magistrate → Border 130…) : présentée dans la fenêtre « Nouvelle carte » (recto et verso), bouton « Ajouter au deck » en bas à droite.
+- Une carte découverte arrive toujours côté recto : plus de choix recto / verso, sauf pour les cartes 38 à 42 (le parchemin 37 le demande).
+- Amélioration qui coûte des cartes (109 : « 1 Person », « 2 Persons ») : plus de menu ; les cartes possibles s'allument et on touche celle(s) à défausser.
+- Brick Road / Stone Street (43) : une fois 109-110 (ou 111-112) sorties de la boîte, l'effet est barré et ne se lance plus.
+- Toucher un effet : sur une carte à plusieurs effets, la zone de texte est partagée entre les effets utilisables, le plus proche du doigt l'emporte ; un toucher sur une ligne de texte vise toujours l'effet. Aussi pour les cartes permanentes.
+- Les stickers et traits de la moitié basse sont grisés avec elle.
+- Fenêtres trop hautes (choix d'une carte parmi beaucoup) : elles tiennent dans l'écran et défilent au doigt.
+- Stats : toucher « Découvertes » affiche toutes les cartes par numéro, vert découverte, rouge détruite, gris inconnue ; toucher une carte connue l'inspecte.
+
 ## v0.34 (3 octobre 2026)
 
 - Carte à plusieurs effets (Witch Cabin…) : toucher le texte d'un effet lance cet effet-là, sans menu.

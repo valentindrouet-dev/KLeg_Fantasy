@@ -179,7 +179,8 @@ export function DecisionDialog({
         wide
         actions={
           <button className="btn btn-primary" onClick={() => onAction({ type: "acknowledgeDiscoveries" })}>
-            Mélanger dans le deck
+            {/* Début de manche : les cartes vont être mélangées ; découverte par un effet : elles sont dans la défausse. */}
+            {state.queue[0]?.kind === "shuffle" ? "Mélanger dans le deck" : "Ajouter au deck"}
           </button>
         }
       >
@@ -470,13 +471,16 @@ export function StatsDialog({
   state,
   onClose,
   onShowDestroyed,
+  onInspect,
 }: {
   catalog: Catalog;
   state: GameState;
   onClose: () => void;
   onShowDestroyed: () => void;
+  onInspect: (card: InstanceId) => void;
 }) {
   const st = kingdomStats(catalog, state);
+  const [allCards, setAllCards] = useState(false);
   // Couleur de chaque case selon ce qu'elle compte (ressource, étape, type de carte).
   const cell = (label: ReactNode, value: number, tone?: string) => (
     <div className={styles.statCell} style={tone ? { background: `color-mix(in srgb, ${tone} 22%, var(--surface))`, borderColor: tone } : undefined}>
@@ -529,15 +533,49 @@ export function StatsDialog({
         <section>
           <h3>Boîte</h3>
           <div className={styles.statGrid}>
-            {cell("Découvertes", st.discovered)}
+            <button className={styles.statButton} onClick={() => setAllCards((o) => !o)} aria-pressed={allCards}>
+              {cell("Découvertes", st.discovered)}
+            </button>
             <button className={styles.statButton} onClick={onShowDestroyed} disabled={st.destroyed === 0}>
               {cell("Détruites", st.destroyed)}
             </button>
             {cell("Dans la boîte", st.inBox)}
           </div>
+          {allCards && <CardNumbers catalog={catalog} state={state} onInspect={onInspect} />}
         </section>
       </div>
     </Dialog>
+  );
+}
+
+/**
+ * Toutes les cartes de l'extension par numéro (demande du 2026-10-03) : vert découverte (dans le royaume), rouge
+ * détruite, gris encore dans la boîte. Toucher une carte connue l'inspecte.
+ */
+function CardNumbers({ catalog, state, onInspect }: { catalog: Catalog; state: GameState; onInspect: (card: InstanceId) => void }) {
+  const cards = Object.values(state.cards).sort((a, b) => a.serial - b.serial);
+  const status = (id: InstanceId): "known" | "destroyed" | "unknown" => {
+    if (state.zones.destroyed.includes(id)) return "destroyed";
+    return state.zones.box.includes(id) ? "unknown" : "known";
+  };
+  return (
+    <div className={styles.cardNumbers}>
+      {cards.map((c) => {
+        const s = status(c.instanceId);
+        const label = s === "unknown" ? `#${c.serial}` : `#${c.serial} ${cardName(catalog, state, c.instanceId)}`;
+        return (
+          <button
+            key={c.instanceId}
+            className={`${styles.cardNumber} ${styles[`cardNumber_${s}`]}`}
+            disabled={s === "unknown"}
+            onClick={() => onInspect(c.instanceId)}
+            aria-label={label}
+          >
+            {c.serial}
+          </button>
+        );
+      })}
+    </div>
   );
 }
 

@@ -228,7 +228,7 @@ Une **rotation/retournement par effet** n'est PAS une amélioration et ne termin
 - **Booster la production** : choisir une ressource déjà produite par la carte, +1 via sticker.
 - **Slash "/"** = OU, choix du joueur.
 - **Reset d'une carte** : retour au stage de départ (sceau en haut).
-- **Cartes à flèches en haut** : à la découverte, choisir la face visible.
+- **Cartes à flèches en haut** : ~~à la découverte, choisir la face visible~~ ; une carte découverte arrive côté recto, la face ne se choisit que si une instruction le dit (parchemin 37). Voir docs/RULES_DECISIONS.md, 2026-10-03.
 - **Cases à cocher** : cocher une case libre ; si elle contient une icône, l'appliquer (ressource = gain). Cocher une case sur une autre carte déclenche les mêmes effets que si cette carte l'avait cochée.
 - **Stay in play** : reste entre les tours, mais défaussée si on produit avec, si on utilise son effet, ou en fin de manche. Un "stay in play" passif s'applique à chaque tour.
 - **Découvrir** : la carte va dans la **défausse**. Si choix entre plusieurs cartes : voir toutes les options, en choisir une, les autres retournent dans la boîte. **Dé-découvrir** : reset puis retour dans la boîte.

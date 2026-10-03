@@ -83,7 +83,8 @@ export type TriggerCtx = { cards?: InstanceId[] };
 /** Étapes de déroulement en attente : elles reprennent dès qu'aucune décision n'est en cours. */
 export type FlowStep =
   | { kind: "roundDiscovery" }
-  | { kind: "discover"; card: InstanceId }
+  // seen : déjà montrée au joueur (choix de découverte) ; chooseSide : le joueur choisit la face (parchemin 37 seulement).
+  | { kind: "discover"; card: InstanceId; seen?: boolean; chooseSide?: boolean }
   | { kind: "shuffle" }
   | { kind: "startTurn" }
   | { kind: "trigger"; card: InstanceId; script: string; ctx: TriggerCtx }

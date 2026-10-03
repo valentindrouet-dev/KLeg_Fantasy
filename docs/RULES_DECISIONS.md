@@ -65,3 +65,10 @@ ne tranchent pas ; à confirmer par l'utilisateur.
 - **Export** (2026-10-03) : on y dépense toujours toutes ses marchandises.
 - **Hors partie de base (phase P4)** : purge (Aethan Estate, bonus de Temple of Light) et mini-extensions 136 à 138.
 - **Cartes** : 11 à 135.
+
+## 2026-10-03 : face d'une carte découverte
+
+- **Question** : la spec (section 4, « Cartes à flèches en haut ») faisait choisir la face visible de toute carte à flèches rouges au moment de sa découverte.
+- **Décision** (demande du joueur) : une carte découverte arrive toujours côté recto, qu'elle vienne d'une manche ou d'un effet. On choisit la face seulement quand une instruction le dit : le parchemin 37 (« For each card, you need to choose one of its sides now ») pour les cartes 38 à 42. Une carte découverte par un effet est présentée (fenêtre « Nouvelle carte », bouton « Ajouter au deck ») ; une carte choisie dans une fenêtre de découverte ne l'est pas une seconde fois.
+- **Anciennes parties** : au rejeu, un choix de face devenu sans objet est ignoré.
+- **Cartes** : toutes celles à flèches rouges (13, 41, 42, 55, 69, 70, 92, 94, 95, 100, 101, 102, 107, 116, 121, 122, 126, 127), 37, 38 à 42.

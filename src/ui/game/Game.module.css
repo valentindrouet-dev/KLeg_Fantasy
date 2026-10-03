@@ -1227,3 +1227,37 @@
   align-items: center;
   gap: var(--space-4);
 }
+
+/* Stats : toutes les cartes par numéro */
+.cardNumbers {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(2.6rem, 1fr));
+  gap: 6px;
+  margin-top: var(--space-3);
+}
+
+.cardNumber {
+  height: 2rem;
+  padding: 0;
+  border: none;
+  border-radius: 999px;
+  color: #fff;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+}
+
+.cardNumber_known {
+  background: var(--ok);
+}
+
+.cardNumber_destroyed {
+  background: var(--danger);
+}
+
+.cardNumber_unknown {
+  background: color-mix(in srgb, var(--text-muted) 45%, transparent);
+  cursor: default;
+}

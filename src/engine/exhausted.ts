@@ -11,6 +11,8 @@ export function discoveredSerials(text: string): number[] {
   const out: number[] = [];
   for (const m of text.matchAll(/discover[^.()]*\(([\d\s/&]+)\)/gi)) out.push(...(m[1] ?? "").split(/[/&]/).map((n) => Number(n.trim())));
   for (const m of text.matchAll(/discover card (\d+)/gi)) out.push(Number(m[1]));
+  // « Look at cards 109 and 110. Destroy 1 of them and discover the other. » (Brick Road, Stone Street)
+  for (const m of text.matchAll(/Look at cards (\d+) and (\d+)\..*discover/gi)) out.push(Number(m[1]), Number(m[2]));
   return out.filter((n) => Number.isFinite(n) && n > 0);
 }
 

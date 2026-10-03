@@ -71,6 +71,8 @@ export function replay(catalog: Catalog, record: GameRecord): Session {
   return record.actions.reduce((s, a) => {
     const pending = current(s).pending;
     const next = pending?.kind === "newCards" && a.type !== "acknowledgeDiscoveries" ? act(s, { type: "acknowledgeDiscoveries" }) : s;
+    // Avant la v0.35, toute carte à flèches rouges faisait choisir sa face : ce choix n'existe plus hors parchemin 37.
+    if (a.type === "chooseSide" && current(next).pending?.kind !== "chooseSide") return next;
     return act(next, a);
   }, newSession(catalog, record.config));
 }

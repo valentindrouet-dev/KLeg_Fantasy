@@ -240,4 +240,35 @@ describe("effets épuisés", async () => {
     expect(restrictionSources(catalog, s)).toEqual({ advance: [fk(61), fk(44)], upgrade: [fk(61)], time: [fk(61)] });
     expect(legal(catalog, s).some((a) => a.type === "advance")).toBe(false);
   });
+
+  it("une carte découverte par un effet est présentée (Magistrate → Border 130), puis le tour continue", () => {
+    let s = arrange(catalog, { play: [51, 1], deck: [2, 3, 4, 5] });
+    s = run(catalog, s, { type: "useEffect", card: fk(51), effect: "e1", targets: [], option: null });
+    expect(s.pending).toEqual({ kind: "newCards", cards: [fk(130)] });
+    expect(s.zones.discard).toContain(fk(130));
+    const turn = s.turn;
+    s = run(catalog, s, { type: "acknowledgeDiscoveries" });
+    expect(s.pending).toBeNull();
+    expect(s.turn).toBe(turn + 1); // effet {time} : le tour se termine après la présentation
+  });
+
+  it("une carte choisie dans la fenêtre de découverte n'est pas présentée une seconde fois", () => {
+    // Shallow Mine : « Discover Mine (84 / 85). »
+    let s = arrange(catalog, { play: [5, 1], orientation: { 5: { side: "back", rotation: 0 } }, deck: [2, 3, 4] });
+    s = run(catalog, s, { type: "useEffect", card: fk(5), effect: "e1", targets: [], option: null });
+    expect(s.pending?.kind).toBe("discoverChoice");
+    s = run(catalog, s, { type: "chooseDiscovery", card: fk(84) });
+    expect(s.pending?.kind).not.toBe("newCards");
+    expect(s.zones.discard).toContain(fk(84));
+  });
+
+  it("Brick Road : une fois 109 et 110 sorties de la boîte, l'effet est épuisé, barré et plus proposé", () => {
+    const s = arrange(catalog, { play: [43, 1], orientation: { 43: { side: "back", rotation: 0 } }, deck: [2, 3] });
+    expect(legal(catalog, s).some((a) => a.type === "useEffect" && a.card === fk(43))).toBe(true);
+    s.zones.box = s.zones.box.filter((id) => id !== fk(109) && id !== fk(110));
+    s.zones.destroyed.push(fk(109));
+    s.zones.discard.push(fk(110));
+    expect(legal(catalog, s).some((a) => a.type === "useEffect" && a.card === fk(43))).toBe(false);
+    expect(exhaustedEffects(catalog, s, fk(43), 4)).toEqual([{ id: "e1", index: 0, count: 1 }]);
+  });
 });

@@ -53,7 +53,7 @@ function runStep(d: Draft, step: FlowStep): void {
     case "roundDiscovery":
       return roundDiscovery(d);
     case "discover":
-      return discover(d, step.card);
+      return discover(d, step.card, step.seen ?? false, step.chooseSide ?? false);
     case "shuffle":
       return shuffleDeck(d);
     case "startTurn":
@@ -352,7 +352,7 @@ export function resolveParchment(d: Draft, id: InstanceId): void {
 }
 
 /** Découvre une carte : elle va dans la défausse (ou dans les permanentes), après le choix de face si besoin. */
-export function discover(d: Draft, id: InstanceId): void {
+export function discover(d: Draft, id: InstanceId, seen = false, chooseSide = false): void {
   if (!d.s.zones.box.includes(id)) return; // déjà sortie de la boîte entre-temps
   d.s.revealCount += 1;
   const t = template(d.catalog, instance(d.s, id).templateId);
@@ -361,23 +361,38 @@ export function discover(d: Draft, id: InstanceId): void {
     return;
   }
   markFinalRound(d, id);
-  if (t.chooseSideOnDiscover) {
+  // Une carte découverte arrive côté recto ; on ne choisit la face que si une instruction le dit (parchemin 37).
+  // Décision du 2026-10-03, docs/RULES_DECISIONS.md.
+  if (chooseSide && t.chooseSideOnDiscover) {
     d.s.pending = { kind: "chooseSide", card: id };
     return;
   }
-  placeDiscovered(d, id);
+  placeDiscovered(d, id, seen);
 }
 
 export function resolveSide(d: Draft, id: InstanceId, side: Side): void {
   d.s.pending = null;
   instance(d.s, id).orientation = { side, rotation: 0 };
-  placeDiscovered(d, id);
+  placeDiscovered(d, id, true); // ses deux faces viennent d'être montrées
 }
 
-function placeDiscovered(d: Draft, id: InstanceId): void {
+function placeDiscovered(d: Draft, id: InstanceId, seen: boolean): void {
   discard(d, id);
   d.s.discoveries.push(instance(d.s, id).serial);
   log(d.s, `Carte découverte : ${cardName(d.catalog, d.s, id)}`);
+  if (!seen) presentDiscovery(d);
+}
+
+/**
+ * Carte découverte par un effet (Magistrate → Border…) : la fenêtre « Nouvelles cartes » la présente, juste après
+ * les autres découvertes du même effet (demande du 2026-10-03). En début de manche, la présentation est déjà prévue.
+ */
+function presentDiscovery(d: Draft): void {
+  const at = d.s.queue.findIndex((step) => step.kind !== "discover");
+  if (at >= 0 && d.s.queue[at]?.kind === "reviewDiscoveries") return;
+  const step: FlowStep = { kind: "reviewDiscoveries", since: d.s.discoveries.length - 1 };
+  if (at < 0) d.s.queue.push(step);
+  else d.s.queue.splice(at, 0, step);
 }
 
 /**
@@ -419,5 +434,5 @@ export function resolveDiscoveryChoice(d: Draft, id: InstanceId): void {
       log(d.s, `Carte détruite sans être découverte : #${instance(d.s, other).serial}`);
     }
   }
-  pushFront(d, ...picked.map((card): FlowStep => ({ kind: "discover", card })));
+  pushFront(d, ...picked.map((card): FlowStep => ({ kind: "discover", card, seen: true })));
 }

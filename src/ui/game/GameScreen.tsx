@@ -114,6 +114,11 @@ function toastFor(_action: Action | undefined): string {
   return "";
 }
 
+/** Cartes qu'une option demande de toucher : cibles d'un effet, ou cartes à défausser pour une amélioration. */
+function cardsOfOption(o: CardOption): readonly InstanceId[] {
+  return o.action.type === "useEffect" ? o.action.targets : o.action.type === "upgrade" ? o.action.discard : [];
+}
+
 export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId: string }) {
   const { status, kingdom, session, toast, engaged, flagged, load, perform, toggleEngaged, toggleFlag, restart, undo, dismissToast } = useGame();
   const [selected, setSelected] = useState<Selected | null>(null);
@@ -127,6 +132,9 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
   const [endClosed, setEndClosed] = useState(false);
   const [anim, setAnim] = useState<Anim | null>(null);
   const [targeting, setTargeting] = useState<{ source: InstanceId; options: CardOption[] } | null>(null);
+  /** Cartes déjà touchées pendant un ciblage à plusieurs cartes (amélioration qui coûte 2 personnes…). */
+  const [targetPicks, setTargetPicks] = useState<InstanceId[]>([]);
+  useEffect(() => setTargetPicks([]), [targeting]);
   /** Effet ou amélioration touché sans assez de ressources : on touche ensuite les cartes qui paient. */
   const [paying, setPaying] = useState<{ source: InstanceId; action: Action } | null>(null);
   /** Cartes qui tremblent « non » : l'ennemi ou l'événement qui interdit le geste tenté. */
@@ -352,19 +360,29 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
     return [];
   };
 
-  /** Effet dont le texte est à la hauteur touchée (lignes mesurées sur l'image), ou null. */
-  const effectAt = (card: InstanceId, y: number): string | null => {
+  /** Lignes de texte mesurées de chaque effet du stage visible. */
+  const linesOf = (card: InstanceId) => {
     const stage = activeStage(catalog, state, card);
     const t = tpl(card);
-    if (!stage) return null;
+    return (stage?.effects ?? []).map((e) => ({ id: e.id, lines: stage ? (effectLines(t.expansion, t.serial, stage.id, e.id) ?? []) : [] }));
+  };
+
+  /** Le doigt est sur une ligne de texte d'effet (marge large : un doigt sur iPad couvre plus d'une ligne). */
+  const onEffectText = (card: InstanceId, p: TapPoint): boolean =>
+    linesOf(card).some(({ lines }) => lines.some((l) => p.y >= l[0] - 0.02 && p.y <= l[1] + 0.02 && p.x >= l[2] - 0.04 && p.x <= l[3] + 0.04));
+
+  /**
+   * Effet visé par un toucher, parmi ceux qu'on peut lancer : le plus proche du doigt en hauteur. La zone de texte
+   * est ainsi partagée entre les effets utilisables, frontière à mi-chemin (demande du 2026-10-03 : imprécis sur iPad).
+   */
+  const effectAt = (card: InstanceId, y: number, among: ReadonlySet<string>): string | null => {
     let best: { id: string; d: number } | null = null;
-    for (const e of stage.effects) {
-      const lines = effectLines(t.expansion, t.serial, stage.id, e.id);
-      if (!lines?.length) continue;
-      const top = Math.min(...lines.map((l) => l[0])) - 0.012;
-      const bottom = Math.max(...lines.map((l) => l[1])) + 0.012;
+    for (const { id, lines } of linesOf(card)) {
+      if (!among.has(id) || lines.length === 0) continue;
+      const top = Math.min(...lines.map((l) => l[0]));
+      const bottom = Math.max(...lines.map((l) => l[1]));
       const d = y < top ? top - y : y > bottom ? y - bottom : 0;
-      if (d < 0.05 && (!best || d < best.d)) best = { id: e.id, d };
+      if (!best || d < best.d) best = { id, d };
     }
     return best?.id ?? null;
   };
@@ -399,8 +417,10 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
   };
 
   /** Cibles possibles de l'effet en cours de ciblage, par carte visée. */
+  // Options encore possibles avec les cartes déjà touchées, et les cartes qu'on peut toucher ensuite.
+  const targetCandidates = (targeting?.options ?? []).filter((o) => targetPicks.every((c) => cardsOfOption(o).includes(c)));
   const targetOptions = new Map<InstanceId, CardOption>(
-    (targeting?.options ?? []).flatMap((o) => (o.action.type === "useEffect" && o.action.targets[0] ? [[o.action.targets[0], o] as const] : [])),
+    targetCandidates.flatMap((o) => cardsOfOption(o).filter((c) => !targetPicks.includes(c)).map((c) => [c, o] as const)),
   );
   const targetsInDiscard = [...targetOptions.keys()].filter((id) => state.zones.discard.includes(id));
 
@@ -461,9 +481,24 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
       return;
     }
     if (targeting) {
-      const o = targetOptions.get(card);
+      if (targetPicks.includes(card)) {
+        setTargetPicks(targetPicks.filter((c) => c !== card));
+        return;
+      }
+      if (!targetOptions.has(card)) {
+        setTargeting(null);
+        return;
+      }
+      const next = [...targetPicks, card];
+      const done = targetCandidates.find((o) => cardsOfOption(o).length === next.length && next.every((c) => cardsOfOption(o).includes(c)));
+      if (!done) {
+        setTargetPicks(next);
+        return;
+      }
+      const source = targeting.source;
       setTargeting(null);
-      if (o?.plan) run(o.plan);
+      if (done.plan) run(done.plan);
+      else if (!startPaying(source, done)) showMissing(source, done, { x: 0.5, y: 0.25 });
       return;
     }
     if (!playing) return;
@@ -472,7 +507,9 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
       showTranslation(card, p);
       return;
     }
-    const zone = zoneAtCard(p.x, p.y, isFullImageFace(tpl(card), instance(state, card).orientation.side));
+    const grid = zoneAtCard(p.x, p.y, isFullImageFace(tpl(card), instance(state, card).orientation.side));
+    // Un toucher sur le texte d'un effet vise l'effet, même là où la grille voit la production.
+    const zone: ZoneKind = grid !== "upgradeFlip" && grid !== "upgradeRotate" && onEffectText(card, p) ? "effect" : grid;
     if (zone === "production" && productionLabel(catalog, state, card)) {
       toggleEngaged(card);
       return;
@@ -482,7 +519,7 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
       // Plusieurs effets sur la carte (Witch Cabin…) : celui dont on a touché le texte, sans menu.
       const effects = new Set(opts.map((o) => (o.action.type === "useEffect" ? o.action.effect : "")));
       if (zone === "effect" && effects.size > 1) {
-        const at = effectAt(card, p.y);
+        const at = effectAt(card, p.y, effects);
         if (at) opts = opts.filter((o) => o.action.type === "useEffect" && o.action.effect === at);
         if (opts.length === 0) return;
       }
@@ -493,12 +530,11 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
         else if (!startPaying(card, only)) showMissing(card, only, p);
         return;
       }
-      // Effet à cible unique (ex. « Discard a friendly card ») : toucher l'effet, puis la carte visée.
-      const targeted = opts.filter((o) => o.action.type === "useEffect" && o.action.targets.length === 1);
-      if (zone === "effect" && opts.length > 1 && targeted.length === opts.length) {
-        const playable = targeted.filter((o) => o.plan);
-        if (playable.length === 0) return;
-        setTargeting({ source: card, options: playable });
+      // Effet à cible (« Discard a friendly card ») ou amélioration qui coûte des cartes (« 1 Person ») : toucher la
+      // zone, puis la ou les cartes visées sur le plateau, sans menu (demande du 2026-10-03).
+      if (opts.length > 1 && opts.every((o) => cardsOfOption(o).length > 0)) {
+        setSelected(null);
+        setTargeting({ source: card, options: opts });
         return;
       }
       // Plusieurs choix sans cible (ex. Bazaar : bois ou pierre) : petit menu de choix.
@@ -514,7 +550,7 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
       orientation={instance(state, id).orientation}
       label={cardName(catalog, state, id)}
       width={width}
-      selected={selected?.card === id || picked.includes(id)}
+      selected={selected?.card === id || picked.includes(id) || targetPicks.includes(id)}
       engaged={extra?.engaged}
       flagged={extra?.zones ? flagged.includes(id) : undefined}
       onTwoFinger={extra?.zones ? () => toggleFlag(id) : undefined}
@@ -524,7 +560,7 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
         boardChoice
           ? !boardChoice.options.has(id) && id !== boardChoice.source
           : targeting
-            ? !targetOptions.has(id) && id !== targeting.source
+            ? !targetOptions.has(id) && !targetPicks.includes(id) && id !== targeting.source
             : paying
               ? !payers.has(id) && id !== paying.source
               : undefined
@@ -563,14 +599,20 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
    * Carte permanente touchée : son effet (Army, Treasury…). Payable : il part ; il manque des ressources : les cartes
    * qui peuvent payer s'allument ; plusieurs effets : le menu. Sans effet : l'inspection (appui long aussi).
    */
-  const tapPermanent = (id: InstanceId) => {
+  const tapPermanent = (id: InstanceId, p?: TapPoint) => {
     if (pickOnBoard(id)) return;
     // Mode FR : l'inspection montre la carte en grand, traduite.
     if (tooltipsFr) {
       setInspect(id);
       return;
     }
-    const opts = playing ? optionsFor(id) : [];
+    let opts = playing ? optionsFor(id) : [];
+    // Plusieurs effets : celui le plus proche du doigt.
+    const effects = new Set(opts.map((o) => (o.action.type === "useEffect" ? o.action.effect : "")));
+    if (p && effects.size > 1) {
+      const at = effectAt(id, p.y, effects);
+      if (at) opts = opts.filter((o) => o.action.type === "useEffect" && o.action.effect === at);
+    }
     const only = opts[0];
     if (opts.length === 1 && only) {
       if (only.plan) run(only.plan);
@@ -783,10 +825,10 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
 
       {state.zones.permanent.length > 0 && (
         <section className={styles.permanents} aria-label="Cartes permanentes">
-          {permanentGroups.accumulate.map((id) => card(id, 72, () => tapPermanent(id)))}
-          {permanentGroups.other.map((id) => card(id, 72, () => tapPermanent(id)))}
+          {permanentGroups.accumulate.map((id) => card(id, 72, (p) => tapPermanent(id, p)))}
+          {permanentGroups.other.map((id) => card(id, 72, (p) => tapPermanent(id, p)))}
           {permanentGroups.goals.length > 0 && <span className={styles.permanentSpacer} />}
-          {permanentGroups.goals.map((id) => card(id, 72, () => tapPermanent(id)))}
+          {permanentGroups.goals.map((id) => card(id, 72, (p) => tapPermanent(id, p)))}
         </section>
       )}
 
@@ -882,7 +924,7 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
           onClose={() => setSelected(null)}
         />
       )}
-      {statsOpen && <StatsDialog catalog={catalog} state={state} onClose={() => setStatsOpen(false)} onShowDestroyed={() => setDestroyedOpen(true)} />}
+      {statsOpen && <StatsDialog catalog={catalog} state={state} onClose={() => setStatsOpen(false)} onShowDestroyed={() => setDestroyedOpen(true)} onInspect={setInspect} />}
       {destroyedOpen && (
         <CardListDialog catalog={catalog} state={state} title="Détruites" cards={state.zones.destroyed} onInspect={setInspect} onClose={() => setDestroyedOpen(false)} />
       )}

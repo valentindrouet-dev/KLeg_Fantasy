@@ -1,5 +1,5 @@
 import { cardId } from "../../data/schema";
-import { boxCardsBySerial, discoverNormally, offerDiscovery, pushFront } from "../flow";
+import { boxCardsBySerial, discoverNormally, nextInBox, offerDiscovery, pushFront } from "../flow";
 import { effectKey } from "../effects/registry";
 import type { FlowStep, ParchmentImpl } from "../types";
 
@@ -33,8 +33,9 @@ export const feudalKingdomParchments: ReadonlyMap<string, ParchmentImpl> = new M
   [cardId("FeudalKingdom", 23), discoverSerials(24, 25, 26, 27)],
   // « Instead of discovering the next 2 cards, look at the 4 next cards (31-34). Choose 2 to discover and destroy the other 2. »
   [cardId("FeudalKingdom", 30), lookAndChoose(31, 34, 2)],
-  // « Discover 5 cards this round, instead of 2 (cards 38-42). » Le choix de face vient de chooseSideOnDiscover.
-  [cardId("FeudalKingdom", 37), (d) => discoverNormally(d, 5)],
+  // « Discover 5 cards this round, instead of 2 (cards 38-42). […] For each card, you need to choose one of its sides
+  // now » : seul cas où l'on choisit la face d'une carte découverte.
+  [cardId("FeudalKingdom", 37), (d) => pushFront(d, ...nextInBox(d, 5).map((card): FlowStep => ({ kind: "discover", card, chooseSide: true })))],
   // « Look at the next 4 cards (48-51). Discover 2 of them and destroy the other 2. »
   [cardId("FeudalKingdom", 47), lookAndChoose(48, 51, 2)],
   // « Discover 2 cards as normal (cards 69-70). This is your last round. » La dernière manche est marquée à la découverte.

@@ -161,7 +161,6 @@ function Face({
       ) : (
         <span className={styles.cardFallback}>{label}</span>
       )}
-      {dimBottom && top !== null && bottom !== null && <span className={styles.bottomShade} />}
       {top !== null && (
         // Face à image pleine (une seule étape) : le numéro va dans le coin inférieur gauche.
         <span className={`${styles.stageNumber} ${bottom === null ? styles.stageCorner : styles.stageTop} ${styles[`stage${top}`]}`}>{top}</span>
@@ -179,6 +178,8 @@ function Face({
           <Stickers template={template} stage={bottomId} stickers={stickers} half="bottom" />
         </>
       )}
+      {/* Grisé du bas par-dessus tout ce qui est posé sur cette moitié (stickers, traits). */}
+      {dimBottom && top !== null && bottom !== null && <span className={styles.bottomShade} />}
     </div>
   );
 }
