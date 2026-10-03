@@ -3,6 +3,10 @@
 Chaque mise à jour publiée change de version (`package.json`, affichée dans l'appli en bas de l'écran « Mes royaumes »
 et dans la barre de la partie). Convention : `0.5.0` s'affiche **v0.05** ; un correctif `0.5.1` s'affiche **v0.05.1**.
 
+## v0.27 (3 octobre 2026)
+
+- Toucher une amélioration ou un effet impayable ouvre le menu de la carte, qui dit ce qui manque, avec la mention « la carte ne peut pas payer avec sa propre production » quand c'est le cas (une carte qui produit est défaussée : elle ne peut pas aussi s'améliorer).
+
 ## v0.26 (2 octobre 2026)
 
 - Bug : payer avec plusieurs cartes engagées dont la production dépend des autres (Cathedral : +1 {coin} par personne) échouait sans rien dire. Le paiement produit maintenant carte par carte, dans le meilleur ordre.

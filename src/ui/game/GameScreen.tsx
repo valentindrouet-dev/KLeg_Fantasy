@@ -79,7 +79,10 @@ function missingText(catalog: Catalog, s: GameState, a: Action, engaged: Instanc
     else if (flexible > 0) flexible -= 1;
     else missing.push(r);
   }
-  return missing.length ? `Il manque ${icons(missing)}` : "Pas payable avec les cartes engagées";
+  if (!missing.length) return "Pas payable avec les cartes engagées";
+  // La carte de l'action ne peut pas payer avec sa propre production (produire la défausse).
+  const own = "card" in a && productionGroups(catalog, s, a.card).some((g) => g.options.some((o) => o.some((r) => missing.includes(r))));
+  return `Il manque ${icons(missing)}${own ? " (la carte ne peut pas payer avec sa propre production)" : ""}`;
 }
 
 /** Changement d'orientation que produit un geste sur sa carte (pour l'animer), ou null. */
@@ -368,7 +371,7 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
       const only = opts[0];
       if (opts.length === 1 && only) {
         if (only.plan) run(only.plan);
-        else startPaying(card, only);
+        else if (!startPaying(card, only)) openMenu(card); // le menu dit ce qui manque
         return;
       }
       // Effet à cible unique (ex. « Discard a friendly card ») : toucher l'effet, puis la carte visée.
