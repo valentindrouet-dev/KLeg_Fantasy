@@ -12,8 +12,45 @@
   display: grid;
   place-items: center;
   padding: max(var(--space-4), env(safe-area-inset-top)) var(--space-4) max(var(--space-4), env(safe-area-inset-bottom));
-  /* Fond à peine assombri et fenêtre translucide : on voit ses cartes à travers (demande du 2026-10-02). */
-  background: rgb(0 0 0 / 0.12);
+  /* Fenêtre opaque sur fond assombri (demande du 2026-10-04) ; « Voir le jeu » la cache le temps de regarder. */
+  background: rgb(0 0 0 / 0.4);
+}
+
+/* Fenêtre cachée : le jeu reste visible et utilisable pour regarder, la fenêtre revient avec « Revoir ». */
+.backdropHidden {
+  visibility: hidden;
+}
+
+.peekBack {
+  position: fixed;
+  left: 50%;
+  bottom: calc(var(--space-4) + env(safe-area-inset-bottom));
+  z-index: 95;
+  min-height: var(--tap-min);
+  padding: 0 var(--space-5, 24px);
+  border: none;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--surface);
+  font: inherit;
+  font-weight: 700;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.35);
+  transform: translateX(-50%);
+  visibility: visible;
+  cursor: pointer;
+}
+
+.peek {
+  min-height: var(--tap-min);
+  padding: 0 var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface-2);
+  color: var(--text);
+  font: inherit;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  cursor: pointer;
 }
 
 .topLayer {
@@ -28,16 +65,9 @@
   max-height: calc(100dvh - 2 * var(--space-4) - env(safe-area-inset-top) - env(safe-area-inset-bottom));
   border: 1px solid var(--border);
   border-radius: calc(var(--radius) * 1.5);
-  background: color-mix(in srgb, var(--surface) 62%, transparent);
+  background: var(--surface);
   color: var(--text);
-  box-shadow: 0 12px 40px rgb(0 0 0 / 0.3);
-}
-
-/* Titres et boutons restent lisibles sur le fond translucide. */
-.dialogHeader h2,
-.dialogBody p,
-.dialogBody strong {
-  text-shadow: 0 0 6px var(--surface), 0 0 2px var(--surface);
+  box-shadow: 0 12px 40px rgb(0 0 0 / 0.35);
 }
 
 .wide {
@@ -163,7 +193,7 @@
   padding: var(--space-2) var(--space-3);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  background: color-mix(in srgb, var(--surface) 70%, transparent);
+  background: var(--surface-2);
 }
 
 .bugList li span {

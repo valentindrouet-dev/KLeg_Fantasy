@@ -3,6 +3,10 @@
 Chaque mise à jour publiée change de version (`package.json`, affichée dans l'appli en bas de l'écran « Mes royaumes »
 et dans la barre de la partie). Convention : `0.5.0` s'affiche **v0.05** ; un correctif `0.5.1` s'affiche **v0.05.1**.
 
+## v0.43 (4 octobre 2026)
+
+- Fenêtres à nouveau opaques, sur un fond assombri. Bouton « Voir le jeu » en haut de chaque fenêtre : elle se cache sans se fermer (le choix reste en attente) pour regarder la zone de jeu ; « Revoir … » en bas de l'écran la rouvre.
+
 ## v0.42 (4 octobre 2026)
 
 - Sticker « Stays in play » (sticker 7) : un bandeau lisible « ∞ Stays in play. » au-dessus du texte des effets, comme sur les cartes imprimées, au lieu d'une petite pastille dans la rangée des ressources.
