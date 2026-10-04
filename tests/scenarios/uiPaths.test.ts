@@ -3,7 +3,9 @@ import {
   actionKey,
   applyAction,
   candidateActions,
+  gainEffectOf,
   getLegalActions,
+  sourceGroups,
   paymentCandidates,
   planWithEngaged,
   productionGroups,
@@ -24,6 +26,11 @@ describe("chemins de l'interface", async () => {
     const legal = getLegalActions(catalog, s).filter((a) => a.type === "useEffect" || a.type === "upgrade");
     for (const a of legal) {
       if (!("card" in a)) continue;
+      // Gain au choix (Servant, Bazaar…) : proposé par l'engagement de la carte, pas dans son menu.
+      if (a.type === "useEffect" && gainEffectOf(catalog, s, a.card)?.effect === a.effect) {
+        expect(sourceGroups(catalog, s, a.card).length, `${a.card} engageable`).toBeGreaterThan(0);
+        continue;
+      }
       const offered = candidateActions(catalog, s, a.card).map(actionKey);
       expect(offered, `${a.type} ${a.card} proposé`).toContain(actionKey(a));
       expect(planWithEngaged(catalog, s, a, []), `${a.type} ${a.card} jouable`).not.toBeNull();

@@ -16,6 +16,8 @@ export const NO_PARAMS: EffectParams = { targets: [], option: null };
 export function spendToGain(cost: readonly ResourceId[], gains: readonly (readonly ResourceId[])[]): EffectImpl {
   return {
     cost,
+    // La carte s'engage comme une production qui coûte `cost` (Bazaar, Trader : demande du 2026-10-04).
+    gains: () => gains.map((g) => [...g]),
     params: (d) => (canPay(d.s, cost) ? gains.map((_, i) => ({ targets: [], option: i })) : []),
     apply: (d, _card, p) => {
       pay(d.s, cost);

@@ -374,4 +374,17 @@ describe("effets épuisés", async () => {
     const old = run(catalog, s, { type: "useEffect", card: fk(13), effect: "e1", targets: [], option: null }, { type: "choose", answer: { option: 2 } });
     expect(old.resources.stone).toBe(1);
   });
+
+  it("Bazaar : l'échange s'engage comme une production ; payé avec l'or d'une autre carte engagée", () => {
+    const bazaar = { side: "front", rotation: 180 } as const;
+    const s = arrange(catalog, { play: [10, 9, 1], orientation: { 10: bazaar }, deck: [3, 4], resources: { stone: 3 } });
+    // Headquarters (9) : amélioration {stone}{wood}{stone}{stone}. Le bois vient du Bazaar, son {coin} de Wild Grass.
+    const up: Action = { type: "upgrade", card: fk(9), upgrade: "u1", discard: [] };
+    const plan = planWithEngaged(catalog, s, up, [fk(10), fk(1)]);
+    expect(plan?.map((a) => a.type)).toEqual(["produce", "useEffect", "upgrade"]);
+    const after = run(catalog, s, ...(plan ?? []));
+    expect(after.cards[fk(9)]?.orientation).toEqual({ side: "front", rotation: 180 });
+    // Sans or pour l'échange, pas de plan.
+    expect(planWithEngaged(catalog, s, up, [fk(10)])).toBeNull();
+  });
 });

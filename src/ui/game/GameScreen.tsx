@@ -73,7 +73,8 @@ function productionLabel(catalog: Catalog, s: GameState, id: InstanceId): string
   // Production, ou effet de gain au choix (Servant : {coin}/{wood}/{stone}) qui s'engage comme elle.
   const groups = sourceGroups(catalog, s, id);
   if (groups.length === 0) return null;
-  return groups.map((g) => g.options.map((o) => icons(o)).join("/")).join(" + ");
+  const cost = gainEffectOf(catalog, s, id)?.cost ?? [];
+  return (cost.length ? `${icons(cost)} → ` : "") + groups.map((g) => g.options.map((o) => icons(o)).join("/")).join(" + ");
 }
 
 /** Ce qu'une action coûte encore, une fois comptées les ressources en cours et les cartes engagées. */
@@ -817,7 +818,7 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
     ...catalog.resources.flatMap((r) => {
       const banked = (state.resources[r] ?? 0) + (potential.fixed[r] ?? 0);
       const total = banked + (available.fixed[r] ?? 0);
-      return total ? [{ key: r, text: `{${r}}`, n: total, banked: banked > 0 }] : [];
+      return total > 0 ? [{ key: r, text: `{${r}}`, n: total, banked: banked > 0 }] : [];
     }),
     ...potential.choices.map((opts, i) => ({ key: `e${i}`, text: opts.map((o) => icons(o)).join("/"), n: 1, banked: true })),
     ...available.choices.map((opts, i) => ({ key: `c${i}`, text: opts.map((o) => icons(o)).join("/"), n: 1, banked: false })),

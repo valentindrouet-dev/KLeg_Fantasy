@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { applyAction, candidateActions, paymentCandidates, planWithEngaged, showsTopHalfOnly, type Action } from "../../src/engine";
+import { applyAction, candidateActions, gainEffectOf, paymentCandidates, planWithEngaged, showsTopHalfOnly, type Action } from "../../src/engine";
 import { loadCatalog } from "../helpers/catalog";
 import { arrange, fk } from "../helpers/game";
 
@@ -43,9 +43,10 @@ describe("paiement avec des cartes engagées", async () => {
     ]);
   });
 
-  it("liste les actions envisageables sans tenir compte des ressources", () => {
+  it("liste les actions envisageables sans tenir compte des ressources (l'échange du Trader passe par l'engagement)", () => {
     const s = arrange(catalog, { play: [10] });
-    expect(candidateActions(catalog, s, fk(10)).map((a) => a.type).sort()).toEqual(["upgrade", "useEffect"]);
+    expect(candidateActions(catalog, s, fk(10)).map((a) => a.type).sort()).toEqual(["upgrade"]);
+    expect(gainEffectOf(catalog, s, fk(10))).toEqual({ effect: "e1", options: [["wood"]], cost: ["coin"] });
   });
 
   it("Avancer ne fait rien perdre tant que les cartes sont seulement engagées", () => {

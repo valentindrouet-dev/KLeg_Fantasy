@@ -13,12 +13,13 @@ import { combinations, upgradeCost } from "./upgrade";
  * Effet « Gain … au choix » d'une carte en jeu sans production (Servant, Investor…) : utilisable comme une production
  * (demande du 2026-10-04). Effet activé seulement (un effet {destroy} détruirait la carte).
  */
-export function gainEffectOf(catalog: Catalog, s: GameState, id: InstanceId): { effect: string; options: ResourceId[][] } | null {
+export function gainEffectOf(catalog: Catalog, s: GameState, id: InstanceId): { effect: string; options: ResourceId[][]; cost: readonly ResourceId[] } | null {
   if (!s.zones.play.includes(id) || productionGroups(catalog, s, id).length > 0) return null;
   for (const { effect, impl } of usableEffects(catalog, s, id)) {
     if (effect.type !== "activated" || !impl.gains) continue;
     const options = impl.gains({ catalog, s });
-    if (options.length) return { effect: effect.id, options };
+    // Coût de l'échange (Bazaar : 1 {coin}), payé au moment de l'utiliser.
+    if (options.length) return { effect: effect.id, options, cost: (impl.cost ?? []) as readonly ResourceId[] };
   }
   return null;
 }
@@ -102,7 +103,9 @@ export function planWithEngaged(
     for (const subset of groups) {
       // La production d'une carte peut dépendre des autres cartes en jeu (Cathedral : +1 {coin} par personne) :
       // on produit carte par carte, dans chaque ordre possible, en recalculant à chaque fois.
-      for (const order of subset.length <= 4 ? permutations(subset) : [[...subset]]) {
+      // Trop de cartes pour tout essayer : les échanges (Bazaar) en dernier, après les cartes qui produisent leur coût.
+      const exchangesLast = [...subset].sort((a, b) => Number((gainEffectOf(catalog, s, a)?.cost.length ?? 0) > 0) - Number((gainEffectOf(catalog, s, b)?.cost.length ?? 0) > 0));
+      for (const order of subset.length <= 4 ? permutations(subset) : [exchangesLast]) {
         for (const produce of producePlans(catalog, s, order)) {
           const sim = simulate(catalog, s, produce);
           if (!sim || !covers(sim.resources, cost)) continue;
@@ -149,8 +152,16 @@ function simulate(catalog: Catalog, s: GameState, produce: Action[]): GameState 
       if (p.choices.length !== groups.length) return null;
       icons = producedIcons(groups, p.choices);
     } else {
-      icons = gainEffectOf(catalog, sim, p.card)?.options[p.option ?? -1] ?? [];
-      if (!icons.length) return null;
+      const gain = gainEffectOf(catalog, sim, p.card);
+      icons = gain?.options[p.option ?? -1] ?? [];
+      if (!gain || !icons.length) return null;
+      // Échange (Bazaar) : la dépense doit être disponible à ce moment-là.
+      const left = { ...sim.resources };
+      for (const r of gain.cost) {
+        if ((left[r] ?? 0) <= 0) return null;
+        left[r] = (left[r] ?? 0) - 1;
+      }
+      sim = { ...sim, resources: left };
     }
     const resources = { ...sim.resources };
     for (const r of icons) resources[r] = (resources[r] ?? 0) + 1;
@@ -219,6 +230,8 @@ export function engagedPotential(
   const choices: ResourceId[][][] = [];
   for (const id of engaged) {
     if (!s.zones.play.includes(id)) continue;
+    // Échange engagé : sa dépense est retirée de ce qui est disponible.
+    for (const r of gainEffectOf(catalog, s, id)?.cost ?? []) fixed[r] = (fixed[r] ?? 0) - 1;
     for (const g of sourceGroups(catalog, s, id)) {
       if (g.options.length === 1) for (const r of g.options[0] ?? []) fixed[r] = (fixed[r] ?? 0) + 1;
       else choices.push(g.options);
