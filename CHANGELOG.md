@@ -3,6 +3,10 @@
 Chaque mise à jour publiée change de version (`package.json`, affichée dans l'appli en bas de l'écran « Mes royaumes »
 et dans la barre de la partie). Convention : `0.5.0` s'affiche **v0.05** ; un correctif `0.5.1` s'affiche **v0.05.1**.
 
+## v0.52 (4 octobre 2026)
+
+- Défausse (et cartes détruites) : boutons colorés par type dans l'en-tête, à côté de « Voir le jeu » (Land, Building, Person, Enemy…, avec leur nombre). En toucher un ne montre que ce type ; le retoucher montre tout. Le filtre disparaît à la fermeture.
+
 ## v0.51 (4 octobre 2026)
 
 - Stats : toucher la case Gloire montre toutes les cartes du royaume qui rapportent ou font perdre de la gloire, leur valeur posée dessus (+3, −2 en rouge), des plus rentables aux négatives. La gloire des cartes purgées est indiquée au-dessus. Toucher une carte l'inspecte.

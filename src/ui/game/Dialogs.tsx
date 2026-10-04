@@ -246,13 +246,39 @@ export function CardListDialog({
   onInspect: (id: InstanceId) => void;
   onClose: () => void;
 }) {
+  // Filtre par type (demande du 2026-10-04) : un bouton coloré par type présent ; le filtre tombe à la fermeture.
+  const [only, setOnly] = useState<string | null>(null);
+  const kinds = (id: InstanceId): readonly string[] => activeStage(catalog, state, id)?.keywords ?? [];
+  const order = Object.keys(KEYWORD_TONES);
+  const present = [...new Set(cards.flatMap(kinds))].sort((a, b) => (order.indexOf(a) + 1 || 99) - (order.indexOf(b) + 1 || 99) || a.localeCompare(b));
+  const shown = only ? cards.filter((id) => kinds(id).includes(only)) : cards;
+  const tools =
+    present.length > 1 ? (
+      <div className={styles.typeFilters} role="group" aria-label="Filtrer par type">
+        {present.map((k) => {
+          const tone = KEYWORD_TONES[k] ?? "var(--text-muted)";
+          const on = only === k;
+          return (
+            <button
+              key={k}
+              className={styles.typeFilter}
+              aria-pressed={on}
+              onClick={() => setOnly(on ? null : k)}
+              style={{ borderColor: tone, background: on ? tone : `color-mix(in srgb, ${tone} 18%, var(--surface))`, color: on ? "#fff" : undefined }}
+            >
+              {k} {cards.filter((id) => kinds(id).includes(k)).length}
+            </button>
+          );
+        })}
+      </div>
+    ) : undefined;
   return (
-    <Dialog title={`${title} (${cards.length})`} onClose={onClose} wide>
-      {cards.length === 0 ? (
+    <Dialog title={`${title} (${only ? `${shown.length}/` : ""}${cards.length})`} onClose={onClose} wide tools={tools}>
+      {shown.length === 0 ? (
         <p className={styles.muted}>Aucune carte.</p>
       ) : (
         <div className={styles.cardList}>
-          {[...cards].reverse().map((id) => (
+          {[...shown].reverse().map((id) => (
             <CardView
               key={id}
               template={template(catalog, instance(state, id).templateId)}

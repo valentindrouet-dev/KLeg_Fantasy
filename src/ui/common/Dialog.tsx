@@ -11,9 +11,11 @@ type Props = {
   wide?: boolean;
   /** Au-dessus des autres fenêtres (signalement d'un bug ouvert pendant une décision). */
   top?: boolean;
+  /** Boutons posés dans l'en-tête, avant « Voir le jeu » (filtres de la défausse). */
+  tools?: ReactNode;
 };
 
-export function Dialog({ title, children, onClose, actions, wide, top }: Props) {
+export function Dialog({ title, children, onClose, actions, wide, top, tools }: Props) {
   // « Voir le jeu » : la fenêtre se cache sans se fermer (la décision reste en attente), « Revoir » la rouvre.
   const [hidden, setHidden] = useState(false);
   useEffect(() => {
@@ -38,6 +40,7 @@ export function Dialog({ title, children, onClose, actions, wide, top }: Props) 
       >
         <header className={styles.dialogHeader}>
           <h2>{title}</h2>
+          {tools}
           <button className={styles.peek} onClick={() => setHidden(true)} aria-label="Cacher la fenêtre pour voir le jeu">
             Voir le jeu
           </button>
