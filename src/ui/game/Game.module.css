@@ -1487,3 +1487,13 @@
   box-shadow: 0 0 12px 3px rgb(232 185 35 / 0.8);
   pointer-events: none;
 }
+
+/* Stats, gloire : valeur négative en rouge sur la pastille */
+.badge:has(.fameLoss) {
+  background: var(--danger, #c62828);
+}
+
+.fameList .badge {
+  font-size: 1.05rem;
+  padding: 3px 12px;
+}

@@ -599,6 +599,7 @@ export function StatsDialog({
 }) {
   const st = kingdomStats(catalog, state);
   const [allCards, setAllCards] = useState(false);
+  const [fameCards, setFameCards] = useState(false);
   // Couleur de chaque case selon ce qu'elle compte (ressource, étape, type de carte).
   const cell = (label: ReactNode, value: number, tone?: string) => (
     <div className={styles.statCell} style={tone ? { background: `color-mix(in srgb, ${tone} 22%, var(--surface))`, borderColor: tone } : undefined}>
@@ -638,7 +639,12 @@ export function StatsDialog({
         </section>
         <section>
           <h3>Gloire</h3>
-          <div className={styles.statGrid}>{cell(<Icon id="fame" />, st.fame, "#e3b505")}</div>
+          <div className={styles.statGrid}>
+            <button className={styles.statButton} onClick={() => setFameCards((o) => !o)} aria-pressed={fameCards}>
+              {cell(<Icon id="fame" />, st.fame, "#e3b505")}
+            </button>
+          </div>
+          {fameCards && <FameCards catalog={catalog} state={state} onInspect={onInspect} />}
         </section>
         <section>
           <h3>Types</h3>
@@ -663,6 +669,50 @@ export function StatsDialog({
         </section>
       </div>
     </Dialog>
+  );
+}
+
+/**
+ * Cartes qui rapportent ou font perdre de la gloire (demande du 2026-10-04), leur valeur posée dessus : les plus
+ * rentables d'abord, les négatives à la fin. Toucher une carte l'inspecte.
+ */
+function FameCards({ catalog, state, onInspect }: { catalog: Catalog; state: GameState; onInspect: (card: InstanceId) => void }) {
+  const score = computeScore(catalog, state);
+  const lines = score.lines.filter((l) => l.fame !== 0).sort((a, b) => b.fame - a.fame);
+  const sign = (n: number) => (n > 0 ? `+${n}` : String(n));
+  return (
+    <>
+      {score.purgedFame !== 0 && (
+        <p className={styles.muted}>
+          <IconText text={`Cartes purgées : ${sign(score.purgedFame)} {fame}`} />
+        </p>
+      )}
+      {lines.length === 0 ? (
+        <p className={styles.muted}>Aucune carte ne rapporte de gloire pour l'instant.</p>
+      ) : (
+        <div className={`${styles.cardList} ${styles.fameList}`}>
+          {lines.map((l) => (
+            <CardView
+              key={l.card}
+              template={template(catalog, instance(state, l.card).templateId)}
+              orientation={instance(state, l.card).orientation}
+              label={`${l.name} : ${sign(l.fame)} gloire`}
+              width={listCard()}
+              stickers={instance(state, l.card).stickers}
+              badge={
+                <span className={l.fame < 0 ? styles.fameLoss : undefined}>
+                  <IconText text={`${sign(l.fame)} {fame}`} />
+                </span>
+              }
+              onTap={() => onInspect(l.card)}
+              onLongPress={() => onInspect(l.card)}
+              exhausted={exhaustedOf(catalog, state, l.card)}
+              boxes={(stage) => boxViews(catalog, state, l.card, stage)}
+            />
+          ))}
+        </div>
+      )}
+    </>
   );
 }
 
