@@ -3,6 +3,10 @@
 Chaque mise à jour publiée change de version (`package.json`, affichée dans l'appli en bas de l'écran « Mes royaumes »
 et dans la barre de la partie). Convention : `0.5.0` s'affiche **v0.05** ; un correctif `0.5.1` s'affiche **v0.05.1**.
 
+## v0.52.1 (4 octobre 2026)
+
+- Filtres de la défausse et stats : Invention en rose comme sur la carte ; Knight (et Lady, Elder) en jaune comme les personnes ; Ship en bleu comme Seafaring ; Horse en orange comme Livestock.
+
 ## v0.52 (4 octobre 2026)
 
 - Défausse (et cartes détruites) : boutons colorés par type dans l'en-tête, à côté de « Voir le jeu » (Land, Building, Person, Enemy…, avec leur nombre). En toucher un ne montre que ce type ; le retoucher montre tout. Le filtre disparaît à la fermeture.

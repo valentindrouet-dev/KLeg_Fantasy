@@ -794,6 +794,13 @@ const KEYWORD_TONES: Record<string, string> = {
   Event: "var(--cat-other)",
   Enemy: "var(--cat-negative)",
   Goal: "var(--cat-goal)",
+  // Sous-types : couleur de leur bandeau (demande du 2026-10-04 : Invention en rose, Knight en jaune comme les personnes).
+  Invention: "var(--cat-other)",
+  Knight: "var(--cat-person)",
+  Lady: "var(--cat-person)",
+  Elder: "var(--cat-person)",
+  Ship: "var(--cat-seafaring)",
+  Horse: "var(--cat-livestock)",
 };
 
 /** Bulle de traduction d'une moitié de carte (toucher hors des zones d'action, infobulles FR activées). */
