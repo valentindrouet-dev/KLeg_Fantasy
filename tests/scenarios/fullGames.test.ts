@@ -27,5 +27,5 @@ describe("parties complètes", async () => {
     expect(end.zones.destroyed).toContain("FeudalKingdom-068");
     expect(end.zones.box).toContain("FeudalKingdom-071"); // au-delà de 70 : seulement par effet
     expect(current(replay(catalog, s.record))).toEqual(end);
-  });
+  }, 30_000); // partie entière rejouée : 2 s en local, plus sur un serveur d'intégration chargé
 });

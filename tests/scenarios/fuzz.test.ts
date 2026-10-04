@@ -4,6 +4,9 @@ import { mulberry } from "../helpers/random";
 import { loadCatalog } from "../helpers/catalog";
 import { newGame } from "../helpers/game";
 
+/** Une partie entière : 1 à 3 s en local, bien plus sur un serveur d'intégration chargé (5 s par défaut). */
+const GAME_TIMEOUT = 30_000;
+
 // Parties jouées au hasard parmi les actions légales (réponses aux questions comprises) : aucune erreur,
 // chaque carte dans une seule zone, jamais de ressource négative, et la partie se termine.
 function invariants(s: GameState): void {
@@ -32,6 +35,6 @@ describe("parties au hasard", async () => {
         steps++;
       }
       expect(s.phase).toBe("gameOver");
-    });
+    }, GAME_TIMEOUT);
   }
 });
