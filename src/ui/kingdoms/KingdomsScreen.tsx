@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { canRestartKingdom, current, newSession, randomSeed, type Catalog, type UndoMode } from "../../engine";
 import { deleteKingdom, duplicateKingdom, listKingdoms, renameKingdom, saveKingdom } from "../../persistence/db";
-import { KINGDOM_EMOJIS, newKingdomId, randomKingdomName, summarize, type Kingdom } from "../../persistence/kingdoms";
+import { formatPlayTime, KINGDOM_EMOJIS, newKingdomId, randomKingdomName, summarize, type Kingdom } from "../../persistence/kingdoms";
 import { Dialog } from "../common/Dialog";
 import { IconText } from "../common/IconText";
 import { APP_VERSION } from "../../version";
@@ -198,6 +198,7 @@ export function KingdomsScreen({ catalog }: { catalog: Catalog }) {
                 <span className={styles.stats}>
                   Manche {k.summary.round} · <IconText text={`{fame} ${k.summary.fame}`} />
                   {k.summary.lastDiscovered !== null && ` · dernière carte #${k.summary.lastDiscovered}`}
+                  {(k.playMs ?? 0) >= 60000 && ` · ⏱ ${formatPlayTime(k.playMs ?? 0)}`}
                 </span>
                 <span className={styles.date}>Joué le {dateFormat.format(k.updatedAt)}</span>
               </a>

@@ -55,6 +55,8 @@ import { ANIM_MS, CardView, type CardNote } from "./CardView";
 import { CardListDialog, ConfirmDialog, DecisionDialog, EndDialog, Inspector, StatsDialog } from "./Dialogs";
 import { frNote } from "./translationNote";
 import { useGame } from "./store";
+import { usePlayClock } from "./usePlayClock";
+import { formatPlayTime } from "../../persistence/kingdoms";
 import { cardWidthFor, useFitArea } from "./useFitCards";
 import { useCardMotion } from "./useCardMotion";
 import { usePrefs, ZOOM_MAX, ZOOM_MIN } from "../common/prefs";
@@ -136,7 +138,9 @@ function cardsOfOption(o: CardOption): readonly InstanceId[] {
 }
 
 export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId: string }) {
-  const { status, kingdom, session, toast, engaged, flagged, load, perform, toggleEngaged, toggleFlag, restart, undo, dismissToast } = useGame();
+  const { status, kingdom, session, toast, engaged, flagged, load, perform, toggleEngaged, toggleFlag, restart, undo, dismissToast, addPlayTime } = useGame();
+  // Chronomètre : seulement quand l'appli est à l'écran, jusqu'à la fin de la partie.
+  const unsavedPlayMs = usePlayClock(status === "ready" && session !== null && current(session).phase !== "gameOver", addPlayTime);
   const [selected, setSelected] = useState<Selected | null>(null);
   const [inspect, setInspect] = useState<InstanceId | null>(null);
   const [discardOpen, setDiscardOpen] = useState(false);
@@ -874,6 +878,9 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
             {state.finalRound ? " (dernière)" : ""} · {state.turn > 0 ? `Tour ${state.turn}` : "Début de manche"} ·{" "}
             <IconText text={`{fame} ${fame}`} />
           </span>
+          <small className={styles.clock} title="Temps de jeu (appli à l'écran)">
+            ⏱ {formatPlayTime((kingdom.playMs ?? 0) + unsavedPlayMs)}
+          </small>
           <small className={styles.version}>{APP_VERSION}</small>
         </h1>
         <button

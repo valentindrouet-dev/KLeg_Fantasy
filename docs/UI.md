@@ -44,6 +44,8 @@ Routage par hash (`src/ui/App.tsx`) : `#/` Mes royaumes, `#/partie/<id>` partie,
 - **Bouton FR** : active ou coupe les infobulles en français (mémorisé dans le navigateur).
 - **Marque** : toucher une carte en jeu avec deux doigts (Alt + clic sur ordinateur) pose un contour bleu ; il tombe quand la carte quitte le jeu.
 - **Sauvegarde** : bouton ⤓ dans la partie (fichier JSON) ; « Importer » ⤒ sur l'accueil (`persistence/backup.ts`, partie rejouée à l'import).
+- **Chronomètre** (⏱, barre du haut et « Mes royaumes », demande du 2026-10-04) : temps de jeu compté seulement quand
+  l'appli est à l'écran (`usePlayClock`, visibilité de la page), jusqu'à la fin de la partie ; `Kingdom.playMs`.
 - **Messages** : aucun message après une action ni quand une action est impossible.
 - **Zone neutre** d'une carte : rien. La feuille d'actions ne s'ouvre que pour un choix (ex. Bazaar).
 - **Action impayable** : « Il manque … » posé sur la carte 4 s (note rouge).

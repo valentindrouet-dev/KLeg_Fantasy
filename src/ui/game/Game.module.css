@@ -48,7 +48,7 @@
   grid-area: perm;
   display: flex;
   gap: var(--space-2);
-  padding: var(--space-2) var(--space-3) calc(var(--space-2) + 2.4rem);
+  padding: var(--space-2) var(--space-3);
   overflow-x: auto;
   border-bottom: 1px solid var(--border);
 }
@@ -599,6 +599,14 @@
 .dimmed {
   opacity: 0.45;
   filter: saturate(0.6);
+}
+
+.clock {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
 }
 
 .version {
@@ -1394,8 +1402,9 @@
 }
 
 /* Cartes permanentes (petites) : la pastille passe sous la carte, la piste reste visible (croix, halo). */
+/* Sur la carte (demande du 2026-10-04), en haut sur le texte d'ambiance : les cases du bas restent visibles. */
 .permanents .badge {
-  top: calc(100% + 3px);
+  top: 14%;
   bottom: auto;
   padding: 1px 6px;
   font-size: 0.72rem;

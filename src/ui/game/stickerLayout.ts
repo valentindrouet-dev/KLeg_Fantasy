@@ -2,16 +2,17 @@ import type { Stage } from "../../data/schema";
 
 // Où dessiner les stickers d'un stage (demande du 2026-10-02) : dans la rangée des ressources imprimées, sous le
 // bandeau, juste après la dernière icône, à la même taille. Repères relevés sur les images (373 × 520), carte à
-// l'endroit, moitié haute : première icône à x = 4,5 %, rangée à y = 13,7 %, icônes de 11,8 % de large, pas de 12,9 %,
-// « / » de 6 % entre deux options. Calcul pur, testé côté Node.
+// l'endroit, moitié haute (remesurés le 2026-10-04 sur Farmlands, Festival, Tavern : même gabarit partout) : première
+// icône de x = 19,5 à 69,5 px, haut à y = 79 px, icônes de 50 px au pas de 53,6 px, « / » de 31 px en plus entre deux
+// options. Calcul pur, testé côté Node.
 
-export const STICKER_SIZE = 0.118; // largeur, en fraction de la largeur de la carte
-const START_X = 0.045;
-const ROW_Y = 0.137;
-const STEP = 0.129;
-const SLASH = 0.06;
+export const STICKER_SIZE = 50 / 373; // largeur, en fraction de la largeur de la carte
+const START_X = 19.5 / 373;
+const ROW_Y = 79 / 520;
+const STEP = 53.6 / 373;
+const SLASH = 31 / 373;
 const RIGHT = 0.97;
-const SECOND_ROW = { x: 0.2, y: 0.25 }; // à droite de la gloire imprimée, si la rangée est pleine
+const SECOND_ROW = { x: START_X + STEP, y: (79 + 56) / 520 }; // à droite de la gloire imprimée, si la rangée est pleine
 
 export type StickerSpot = { left: number; top: number }; // fractions de la carte, moitié haute à l'endroit
 

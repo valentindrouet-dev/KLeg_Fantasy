@@ -3,6 +3,12 @@
 Chaque mise à jour publiée change de version (`package.json`, affichée dans l'appli en bas de l'écran « Mes royaumes »
 et dans la barre de la partie). Convention : `0.5.0` s'affiche **v0.05** ; un correctif `0.5.1` s'affiche **v0.05.1**.
 
+## v0.50 (4 octobre 2026)
+
+- Cartes permanentes : le compteur (Army, Treasury, Export…) est de nouveau posé sur la carte, en haut sur le texte d'ambiance, et plus en dessous.
+- Chronomètre de partie : ⏱ dans la barre du haut, et sur l'écran « Mes royaumes ». Il ne compte que quand l'appli est à l'écran, s'arrête à la fin de la partie, est gardé avec le royaume et dans la sauvegarde exportée.
+- Stickers de ressource : même taille que les icônes imprimées (50 px sur 373), dans leur rangée et au même pas (repères remesurés sur Farmlands, Festival, Tavern). Ils ne chevauchent plus la dernière icône.
+
 ## v0.49.2 (4 octobre 2026)
 
 - Parchemin 24 : les deux questions disent leur étape et le type de carte attendu. « 1/2 · Fertile Soil » propose les terres (sticker 1 {coin}), puis « 2/2 · Efficiency » les bâtiments, Food Barns comprise. Test ajouté.

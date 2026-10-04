@@ -40,6 +40,8 @@ type GameStore = {
   toggleFlag: (card: InstanceId) => void;
   /** Marque (ou retire) une étape de carte comme objectif, gardé avec le royaume. */
   toggleGoal: (card: InstanceId, stage: StageId) => void;
+  /** Ajoute du temps de jeu au royaume (chronomètre), sauvegardé. */
+  addPlayTime: (ms: number) => void;
   /** Reset officiel (avant la carte 23) : le royaume repart des cartes 1 à 10, nouveau mélange. */
   restart: () => void;
   undo: () => void;
@@ -112,6 +114,14 @@ export const useGame = create<GameStore>((set, get) => ({
     const goals = kingdom.goals ?? [];
     const has = goals.some((g) => g.card === card && g.stage === stage);
     const next: Kingdom = { ...kingdom, goals: has ? goals.filter((g) => !(g.card === card && g.stage === stage)) : [...goals, { card, stage }] };
+    void saveKingdom(next);
+    set({ kingdom: next });
+  },
+
+  addPlayTime: (ms) => {
+    const { kingdom } = get();
+    if (!kingdom || ms <= 0) return;
+    const next: Kingdom = { ...kingdom, playMs: (kingdom.playMs ?? 0) + ms };
     void saveKingdom(next);
     set({ kingdom: next });
   },

@@ -23,7 +23,16 @@ export type Kingdom = {
   state: GameState;
   /** Objectifs du joueur (demande du 2026-10-04) : étapes de cartes à atteindre, entourées en doré. */
   goals?: Goal[];
+  /** Temps de jeu (ms), compté seulement quand l'appli est à l'écran (demande du 2026-10-04). */
+  playMs?: number;
 };
+
+/** Durée de jeu lisible : « 42 min », « 1 h 05 ». */
+export function formatPlayTime(ms: number): string {
+  const minutes = Math.floor(ms / 60000);
+  if (minutes < 60) return `${minutes} min`;
+  return `${Math.floor(minutes / 60)} h ${String(minutes % 60).padStart(2, "0")}`;
+}
 
 export type Goal = { card: string; stage: 1 | 2 | 3 | 4 };
 

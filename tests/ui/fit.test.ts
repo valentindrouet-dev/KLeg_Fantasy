@@ -38,14 +38,16 @@ describe("place des stickers", () => {
   it("juste après les ressources imprimées, sur la même rangée", () => {
     const stage = { production: [{ id: "p1", options: [["coin", "coin"]] }] } as unknown as Stage;
     const [first, second] = stickerSpots(stage, 2);
-    expect(first?.left).toBeCloseTo(0.045 + 2 * 0.129);
-    expect(second?.left).toBeCloseTo(0.045 + 3 * 0.129);
-    expect(first?.top).toBeCloseTo(0.137);
+    // Farmlands : pièces imprimées à x = 19,5 et 73 px (sur 373), haut à 79 px (sur 520).
+    expect(first?.left).toBeCloseTo((19.5 + 2 * 53.6) / 373);
+    expect(second?.left).toBeCloseTo((19.5 + 3 * 53.6) / 373);
+    expect(first?.top).toBeCloseTo(79 / 520);
   });
 
   it("rangée pleine : à droite de la gloire imprimée, plus bas", () => {
     const stage = { production: [{ id: "p1", options: [["stone", "metal", "metal", "tradeGood", "tradeGood"]] }, { id: "p2", options: [["coin"], ["wood"]] }] } as unknown as Stage;
     const [spot] = stickerSpots(stage, 1);
-    expect(spot).toEqual({ left: 0.2, top: 0.25 });
+    expect(spot?.left).toBeCloseTo((19.5 + 53.6) / 373);
+    expect(spot?.top).toBeCloseTo(135 / 520);
   });
 });

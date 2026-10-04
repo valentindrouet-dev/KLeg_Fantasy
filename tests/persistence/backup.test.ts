@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { act, current, getLegalActions, newSession } from "../../src/engine";
 import { exportKingdom, importKingdom } from "../../src/persistence/backup";
-import { summarize, type Kingdom } from "../../src/persistence/kingdoms";
+import { formatPlayTime, summarize, type Kingdom } from "../../src/persistence/kingdoms";
 import { loadCatalog } from "../helpers/catalog";
 
 // Spec 6.2 : export / import d'un royaume.
@@ -23,6 +23,13 @@ describe("sauvegarde d'un royaume", async () => {
     expect(back.id).toBe("k-test");
     expect(back.record).toEqual(k.record);
     expect(back.state).toEqual(k.state);
+  });
+
+  it("garde le temps de jeu", () => {
+    const back = importKingdom(catalog, exportKingdom({ ...kingdom(), playMs: 3_900_000 }, "v0.49"), []);
+    expect(back.playMs).toBe(3_900_000);
+    expect(formatPlayTime(3_900_000)).toBe("1 h 05");
+    expect(formatPlayTime(42 * 60000 + 59000)).toBe("42 min");
   });
 
   it("garde les deux royaumes si l'identifiant existe déjà", () => {
