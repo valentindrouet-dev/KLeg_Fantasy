@@ -800,7 +800,8 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
   const available = engagedPotential(
     catalog,
     state,
-    state.zones.play.filter((id) => !engagedNow.includes(id)),
+    // Seulement la production : un effet de gain (Servant…) n'apparaît qu'une fois touché, sur la carte engagée.
+    state.zones.play.filter((id) => !engagedNow.includes(id) && productionGroups(catalog, state, id).length > 0),
   );
   const counters = [
     ...catalog.resources.flatMap((r) => {

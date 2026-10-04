@@ -3,6 +3,10 @@
 Chaque mise à jour publiée change de version (`package.json`, affichée dans l'appli en bas de l'écran « Mes royaumes »
 et dans la barre de la partie). Convention : `0.5.0` s'affiche **v0.05** ; un correctif `0.5.1` s'affiche **v0.05.1**.
 
+## v0.45.1 (4 octobre 2026)
+
+- Les ressources d'un effet de gain (Servant, « Gain any N resources ») n'apparaissent en haut qu'une fois l'effet touché ; avant, elles s'y affichaient déjà en gris.
+
 ## v0.45 (4 octobre 2026)
 
 - Servant (« Gain {coin} / {wood} / {stone} ») et les cartes « Gain any N resources » (Investor, Feast, Educated Princess, City on a Hill, Raid…) : toucher l'effet engage la carte comme une carte de production, sans fenêtre. La ressource au choix s'ajoute en haut avec les autres ; elle est prise au moment de payer, dans la ressource qu'il faut.
