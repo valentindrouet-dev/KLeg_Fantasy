@@ -41,6 +41,12 @@ export function usePress(onTap: (p: TapPoint) => void, onLongPress?: (p: TapPoin
   return {
     onPointerDown: (e: PointerEvent) => {
       if (e.button !== 0) return;
+      // Premier doigt d'un nouveau geste : les doigts encore comptés sont des restes (lever perdu, carte redessinée).
+      // Sans ça, chaque toucher passait pour un toucher à deux doigts : drapeau bleu figé, carte inutilisable.
+      if (e.isPrimary) {
+        pointers.current.clear();
+        multi.current = false;
+      }
       pointers.current.add(e.pointerId);
       if (pointers.current.size >= 2) {
         // Deux doigts sur la même carte.
@@ -60,7 +66,11 @@ export function usePress(onTap: (p: TapPoint) => void, onLongPress?: (p: TapPoin
       if (onSwipe) {
         swipe.current = { x: e.clientX, y: e.clientY, width: el.current.getBoundingClientRect().width };
         // Le doigt peut sortir de la carte pendant le glissé : la carte garde le pointeur jusqu'au lâcher.
-        el.current.setPointerCapture?.(e.pointerId);
+        try {
+          el.current.setPointerCapture?.(e.pointerId);
+        } catch {
+          // Pointeur déjà relâché : pas de capture, le geste reste un tap.
+        }
       }
       if (onLongPress) {
         const p = { x: e.clientX, y: e.clientY };

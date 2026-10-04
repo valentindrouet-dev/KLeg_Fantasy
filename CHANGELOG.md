@@ -3,6 +3,10 @@
 Chaque mise à jour publiée change de version (`package.json`, affichée dans l'appli en bas de l'écran « Mes royaumes »
 et dans la barre de la partie). Convention : `0.5.0` s'affiche **v0.05** ; un correctif `0.5.1` s'affiche **v0.05.1**.
 
+## v0.53.3 (4 octobre 2026)
+
+- Correctif : une carte pouvait rester bloquée avec le contour bleu (drapeau des deux doigts), sans qu'on puisse l'utiliser ni retirer le contour. Le jeu croyait qu'un doigt était encore posé dessus (lever perdu) : chaque toucher passait pour un toucher à deux doigts. Un nouveau toucher repart maintenant de zéro.
+
 ## v0.53.2 (4 octobre 2026)
 
 - Demi-cartes « stays in play » : en colonnes de deux seulement s'il y a un ennemi en jeu, ou si elles sont trop nombreuses pour tenir sur une ligne sans rapetisser les cartes. Sinon elles restent sur une ligne, comme avant.
