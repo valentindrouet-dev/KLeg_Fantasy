@@ -117,10 +117,16 @@ function orientationChange(catalog: Catalog, state: GameState, plan: Action[]): 
   } catch {
     return null;
   }
-  const before = instance(state, last.card).orientation;
-  const after = instance(s, last.card).orientation;
-  if (before.side !== after.side) return { card: last.card, kind: "flip", to: after };
-  if (before.rotation !== after.rotation) return { card: last.card, kind: "rotate", to: after };
+  // La carte de l'action d'abord, puis une autre carte en jeu retournée par l'effet (Missionary convertit le Bandit :
+  // sans animation, le Bandit partait dans la défausse sous le Missionary sans qu'on le voie se retourner).
+  const turned = [last.card, ...state.zones.play.filter((id) => id !== last.card)];
+  for (const card of turned) {
+    if (!state.zones.play.includes(card) && card !== last.card) continue;
+    const before = instance(state, card).orientation;
+    const after = instance(s, card).orientation;
+    if (before.side !== after.side) return { card, kind: "flip", to: after };
+    if (before.rotation !== after.rotation) return { card, kind: "rotate", to: after };
+  }
   return null;
 }
 

@@ -3,6 +3,10 @@
 Chaque mise à jour publiée change de version (`package.json`, affichée dans l'appli en bas de l'écran « Mes royaumes »
 et dans la barre de la partie). Convention : `0.5.0` s'affiche **v0.05** ; un correctif `0.5.1` s'affiche **v0.05.1**.
 
+## v0.50.1 (4 octobre 2026)
+
+- Missionary : la conversion retournait bien le Bandit (il devient Field Worker), mais sans animation, et il partait dans la défausse sous le Missionary : on ne le voyait pas. Une carte retournée ou tournée par l'effet d'une autre carte (Missionary → Bandit…) s'anime maintenant sur le plateau avant d'être défaussée.
+
 ## v0.50 (4 octobre 2026)
 
 - Cartes permanentes : le compteur (Army, Treasury, Export…) est de nouveau posé sur la carte, en haut sur le texte d'ambiance, et plus en dessous.
