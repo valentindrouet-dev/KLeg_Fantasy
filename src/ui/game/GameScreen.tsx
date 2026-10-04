@@ -48,6 +48,9 @@ import { BLOCKED_PEEK, CARD_ASPECT, type Slot } from "./fitCards";
 
 /** Écart entre les ennemis et les cartes « stays in play » de la ligne du haut (px, écart des cartes compris). */
 const TOP_SPACER = 40;
+/** Écart entre deux demi-cartes « stays in play » empilées (px), et sa part d'une hauteur de carte pour le calcul. */
+const STAY_COLUMN_GAP = 8;
+const STAY_COLUMN_GAP_SHARE = 0.04;
 import type { TapPoint } from "../common/usePress";
 import { CardActions, type CardOption } from "./CardActions";
 import { zoneAtCard, type ZoneKind } from "./cardZones";
@@ -192,22 +195,43 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
     () => (state ? playLayout(catalog, state, state.zones.play, sortMode) : { enemies: [], stays: [], others: [] }),
     [catalog, state, sortMode],
   );
-  const ordered = useMemo(() => [...layout.enemies, ...layout.stays, ...layout.others], [layout]);
-  const topCount = layout.enemies.length + layout.stays.length;
+  // Emplacements de la zone de jeu : une carte, ou une colonne de deux demi-cartes « stays in play » (demande du
+  // 2026-10-04 : deux demi-cartes l'une sur l'autre ont à peu près la taille d'une carte ennemie, à côté de laquelle
+  // elles se rangent). Une carte « stays in play » qui en bloque d'autres garde sa propre colonne.
+  const items = useMemo((): InstanceId[][] => {
+    const cols: InstanceId[][] = [];
+    let open: InstanceId[] | null = null;
+    for (const id of layout.stays) {
+      const alone = (state?.blocks?.[id]?.length ?? 0) > 0 || !(state && showsTopHalfOnly(catalog, state, id));
+      if (alone) {
+        cols.push([id]);
+        continue;
+      }
+      if (open && open.length < 2) open.push(id);
+      else {
+        open = [id];
+        cols.push(open);
+      }
+    }
+    return [...layout.enemies.map((id) => [id]), ...cols, ...layout.others.map((id) => [id])];
+  }, [layout, state, catalog]);
+  const topCount = items.length - layout.others.length;
   const spacerAt = layout.enemies.length > 0 && layout.stays.length > 0 ? layout.enemies.length : -1;
   const [fitRef, area] = useFitArea();
   const { cardWidth, enemyRow } = useMemo(() => {
+    const height = (id: InstanceId) => (state && showsTopHalfOnly(catalog, state, id) ? 0.5 : 1) + BLOCKED_PEEK * (state?.blocks?.[id]?.length ?? 0);
     const slots = (withBreak: boolean): Slot[] =>
-      ordered.map((id, i) => ({
-        h: (state && showsTopHalfOnly(catalog, state, id) ? 0.5 : 1) + BLOCKED_PEEK * (state?.blocks?.[id]?.length ?? 0),
+      items.map((ids, i) => ({
+        // Deux demi-cartes empilées : une carte, plus l'écart entre elles.
+        h: ids.length > 1 ? 1 + STAY_COLUMN_GAP_SHARE : height(ids[0] ?? ""),
         breakBefore: withBreak && i === topCount,
         space: i === spacerAt ? TOP_SPACER : 0,
       }));
     const flat = cardWidthFor(area, slots(false), zoom);
-    if (topCount === 0 || topCount === ordered.length) return { cardWidth: flat, enemyRow: false };
+    if (topCount === 0 || topCount === items.length) return { cardWidth: flat, enemyRow: false };
     const split = cardWidthFor(area, slots(true), zoom);
     return split >= 0.75 * flat ? { cardWidth: split, enemyRow: true } : { cardWidth: flat, enemyRow: false };
-  }, [ordered, topCount, spacerAt, state, area, zoom]);
+  }, [items, topCount, spacerAt, state, catalog, area, zoom]);
   useCardMotion(catalog, state, playEl);
   const playing = state?.phase === "playing" && !state.pending && !anim;
   // Choix de cartes en jeu demandé par un effet (« Destroy 1 person… ») : on touche les cartes sur le plateau, sans
@@ -1041,29 +1065,40 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
           if (boardChoice?.cancellable) perform([{ type: "cancelChoice" }]);
         }}
       >
-        {ordered.map((id, i) => {
-          const held = state.blocks?.[id] ?? [];
+        {items.map((ids, i) => {
           const peek = Math.round((cardWidth / CARD_ASPECT) * BLOCKED_PEEK);
-          const main = card(id, cardWidth || undefined, (p) => tapCard(id, p), true, { engaged: engagedNow.includes(id), zones: true });
+          const one = (id: InstanceId) => {
+            const held = state.blocks?.[id] ?? [];
+            const main = card(id, cardWidth || undefined, (p) => tapCard(id, p), true, { engaged: engagedNow.includes(id), zones: true });
+            if (held.length === 0) return main;
+            // Cartes bloquées : posées sous la bloquante, le haut dépasse (nom et bandeau lisibles).
+            return (
+              <div key={id} className={styles.stack} style={{ paddingTop: peek * held.length }}>
+                {held.map((b, j) => (
+                  <div key={b} className={styles.under} style={{ top: peek * j }}>
+                    {card(b, cardWidth || undefined, () => refuse([id]), true)}
+                  </div>
+                ))}
+                <div className={styles.over}>{main}</div>
+              </div>
+            );
+          };
           const row =
             enemyRow && i === topCount ? (
               <div key="top-break" className={styles.rowBreak} />
             ) : i === spacerAt ? (
               <div key="top-spacer" style={{ width: TOP_SPACER - 12 }} />
             ) : null;
-          if (held.length === 0) return row ? [row, main] : main;
-          // Cartes bloquées : posées sous la bloquante, le haut dépasse (nom et bandeau lisibles).
-          const stack = (
-            <div key={id} className={styles.stack} style={{ paddingTop: peek * held.length }}>
-              {held.map((b, j) => (
-                <div key={b} className={styles.under} style={{ top: peek * j }}>
-                  {card(b, cardWidth || undefined, () => refuse([id]), true)}
-                </div>
-              ))}
-              <div className={styles.over}>{main}</div>
-            </div>
-          );
-          return row ? [row, stack] : stack;
+          // Demi-cartes « stays in play » : en colonne, centrées sur la hauteur d'une carte entière.
+          const item =
+            i >= layout.enemies.length && i < topCount ? (
+              <div key={`col-${ids[0]}`} className={styles.stayColumn} style={{ minHeight: cardWidth ? cardWidth / CARD_ASPECT : undefined, gap: STAY_COLUMN_GAP }}>
+                {ids.map(one)}
+              </div>
+            ) : (
+              one(ids[0] ?? "")
+            );
+          return row ? [row, item] : item;
         })}
       </main>
 

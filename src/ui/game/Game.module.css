@@ -1531,3 +1531,10 @@
 .play .card.swipeable {
   touch-action: pan-y;
 }
+
+/* Deux demi-cartes « stays in play » l'une sur l'autre, centrées sur la hauteur d'une carte (ennemi à côté) */
+.stayColumn {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
