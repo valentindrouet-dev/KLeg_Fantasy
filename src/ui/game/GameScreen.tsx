@@ -223,10 +223,14 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
     const spacer = layout.enemies.length > 0 && layout.stays.length > 0 ? layout.enemies.length : -1;
     const fit = (its: InstanceId[][]) => {
       const top = its.length - layout.others.length;
+      // Colonnes (ennemi en jeu, ou demi-cartes appariées) : chaque colonne a au moins la hauteur d'une carte entière,
+      // même avec une seule demi-carte (centrée) ; la compter comme une demi-carte faisait déborder la zone de jeu.
+      const columns = layout.enemies.length > 0 || its.some((ids) => ids.length > 1);
+      const isStay = (i: number) => i >= layout.enemies.length && i < top;
       const slots = (withBreak: boolean): Slot[] =>
         its.map((ids, i) => ({
           // Deux demi-cartes empilées : une carte, plus l'écart entre elles.
-          h: ids.length > 1 ? 1 + STAY_COLUMN_GAP_SHARE : height(ids[0] ?? ""),
+          h: ids.length > 1 ? 1 + STAY_COLUMN_GAP_SHARE : columns && isStay(i) ? Math.max(1, height(ids[0] ?? "")) : height(ids[0] ?? ""),
           breakBefore: withBreak && i === top,
           space: i === spacer ? TOP_SPACER : 0,
         }));
