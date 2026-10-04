@@ -92,6 +92,13 @@ function missingText(catalog: Catalog, s: GameState, a: Action, engaged: Instanc
     else if (flexible > 0) flexible -= 1;
     else missing.push(r);
   }
+  // Dépense d'un échange engagé (Bazaar) que rien ne couvre : elle manque aussi.
+  for (const [r, n] of Object.entries(have)) {
+    for (let i = 0; i < -n; i++) {
+      if (flexible > 0) flexible -= 1;
+      else missing.push(r as ResourceId);
+    }
+  }
   if (!missing.length) return "Pas payable avec les cartes engagées";
   // La carte de l'action ne peut pas payer avec sa propre production (produire la défausse).
   const own = "card" in a && productionGroups(catalog, s, a.card).some((g) => g.options.some((o) => o.some((r) => missing.includes(r))));

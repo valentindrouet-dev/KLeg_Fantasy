@@ -130,4 +130,19 @@ describe("Export", async () => {
     expect(after.cards[fk(27)]?.tallies).toEqual({ "1": 4 });
     expect(after.resources.tradeGood).toBe(0);
   });
+  it("Bazaar engagé sans or en réserve : la carte qui produit son {coin} peut payer (Farmlands, capture du 2026-10-04)", () => {
+    const s = arrange(catalog, {
+      play: [9, 19, 10, 1],
+      deck: [2, 3, 4, 5],
+      orientation: { 1: { side: "back", rotation: 180 }, 19: { side: "back", rotation: 180 }, 10: { side: "front", rotation: 180 } },
+    });
+    const up: Action = { type: "upgrade", card: fk(1), upgrade: "u1", discard: [] };
+    const engaged = [fk(19), fk(10)]; // Lumberjack ({wood}{wood}), Bazaar ({coin} → {wood}/{stone})
+    expect(planWithEngaged(catalog, s, up, engaged)).toBeNull();
+    // Headquarters produit l'or de l'échange : elle est proposée pour payer.
+    expect(paymentCandidates(catalog, s, up, engaged)).toEqual([fk(9)]);
+    const plan = planWithEngaged(catalog, s, up, [...engaged, fk(9)]);
+    const end = plan?.reduce((st, a) => applyAction(catalog, st, a), s);
+    expect(end?.cards[fk(1)]?.orientation).toEqual({ side: "back", rotation: 0 }); // Food Barns
+  });
 });

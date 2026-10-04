@@ -207,8 +207,10 @@ export function candidateActions(catalog: Catalog, s: GameState, card: InstanceI
  * elles produisent une ressource du coût et ne sont ni la carte de l'action, ni une de ses cibles, ni déjà engagées.
  */
 export function paymentCandidates(catalog: Catalog, s: GameState, action: Action, engaged: readonly InstanceId[]): InstanceId[] {
-  const cost = actionCost(catalog, s, action);
-  if (!cost?.length) return [];
+  const actionCostIcons = actionCost(catalog, s, action);
+  if (!actionCostIcons?.length) return [];
+  // La dépense des échanges engagés (Bazaar : 1 {coin}) fait partie de ce qu'il faut payer (demande du 2026-10-04).
+  const cost = [...actionCostIcons, ...engaged.filter((id) => s.zones.play.includes(id)).flatMap((id) => gainEffectOf(catalog, s, id)?.cost ?? [])];
   const excluded = new Set<InstanceId>([
     ...engaged,
     ...("card" in action ? [action.card] : []),

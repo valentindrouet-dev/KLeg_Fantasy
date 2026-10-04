@@ -3,6 +3,10 @@
 Chaque mise à jour publiée change de version (`package.json`, affichée dans l'appli en bas de l'écran « Mes royaumes »
 et dans la barre de la partie). Convention : `0.5.0` s'affiche **v0.05** ; un correctif `0.5.1` s'affiche **v0.05.1**.
 
+## v0.49.1 (4 octobre 2026)
+
+- Correctif : avec un échange engagé (Bazaar) et pas d'or en réserve, le paiement disait « Pas payable avec les cartes engagées ». Maintenant il dit ce qui manque ({coin}) et fait briller les cartes qui peuvent le produire (Headquarters…) : on les touche et l'amélioration se fait.
+
 ## v0.49 (4 octobre 2026)
 
 - Effets « stay in play » (Shrine, Sanctuary, Hoarding…) : plus de fenêtre Oui/Non. En fin de tour, les cartes qu'on peut garder sont entourées sur le plateau ; on touche celles à garder. Pour « up to N », « Valider » en bas. Un bouton en bas, « Je ne veux rien garder », refuse l'effet. Hoarding ne propose plus les ennemis ni les cartes qui restent déjà en jeu.
