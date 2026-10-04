@@ -221,7 +221,7 @@ function execute(d: Draft, a: Action): void {
       const found = usableEffects(catalog, s, a.card).find((x) => x.effect.id === a.effect);
       if (!found) throw new IllegalActionError(`Effet indisponible : ${a.effect}`);
       // Effet à cible choisie sur le plateau (Priest : la carte à améliorer) : pas de question.
-      const ask = a.targets.length ? undefined : found.impl.ask;
+      const ask = a.targets.length || a.option !== null ? undefined : found.impl.ask;
       if (ask) {
         const answers: Answer[] = [];
         const request = nextQuestion((x) => ask(d, a.card, x), answers);

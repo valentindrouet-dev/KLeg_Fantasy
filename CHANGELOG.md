@@ -3,6 +3,10 @@
 Chaque mise à jour publiée change de version (`package.json`, affichée dans l'appli en bas de l'écran « Mes royaumes »
 et dans la barre de la partie). Convention : `0.5.0` s'affiche **v0.05** ; un correctif `0.5.1` s'affiche **v0.05.1**.
 
+## v0.45 (4 octobre 2026)
+
+- Servant (« Gain {coin} / {wood} / {stone} ») et les cartes « Gain any N resources » (Investor, Feast, Educated Princess, City on a Hill, Raid…) : toucher l'effet engage la carte comme une carte de production, sans fenêtre. La ressource au choix s'ajoute en haut avec les autres ; elle est prise au moment de payer, dans la ressource qu'il faut.
+
 ## v0.44 (4 octobre 2026)
 
 - Cartes à flèches rouges (Field Worker / Servant…) : dans la fenêtre « Nouvelles cartes », on touche la face à garder (recto par défaut), appliquée en validant. Vaut pour les découvertes de manche comme pour celles d'un effet.

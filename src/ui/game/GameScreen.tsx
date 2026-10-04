@@ -9,6 +9,8 @@ import {
   isFullImageFace,
   paymentCandidates,
   canPeekSecond,
+  gainEffectOf,
+  sourceGroups,
   restrictionSources,
   boxViews,
   isOrderedTrack,
@@ -68,7 +70,8 @@ type Pending = { plan: Action[]; message: string; toast: string };
 const icons = (rs: readonly ResourceId[]) => rs.map((r) => `{${r}}`).join("");
 
 function productionLabel(catalog: Catalog, s: GameState, id: InstanceId): string | null {
-  const groups = productionGroups(catalog, s, id);
+  // Production, ou effet de gain au choix (Servant : {coin}/{wood}/{stone}) qui s'engage comme elle.
+  const groups = sourceGroups(catalog, s, id);
   if (groups.length === 0) return null;
   return groups.map((g) => g.options.map((o) => icons(o)).join("/")).join(" + ");
 }
@@ -618,6 +621,16 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
     if (zone === "production" && productionLabel(catalog, state, card)) {
       toggleEngaged(card);
       return;
+    }
+    // Effet de gain au choix (Servant, Investor…) : la carte s'engage, ses ressources s'ajoutent en haut, sans fenêtre.
+    const gain = gainEffectOf(catalog, state, card);
+    if (gain && zone === "effect") {
+      const usable = new Set(optionsFor(card).flatMap((o) => (o.action.type === "useEffect" ? [o.action.effect] : [])));
+      usable.add(gain.effect);
+      if (usable.size === 1 || effectAt(card, p.y, usable) === gain.effect) {
+        toggleEngaged(card);
+        return;
+      }
     }
     if (zone === "upgradeFlip" || zone === "upgradeRotate" || zone === "effect") {
       let opts = zoneOptions(card, zone);

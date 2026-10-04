@@ -359,4 +359,19 @@ describe("effets épuisés", async () => {
     s.zones.box = s.zones.box.filter((id) => id !== fk(101) && id !== fk(102));
     expect(exhaustedEffects(catalog, s, fk(33), 1)).toEqual([{ id: "e1", index: 0, count: 1 }]);
   });
+
+  it("Servant : son gain au choix sert comme une production engagée (pas de question) ; l'ancienne forme se rejoue", () => {
+    const servant = { side: "back", rotation: 0 } as const;
+    const s = arrange(catalog, { play: [13, 1, 2], orientation: { 13: servant }, deck: [3, 4], resources: { coin: 1 } });
+    // Wild Grass (1) : amélioration à 2 {coin} ; 1 en réserve + le Servant engagé.
+    const up: Action = { type: "upgrade", card: fk(1), upgrade: "u1", discard: [] };
+    const plan = planWithEngaged(catalog, s, up, [fk(13)]);
+    expect(plan?.[0]).toEqual({ type: "useEffect", card: fk(13), effect: "e1", targets: [], option: 0 });
+    const after = run(catalog, s, ...(plan ?? []));
+    expect(after.cards[fk(1)]?.orientation).toEqual({ side: "front", rotation: 180 });
+    expect(after.zones.discard).toContain(fk(13));
+    // Partie enregistrée avant : l'effet, puis la réponse à « Quelle ressource ? ».
+    const old = run(catalog, s, { type: "useEffect", card: fk(13), effect: "e1", targets: [], option: null }, { type: "choose", answer: { option: 2 } });
+    expect(old.resources.stone).toBe(1);
+  });
 });

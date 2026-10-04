@@ -179,6 +179,11 @@ export type EffectImpl = {
   costOf?: (d: Draft, card: InstanceId, p?: EffectParams) => readonly string[];
   /** Ancienne forme sans cible (réponses à des questions) acceptée pour rejouer les parties enregistrées. */
   legacyAsk?: boolean;
+  /**
+   * Effet qui ne fait que gagner une ressource au choix (Servant, « Gain any N resources »), sans coût : les gains
+   * possibles, un par paramètre `option`. La carte s'engage alors comme une carte de production.
+   */
+  gains?: (d: Draft) => ResourceId[][];
   /** Questions au joueur, une à la fois, avant tout paiement ; null quand tout est choisi (réponses dans p.answers). */
   ask?: (d: Draft, card: InstanceId, answers: Answer[]) => ChoiceRequest | null;
 };

@@ -1,4 +1,4 @@
-import type { ResourceId } from "../data/schema";
+import type { ProductionGroup, ResourceId } from "../data/schema";
 import { applyAction, getLegalActions, isLegal, usableEffects } from "./actions";
 import { producedIcons, productionChoices, productionGroups } from "./production";
 import { activeStage, countIcons } from "./state";
@@ -8,6 +8,45 @@ import { combinations, upgradeCost } from "./upgrade";
 // Paiement avec des cartes « engagées » (interface) : le joueur marque les cartes dont il compte utiliser
 // la ressource ; elles ne produisent (et ne sont défaussées) qu'au moment de payer. Produire à n'importe quel
 // moment du tour est permis par les règles, donc ce plan ne fait que choisir quand produire.
+
+/**
+ * Effet « Gain … au choix » d'une carte en jeu sans production (Servant, Investor…) : utilisable comme une production
+ * (demande du 2026-10-04). Effet activé seulement (un effet {destroy} détruirait la carte).
+ */
+export function gainEffectOf(catalog: Catalog, s: GameState, id: InstanceId): { effect: string; options: ResourceId[][] } | null {
+  if (!s.zones.play.includes(id) || productionGroups(catalog, s, id).length > 0) return null;
+  for (const { effect, impl } of usableEffects(catalog, s, id)) {
+    if (effect.type !== "activated" || !impl.gains) continue;
+    const options = impl.gains({ catalog, s });
+    if (options.length) return { effect: effect.id, options };
+  }
+  return null;
+}
+
+/**
+ * Ce qu'une carte engagée peut fournir, en groupes « au choix » : sa production, sinon son effet de gain (une icône
+ * par groupe ; « any 2 » = deux groupes de toutes les ressources).
+ */
+export function sourceGroups(catalog: Catalog, s: GameState, id: InstanceId): ProductionGroup[] {
+  const groups = productionGroups(catalog, s, id);
+  if (groups.length) return groups;
+  const gain = gainEffectOf(catalog, s, id);
+  if (!gain) return [];
+  const size = gain.options[0]?.length ?? 0;
+  if (gain.options.every((o) => o.length === 1)) return [{ id: "gain", options: gain.options }];
+  return Array.from({ length: size }, (_, i) => ({ id: `gain${i}`, options: catalog.resources.map((r) => [r]) }));
+}
+
+/** Action qui tire d'une carte engagée ces choix (un indice par groupe) : production, ou effet de gain. */
+function sourceAction(catalog: Catalog, s: GameState, card: InstanceId, choices: number[]): Action | null {
+  if (productionGroups(catalog, s, card).length) return { type: "produce", card, choices };
+  const gain = gainEffectOf(catalog, s, card);
+  if (!gain) return null;
+  const icons = producedIcons(sourceGroups(catalog, s, card), choices);
+  const key = [...icons].sort().join(",");
+  const option = gain.options.findIndex((o) => [...o].sort().join(",") === key);
+  return option < 0 ? null : { type: "useEffect", card, effect: gain.effect, targets: [], option };
+}
 
 /** Ressources dépensées par une action (coût d'amélioration, coût d'un effet), ou null. */
 export function actionCost(catalog: Catalog, s: GameState, a: Action): readonly ResourceId[] | null {
@@ -50,12 +89,12 @@ export function planWithEngaged(
     ...("discard" in action ? action.discard : []),
   ]);
   const candidates = engaged.filter(
-    (id) => s.zones.play.includes(id) && !excluded.has(id) && productionGroups(catalog, s, id).length > 0,
+    (id) => s.zones.play.includes(id) && !excluded.has(id) && sourceGroups(catalog, s, id).length > 0,
   );
   // Export : toutes les cartes engagées qui produisent une ressource du coût produisent (tout est dépensé).
   const impl = action.type === "useEffect" ? usableEffects(catalog, s, action.card).find((e) => e.effect.id === action.effect)?.impl : undefined;
   const all = impl?.useAllEngaged
-    ? candidates.filter((id) => productionGroups(catalog, s, id).some((g) => g.options.some((o) => o.some((r) => cost.includes(r)))))
+    ? candidates.filter((id) => sourceGroups(catalog, s, id).some((g) => g.options.some((o) => o.some((r) => cost.includes(r)))))
     : [];
   // Meilleure production (le moins de ressources perdues) parmi ces groupes de cartes, vérifiée sur le vrai moteur.
   const tryGroups = (groups: readonly (readonly InstanceId[])[]): Action[] | null => {
@@ -103,10 +142,16 @@ function permutations<T>(items: readonly T[]): T[][] {
 function simulate(catalog: Catalog, s: GameState, produce: Action[]): GameState | null {
   let sim: GameState = { ...s, zones: { ...s.zones, play: [...s.zones.play], discard: [...s.zones.discard] }, resources: { ...s.resources } };
   for (const p of produce) {
-    if (p.type !== "produce" || !sim.zones.play.includes(p.card)) return null;
-    const groups = productionGroups(catalog, sim, p.card);
-    if (p.choices.length !== groups.length) return null;
-    const icons = producedIcons(groups, p.choices);
+    if ((p.type !== "produce" && p.type !== "useEffect") || !sim.zones.play.includes(p.card)) return null;
+    let icons: ResourceId[];
+    if (p.type === "produce") {
+      const groups = productionGroups(catalog, sim, p.card);
+      if (p.choices.length !== groups.length) return null;
+      icons = producedIcons(groups, p.choices);
+    } else {
+      icons = gainEffectOf(catalog, sim, p.card)?.options[p.option ?? -1] ?? [];
+      if (!icons.length) return null;
+    }
     const resources = { ...sim.resources };
     for (const r of icons) resources[r] = (resources[r] ?? 0) + 1;
     sim = { ...sim, zones: { ...sim.zones, play: sim.zones.play.filter((id) => id !== p.card), discard: [...sim.zones.discard, p.card] }, resources };
@@ -126,7 +171,10 @@ function producePlans(catalog: Catalog, s: GameState, order: readonly InstanceId
     }
     const sim = simulate(catalog, s, done);
     if (!sim) return;
-    for (const choices of productionChoices(productionGroups(catalog, sim, card))) walk(i + 1, [...done, { type: "produce", card, choices }]);
+    for (const choices of productionChoices(sourceGroups(catalog, sim, card))) {
+      const step = sourceAction(catalog, sim, card, choices);
+      if (step) walk(i + 1, [...done, step]);
+    }
   };
   walk(0, []);
   return out;
@@ -138,7 +186,9 @@ function producePlans(catalog: Catalog, s: GameState, order: readonly InstanceId
  */
 export function candidateActions(catalog: Catalog, s: GameState, card: InstanceId): Action[] {
   const rich: GameState = { ...s, resources: Object.fromEntries(catalog.resources.map((r) => [r, 99])) };
-  return getLegalActions(catalog, rich).filter((a) => "card" in a && a.card === card && a.type !== "produce");
+  // L'effet de gain au choix (Servant…) s'exprime, comme la production, par l'engagement de la carte.
+  const gain = gainEffectOf(catalog, s, card)?.effect;
+  return getLegalActions(catalog, rich).filter((a) => "card" in a && a.card === card && a.type !== "produce" && !(a.type === "useEffect" && a.effect === gain));
 }
 
 /**
@@ -155,7 +205,7 @@ export function paymentCandidates(catalog: Catalog, s: GameState, action: Action
     ...("discard" in action ? action.discard : []),
   ]);
   return s.zones.play.filter(
-    (id) => !excluded.has(id) && productionGroups(catalog, s, id).some((g) => g.options.some((o) => o.some((r) => cost.includes(r)))),
+    (id) => !excluded.has(id) && sourceGroups(catalog, s, id).some((g) => g.options.some((o) => o.some((r) => cost.includes(r)))),
   );
 }
 
@@ -169,7 +219,7 @@ export function engagedPotential(
   const choices: ResourceId[][][] = [];
   for (const id of engaged) {
     if (!s.zones.play.includes(id)) continue;
-    for (const g of productionGroups(catalog, s, id)) {
+    for (const g of sourceGroups(catalog, s, id)) {
       if (g.options.length === 1) for (const r of g.options[0] ?? []) fixed[r] = (fixed[r] ?? 0) + 1;
       else choices.push(g.options);
     }

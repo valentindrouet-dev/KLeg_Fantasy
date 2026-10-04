@@ -194,8 +194,31 @@ const gainProductionOf = (keyword: string): Factory => () =>
     },
   });
 
+/**
+ * Gain au choix sans coût (demande du 2026-10-04 : pas de fenêtre) : un paramètre `option` par gain possible, la
+ * carte s'engage comme une carte de production. Les parties enregistrées (effet puis réponse) se rejouent toujours.
+ */
+function gainChoice(options: (d: Draft) => ResourceId[][], legacy: { ask: Ask; pick: (d: Draft, a: Answer[]) => ResourceId[] }): EffectImpl {
+  return {
+    params: (d) => options(d).map((_, i) => ({ targets: [], option: i })),
+    apply: (d, _card, p) => effectGain(d, p.option !== null ? (options(d)[p.option] ?? []) : legacy.pick(d, p.answers ?? [])),
+    ask: legacy.ask,
+    legacyAsk: true,
+    gains: options,
+  };
+}
+
+/** Multi-ensembles de n ressources (ordre du catalogue). */
+const resourceSets = (d: Draft, n: number): ResourceId[][] => {
+  const rs = RESOURCES(d);
+  const go = (from: number, k: number): ResourceId[][] => (k === 0 ? [[]] : rs.slice(from).flatMap((r, i) => go(from + i, k - 1).map((rest) => [r, ...rest])));
+  return go(0, n);
+};
+
 const gainAnyThen = (n: number, arrow: "rotate" | "flip" | null): Factory => () =>
-  effect({
+  arrow === null
+    ? gainChoice((d) => resourceSets(d, n), { ask: steps(anyResources(n)), pick: (_d, a) => resourcesOf(a[0]) })
+    : effect({
     ask: steps(anyResources(n)),
     run: (d, card, a) => {
       effectGain(d, resourcesOf(a[0]));
@@ -558,9 +581,9 @@ const EXACT: Record<string, Factory> = {
       },
     }),
   "Gain {coin} / {wood} / {stone}.": () =>
-    effect({
+    gainChoice(() => [["coin"], ["wood"], ["stone"]], {
       ask: steps(() => askOption("Quelle ressource ?", ["{coin}", "{wood}", "{stone}"])),
-      run: (d, _card, a) => effectGain(d, [(["coin", "wood", "stone"] as const)[optionOf(a[0])] ?? "coin"]),
+      pick: (_d, a) => [(["coin", "wood", "stone"] as const)[optionOf(a[0])] ?? "coin"],
     }),
   "Gain {coin} per person in play.": () => effect({ run: (d) => effectGain(d, d.s.zones.play.filter((id) => isPerson(d, id)).map(() => "coin")) }),
   "Gain {sword} for each person in play.": () => effect({ run: (d) => effectGain(d, d.s.zones.play.filter((id) => isPerson(d, id)).map(() => "sword")) }),
