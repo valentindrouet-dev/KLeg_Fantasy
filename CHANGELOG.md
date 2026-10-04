@@ -3,6 +3,10 @@
 Chaque mise à jour publiée change de version (`package.json`, affichée dans l'appli en bas de l'écran « Mes royaumes »
 et dans la barre de la partie). Convention : `0.5.0` s'affiche **v0.05** ; un correctif `0.5.1` s'affiche **v0.05.1**.
 
+## v0.53 (4 octobre 2026)
+
+- Carte « rayée » : glisser le doigt horizontalement sur une carte (comme pour la rayer) l'entoure d'un halo rouge, pour dire qu'on n'en a plus l'usage et qu'on peut la détruire ou la purger si besoin. Un second glissé retire le halo. Ça marche partout où la carte est dessinée : en jeu, défausse, inspection, questions des effets (purge comprise), stats. Le halo est gardé avec le royaume et tombe quand la carte est détruite ou purgée.
+
 ## v0.52.2 (4 octobre 2026)
 
 - Défausse (et cartes détruites) : les objectifs sont visibles, comme en jeu. L'étape visée est entourée en doré et la boîte d'amélioration qui y mène est dorée. Les stickers des cartes y sont aussi dessinés.

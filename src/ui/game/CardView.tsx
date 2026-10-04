@@ -3,6 +3,7 @@ import { cardImageUrl } from "../../data/loadCards";
 import type { CardTemplate, Orientation, StageId } from "../../data/schema";
 import { isFullImageFace, printedStage, stageIdAt, type BoxView, type ExhaustedEffect, type StickerPlacement } from "../../engine";
 import type { GoalView } from "./goals";
+import { useGame } from "./store";
 import { boxRects } from "../../data/checkboxes";
 import { costIconRects } from "../../data/upgradeIcons";
 import { effectLines, type TextLine } from "../../data/textLines";
@@ -34,6 +35,8 @@ type Props = {
   onLongPress?: (p: TapPoint) => void;
   /** Objectifs du joueur sur cette carte : moitiés visées et boîte d'amélioration qui y mène, en doré. */
   goal?: GoalView;
+  /** Carte de la partie à laquelle s'applique la marque « rayée » (glissé horizontal, halo rouge). Par défaut `id`. */
+  markId?: string;
   /** Libellé de l'action d'une zone (null : zone sans action). Active la surbrillance des zones. */
   zoneLabel?: (zone: ZoneKind) => string | null;
   /** Animation de changement d'orientation : rotation 180° ou retournement, vers `to`. */
@@ -314,12 +317,17 @@ function Face({
 export function CardView(props: Props) {
   const { id, template, orientation, label, width, selected, engaged, targetable, dimBottom, flagged, onTwoFinger, dimmed, badge, onTap, onLongPress, zoneLabel, anim, stickers, half, note, exhausted, shake, picked, boxes, pickBoxes, crossedCosts, pickCosts, goal } =
     props;
+  // Carte rayée (demande du 2026-10-04) : glisser le doigt horizontalement sur la carte pose ou retire un halo rouge.
+  const markId = props.markId ?? id;
+  const unwanted = useGame((g) => (markId ? (g.kingdom?.unwanted ?? []).includes(markId) : false));
+  const toggleUnwanted = useGame((g) => g.toggleUnwanted);
+  const onSwipe = markId && !anim ? () => toggleUnwanted(markId) : undefined;
   // Demi-carte : les positions touchées sont ramenées à la carte entière (zones cliquables inchangées).
   const yScale = half ? 0.5 : 1;
-  const press = usePress(onTap ? (p) => onTap({ ...p, y: p.y * yScale }) : () => {}, onLongPress ? (p) => onLongPress({ ...p, y: p.y * yScale }) : undefined, onTwoFinger);
+  const press = usePress(onTap ? (p) => onTap({ ...p, y: p.y * yScale }) : () => {}, onLongPress ? (p) => onLongPress({ ...p, y: p.y * yScale }) : undefined, onTwoFinger, onSwipe);
   const [hover, setHover] = useState<Hover | null>(null);
   const [clicked, setClicked] = useState(false); // pas de bulle après un clic, jusqu'à la sortie du pointeur
-  const interactive = Boolean(onTap || onLongPress) && !anim;
+  const interactive = Boolean(onTap || onLongPress || onSwipe) && !anim;
 
   const action = hover && zoneLabel ? zoneLabel(hover.zone) : null;
   const fullImage = isFullImageFace(template, orientation.side);
@@ -342,6 +350,8 @@ export function CardView(props: Props) {
     half && !anim && styles.half,
     shake && !anim && styles.shake,
     picked && styles.picked,
+    onSwipe && styles.swipeable,
+    unwanted && styles.unwanted,
   ].filter(Boolean);
 
   return (

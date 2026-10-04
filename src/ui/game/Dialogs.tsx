@@ -97,6 +97,7 @@ export function Inspector({ catalog, state, card, onClose }: { catalog: Catalog;
     <Dialog title={cardName(catalog, state, card)} onClose={onClose} wide>
       <div className={styles.inspector}>
         <CardView
+          markId={card}
           template={t}
           orientation={c.orientation}
           label="Face visible"
@@ -111,6 +112,7 @@ export function Inspector({ catalog, state, card, onClose }: { catalog: Catalog;
         />
         {!single && (
           <CardView
+            markId={card}
             template={t}
             orientation={other}
             label="Autre face"
@@ -215,9 +217,9 @@ export function DecisionDialog({
           return (
             <figure key={id} className={styles.choice}>
               <div className={styles.bothSides}>
-                <CardView template={t} orientation={{ side: "front", rotation: 0 }} label="Recto" width={width} onLongPress={() => onInspect(id)} exhausted={exhaustedOf(catalog, state, id)}
+                <CardView markId={id} template={t} orientation={{ side: "front", rotation: 0 }} label="Recto" width={width} onLongPress={() => onInspect(id)} exhausted={exhaustedOf(catalog, state, id)}
               boxes={(stage) => boxViews(catalog, state, id, stage)} />
-                <CardView template={t} orientation={{ side: "back", rotation: 0 }} label="Verso" width={width} onLongPress={() => onInspect(id)} exhausted={exhaustedOf(catalog, state, id)}
+                <CardView markId={id} template={t} orientation={{ side: "back", rotation: 0 }} label="Verso" width={width} onLongPress={() => onInspect(id)} exhausted={exhaustedOf(catalog, state, id)}
               boxes={(stage) => boxViews(catalog, state, id, stage)} />
               </div>
               <button className="btn btn-primary" disabled={picked} onClick={() => onAction({ type: "chooseDiscovery", card: id })}>
@@ -283,6 +285,7 @@ export function CardListDialog({
           {[...shown].reverse().map((id) => (
             <CardView
               key={id}
+              markId={id}
               template={template(catalog, instance(state, id).templateId)}
               orientation={instance(state, id).orientation}
               label={cardName(catalog, state, id)}
@@ -342,6 +345,7 @@ function NewCardsDialog({
               {(["front", "back"] as const).map((side) => (
                 <figure key={side} className={styles.choice}>
                   <CardView
+                    markId={id}
                     template={tOf(id)}
                     orientation={{ side, rotation: 0 }}
                     label={side === "front" ? "Recto" : "Verso"}
@@ -473,6 +477,7 @@ function ChoiceDialog({ catalog, state, onAction, onInspect }: { catalog: Catalo
             return (
               <CardView
                 key={id}
+                markId={id}
                 template={template(catalog, instance(state, id).templateId)}
                 orientation={instance(state, id).orientation}
                 label={cardName(catalog, state, id)}
@@ -724,6 +729,7 @@ function FameCards({ catalog, state, onInspect }: { catalog: Catalog; state: Gam
           {lines.map((l) => (
             <CardView
               key={l.card}
+              markId={l.card}
               template={template(catalog, instance(state, l.card).templateId)}
               orientation={instance(state, l.card).orientation}
               label={`${l.name} : ${sign(l.fame)} gloire`}

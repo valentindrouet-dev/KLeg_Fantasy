@@ -23,6 +23,8 @@ export type Kingdom = {
   state: GameState;
   /** Objectifs du joueur (demande du 2026-10-04) : étapes de cartes à atteindre, entourées en doré. */
   goals?: Goal[];
+  /** Cartes « rayées » (halo rouge) : le joueur n'en a plus l'usage et peut les détruire ou purger (demande du 2026-10-04). */
+  unwanted?: string[];
   /** Temps de jeu (ms), compté seulement quand l'appli est à l'écran (demande du 2026-10-04). */
   playMs?: number;
 };

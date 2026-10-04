@@ -40,6 +40,8 @@ type GameStore = {
   toggleFlag: (card: InstanceId) => void;
   /** Marque (ou retire) une étape de carte comme objectif, gardé avec le royaume. */
   toggleGoal: (card: InstanceId, stage: StageId) => void;
+  /** Raye (ou dé-raye) une carte : halo rouge, carte dont le joueur n'a plus l'usage. */
+  toggleUnwanted: (card: InstanceId) => void;
   /** Ajoute du temps de jeu au royaume (chronomètre), sauvegardé. */
   addPlayTime: (ms: number) => void;
   /** Reset officiel (avant la carte 23) : le royaume repart des cartes 1 à 10, nouveau mélange. */
@@ -56,6 +58,8 @@ function persist(catalog: Catalog, kingdom: Kingdom, session: Session): Kingdom 
     ...kingdom,
     // Objectif atteint (carte construite jusqu'à cette étape) ou carte sortie du royaume : il tombe.
     ...(kingdom.goals ? { goals: kingdom.goals.filter((g) => goalOpen(catalog, state, g)) } : {}),
+    // Carte rayée détruite, purgée ou rendue à la boîte : la marque tombe.
+    ...(kingdom.unwanted ? { unwanted: kingdom.unwanted.filter((id) => inKingdom(state, id)) } : {}),
     updatedAt: Date.now(),
     record: session.record,
     state,
@@ -64,6 +68,9 @@ function persist(catalog: Catalog, kingdom: Kingdom, session: Session): Kingdom 
   void saveKingdom(next); // autosave (spec 6.2)
   return next;
 }
+
+const inKingdom = (s: GameState, id: InstanceId): boolean =>
+  [s.zones.deck, s.zones.play, s.zones.discard, s.zones.permanent, s.zones.blocked].some((z) => z.includes(id));
 
 /** Les engagements tombent quand la carte quitte le jeu ou qu'un nouveau tour commence. */
 function keepEngaged(engaged: InstanceId[], before: GameState, after: GameState): InstanceId[] {
@@ -114,6 +121,15 @@ export const useGame = create<GameStore>((set, get) => ({
     const goals = kingdom.goals ?? [];
     const has = goals.some((g) => g.card === card && g.stage === stage);
     const next: Kingdom = { ...kingdom, goals: has ? goals.filter((g) => !(g.card === card && g.stage === stage)) : [...goals, { card, stage }] };
+    void saveKingdom(next);
+    set({ kingdom: next });
+  },
+
+  toggleUnwanted: (card) => {
+    const { kingdom } = get();
+    if (!kingdom) return;
+    const list = kingdom.unwanted ?? [];
+    const next: Kingdom = { ...kingdom, unwanted: list.includes(card) ? list.filter((c) => c !== card) : [...list, card] };
     void saveKingdom(next);
     set({ kingdom: next });
   },

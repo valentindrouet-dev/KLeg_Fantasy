@@ -1518,3 +1518,16 @@
   white-space: nowrap;
   cursor: pointer;
 }
+
+/* Carte rayée (glissé horizontal) : halo rouge, le joueur n'en a plus l'usage (demande du 2026-10-04) */
+.card.unwanted {
+  outline: 4px solid #d32f2f;
+  outline-offset: 2px;
+  box-shadow: 0 0 14px 4px rgb(211 47 47 / 0.75);
+}
+
+/* Le glissé horizontal reste au jeu : seul le défilement vertical est laissé au navigateur */
+.card.swipeable,
+.play .card.swipeable {
+  touch-action: pan-y;
+}
