@@ -72,7 +72,8 @@ export type PendingDecision =
 
 /** Question posée au joueur au cours d'un effet. */
 export type ChoiceRequest =
-  | { type: "cards"; prompt: string; options: InstanceId[]; min: number; max: number }
+  // none : la réponse vide est aussi permise (refuser l'effet), avec ce libellé de bouton.
+  | { type: "cards"; prompt: string; options: InstanceId[]; min: number; max: number; none?: string }
   | { type: "resources"; prompt: string; options: ResourceId[]; count: number } // `count` ressources, répétitions permises
   // boxes : cases de la carte source qu'on peut toucher pour répondre (réponse { box }), en plus des options.
   // boxes : cases de la carte source qu'on peut toucher pour répondre (réponse { box }), en plus des options ;
@@ -210,6 +211,11 @@ export type TriggerImpl = {
   decline?: (d: Draft, card: InstanceId, ctx: TriggerCtx) => void;
   /** Question posée pour un effet optionnel (sinon le texte imprimé de l'effet). */
   prompt?: string;
+  /**
+   * Effet optionnel sans question Oui/Non : sa première question (cartes, avec `none`) se pose tout de suite, et la
+   * réponse vide refuse l'effet. Les parties enregistrées avant répondaient d'abord Oui/Non : toujours accepté.
+   */
+  direct?: boolean;
 };
 
 /** Instructions d'un parchemin, appliquées après lecture, avant sa destruction. */

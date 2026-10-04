@@ -36,6 +36,10 @@ Routage par hash (`src/ui/App.tsx`) : `#/` Mes royaumes, `#/partie/<id>` partie,
 - **Numéro d'étape** (1 à 4) en bas à gauche de chaque moitié de carte.
 - **Effet à cible** : toucher l'effet, puis la carte visée (cartes possibles en surbrillance, les autres grisées) ;
   cible dans la défausse : choix dans la défausse. Échap annule.
+- **« Stay in play »** (Shrine, Sanctuary, Hoarding…, demande du 2026-10-04) : pas de question Oui/Non. En fin de tour,
+  les cartes qu'on peut garder sont entourées ; on les touche (coche verte). Le compte atteint, le choix part ; pour
+  « up to N », « Valider (k) » en bas. Rien de choisi : le bouton du bas « Je ne veux rien garder » refuse l'effet
+  (moteur : `TriggerImpl.direct`, question de cartes avec `none`).
 - **Fin de tour animée** (`useCardMotion.ts`) : cartes vers la défausse, nouvelles cartes depuis la pioche.
 - **Bouton FR** : active ou coupe les infobulles en français (mémorisé dans le navigateur).
 - **Marque** : toucher une carte en jeu avec deux doigts (Alt + clic sur ordinateur) pose un contour bleu ; il tombe quand la carte quitte le jeu.

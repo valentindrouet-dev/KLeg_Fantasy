@@ -137,14 +137,41 @@ describe("effets des cartes", async () => {
   it("Shrine : se défausser pour garder une autre carte en jeu", () => {
     let s = arrange(catalog, { play: [82, 1], deck: [2, 3, 4, 5] });
     s = run(catalog, s, { type: "pass" });
-    expect(pending(s)?.request).toMatchObject({ type: "option", labels: ["Oui", "Non"] });
-    s = run(catalog, s, choose({ option: 0 }));
+    // Pas de Oui/Non : on touche directement la carte à garder, ou le bouton qui refuse.
+    expect(pending(s)?.request).toEqual({
+      type: "cards",
+      prompt: "Shrine se défausse : 1 carte à garder en jeu",
+      options: [fk(1)],
+      min: 1,
+      max: 1,
+      none: "Je ne veux rien garder",
+    });
+    s = run(catalog, s, choose({ cards: [fk(1)] }));
     expect(s.zones.play).toContain(fk(1));
     expect(s.zones.discard).toContain(fk(82));
   });
 
-  it("un effet optionnel refusé ne fait rien", () => {
+  it("Sanctuary : jusqu'à 2 cartes gardées, une seule suffit", () => {
+    let s = arrange(catalog, { play: [82, 1, 3], deck: [2, 4, 5, 6], orientation: { 82: { side: "front", rotation: 180 } } });
+    s = run(catalog, s, { type: "pass" });
+    expect(pending(s)?.request).toMatchObject({ type: "cards", prompt: "Sanctuary se défausse : jusqu'à 2 cartes à garder en jeu", min: 1, max: 2 });
+    s = run(catalog, s, choose({ cards: [fk(3)] }));
+    expect(s.zones.play).toContain(fk(3));
+    expect(s.zones.discard).toEqual(expect.arrayContaining([fk(1), fk(82)]));
+  });
+
+  it("un effet « stay in play » refusé (réponse vide) ne fait rien", () => {
     let s = arrange(catalog, { play: [82, 1], deck: [2, 3, 4, 5] });
+    s = run(catalog, s, { type: "pass" }, choose({ cards: [] }));
+    expect(s.zones.discard).toEqual(expect.arrayContaining([fk(1), fk(82)]));
+  });
+
+  it("parties enregistrées avec la question Oui/Non : toujours rejouées", () => {
+    let s = arrange(catalog, { play: [82, 1], deck: [2, 3, 4, 5] });
+    s = run(catalog, s, { type: "pass" }, choose({ option: 0 }), choose({ cards: [fk(1)] }));
+    expect(s.zones.play).toContain(fk(1));
+    expect(s.zones.discard).toContain(fk(82));
+    s = arrange(catalog, { play: [82, 1], deck: [2, 3, 4, 5] });
     s = run(catalog, s, { type: "pass" }, choose({ option: 1 }));
     expect(s.zones.discard).toEqual(expect.arrayContaining([fk(1), fk(82)]));
   });

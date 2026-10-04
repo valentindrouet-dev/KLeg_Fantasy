@@ -1,6 +1,6 @@
-import { askCards, askOption, cardsOf, optionOf } from "../choice";
-import { discardFromDeck } from "../flow";
-import { discardCards, effectGain, friendly, isPerson, keepInPlay, markBox, payD, trackComplete, unmarkedBoxes } from "../ops";
+import { askCards, askCardsOrNone, askOption, cardsOf, optionOf } from "../choice";
+import { discardFromDeck, staysInPlay } from "../flow";
+import { discardCards, effectGain, friendly, isEnemy, isPerson, keepInPlay, markBox, payD, trackComplete, unmarkedBoxes } from "../ops";
 import { activeStage, cardName, instance, log } from "../state";
 import type { Answer, ChoiceRequest, Draft, EffectImpl, InstanceId, TriggerCtx, TriggerImpl } from "../types";
 import { NO_PARAMS } from "./registry";
@@ -18,6 +18,8 @@ const T = {
 } as const;
 
 const isPermanentHere = (d: Draft, card: InstanceId): boolean => d.s.zones.permanent.includes(card);
+/** Cartes que Hoarding peut garder : ni ennemis, ni cartes qui restent déjà en jeu (comme les autres « stay in play »). */
+const hoardable = (d: Draft): InstanceId[] => d.s.zones.play.filter((id) => !isEnemy(d, id) && !staysInPlay(d, id));
 const turnStamp = (d: Draft): number => d.s.round * 1000 + d.s.turn;
 
 /** Personnes arrivées en jeu dans ce déclenchement. */
@@ -95,9 +97,9 @@ export const EXPANSION_TRIGGERS: Record<string, () => TriggerImpl> = {
   [T.hoarding]: () => ({
     timing: "endTurn",
     optional: true,
-    prompt: "Hoarding : garder 1 carte en jeu ?",
-    when: (d, card) => isPermanentHere(d, card) && d.s.zones.play.length > 0,
-    ask: (d, _card, a) => (a.length === 0 ? askCards("Carte qui reste en jeu", [...d.s.zones.play], 1) : null),
+    direct: true,
+    when: (d, card) => isPermanentHere(d, card) && hoardable(d).length > 0,
+    ask: (d, _card, a) => (a.length === 0 ? askCardsOrNone("Hoarding : 1 carte à garder en jeu", hoardable(d), 1, 1, "Je ne veux rien garder") : null),
     run: (d, _card, a) => keepInPlay(d, cardsOf(a[0])),
   }),
   // Uprising : chaque personne jouée alors qu'une personne est déjà en jeu coche 1 case.

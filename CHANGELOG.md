@@ -3,6 +3,10 @@
 Chaque mise à jour publiée change de version (`package.json`, affichée dans l'appli en bas de l'écran « Mes royaumes »
 et dans la barre de la partie). Convention : `0.5.0` s'affiche **v0.05** ; un correctif `0.5.1` s'affiche **v0.05.1**.
 
+## v0.49 (4 octobre 2026)
+
+- Effets « stay in play » (Shrine, Sanctuary, Hoarding…) : plus de fenêtre Oui/Non. En fin de tour, les cartes qu'on peut garder sont entourées sur le plateau ; on touche celles à garder. Pour « up to N », « Valider » en bas. Un bouton en bas, « Je ne veux rien garder », refuse l'effet. Hoarding ne propose plus les ennemis ni les cartes qui restent déjà en jeu.
+
 ## v0.48 (4 octobre 2026)
 
 - Objectifs : dans l'inspection d'une carte (appui long) ou dans la fenêtre des nouvelles cartes, maintenir appuyée une moitié de carte la marque comme objectif. Elle est entourée en doré partout où la carte est dessinée, et la boîte d'amélioration qui y mène (premier pas du chemin) est dorée aussi. L'objectif tombe quand la carte atteint cette étape (ou quitte le royaume) ; un nouvel appui long le retire. Gardé avec le royaume.

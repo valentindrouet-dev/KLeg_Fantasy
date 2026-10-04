@@ -1,5 +1,5 @@
 import type { CardTemplate, Checkbox, ResourceId, StageId } from "../../data/schema";
-import { askBox, askCards, askOption, askResources, boxOf, cardsOf, optionOf, resourcesOf } from "../choice";
+import { askBox, askCards, askCardsOrNone, askOption, askResources, boxOf, cardsOf, optionOf, resourcesOf } from "../choice";
 import { boxCardsBySerial, discardFromDeck, discoverNormally, discoverSerials, offerDiscovery, playCard, staysInPlay } from "../flow";
 import {
   addResourceStickerOf,
@@ -990,11 +990,15 @@ function stayTrigger(text: string): TriggerImpl | null {
   // proposer ne servirait à rien et prêtait à confusion (demande du 2026-10-03).
   const options = (d: Draft, self: InstanceId) =>
     d.s.zones.play.filter((id) => (includeSelf || id !== self) && (!onlyPersons || isPerson(d, id)) && !isEnemy(d, id) && !staysInPlay(d, id));
+  // Pas de question Oui/Non : les cartes possibles sont entourées sur le plateau, un bouton refuse (demande du 2026-10-04).
+  const what = `${upTo ? "jusqu'à " : ""}${n} ${onlyPersons ? "personne" : "carte"}${n > 1 ? "s" : ""} à garder en jeu`;
+  const prompt = (d: Draft, card: InstanceId) => `${activeStage(d.catalog, d.s, card)?.name ?? ""}${discardSelf ? " se défausse" : ""} : ${what}`;
   return trigger({
     timing: "endTurn",
     optional: true,
+    direct: true,
     when: (d, card) => d.s.zones.play.includes(card) && options(d, card).length > 0,
-    ask: steps((d, card) => askCards(`Carte(s) qui restent en jeu`, options(d, card), upTo ? 1 : n, n)),
+    ask: steps((d, card) => askCardsOrNone(prompt(d, card), options(d, card), upTo ? 1 : n, n, "Je ne veux rien garder")),
     run: (d, card, a) => {
       keepInPlay(d, cardsOf(a[0]));
       if (discardSelf) {

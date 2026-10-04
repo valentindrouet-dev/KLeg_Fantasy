@@ -10,6 +10,7 @@ export function isValidAnswer(req: ChoiceRequest, a: Answer): boolean {
     case "cards": {
       if (!("cards" in a)) return false;
       const unique = new Set(a.cards);
+      if (a.cards.length === 0 && req.none !== undefined) return true;
       return unique.size === a.cards.length && a.cards.length >= req.min && a.cards.length <= req.max && a.cards.every((c) => req.options.includes(c));
     }
     case "resources":
@@ -32,7 +33,7 @@ const MAX_ENUMERATED = 400;
 export function enumerateAnswers(req: ChoiceRequest): Answer[] {
   switch (req.type) {
     case "cards": {
-      const out: Answer[] = [];
+      const out: Answer[] = req.none !== undefined && req.min > 0 ? [{ cards: [] }] : [];
       for (let k = req.min; k <= Math.min(req.max, req.options.length); k++) {
         for (const pick of combinations(req.options, k)) {
           out.push({ cards: pick });
@@ -52,7 +53,7 @@ export function enumerateAnswers(req: ChoiceRequest): Answer[] {
 export function forcedAnswer(req: ChoiceRequest): Answer | null {
   switch (req.type) {
     case "cards":
-      return req.min === req.max && req.options.length === req.min ? { cards: [...req.options] } : null;
+      return req.none === undefined && req.min === req.max && req.options.length === req.min ? { cards: [...req.options] } : null;
     case "resources":
       return req.options.length === 1 ? { resources: Array.from({ length: req.count }, () => req.options[0] ?? "") } : null;
     case "option":
@@ -81,6 +82,16 @@ export const askCards = (prompt: string, options: InstanceId[], min: number, max
   options,
   min: Math.min(min, options.length),
   max: Math.min(max, options.length),
+});
+
+/** Choix de cartes qu'on peut aussi refuser (réponse vide, bouton `none`). */
+export const askCardsOrNone = (prompt: string, options: InstanceId[], min: number, max: number, none: string): ChoiceRequest => ({
+  type: "cards",
+  prompt,
+  options,
+  min: Math.min(min, options.length),
+  max: Math.min(max, options.length),
+  none,
 });
 
 export const askResources = (prompt: string, options: readonly ResourceId[], count: number): ChoiceRequest => ({

@@ -133,7 +133,14 @@ export function isLegal(catalog: Catalog, s: GameState, a: Action): boolean {
   // les parties enregistrées avec cette version (annulation, import).
   if (a.type === "manual") return isManualOpValid(catalog, s, a.op);
   // Réponse à une question : vérifiée contre la question (les réponses ne sont pas toutes énumérées).
-  if (a.type === "choose") return s.phase === "playing" && s.pending?.kind === "choice" && isValidAnswer(s.pending.request, a.answer);
+  if (a.type === "choose") {
+    const p = s.pending;
+    if (s.phase !== "playing" || p?.kind !== "choice") return false;
+    if (isValidAnswer(p.request, a.answer)) return true;
+    // Parties enregistrées quand les effets « stay in play » demandaient d'abord Oui/Non.
+    const legacyConfirm = p.mode === "trigger" && p.answers.length === 0 && catalog.triggers.get(p.script)?.direct === true;
+    return legacyConfirm && "option" in a.answer && (a.answer.option === 0 || a.answer.option === 1);
+  }
   if (a.type === "acknowledgeDiscoveries" && a.sides) {
     const p = s.pending;
     return (

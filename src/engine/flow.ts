@@ -111,7 +111,7 @@ function startTrigger(d: Draft, card: InstanceId, script: string, ctx: TriggerCt
   const t = d.catalog.triggers.get(script);
   if (!t) return;
   if (t.when && !t.when(d, card, ctx)) return;
-  if (t.optional) {
+  if (t.optional && !t.direct) {
     d.s.pending = { kind: "choice", source: card, script, mode: "trigger", effect: "", answers: [], request: askOption(t.prompt ?? effectText(d, script), ["Oui", "Non"]), cancellable: false, ctx };
     return;
   }
@@ -123,7 +123,9 @@ export function continueTrigger(d: Draft, card: InstanceId, script: string, answ
   const t = d.catalog.triggers.get(script);
   if (!t) return;
   let own = [...answers];
-  if (t.optional) {
+  // Effet direct : pas de Oui/Non, sauf dans une partie enregistrée avant (sa première réponse est une option).
+  const confirm = t.optional && (!t.direct || (answers[0] !== undefined && "option" in answers[0]));
+  if (confirm) {
     const first = answers[0];
     if (!first) return startTrigger(d, card, script, ctx);
     if ("option" in first && first.option !== 0) {
@@ -133,11 +135,17 @@ export function continueTrigger(d: Draft, card: InstanceId, script: string, answ
     }
     own = answers.slice(1);
   }
-  const fixed = t.optional ? answers.slice(0, 1) : [];
+  const fixed = confirm ? answers.slice(0, 1) : [];
   const request = t.ask ? nextQuestion((a) => t.ask?.(d, card, a, ctx) ?? null, own) : null;
   answers = [...fixed, ...own];
   if (request) {
     d.s.pending = { kind: "choice", source: card, script, mode: "trigger", effect: "", answers, request, cancellable: false, ctx };
+    return;
+  }
+  const first = own[0];
+  if (t.optional && t.direct && !confirm && first && "cards" in first && first.cards.length === 0) {
+    log(d.s, `${cardName(d.catalog, d.s, card)} : effet non utilisé`);
+    t.decline?.(d, card, ctx);
     return;
   }
   log(d.s, `${cardName(d.catalog, d.s, card)} : ${effectText(d, script)}`);

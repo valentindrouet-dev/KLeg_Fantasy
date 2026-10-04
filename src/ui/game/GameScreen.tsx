@@ -194,13 +194,15 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
   useCardMotion(catalog, state, playEl);
   const playing = state?.phase === "playing" && !state.pending && !anim;
   // Choix de cartes en jeu demandé par un effet (« Destroy 1 person… ») : on touche les cartes sur le plateau, sans
-  // fenêtre (demande du 2026-10-03). Seulement quand le nombre est imposé ; sinon la fenêtre de choix reste.
+  // fenêtre (demande du 2026-10-03). Quand le nombre est imposé, ou qu'on peut refuser (« stay in play » : bouton en
+  // bas, demande du 2026-10-04) ; sinon la fenêtre de choix reste.
   const boardChoice = useMemo(() => {
     const p = state?.pending;
     if (!state || anim || p?.kind !== "choice" || p.request.type !== "cards") return null;
     const r = p.request;
     const onBoard = r.options.every((id) => state.zones.play.includes(id) || state.zones.permanent.includes(id));
-    return onBoard && r.min === r.max && r.min >= 1 ? { options: new Set(r.options), count: r.min, cancellable: p.cancellable, source: p.source } : null;
+    if (!onBoard || r.min < 1 || (r.min !== r.max && r.none === undefined)) return null;
+    return { options: new Set(r.options), min: r.min, count: r.max, none: r.none ?? null, cancellable: p.cancellable, source: p.source };
   }, [state, anim]);
   const [picked, setPicked] = useState<InstanceId[]>([]);
   useEffect(() => setPicked([]), [state?.pending]);
@@ -1048,12 +1050,35 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
       <aside className={styles.discardSlot}>{discard}</aside>
 
       <div className={styles.turnButtons}>
-        <button className={styles.turnBtn} disabled={!playing || (!advance && advanceBlockers.length === 0)} onClick={tryAdvance} title="Avancer (A)">
-          <AdvanceIcon /> Avancer
-        </button>
-        <button className={`${styles.turnBtn} ${styles.turnBtnPrimary}`} disabled={!playing || !pass} onClick={() => pass && run([pass])} title="Passer (P)">
-          Passer <PassIcon />
-        </button>
+        {boardChoice?.none != null ? (
+          // Choix qu'on peut refuser (« stay in play ») : le refus, ou la validation quand une partie est choisie.
+          picked.length === 0 ? (
+            <button className={styles.turnBtn} onClick={() => run([{ type: "choose", answer: { cards: [] } }])}>
+              {boardChoice.none}
+            </button>
+          ) : (
+            <button
+              className={`${styles.turnBtn} ${styles.turnBtnPrimary}`}
+              disabled={picked.length < boardChoice.min}
+              onClick={() => {
+                const cards = picked;
+                setPicked([]);
+                run([{ type: "choose", answer: { cards } }]);
+              }}
+            >
+              Valider ({picked.length})
+            </button>
+          )
+        ) : (
+          <>
+            <button className={styles.turnBtn} disabled={!playing || (!advance && advanceBlockers.length === 0)} onClick={tryAdvance} title="Avancer (A)">
+              <AdvanceIcon /> Avancer
+            </button>
+            <button className={`${styles.turnBtn} ${styles.turnBtnPrimary}`} disabled={!playing || !pass} onClick={() => pass && run([pass])} title="Passer (P)">
+              Passer <PassIcon />
+            </button>
+          </>
+        )}
       </div>
 
 
