@@ -3,6 +3,10 @@
 Chaque mise à jour publiée change de version (`package.json`, affichée dans l'appli en bas de l'écran « Mes royaumes »
 et dans la barre de la partie). Convention : `0.5.0` s'affiche **v0.05** ; un correctif `0.5.1` s'affiche **v0.05.1**.
 
+## v0.53.2 (4 octobre 2026)
+
+- Demi-cartes « stays in play » : en colonnes de deux seulement s'il y a un ennemi en jeu, ou si elles sont trop nombreuses pour tenir sur une ligne sans rapetisser les cartes. Sinon elles restent sur une ligne, comme avant.
+
 ## v0.53.1 (4 octobre 2026)
 
 - Zone de jeu : les demi-cartes « stays in play » se rangent par colonnes de deux, l'une sur l'autre, à la hauteur d'une carte entière. À côté d'un ennemi, elles tiennent sur la même ligne au lieu de passer à la ligne ; une demi-carte seule est centrée sur cette hauteur. Les autres cartes restent dessous.

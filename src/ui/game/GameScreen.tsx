@@ -195,43 +195,55 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
     () => (state ? playLayout(catalog, state, state.zones.play, sortMode) : { enemies: [], stays: [], others: [] }),
     [catalog, state, sortMode],
   );
-  // Emplacements de la zone de jeu : une carte, ou une colonne de deux demi-cartes « stays in play » (demande du
+  // Emplacements de la zone de jeu : une carte, ou une colonne de deux demi-cartes « stays in play » (demandes du
   // 2026-10-04 : deux demi-cartes l'une sur l'autre ont à peu près la taille d'une carte ennemie, à côté de laquelle
-  // elles se rangent). Une carte « stays in play » qui en bloque d'autres garde sa propre colonne.
-  const items = useMemo((): InstanceId[][] => {
-    const cols: InstanceId[][] = [];
-    let open: InstanceId[] | null = null;
-    for (const id of layout.stays) {
-      const alone = (state?.blocks?.[id]?.length ?? 0) > 0 || !(state && showsTopHalfOnly(catalog, state, id));
-      if (alone) {
-        cols.push([id]);
-        continue;
-      }
-      if (open && open.length < 2) open.push(id);
-      else {
-        open = [id];
-        cols.push(open);
-      }
-    }
-    return [...layout.enemies.map((id) => [id]), ...cols, ...layout.others.map((id) => [id])];
-  }, [layout, state, catalog]);
-  const topCount = items.length - layout.others.length;
-  const spacerAt = layout.enemies.length > 0 && layout.stays.length > 0 ? layout.enemies.length : -1;
+  // elles se rangent). En colonnes seulement s'il y a un ennemi, ou si elles sont trop nombreuses pour une ligne (les
+  // colonnes donnent alors de plus grandes cartes) ; sinon sur une ligne, comme avant. Une carte « stays in play » qui
+  // en bloque d'autres garde sa propre colonne.
   const [fitRef, area] = useFitArea();
-  const { cardWidth, enemyRow } = useMemo(() => {
+  const { items, cardWidth, enemyRow } = useMemo(() => {
+    const build = (pair: boolean): InstanceId[][] => {
+      const cols: InstanceId[][] = [];
+      let open: InstanceId[] | null = null;
+      for (const id of layout.stays) {
+        const alone = !pair || (state?.blocks?.[id]?.length ?? 0) > 0 || !(state && showsTopHalfOnly(catalog, state, id));
+        if (alone) {
+          cols.push([id]);
+          continue;
+        }
+        if (open && open.length < 2) open.push(id);
+        else {
+          open = [id];
+          cols.push(open);
+        }
+      }
+      return [...layout.enemies.map((id) => [id]), ...cols, ...layout.others.map((id) => [id])];
+    };
     const height = (id: InstanceId) => (state && showsTopHalfOnly(catalog, state, id) ? 0.5 : 1) + BLOCKED_PEEK * (state?.blocks?.[id]?.length ?? 0);
-    const slots = (withBreak: boolean): Slot[] =>
-      items.map((ids, i) => ({
-        // Deux demi-cartes empilées : une carte, plus l'écart entre elles.
-        h: ids.length > 1 ? 1 + STAY_COLUMN_GAP_SHARE : height(ids[0] ?? ""),
-        breakBefore: withBreak && i === topCount,
-        space: i === spacerAt ? TOP_SPACER : 0,
-      }));
-    const flat = cardWidthFor(area, slots(false), zoom);
-    if (topCount === 0 || topCount === items.length) return { cardWidth: flat, enemyRow: false };
-    const split = cardWidthFor(area, slots(true), zoom);
-    return split >= 0.75 * flat ? { cardWidth: split, enemyRow: true } : { cardWidth: flat, enemyRow: false };
-  }, [items, topCount, spacerAt, state, catalog, area, zoom]);
+    const spacer = layout.enemies.length > 0 && layout.stays.length > 0 ? layout.enemies.length : -1;
+    const fit = (its: InstanceId[][]) => {
+      const top = its.length - layout.others.length;
+      const slots = (withBreak: boolean): Slot[] =>
+        its.map((ids, i) => ({
+          // Deux demi-cartes empilées : une carte, plus l'écart entre elles.
+          h: ids.length > 1 ? 1 + STAY_COLUMN_GAP_SHARE : height(ids[0] ?? ""),
+          breakBefore: withBreak && i === top,
+          space: i === spacer ? TOP_SPACER : 0,
+        }));
+      const flat = cardWidthFor(area, slots(false), zoom);
+      if (top === 0 || top === its.length) return { items: its, cardWidth: flat, enemyRow: false };
+      const split = cardWidthFor(area, slots(true), zoom);
+      return split >= 0.75 * flat ? { items: its, cardWidth: split, enemyRow: true } : { items: its, cardWidth: flat, enemyRow: false };
+    };
+    const line = fit(build(false));
+    if (layout.stays.length < 2) return line;
+    const paired = fit(build(true));
+    return layout.enemies.length > 0 || paired.cardWidth > line.cardWidth * 1.02 ? paired : line;
+  }, [layout, state, catalog, area, zoom]);
+  const topCount = items.length - layout.others.length;
+  /** Demi-cartes rangées en colonnes (ennemi présent, ou trop de cartes pour une ligne). */
+  const stayColumns = layout.enemies.length > 0 || items.some((ids) => ids.length > 1);
+  const spacerAt = layout.enemies.length > 0 && layout.stays.length > 0 ? layout.enemies.length : -1;
   useCardMotion(catalog, state, playEl);
   const playing = state?.phase === "playing" && !state.pending && !anim;
   // Choix de cartes en jeu demandé par un effet (« Destroy 1 person… ») : on touche les cartes sur le plateau, sans
@@ -1091,7 +1103,7 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
             ) : null;
           // Demi-cartes « stays in play » : en colonne, centrées sur la hauteur d'une carte entière.
           const item =
-            i >= layout.enemies.length && i < topCount ? (
+            stayColumns && i >= layout.enemies.length && i < topCount ? (
               <div key={`col-${ids[0]}`} className={styles.stayColumn} style={{ minHeight: cardWidth ? cardWidth / CARD_ASPECT : undefined, gap: STAY_COLUMN_GAP }}>
                 {ids.map(one)}
               </div>
