@@ -3,6 +3,10 @@
 Chaque mise à jour publiée change de version (`package.json`, affichée dans l'appli en bas de l'écran « Mes royaumes »
 et dans la barre de la partie). Convention : `0.5.0` s'affiche **v0.05** ; un correctif `0.5.1` s'affiche **v0.05.1**.
 
+## v0.46 (4 octobre 2026)
+
+- Payer une amélioration ou un effet en touchant des cartes : chaque carte choisie porte la coche verte (et la carte visée, pour le Priest), sans être grisée ; la toucher à nouveau la retire.
+
 ## v0.45.1 (4 octobre 2026)
 
 - Les ressources d'un effet de gain (Servant, « Gain any N resources ») n'apparaissent en haut qu'une fois l'effet touché ; avant, elles s'y affichaient déjà en gris.

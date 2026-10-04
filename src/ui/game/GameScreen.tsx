@@ -466,6 +466,11 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
     return zone === "effect" && stage.effects.some((e) => e.type === "activated" || e.type === "time" || e.type === "destroy");
   };
 
+  /** Cartes visées par l'action en attente de paiement (Priest : la carte améliorée ; coût en personnes). */
+  const payingTargets: InstanceId[] = paying
+    ? [...("targets" in paying.action ? paying.action.targets : []), ...("discard" in paying.action ? paying.action.discard : [])]
+    : [];
+
   /** Cartes qui peuvent payer l'action en attente de paiement. */
   const payers = new Set(paying ? paymentCandidates(catalog, state, paying.action, engagedNow) : []);
 
@@ -574,6 +579,11 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
     if (pickOnBoard(card)) return;
     if (!paying && !targeting && tapBox(card, p)) return;
     if (paying) {
+      // Carte déjà choisie pour payer : la toucher la rend (coche verte retirée).
+      if (engagedNow.includes(card)) {
+        toggleEngaged(card);
+        return;
+      }
       if (!payers.has(card)) {
         setPaying(null);
         return;
@@ -674,7 +684,7 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
       label={cardName(catalog, state, id)}
       width={width}
       selected={selected?.card === id}
-      picked={picked.includes(id) || targetPicks.includes(id)}
+      picked={picked.includes(id) || targetPicks.includes(id) || (paying !== null && (engagedNow.includes(id) || payingTargets.includes(id)))}
       engaged={extra?.engaged}
       flagged={extra?.zones ? flagged.includes(id) : undefined}
       onTwoFinger={extra?.zones ? () => toggleFlag(id) : undefined}
@@ -686,7 +696,7 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
           : targeting
             ? !targetOptions.has(id) && !targetPicks.includes(id) && id !== targeting.source
             : paying
-              ? !payers.has(id) && id !== paying.source
+              ? !payers.has(id) && id !== paying.source && !engagedNow.includes(id) && !payingTargets.includes(id)
               : undefined
       }
       badge={badgeFor(id, extra?.engaged ?? false)}
