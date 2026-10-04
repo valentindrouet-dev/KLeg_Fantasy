@@ -405,7 +405,8 @@ function placeDiscovered(d: Draft, id: InstanceId, seen: boolean): void {
   discard(d, id);
   d.s.discoveries.push(instance(d.s, id).serial);
   log(d.s, `Carte découverte : ${cardName(d.catalog, d.s, id)}`);
-  if (!seen) presentDiscovery(d);
+  // Carte à flèches rouges : toujours présentée, on y choisit sa face.
+  if (!seen || template(d.catalog, instance(d.s, id).templateId).chooseSideOnDiscover) presentDiscovery(d);
 }
 
 /**

@@ -11,7 +11,9 @@
   z-index: 50;
   display: grid;
   place-items: center;
-  padding: max(var(--space-4), env(safe-area-inset-top)) var(--space-4) max(var(--space-4), env(safe-area-inset-bottom));
+  /* En haut : la place de la barre du haut, dont les boutons FR et bug restent utilisables au-dessus des fenêtres. */
+  --dialog-top: calc(env(safe-area-inset-top) + 4.6rem);
+  padding: var(--dialog-top) var(--space-4) max(var(--space-4), env(safe-area-inset-bottom));
   /* Fenêtre opaque sur fond assombri (demande du 2026-10-04) ; « Voir le jeu » la cache le temps de regarder. */
   background: rgb(0 0 0 / 0.4);
 }
@@ -62,7 +64,7 @@
   flex-direction: column;
   width: min(560px, 100%);
   /* Hauteur bornée à l'écran (la grille du fond ne la borne pas) : le corps défile (demande du 2026-10-03, iPad). */
-  max-height: calc(100dvh - 2 * var(--space-4) - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+  max-height: calc(100dvh - var(--dialog-top) - var(--space-4) - env(safe-area-inset-bottom));
   border: 1px solid var(--border);
   border-radius: calc(var(--radius) * 1.5);
   background: var(--surface);

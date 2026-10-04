@@ -144,7 +144,8 @@ export type Action =
   | { type: "chooseDiscovery"; card: InstanceId }
   | { type: "chooseSide"; side: Side }
   | { type: "acknowledgeParchment" }
-  | { type: "acknowledgeDiscoveries" }
+  // sides : face choisie des cartes à flèches rouges présentées (absente = recto).
+  | { type: "acknowledgeDiscoveries"; sides?: Record<InstanceId, Side> }
   | { type: "startExpansion"; card: InstanceId } // partie terminée : jouer une mini-extension (136, 137, 138)
   | { type: "manual"; op: ManualOp }
   | { type: "choose"; answer: Answer }

@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { canRestartKingdom, computeScore } from "../../src/engine";
+import { isLegal } from "../../src/engine/actions";
 import { loadCatalog } from "../helpers/catalog";
 import { arrange, fk, legal, newGame, passUntil, run } from "../helpers/game";
 
@@ -100,5 +101,16 @@ describe("manches et découvertes", async () => {
     s = run(catalog, s, { type: "pass" });
     expect(s.zones.box).toEqual([fk(0)]);
     expect(s.round).toBe(2);
+  });
+
+  it("carte à flèches rouges découverte en début de manche : on choisit sa face dans la fenêtre des nouvelles cartes", () => {
+    let s = arrange(catalog, { play: [1] });
+    s.zones.box = s.zones.box.filter((id) => (s.cards[id]?.serial ?? 0) >= 13 || s.cards[id]?.serial === 0);
+    s = run(catalog, s, { type: "pass" });
+    expect(s.pending).toEqual({ kind: "newCards", cards: [fk(13), fk(14)] });
+    expect(isLegal(catalog, s, { type: "acknowledgeDiscoveries", sides: { [fk(14)]: "back" } })).toBe(false); // 14 : pas de flèches
+    s = run(catalog, s, { type: "acknowledgeDiscoveries", sides: { [fk(13)]: "back" } });
+    expect(s.cards[fk(13)]?.orientation).toEqual({ side: "back", rotation: 0 });
+    expect(s.cards[fk(14)]?.orientation).toEqual({ side: "front", rotation: 0 });
   });
 });

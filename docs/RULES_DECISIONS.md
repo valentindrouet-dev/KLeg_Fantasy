@@ -89,3 +89,7 @@ Choix faits pour ce que les cartes et la spec ne précisent pas ; à confirmer.
 - **Resistance** : comme Export, les épées restantes y sont dépensées automatiquement en fin de tour ; en fin de manche, le sticker 16 (gloire = total, 100 au plus) va sur une terre du royaume au choix.
 - **Hoarding** : à chaque fin de tour, on peut garder 1 carte en jeu.
 - **Garder des cartes en jeu** (Shrine, Temple, Villa…, demande du 2026-10-03) : les ennemis et les cartes qui restent déjà en jeu ne sont jamais proposés. Une carte gardée reste une carte ordinaire (pas une demi-carte de la ligne du haut).
+
+## 2026-10-04 : face d'une carte à flèches rouges (remplace en partie la décision du 2026-10-03)
+
+- **Décision** (demande du joueur) : une carte à flèches rouges (`chooseSideOnDiscover`) se choisit recto ou verso dans la fenêtre « Nouvelles cartes », qu'elle vienne d'une manche ou d'un effet (recto par défaut ; on touche la face à garder). Les autres cartes arrivent côté recto, sans choix. Parchemin 37 (cartes 38 à 42) : inchangé.

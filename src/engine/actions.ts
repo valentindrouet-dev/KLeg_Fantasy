@@ -29,6 +29,7 @@ import {
   instance,
   log,
   pay,
+  template,
   zoneOf,
 } from "./state";
 import {
@@ -133,6 +134,14 @@ export function isLegal(catalog: Catalog, s: GameState, a: Action): boolean {
   if (a.type === "manual") return isManualOpValid(catalog, s, a.op);
   // Réponse à une question : vérifiée contre la question (les réponses ne sont pas toutes énumérées).
   if (a.type === "choose") return s.phase === "playing" && s.pending?.kind === "choice" && isValidAnswer(s.pending.request, a.answer);
+  if (a.type === "acknowledgeDiscoveries" && a.sides) {
+    const p = s.pending;
+    return (
+      s.phase === "playing" &&
+      p?.kind === "newCards" &&
+      Object.entries(a.sides).every(([id, side]) => p.cards.includes(id) && (side === "front" || side === "back") && template(catalog, instance(s, id).templateId).chooseSideOnDiscover)
+    );
+  }
   const key = actionKey(a);
   if (getLegalActions(catalog, s).some((l) => actionKey(l) === key)) return true;
   // Parties enregistrées avant que l'effet prenne une cible (Priest, Cardinal, School…) : forme sans cible, puis questions.
@@ -268,9 +277,17 @@ function execute(d: Draft, a: Action): void {
     case "manual":
       executeManual(d, a.op);
       return;
-    case "acknowledgeDiscoveries":
+    case "acknowledgeDiscoveries": {
+      // Cartes à flèches rouges : la face choisie dans la fenêtre (demande du 2026-10-04).
+      const shown = s.pending?.kind === "newCards" ? s.pending.cards : [];
+      for (const [id, side] of Object.entries(a.sides ?? {})) {
+        if (!shown.includes(id) || !template(catalog, instance(s, id).templateId).chooseSideOnDiscover) continue;
+        instance(s, id).orientation = { side, rotation: 0 };
+        if (side === "back") log(s, `${cardName(catalog, s, id)} : verso choisi`);
+      }
       s.pending = null;
       return;
+    }
     case "startExpansion":
       startExpansion(d, a.card);
       return;

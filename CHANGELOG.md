@@ -3,6 +3,11 @@
 Chaque mise à jour publiée change de version (`package.json`, affichée dans l'appli en bas de l'écran « Mes royaumes »
 et dans la barre de la partie). Convention : `0.5.0` s'affiche **v0.05** ; un correctif `0.5.1` s'affiche **v0.05.1**.
 
+## v0.44 (4 octobre 2026)
+
+- Cartes à flèches rouges (Field Worker / Servant…) : dans la fenêtre « Nouvelles cartes », on touche la face à garder (recto par défaut), appliquée en validant. Vaut pour les découvertes de manche comme pour celles d'un effet.
+- Les fenêtres commencent sous la barre du haut : les boutons FR et bug ne masquent plus « Voir le jeu ».
+
 ## v0.43 (4 octobre 2026)
 
 - Fenêtres à nouveau opaques, sur un fond assombri. Bouton « Voir le jeu » en haut de chaque fenêtre : elle se cache sans se fermer (le choix reste en attente) pour regarder la zone de jeu ; « Revoir … » en bas de l'écran la rouvre.

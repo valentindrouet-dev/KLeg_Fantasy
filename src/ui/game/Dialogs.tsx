@@ -17,7 +17,7 @@ import {
   type GameState,
   type InstanceId,
 } from "../../engine";
-import type { StageId } from "../../data/schema";
+import type { Side, StageId } from "../../data/schema";
 import { Dialog } from "../common/Dialog";
 import { Icon, IconText } from "../common/IconText";
 import { CardView, type CardNote } from "./CardView";
@@ -178,41 +178,7 @@ export function DecisionDialog({
     );
   }
 
-  if (p.kind === "newCards") {
-    // Recto et verso de chaque carte côte à côte, les cartes l'une au-dessus de l'autre (demande du 2026-10-03).
-    const width = stackedWidth(p.cards.length);
-    return (
-      <Dialog
-        title={p.cards.length > 1 ? "Nouvelles cartes" : "Nouvelle carte"}
-        wide
-        actions={
-          <button className="btn btn-primary" onClick={() => onAction({ type: "acknowledgeDiscoveries" })}>
-            {/* Début de manche : les cartes vont être mélangées ; découverte par un effet : elles sont dans la défausse. */}
-            {state.queue[0]?.kind === "shuffle" ? "Mélanger dans le deck" : "Ajouter au deck"}
-          </button>
-        }
-      >
-        <div className={styles.newCards}>
-          {p.cards.map((id) => (
-            <div key={id} className={styles.bothSides}>
-              {(["front", "back"] as const).map((side) => (
-                <CardView
-                  key={side}
-                  template={tOf(id)}
-                  orientation={{ side, rotation: 0 }}
-                  label={side === "front" ? "Recto" : "Verso"}
-                  width={width}
-                  onLongPress={() => onInspect(id)}
-                  exhausted={exhaustedOf(catalog, state, id)}
-              boxes={(stage) => boxViews(catalog, state, id, stage)}
-                />
-              ))}
-            </div>
-          ))}
-        </div>
-      </Dialog>
-    );
-  }
+  if (p.kind === "newCards") return <NewCardsDialog key={p.cards.join(",")} catalog={catalog} state={state} cards={p.cards} onAction={onAction} onInspect={onInspect} />;
 
   if (p.kind === "choice") return <ChoiceDialog key={`${p.source}/${p.script}/${p.answers.length}`} catalog={catalog} state={state} onAction={onAction} onInspect={onInspect} />;
 
@@ -284,6 +250,69 @@ export function CardListDialog({
 }
 
 /** Question posée par un effet (spec 4.1) : cartes, ressources ou option. */
+/**
+ * Nouvelles cartes : recto et verso de chaque carte côte à côte, les cartes l'une au-dessus de l'autre. Carte à
+ * flèches rouges : on touche la face à garder (recto par défaut), appliquée en validant (demande du 2026-10-04).
+ */
+function NewCardsDialog({
+  catalog,
+  state,
+  cards,
+  onAction,
+  onInspect,
+}: {
+  catalog: Catalog;
+  state: GameState;
+  cards: InstanceId[];
+  onAction: (a: Action) => void;
+  onInspect: (card: InstanceId) => void;
+}) {
+  const [sides, setSides] = useState<Record<InstanceId, Side>>({});
+  const width = stackedWidth(cards.length);
+  const tOf = (id: InstanceId) => template(catalog, instance(state, id).templateId);
+  const chosen = Object.fromEntries(Object.entries(sides).filter(([id]) => tOf(id).chooseSideOnDiscover));
+  return (
+    <Dialog
+      title={cards.length > 1 ? "Nouvelles cartes" : "Nouvelle carte"}
+      wide
+      actions={
+        <button className="btn btn-primary" onClick={() => onAction(Object.keys(chosen).length ? { type: "acknowledgeDiscoveries", sides: chosen } : { type: "acknowledgeDiscoveries" })}>
+          {/* Début de manche : les cartes vont être mélangées ; découverte par un effet : elles sont dans la défausse. */}
+          {state.queue[0]?.kind === "shuffle" ? "Mélanger dans le deck" : "Ajouter au deck"}
+        </button>
+      }
+    >
+      <div className={styles.newCards}>
+        {cards.map((id) => {
+          const choose = tOf(id).chooseSideOnDiscover;
+          const current = sides[id] ?? instance(state, id).orientation.side;
+          return (
+            <div key={id} className={styles.bothSides}>
+              {(["front", "back"] as const).map((side) => (
+                <figure key={side} className={styles.choice}>
+                  <CardView
+                    template={tOf(id)}
+                    orientation={{ side, rotation: 0 }}
+                    label={side === "front" ? "Recto" : "Verso"}
+                    width={width}
+                    selected={choose && current === side}
+                    dimmed={choose && current !== side}
+                    onTap={choose ? () => setSides({ ...sides, [id]: side }) : undefined}
+                    onLongPress={() => onInspect(id)}
+                    exhausted={exhaustedOf(catalog, state, id)}
+                    boxes={(stage) => boxViews(catalog, state, id, stage)}
+                  />
+                  {choose && <span className={styles.sideLabel}>{current === side ? "✓ Gardée" : "Toucher pour garder"}</span>}
+                </figure>
+              ))}
+            </div>
+          );
+        })}
+      </div>
+    </Dialog>
+  );
+}
+
 function ChoiceDialog({ catalog, state, onAction, onInspect }: { catalog: Catalog; state: GameState; onAction: (a: Action) => void; onInspect: (card: InstanceId) => void }) {
   const p = state.pending;
   const [cards, setCards] = useState<InstanceId[]>([]);

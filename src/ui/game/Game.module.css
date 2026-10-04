@@ -1438,3 +1438,9 @@
 .stayBanner.rotated {
   transform: translateX(-50%) rotate(180deg);
 }
+
+.sideLabel {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
