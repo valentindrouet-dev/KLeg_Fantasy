@@ -3,6 +3,10 @@
 Chaque mise à jour publiée change de version (`package.json`, affichée dans l'appli en bas de l'écran « Mes royaumes »
 et dans la barre de la partie). Convention : `0.5.0` s'affiche **v0.05** ; un correctif `0.5.1` s'affiche **v0.05.1**.
 
+## v0.49.2 (4 octobre 2026)
+
+- Parchemin 24 : les deux questions disent leur étape et le type de carte attendu. « 1/2 · Fertile Soil » propose les terres (sticker 1 {coin}), puis « 2/2 · Efficiency » les bâtiments, Food Barns comprise. Test ajouté.
+
 ## v0.49.1 (4 octobre 2026)
 
 - Correctif : avec un échange engagé (Bazaar) et pas d'or en réserve, le paiement disait « Pas payable avec les cartes engagées ». Maintenant il dit ce qui manque ({coin}) et fait briller les cartes qui peuvent le produire (Headquarters…) : on les touche et l'amélioration se fait.

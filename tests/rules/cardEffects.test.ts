@@ -185,6 +185,15 @@ describe("effets des cartes", async () => {
     expect(s.cards[fk(9)]?.stickers).toEqual([{ sticker: "1", stage: 1, resource: "coin" }]);
   });
 
+  it("parchemin 24 : Fertile Soil propose les terres, puis Efficiency les bâtiments (Food Barns au stage 4 compris)", () => {
+    let s = arrange(catalog, { play: [2], discard: [1, 3, 9], orientation: { 1: { side: "back", rotation: 0 } } });
+    s.zones.box = s.zones.box.filter((id) => (s.cards[id]?.serial ?? 0) >= 24 || s.cards[id]?.serial === 0);
+    s = run(catalog, s, { type: "pass" }, { type: "acknowledgeParchment" });
+    expect(pending(s)?.request).toMatchObject({ type: "cards", options: [fk(3), fk(2)] }); // terres : Wild Grass 02, 03
+    s = run(catalog, s, choose({ cards: [fk(2)] }));
+    expect(pending(s)?.request).toMatchObject({ type: "cards", options: [fk(1), fk(9)] }); // bâtiments : Food Barns, Headquarters
+  });
+
   it("Volcanic Eruption détruit la prochaine terre jouée, puis se retourne", () => {
     let s = arrange(catalog, { play: [28], deck: [1, 9] });
     s = run(catalog, s, { type: "advance" });

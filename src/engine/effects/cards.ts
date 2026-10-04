@@ -1342,7 +1342,7 @@ const TRIGGERS: Record<string, () => TriggerImpl> = {
     return trigger({
       timing: "manual",
       optional: false,
-      ask: steps((d) => (lands(d).length ? askCards("Fertile Soil : terre qui reçoit le sticker 1", lands(d), 1) : null)),
+      ask: steps((d) => (lands(d).length ? askCards("1/2 · Fertile Soil : la terre (Land) qui reçoit le sticker 1 {coin} — Efficiency, pour un bâtiment, vient ensuite", lands(d), 1) : null)),
       run: (d, _card, a) => cardsOf(a[0]).forEach((id) => placeSticker(d, id, "1")),
     });
   },
@@ -1352,7 +1352,7 @@ const TRIGGERS: Record<string, () => TriggerImpl> = {
       timing: "manual",
       optional: false,
       ask: steps(
-        (d) => (buildings(d).length ? askCards("Efficiency : bâtiment dont la production augmente", buildings(d), 1) : null),
+        (d) => (buildings(d).length ? askCards("2/2 · Efficiency : le bâtiment (Building) dont la production augmente de 1", buildings(d), 1) : null),
         (d, _card, a) => {
           const id = cardsOf(a[0])[0];
           const rs = id ? boostOptions(d, id) : [];
