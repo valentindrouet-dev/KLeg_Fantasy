@@ -2,6 +2,7 @@ import { useState, type ReactNode } from "react";
 import { cardImageUrl } from "../../data/loadCards";
 import type { CardTemplate, Orientation, StageId } from "../../data/schema";
 import { isFullImageFace, printedStage, stageIdAt, type BoxView, type ExhaustedEffect, type StickerPlacement } from "../../engine";
+import type { GoalView } from "./goals";
 import { boxRects } from "../../data/checkboxes";
 import { costIconRects } from "../../data/upgradeIcons";
 import { effectLines, type TextLine } from "../../data/textLines";
@@ -30,7 +31,9 @@ type Props = {
   dimmed?: boolean;
   badge?: ReactNode;
   onTap?: (p: TapPoint) => void;
-  onLongPress?: () => void;
+  onLongPress?: (p: TapPoint) => void;
+  /** Objectifs du joueur sur cette carte : moitiés visées et boîte d'amélioration qui y mène, en doré. */
+  goal?: GoalView;
   /** Libellé de l'action d'une zone (null : zone sans action). Active la surbrillance des zones. */
   zoneLabel?: (zone: ZoneKind) => string | null;
   /** Animation de changement d'orientation : rotation 180° ou retournement, vers `to`. */
@@ -235,6 +238,7 @@ function Face({
   pickBoxes,
   crossedCosts,
   pickCosts,
+  goal,
 }: {
   template: CardTemplate;
   orientation: Orientation;
@@ -247,6 +251,7 @@ function Face({
   pickBoxes?: readonly string[];
   crossedCosts?: readonly string[];
   pickCosts?: readonly string[];
+  goal?: GoalView;
 }) {
   const url = cardImageUrl(orientation.side === "front" ? template.images.front : template.images.back);
   // Moitiés réellement imprimées : une carte à image pleine n'a pas de moitié basse (pas de grisé, un seul numéro).
@@ -290,6 +295,16 @@ function Face({
           <CostIcons template={template} stage={bottomId} half="bottom" crossed={crossedCosts ?? []} pick={[]} />
         </>
       )}
+      {goal && (
+        <>
+          {topId !== null && goal.stages.includes(topId) && <span className={`${styles.goalHalf} ${bottomId === null ? styles.goalFull : styles.goalTop}`} />}
+          {bottomId !== null && goal.stages.includes(bottomId) && <span className={`${styles.goalHalf} ${styles.goalBottom}`} />}
+          {goal.arrows.map((a) => {
+            const r = ZONE_RECTS[a === "flip" ? "upgradeFlip" : "upgradeRotate"];
+            return <span key={a} className={styles.goalUpgrade} style={{ left: `${r.left * 100}%`, top: `${r.top * 100}%`, width: `${r.width * 100}%`, height: `${r.height * 100}%` }} />;
+          })}
+        </>
+      )}
       {/* Grisé du bas par-dessus tout ce qui est posé sur cette moitié (stickers, traits). */}
       {dimBottom && top !== null && bottom !== null && <span className={styles.bottomShade} />}
     </div>
@@ -297,11 +312,11 @@ function Face({
 }
 
 export function CardView(props: Props) {
-  const { id, template, orientation, label, width, selected, engaged, targetable, dimBottom, flagged, onTwoFinger, dimmed, badge, onTap, onLongPress, zoneLabel, anim, stickers, half, note, exhausted, shake, picked, boxes, pickBoxes, crossedCosts, pickCosts } =
+  const { id, template, orientation, label, width, selected, engaged, targetable, dimBottom, flagged, onTwoFinger, dimmed, badge, onTap, onLongPress, zoneLabel, anim, stickers, half, note, exhausted, shake, picked, boxes, pickBoxes, crossedCosts, pickCosts, goal } =
     props;
   // Demi-carte : les positions touchées sont ramenées à la carte entière (zones cliquables inchangées).
   const yScale = half ? 0.5 : 1;
-  const press = usePress(onTap ? (p) => onTap({ ...p, y: p.y * yScale }) : () => {}, onLongPress, onTwoFinger);
+  const press = usePress(onTap ? (p) => onTap({ ...p, y: p.y * yScale }) : () => {}, onLongPress ? (p) => onLongPress({ ...p, y: p.y * yScale }) : undefined, onTwoFinger);
   const [hover, setHover] = useState<Hover | null>(null);
   const [clicked, setClicked] = useState(false); // pas de bulle après un clic, jusqu'à la sortie du pointeur
   const interactive = Boolean(onTap || onLongPress) && !anim;
@@ -366,12 +381,12 @@ export function CardView(props: Props) {
       {anim?.kind === "flip" ? (
         // Retournement : deux faces dos à dos, la carte pivote d'un seul mouvement.
         <div className={styles.flipInner}>
-          <Face template={template} orientation={orientation} label={label} stickers={stickers} exhausted={exhausted} boxes={boxes} pickBoxes={pickBoxes} crossedCosts={crossedCosts} pickCosts={pickCosts} />
-          <Face template={template} orientation={anim.to} label={label} className={styles.backFace} stickers={stickers} exhausted={exhausted} boxes={boxes} pickBoxes={pickBoxes} crossedCosts={crossedCosts} pickCosts={pickCosts} />
+          <Face template={template} orientation={orientation} label={label} stickers={stickers} exhausted={exhausted} boxes={boxes} pickBoxes={pickBoxes} crossedCosts={crossedCosts} pickCosts={pickCosts} goal={goal} />
+          <Face template={template} orientation={anim.to} label={label} className={styles.backFace} stickers={stickers} exhausted={exhausted} boxes={boxes} pickBoxes={pickBoxes} crossedCosts={crossedCosts} pickCosts={pickCosts} goal={goal} />
         </div>
       ) : (
         // Pendant une rotation, la carte n'est plus grisée (sinon la moitié grisée passe en haut).
-        <Face template={template} orientation={orientation} label={label} dimBottom={dimBottom && !anim && !half} stickers={stickers} exhausted={exhausted} boxes={boxes} pickBoxes={pickBoxes} crossedCosts={crossedCosts} pickCosts={pickCosts} />
+        <Face template={template} orientation={orientation} label={label} dimBottom={dimBottom && !anim && !half} stickers={stickers} exhausted={exhausted} boxes={boxes} pickBoxes={pickBoxes} crossedCosts={crossedCosts} pickCosts={pickCosts} goal={goal} />
       )}
       {rect && !anim && (
         <span

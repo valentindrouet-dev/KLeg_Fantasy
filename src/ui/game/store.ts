@@ -13,8 +13,10 @@ import {
   type InstanceId,
   type Session,
 } from "../../engine";
+import type { StageId } from "../../data/schema";
 import { getKingdom, saveKingdom } from "../../persistence/db";
 import { summarize, type Kingdom } from "../../persistence/kingdoms";
+import { goalOpen } from "./goals";
 
 // Store de l'écran de partie : session du moteur + royaume, sauvegarde automatique après chaque geste.
 // Les cartes « engagées » (ressource réservée, pas encore produite) ne vivent que dans l'interface :
@@ -36,6 +38,8 @@ type GameStore = {
   perform: (actions: Action[], toast?: string) => void;
   toggleEngaged: (card: InstanceId) => void;
   toggleFlag: (card: InstanceId) => void;
+  /** Marque (ou retire) une étape de carte comme objectif, gardé avec le royaume. */
+  toggleGoal: (card: InstanceId, stage: StageId) => void;
   /** Reset officiel (avant la carte 23) : le royaume repart des cartes 1 à 10, nouveau mélange. */
   restart: () => void;
   undo: () => void;
@@ -48,6 +52,8 @@ function persist(catalog: Catalog, kingdom: Kingdom, session: Session): Kingdom 
   const state = current(session);
   const next: Kingdom = {
     ...kingdom,
+    // Objectif atteint (carte construite jusqu'à cette étape) ou carte sortie du royaume : il tombe.
+    ...(kingdom.goals ? { goals: kingdom.goals.filter((g) => goalOpen(catalog, state, g)) } : {}),
     updatedAt: Date.now(),
     record: session.record,
     state,
@@ -99,6 +105,16 @@ export const useGame = create<GameStore>((set, get) => ({
 
   toggleFlag: (card) =>
     set(({ flagged }) => ({ flagged: flagged.includes(card) ? flagged.filter((c) => c !== card) : [...flagged, card] })),
+
+  toggleGoal: (card, stage) => {
+    const { kingdom } = get();
+    if (!kingdom) return;
+    const goals = kingdom.goals ?? [];
+    const has = goals.some((g) => g.card === card && g.stage === stage);
+    const next: Kingdom = { ...kingdom, goals: has ? goals.filter((g) => !(g.card === card && g.stage === stage)) : [...goals, { card, stage }] };
+    void saveKingdom(next);
+    set({ kingdom: next });
+  },
 
   toggleEngaged: (card) =>
     set(({ engaged }) => ({ engaged: engaged.includes(card) ? engaged.filter((c) => c !== card) : [...engaged, card] })),

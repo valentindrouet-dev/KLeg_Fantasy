@@ -9,7 +9,13 @@ const MOVE_TOLERANCE = 10;
 /** Position du tap, relative à l'élément (0..1). */
 export type TapPoint = { x: number; y: number };
 
-export function usePress(onTap: (p: TapPoint) => void, onLongPress?: () => void, onTwoFinger?: () => void) {
+export function usePress(onTap: (p: TapPoint) => void, onLongPress?: (p: TapPoint) => void, onTwoFinger?: () => void) {
+  const el = useRef<HTMLElement | null>(null);
+  /** Position relative d'un point écran dans l'élément pressé. */
+  const at = (x: number, y: number): TapPoint => {
+    const r = el.current?.getBoundingClientRect();
+    return r ? { x: (x - r.left) / r.width, y: (y - r.top) / r.height } : { x: 0.5, y: 0.5 };
+  };
   const timer = useRef<number | undefined>(undefined);
   const start = useRef<{ x: number; y: number } | null>(null);
   const fired = useRef(false);
@@ -45,10 +51,12 @@ export function usePress(onTap: (p: TapPoint) => void, onLongPress?: () => void,
       }
       fired.current = false;
       start.current = { x: e.clientX, y: e.clientY };
+      el.current = e.currentTarget as HTMLElement;
       if (onLongPress) {
+        const p = { x: e.clientX, y: e.clientY };
         timer.current = window.setTimeout(() => {
           fired.current = true;
-          onLongPress();
+          onLongPress(at(p.x, p.y));
         }, LONG_PRESS_MS);
       }
     },
@@ -75,7 +83,8 @@ export function usePress(onTap: (p: TapPoint) => void, onLongPress?: () => void,
     },
     onContextMenu: (e: MouseEvent) => {
       e.preventDefault();
-      if (onLongPress) onLongPress();
+      el.current = e.currentTarget as HTMLElement;
+      if (onLongPress) onLongPress(at(e.clientX, e.clientY));
     },
   };
 }

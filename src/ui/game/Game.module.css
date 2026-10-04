@@ -1444,3 +1444,37 @@
   font-weight: 600;
   color: var(--text-muted);
 }
+
+/* Objectif du joueur : moitié visée et boîte d'amélioration qui y mène, entourées en doré */
+.goalHalf {
+  position: absolute;
+  left: 1.5%;
+  width: 97%;
+  border: 3px solid #e8b923;
+  border-radius: 4% / 6%;
+  box-shadow: 0 0 10px 2px rgb(232 185 35 / 0.7), inset 0 0 10px 1px rgb(232 185 35 / 0.45);
+  pointer-events: none;
+}
+
+.goalTop {
+  top: 1%;
+  height: 48%;
+}
+
+.goalBottom {
+  top: 51%;
+  height: 48%;
+}
+
+.goalFull {
+  top: 1%;
+  height: 98%;
+}
+
+.goalUpgrade {
+  position: absolute;
+  border: 3px solid #e8b923;
+  border-radius: 10%;
+  box-shadow: 0 0 12px 3px rgb(232 185 35 / 0.8);
+  pointer-events: none;
+}

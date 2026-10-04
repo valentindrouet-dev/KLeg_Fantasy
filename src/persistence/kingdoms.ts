@@ -21,7 +21,11 @@ export type Kingdom = {
   summary: KingdomSummary;
   record: GameRecord;
   state: GameState;
+  /** Objectifs du joueur (demande du 2026-10-04) : étapes de cartes à atteindre, entourées en doré. */
+  goals?: Goal[];
 };
+
+export type Goal = { card: string; stage: 1 | 2 | 3 | 4 };
 
 export function summarize(catalog: Catalog, record: GameRecord, state: GameState): KingdomSummary {
   return {

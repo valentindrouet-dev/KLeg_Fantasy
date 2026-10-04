@@ -3,6 +3,10 @@
 Chaque mise à jour publiée change de version (`package.json`, affichée dans l'appli en bas de l'écran « Mes royaumes »
 et dans la barre de la partie). Convention : `0.5.0` s'affiche **v0.05** ; un correctif `0.5.1` s'affiche **v0.05.1**.
 
+## v0.48 (4 octobre 2026)
+
+- Objectifs : dans l'inspection d'une carte (appui long) ou dans la fenêtre des nouvelles cartes, maintenir appuyée une moitié de carte la marque comme objectif. Elle est entourée en doré partout où la carte est dessinée, et la boîte d'amélioration qui y mène (premier pas du chemin) est dorée aussi. L'objectif tombe quand la carte atteint cette étape (ou quitte le royaume) ; un nouvel appui long le retire. Gardé avec le royaume.
+
 ## v0.47 (4 octobre 2026)
 
 - Bazaar, Market, Trader (« Spend {coin} to gain {wood}/{stone}… ») : toucher l'effet engage la carte comme une production, sans menu. En haut, la ressource au choix s'ajoute et l'or qu'elle coûte est retiré ; au moment de payer, l'or vient de la réserve ou d'une autre carte engagée, puis l'échange donne la ressource qu'il faut.

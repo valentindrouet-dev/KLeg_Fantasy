@@ -6,6 +6,7 @@ import {
   EXPANSION_SERIALS,
   exhaustedEffects,
   expansionName,
+  activeStage,
   cardName,
   computeScore,
   instance,
@@ -22,6 +23,16 @@ import { Dialog } from "../common/Dialog";
 import { Icon, IconText } from "../common/IconText";
 import { CardView, type CardNote } from "./CardView";
 import { frNote } from "./translationNote";
+import { goalView, stageAtPoint } from "./goals";
+import { useGame } from "./store";
+
+/** Objectifs du royaume en cours et bascule (appui long sur une moitié de carte). */
+function useGoals() {
+  const goals = useGame((g) => g.kingdom?.goals ?? NO_GOALS);
+  const toggleGoal = useGame((g) => g.toggleGoal);
+  return { goals, toggleGoal };
+}
+const NO_GOALS: never[] = [];
 import { usePrefs } from "../common/prefs";
 import type { TapPoint } from "../common/usePress";
 import styles from "./Game.module.css";
@@ -75,6 +86,13 @@ export function Inspector({ catalog, state, card, onClose }: { catalog: Catalog;
   };
   // Carte permanente dont on a choisi la face (objectifs…) : l'autre face ne servira plus, on ne la montre pas.
   const single = t.chooseSideOnDiscover && state.zones.permanent.includes(card);
+  // Appui long sur une moitié : objectif doré (demande du 2026-10-04).
+  const { goals, toggleGoal } = useGoals();
+  const view = goalView(catalog, state, goals, card);
+  const markGoal = (o: typeof c.orientation) => (p: TapPoint) => {
+    const stage = stageAtPoint(t, o, p.y);
+    if (stage !== null && stage !== activeStage(catalog, state, card)?.id) toggleGoal(card, stage);
+  };
   return (
     <Dialog title={cardName(catalog, state, card)} onClose={onClose} wide>
       <div className={styles.inspector}>
@@ -85,6 +103,8 @@ export function Inspector({ catalog, state, card, onClose }: { catalog: Catalog;
           width={bigCard(single ? 1 : 2)}
           stickers={c.stickers}
           onTap={tap(0, c.orientation)}
+          onLongPress={markGoal(c.orientation)}
+          goal={view}
           exhausted={(stage) => exhaustedEffects(catalog, state, card, stage)}
           boxes={(stage) => boxViews(catalog, state, card, stage)}
           note={tooltipsFr && note?.face === 0 ? note.note : undefined}
@@ -97,6 +117,8 @@ export function Inspector({ catalog, state, card, onClose }: { catalog: Catalog;
             width={bigCard(2)}
             stickers={c.stickers}
             onTap={tap(1, other)}
+            onLongPress={markGoal(other)}
+            goal={view && { stages: view.stages, arrows: [] }}
             exhausted={(stage) => exhaustedEffects(catalog, state, card, stage)}
           boxes={(stage) => boxViews(catalog, state, card, stage)}
             note={tooltipsFr && note?.face === 1 ? note.note : undefined}
@@ -178,7 +200,7 @@ export function DecisionDialog({
     );
   }
 
-  if (p.kind === "newCards") return <NewCardsDialog key={p.cards.join(",")} catalog={catalog} state={state} cards={p.cards} onAction={onAction} onInspect={onInspect} />;
+  if (p.kind === "newCards") return <NewCardsDialog key={p.cards.join(",")} catalog={catalog} state={state} cards={p.cards} onAction={onAction} />;
 
   if (p.kind === "choice") return <ChoiceDialog key={`${p.source}/${p.script}/${p.answers.length}`} catalog={catalog} state={state} onAction={onAction} onInspect={onInspect} />;
 
@@ -259,15 +281,14 @@ function NewCardsDialog({
   state,
   cards,
   onAction,
-  onInspect,
 }: {
   catalog: Catalog;
   state: GameState;
   cards: InstanceId[];
   onAction: (a: Action) => void;
-  onInspect: (card: InstanceId) => void;
 }) {
   const [sides, setSides] = useState<Record<InstanceId, Side>>({});
+  const { goals, toggleGoal } = useGoals();
   const width = stackedWidth(cards.length);
   const tOf = (id: InstanceId) => template(catalog, instance(state, id).templateId);
   const chosen = Object.fromEntries(Object.entries(sides).filter(([id]) => tOf(id).chooseSideOnDiscover));
@@ -298,7 +319,15 @@ function NewCardsDialog({
                     selected={choose && current === side}
                     dimmed={choose && current !== side}
                     onTap={choose ? () => setSides({ ...sides, [id]: side }) : undefined}
-                    onLongPress={() => onInspect(id)}
+                    onLongPress={(p) => {
+                      // Appui long sur une moitié : objectif doré (demande du 2026-10-04).
+                      const stage = stageAtPoint(tOf(id), { side, rotation: 0 }, p.y);
+                      if (stage !== null) toggleGoal(id, stage);
+                    }}
+                    goal={(() => {
+                      const v = goalView(catalog, state, goals, id);
+                      return v && { stages: v.stages, arrows: [] };
+                    })()}
                     exhausted={exhaustedOf(catalog, state, id)}
                     boxes={(stage) => boxViews(catalog, state, id, stage)}
                   />

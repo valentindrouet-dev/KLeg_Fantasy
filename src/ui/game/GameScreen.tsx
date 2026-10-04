@@ -40,6 +40,7 @@ import { downloadText } from "../common/download";
 import { BugButton } from "../common/BugButton";
 import { effectLines } from "../../data/textLines";
 import { boxRects } from "../../data/checkboxes";
+import { goalView } from "./goals";
 import { costIconRects } from "../../data/upgradeIcons";
 import { backupFileName, exportKingdom } from "../../persistence/backup";
 import { playLayout } from "./sortCards";
@@ -714,6 +715,7 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
       pickCosts={boxChoice?.source === id && boxChoice.spots === "cost" ? boxChoice.boxes : undefined}
       crossedCosts={instance(state, id).crossedOutCosts}
       shake={shaking.includes(id)}
+      goal={goalView(catalog, state, kingdom?.goals ?? [], id)}
     />
   );
 
