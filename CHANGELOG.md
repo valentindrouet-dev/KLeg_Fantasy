@@ -3,6 +3,10 @@
 Chaque mise à jour publiée change de version (`package.json`, affichée dans l'appli en bas de l'écran « Mes royaumes »
 et dans la barre de la partie). Convention : `0.5.0` s'affiche **v0.05** ; un correctif `0.5.1` s'affiche **v0.05.1**.
 
+## v0.53.5 (5 octobre 2026)
+
+- Stickers cités par leur numéro : partout où un texte dit « sticker 7 », « sticker 1 / 2 / 3 », « sticker 13k »… (questions, boutons, textes de cartes), le symbole du sticker suit son numéro. La question d'Export dit maintenant quel sticker poser et sur quel type de carte (« Sticker 7 [symbole] (Stays in play) : sur quelle personne ? »).
+
 ## v0.53.4 (5 octobre 2026)
 
 - Correctif : avec un ennemi en jeu, une demi-carte « stays in play » seule dans sa colonne prenait la hauteur d'une carte entière mais n'était comptée que pour une demi-carte dans le calcul de la taille des cartes. La zone de jeu débordait : les cartes du haut et du bas étaient coupées. Le calcul compte maintenant la vraie hauteur.
