@@ -246,6 +246,8 @@ export function CardListDialog({
   onInspect: (id: InstanceId) => void;
   onClose: () => void;
 }) {
+  // Objectifs (contour doré) : visibles aussi dans la défausse (demande du 2026-10-04).
+  const { goals } = useGoals();
   // Filtre par type (demande du 2026-10-04) : un bouton coloré par type présent ; le filtre tombe à la fermeture.
   const [only, setOnly] = useState<string | null>(null);
   const kinds = (id: InstanceId): readonly string[] => activeStage(catalog, state, id)?.keywords ?? [];
@@ -289,6 +291,8 @@ export function CardListDialog({
               onLongPress={() => onInspect(id)}
               exhausted={exhaustedOf(catalog, state, id)}
               boxes={(stage) => boxViews(catalog, state, id, stage)}
+              stickers={instance(state, id).stickers}
+              goal={goalView(catalog, state, goals, id)}
             />
           ))}
         </div>
