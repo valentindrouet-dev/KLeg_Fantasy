@@ -9,7 +9,7 @@ import { fameSpot } from "../../data/fameIcons";
 import { costIconRects } from "../../data/upgradeIcons";
 import { effectLines, type TextLine } from "../../data/textLines";
 import { IconText, iconImage } from "../common/IconText";
-import { STICKER_SIZE, stickerSpots } from "./stickerLayout";
+import { fameStickerSpots, STICKER_SIZE, stickerSpots } from "./stickerLayout";
 import { usePress, type TapPoint } from "../common/usePress";
 import { FULL_IMAGE_EFFECT_RECT, ZONE_RECTS, zoneAtCard, type ZoneKind } from "./cardZones";
 import styles from "./Game.module.css";
@@ -175,9 +175,13 @@ function Stickers({ template, stage, stickers, half }: { template: CardTemplate;
   if (stage === null) return null;
   // « Stays in play » (sticker 7) : bandeau lisible au-dessus du texte des effets, pas dans la rangée des ressources.
   const stays = stickers.some((st) => st.stage === stage && st.staysInPlay);
-  const own = stickers.filter((st) => st.stage === stage && !st.staysInPlay);
+  // Gloire (stickers 8, 10, 16) sur la ligne de la rosette de gloire ; ressources et mots-clés dans la rangée des ressources.
+  const isFame = (st: StickerPlacement) => st.fame !== undefined && !st.resource;
+  const own = [...stickers.filter((st) => st.stage === stage && !st.staysInPlay && !isFame(st)), ...stickers.filter((st) => st.stage === stage && isFame(st))];
   if (own.length === 0 && !stays) return null;
-  const spots = stickerSpots(template.stages[String(stage) as "1"], own.length);
+  const st0 = template.stages[String(stage) as "1"];
+  const nFame = own.filter(isFame).length;
+  const spots = [...stickerSpots(st0, own.length - nFame), ...fameStickerSpots(st0, nFame, fameSpot(template.expansion, template.serial, stage))];
   return (
     <>
       {stays && <StayBanner template={template} stage={stage} half={half} />}
@@ -185,7 +189,7 @@ function Stickers({ template, stage, stickers, half }: { template: CardTemplate;
         const spot = spots[i];
         if (!spot) return null;
         const icon = stickerIcon(st);
-        const size = STICKER_SIZE * 100;
+        const size = (spot.size ?? STICKER_SIZE) * 100;
         const left = half === "top" ? spot.left * 100 : 100 - spot.left * 100 - size;
         const top = half === "top" ? spot.top * 100 : 100 - spot.top * 100 - (size * 373) / 520;
         return (

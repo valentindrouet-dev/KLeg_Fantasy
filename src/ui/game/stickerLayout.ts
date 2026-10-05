@@ -14,7 +14,7 @@ const SLASH = 31 / 373;
 const RIGHT = 0.97;
 const SECOND_ROW = { x: START_X + STEP, y: (79 + 56) / 520 }; // à droite de la gloire imprimée, si la rangée est pleine
 
-export type StickerSpot = { left: number; top: number }; // fractions de la carte, moitié haute à l'endroit
+export type StickerSpot = { left: number; top: number; size?: number }; // fractions de la carte, moitié haute à l'endroit ; size : largeur (STICKER_SIZE par défaut)
 
 /** Places des `count` stickers d'un stage, après ses ressources imprimées. */
 export function stickerSpots(stage: Stage | undefined, count: number): StickerSpot[] {
@@ -34,6 +34,30 @@ export function stickerSpots(stage: Stage | undefined, count: number): StickerSp
     }
     spots.push({ left: x, top: y });
     x += STEP;
+  }
+  return spots;
+}
+
+// Stickers de gloire (demande du 2026-10-05) : sur la ligne de la rosette de gloire imprimée, juste après elle, à sa
+// taille. Repères relevés sur les images (373 × 520) : rosette de 44 px, centre à x = 40, pas de 42 px entre deux
+// rosettes (Camelot, The Ark) ; centre à y = 155 sous une rangée de ressources, 100 sans ressources.
+export const FAME_STICKER_SIZE = 44 / 373;
+const FAME_X = 40;
+const FAME_STEP = 42;
+
+/**
+ * Places des `count` stickers de gloire d'une étape. `measured` : centre mesuré de la rosette « * » (gloire variable,
+ * data/fameIcons), la dernière rosette imprimée quand elle existe.
+ */
+export function fameStickerSpots(stage: Stage | undefined, count: number, measured?: readonly [number, number, number]): StickerSpot[] {
+  const printed = (stage && stage.fame > 0 ? 1 : 0) + (stage?.fameVariable ? 1 : 0);
+  const hasProduction = (stage?.production ?? []).length > 0;
+  let cx = measured ? measured[0] * 373 + FAME_STEP : FAME_X + printed * FAME_STEP;
+  const cy = measured ? measured[1] * 520 : hasProduction ? 155 : 100;
+  const spots: StickerSpot[] = [];
+  for (let i = 0; i < count; i++) {
+    spots.push({ left: (cx - 22) / 373, top: (cy - 22) / 520, size: FAME_STICKER_SIZE });
+    cx += FAME_STEP + 4; // deux stickers posés côte à côte ne se chevauchent pas
   }
   return spots;
 }

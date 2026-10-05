@@ -3,6 +3,10 @@
 Chaque mise à jour publiée change de version (`package.json`, affichée dans l'appli en bas de l'écran « Mes royaumes »
 et dans la barre de la partie). Convention : `0.5.0` s'affiche **v0.05** ; un correctif `0.5.1` s'affiche **v0.05.1**.
 
+## v0.59 (5 octobre 2026)
+
+- Stickers de gloire (8, 10, 16) : posés sur la ligne de la rosette de gloire imprimée, juste après elle et à sa taille (sur Food Barns : à droite du « 3 »), et plus dans la rangée des ressources. Sans gloire imprimée, ils prennent sa place. Sur les cartes à gloire variable, ils suivent la rosette « * » mesurée.
+
 ## v0.58 (5 octobre 2026)
 
 - Fenêtre des nouvelles cartes : elle tient entière dans l'écran, sans défilement ni carte coupée à droite (iPad en portrait comme en paysage, avec ou sans la barre du mode dev). La taille des cartes tient compte des libellés « Gardée » et de la légende des stickers, et se recalcule quand on tourne l'iPad.

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { Stage } from "../../src/data/schema";
-import { stickerSpots } from "../../src/ui/game/stickerLayout";
+import { fameStickerSpots, stickerSpots } from "../../src/ui/game/stickerLayout";
 import { BLOCKED_PEEK, CARD_ASPECT, fitCardWidth, fitSlots } from "../../src/ui/game/fitCards";
 
 // Spec 7.3 : la zone de jeu affiche toutes les cartes sans défilement.
@@ -49,5 +49,17 @@ describe("place des stickers", () => {
     const [spot] = stickerSpots(stage, 1);
     expect(spot?.left).toBeCloseTo((19.5 + 53.6) / 373);
     expect(spot?.top).toBeCloseTo(135 / 520);
+  });
+
+  it("stickers de gloire : sur la ligne de la rosette imprimée, juste après elle", () => {
+    const farm = { fame: 3, production: [{ id: "p1", options: [["coin", "coin"]] }] } as unknown as Stage;
+    const [first, second] = fameStickerSpots(farm, 2);
+    expect(first?.left).toBeCloseTo((40 + 42 - 22) / 373); // après le « 3 » de Food Barns
+    expect(first?.top).toBeCloseTo((155 - 22) / 520);
+    expect(second?.left).toBeCloseTo((40 + 42 + 46 - 22) / 373);
+    const bare = { fame: 0, production: [] } as unknown as Stage;
+    expect(fameStickerSpots(bare, 1)[0]).toMatchObject({ left: (40 - 22) / 373, top: (100 - 22) / 520 });
+    // Gloire variable mesurée (Camelot : « * » à 81, 105) : juste après la rosette mesurée.
+    expect(fameStickerSpots(bare, 1, [81 / 373, 105 / 520, 44 / 373])[0]?.left).toBeCloseTo((81 + 42 - 22) / 373);
   });
 });
