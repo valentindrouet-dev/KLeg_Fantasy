@@ -3,6 +3,11 @@
 Chaque mise à jour publiée change de version (`package.json`, affichée dans l'appli en bas de l'écran « Mes royaumes »
 et dans la barre de la partie). Convention : `0.5.0` s'affiche **v0.05** ; un correctif `0.5.1` s'affiche **v0.05.1**.
 
+## v0.60 (5 octobre 2026)
+
+- Stranger (#92) : « Give her a name! » ne faisait rien. Dans l'inspection de la carte (appui long), un champ « Son nom » permet de la nommer ou de la renommer, sans fenêtre. Le nom s'écrit sur le blanc « ________ » du bandeau et remplace le titre partout (journal, questions, listes). C'est une action enregistrée : annulable, sauvegardée.
+- Cartes à effets « 1st / 2nd / 3rd play » : une pastille compte les passages en jeu (« 2e passage »), et « ✎ à nommer » rappelle le nom à donner.
+
 ## v0.59 (5 octobre 2026)
 
 - Stickers de gloire (8, 10, 16) : posés sur la ligne de la rosette de gloire imprimée, juste après elle et à sa taille (sur Food Barns : à droite du « 3 »), et plus dans la rangée des ressources. Sans gloire imprimée, ils prennent sa place. Sur les cartes à gloire variable, ils suivent la rosette « * » mesurée.

@@ -1237,6 +1237,7 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
         <Inspector
           key={inspect}
           dev={devMode ? (a) => perform([a]) : undefined}
+          onAction={(a) => perform([a])}
           catalog={catalog}
           state={state}
           card={inspect}

@@ -75,8 +75,10 @@ export function activeStageOrThrow(catalog: Catalog, s: GameState, id: InstanceI
 
 export function cardName(catalog: Catalog, s: GameState, id: InstanceId): string {
   const st = activeStage(catalog, s, id);
-  const serial = instance(s, id).serial;
-  return st?.name ? `${st.name} (#${serial})` : `#${serial}`;
+  const c = instance(s, id);
+  // Stranger : le nom donné par le joueur remplace le blanc « ________ » imprimé.
+  const name = c.customName && (!st?.name || /^_+$/.test(st.name)) ? c.customName : st?.name;
+  return name ? `${name} (#${c.serial})` : `#${c.serial}`;
 }
 
 /** Mots-clés du stage actif, y compris ceux des stickers (sticker 11 : Knight). */

@@ -27,6 +27,12 @@ export function cardBadges(catalog: Catalog, s: GameState, id: InstanceId): stri
   // Cases cochées : dessinées sur la carte (croix), plus de compteur (demande du 2026-10-03).
   const written = Object.entries(c.written ?? {}).filter(([k]) => k.startsWith(`${stage.id}/`)).reduce((sum, [, n]) => sum + n, 0);
   if (written) out.push(`✎ {fame}${written}`);
+  // Effets « 1st / 2nd / 3rd play » (Stranger) : combien de fois la carte est entrée en jeu, et le nom à donner.
+  if (stage.effects.some((e) => /^(1st|2nd|3rd) play:/.test(e.text))) {
+    const plays = c.plays ?? 0;
+    out.push(`${plays}${plays === 1 ? "er" : "e"} passage`);
+    if (!c.customName && plays >= 1 && stage.effects.some((e) => /Give (her|him) a name!/.test(e.text))) out.push("✎ à nommer");
+  }
   return out;
 }
 

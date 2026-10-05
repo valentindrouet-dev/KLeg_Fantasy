@@ -52,6 +52,12 @@ export function validOrientations(catalog: Catalog, s: GameState, id: InstanceId
   return all.filter((o) => stageIdAt(t, o) !== null);
 }
 
+/** Carte qu'on peut nommer : une de ses étapes dit « Give her/him a name! » (Stranger, #92). */
+export function canBeNamed(catalog: Catalog, s: GameState, id: InstanceId): boolean {
+  const t = template(catalog, instance(s, id).templateId);
+  return Object.values(t.stages).some((st) => st?.effects.some((e) => /Give (her|him) a name!/.test(e.text)));
+}
+
 /** Les opérations libres (hors effets) : vérifiées ici plutôt qu'énumérées par getLegalActions. */
 export function isManualOpValid(catalog: Catalog, s: GameState, op: ManualOp): boolean {
   if (s.phase !== "playing") return false;
@@ -59,6 +65,10 @@ export function isManualOpValid(catalog: Catalog, s: GameState, op: ManualOp): b
   if (op.kind === "resource")
     return catalog.resources.includes(op.resource) && Number.isInteger(op.delta) && op.delta !== 0 && (s.resources[op.resource] ?? 0) + op.delta >= 0;
   if (op.kind === "skip") return s.pending?.kind === "choice";
+  if (op.kind === "name") {
+    const name = op.name.trim();
+    return Boolean(s.cards[op.card]) && canBeNamed(catalog, s, op.card) && name.length >= 1 && name.length <= 24 && name !== s.cards[op.card]?.customName;
+  }
   if (s.pending) return false;
   switch (op.kind) {
     case "refresh": {
@@ -103,6 +113,11 @@ export function executeManual(d: Draft, op: ManualOp): void {
       const p = s.pending;
       log(s, `Mode dev : question passée${p?.kind === "choice" ? ` (${cardName(catalog, s, p.source)})` : ""}`);
       s.pending = null;
+      return;
+    }
+    case "name": {
+      instance(s, op.card).customName = op.name.trim();
+      log(s, `#${instance(s, op.card).serial} s'appelle désormais ${op.name.trim()}`);
       return;
     }
     case "refresh": {

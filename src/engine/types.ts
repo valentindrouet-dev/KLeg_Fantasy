@@ -32,6 +32,7 @@ export type CardInstance = {
   crossedOutCosts?: string[]; // icônes rayées d'un coût d'amélioration : `${stage}/${amélioration}/${indice}`
   written?: Record<string, number>; // gloire écrite dans une case : clé checkKey(stage, case)
   plays?: number; // nombre de fois où la carte est entrée en jeu (Stranger : « 2nd play »)
+  customName?: string; // nom donné par le joueur (Stranger, #92 : « 1st play: Give her a name! »)
   tallies?: Record<string, number>; // compteurs (Export : marchandises dépensées), par stage
 };
 
@@ -163,6 +164,8 @@ export type ManualOp =
   | { kind: "effect"; card: InstanceId; effect: string }
   // Mode développeur (demande du 2026-10-05) : passer une question bloquée, effacer les effets rayés du stage actif.
   | { kind: "skip" }
+  // Stranger (#92) : le nom que le joueur lui donne (demande du 2026-10-05). Pas une question : un geste libre.
+  | { kind: "name"; card: InstanceId; name: string }
   | { kind: "refresh"; card: InstanceId };
 
 export type EffectParams = { targets: InstanceId[]; option: number | null; answers?: Answer[] };

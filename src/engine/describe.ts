@@ -92,6 +92,8 @@ function describeManual(catalog: Catalog, s: GameState, op: ManualOp): string {
     }
     case "skip":
       return "Passer la question";
+    case "name":
+      return `Nommer #${instance(s, op.card).serial} : ${op.name.trim()}`;
     case "refresh":
       return `Effets de ${cardName(catalog, s, op.card)} à nouveau utilisables`;
   }

@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useState, type ReactNode } from "react";
-import {
+import { canBeNamed,
   availableExpansions,
   boxViews,
   canRestartKingdom,
@@ -107,6 +107,7 @@ export function Inspector({
   onOpen,
   onBack,
   dev,
+  onAction,
 }: {
   catalog: Catalog;
   state: GameState;
@@ -118,6 +119,8 @@ export function Inspector({
   onBack?: () => void;
   /** Mode développeur : gestes hors règles sur la carte (DevTools.tsx). */
   dev?: (a: Action) => void;
+  /** Gestes libres de la partie depuis l'inspection (nommer Stranger). */
+  onAction?: (a: Action) => void;
 }) {
   const c = instance(state, card);
   const t = template(catalog, c.templateId);
@@ -163,6 +166,7 @@ export function Inspector({
         </div>
       )}
       <StickerLegend texts={stageTexts(t)} className={styles.inspectorLegend} />
+      {onAction && canBeNamed(catalog, state, card) && <NameField key={c.customName ?? ""} current={c.customName ?? ""} onName={(name) => onAction({ type: "manual", op: { kind: "name", card, name } })} />}
       <div className={styles.inspector}>
         <CardView
           markId={card}
@@ -196,6 +200,29 @@ export function Inspector({
         )}
       </div>
     </Dialog>
+  );
+}
+
+/** Stranger (#92) : « Give her/him a name! », un champ dans l'inspection, sans fenêtre (demande du 2026-10-05). */
+function NameField({ current, onName }: { current: string; onName: (name: string) => void }) {
+  const [value, setValue] = useState(current);
+  const ok = value.trim().length >= 1 && value.trim().length <= 24 && value.trim() !== current;
+  return (
+    <form
+      className={styles.nameField}
+      onSubmit={(e) => {
+        e.preventDefault();
+        if (ok) onName(value);
+      }}
+    >
+      <label>
+        Son nom
+        <input value={value} maxLength={24} placeholder="Donne-lui un nom" onChange={(e) => setValue(e.target.value)} />
+      </label>
+      <button className="btn btn-primary" type="submit" disabled={!ok}>
+        {current ? "Renommer" : "Nommer"}
+      </button>
+    </form>
   );
 }
 

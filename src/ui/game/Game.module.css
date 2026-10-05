@@ -1710,3 +1710,50 @@
   font-size: 0.8rem;
   text-transform: uppercase;
 }
+
+/* Stranger : nom donné par le joueur, sur le blanc du bandeau */
+.customName {
+  position: absolute;
+  left: 7%;
+  top: 4.6%;
+  max-width: 62%;
+  overflow: hidden;
+  color: #2a1a08;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 7cqw;
+  font-style: italic;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  pointer-events: none;
+}
+
+/* Inspection : champ du nom (Stranger) */
+.nameField {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: var(--space-3);
+}
+
+.nameField label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-weight: 600;
+}
+
+.nameField input {
+  min-width: 14rem;
+  min-height: 40px;
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface-2);
+  color: var(--text);
+  font: inherit;
+  font-size: 1rem;
+}

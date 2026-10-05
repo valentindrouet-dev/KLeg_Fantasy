@@ -261,6 +261,7 @@ function Face({
   pickCosts,
   goal,
   fameNow,
+  customName,
 }: {
   template: CardTemplate;
   orientation: Orientation;
@@ -268,6 +269,8 @@ function Face({
   className?: string;
   /** Gloire que vaut maintenant l'étape du haut (gloire variable), écrite sur sa rosette « * ». */
   fameNow?: number;
+  /** Nom donné par le joueur (Stranger), écrit sur le bandeau « ________ ». */
+  customName?: string;
   dimBottom?: boolean;
   stickers?: readonly StickerPlacement[];
   exhausted?: (stage: StageId) => ExhaustedEffect[];
@@ -330,6 +333,7 @@ function Face({
         </>
       )}
       {fameNow !== undefined && topId !== null && <FameNow template={template} stage={topId} value={fameNow} />}
+      {customName && top !== null && /^_+$/.test(template.stages[String(topId) as "1"]?.name ?? "") && <span className={styles.customName}>{customName}</span>}
       {/* Grisé du bas par-dessus tout ce qui est posé sur cette moitié (stickers, traits). */}
       {dimBottom && top !== null && bottom !== null && <span className={styles.bottomShade} />}
     </div>
@@ -344,6 +348,8 @@ export function CardView(props: Props) {
   // Stickers toujours visibles (demande du 2026-10-05) : ceux de la carte de la partie, si l'appelant ne les donne pas.
   const ownStickers = useGame((g) => (markId && g.session ? g.session.states.at(-1)?.cards[markId]?.stickers : undefined));
   const stickers = props.stickers ?? ownStickers;
+  // Stranger : le nom donné, écrit sur le blanc du bandeau.
+  const customName = useGame((g) => (markId ? g.session?.states.at(-1)?.cards[markId]?.customName : undefined));
   // Gloire variable : seulement sur la face posée comme dans la partie (l'étape du haut est l'étape active).
   const fameNow = useGame((g) => {
     const s = g.session?.states.at(-1);
@@ -424,12 +430,12 @@ export function CardView(props: Props) {
       {anim?.kind === "flip" ? (
         // Retournement : deux faces dos à dos, la carte pivote d'un seul mouvement.
         <div className={styles.flipInner}>
-          <Face template={template} orientation={orientation} label={label} stickers={stickers} exhausted={exhausted} boxes={boxes} pickBoxes={pickBoxes} crossedCosts={crossedCosts} pickCosts={pickCosts} goal={goal} fameNow={fameNow} />
+          <Face template={template} orientation={orientation} label={label} stickers={stickers} exhausted={exhausted} boxes={boxes} pickBoxes={pickBoxes} crossedCosts={crossedCosts} pickCosts={pickCosts} goal={goal} fameNow={fameNow} customName={customName} />
           <Face template={template} orientation={anim.to} label={label} className={styles.backFace} stickers={stickers} exhausted={exhausted} boxes={boxes} pickBoxes={pickBoxes} crossedCosts={crossedCosts} pickCosts={pickCosts} goal={goal} />
         </div>
       ) : (
         // Pendant une rotation, la carte n'est plus grisée (sinon la moitié grisée passe en haut).
-        <Face template={template} orientation={orientation} label={label} dimBottom={dimBottom && !anim && !half} stickers={stickers} exhausted={exhausted} boxes={boxes} pickBoxes={pickBoxes} crossedCosts={crossedCosts} pickCosts={pickCosts} goal={goal} fameNow={fameNow} />
+        <Face template={template} orientation={orientation} label={label} dimBottom={dimBottom && !anim && !half} stickers={stickers} exhausted={exhausted} boxes={boxes} pickBoxes={pickBoxes} crossedCosts={crossedCosts} pickCosts={pickCosts} goal={goal} fameNow={fameNow} customName={customName} />
       )}
       {rect && !anim && (
         <span

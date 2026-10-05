@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { computeScore, exhaustedEffects, getLegalActions, isEffectExhausted, productionGroups, refreshPendingPrompt, type Action, type Answer, type GameState } from "../../src/engine";
+import { cardBadges, cardName, computeScore, exhaustedEffects, isLegal, getLegalActions, isEffectExhausted, productionGroups, refreshPendingPrompt, type Action, type Answer, type GameState } from "../../src/engine";
 import { canPay } from "../../src/engine/state";
 import { checkKey } from "../../src/engine/ops";
 import { payPool, restrictionSources } from "../../src/engine/passives";
@@ -208,6 +208,17 @@ describe("effets des cartes", async () => {
     expect(pending(s)?.request.type).toBe("option");
     s = run(catalog, s, choose({ option: 1 }));
     expect(s.cards[fk(92)]?.stickers).toEqual([{ sticker: "10", stage: 1, fame: 5 }]);
+  });
+
+  it("Stranger : on lui donne un nom (geste libre, enregistré), qui remplace le blanc du titre ; compteur de passages", () => {
+    let s = arrange(catalog, { play: [92, 1], deck: [2] });
+    s.cards[fk(92)] = { ...s.cards[fk(92)]!, plays: 1 };
+    expect(cardBadges(catalog, s, fk(92))).toEqual(["1er passage", "✎ à nommer"]);
+    s = run(catalog, s, { type: "manual", op: { kind: "name", card: fk(92), name: "  Mirabelle " } });
+    expect(cardName(catalog, s, fk(92))).toBe("Mirabelle (#92)");
+    expect(cardBadges(catalog, s, fk(92))).toEqual(["1er passage"]);
+    expect(isLegal(catalog, s, { type: "manual", op: { kind: "name", card: fk(1), name: "Bob" } })).toBe(false);
+    expect(isLegal(catalog, s, { type: "manual", op: { kind: "name", card: fk(92), name: " " } })).toBe(false);
   });
 
   it("Impregnable Fortress peut défausser 2 murs à sa place", () => {
