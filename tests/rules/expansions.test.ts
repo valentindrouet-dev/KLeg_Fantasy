@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { campaignStage, campaignSteps, computeScore, productionGroups, type Action, type GameState } from "../../src/engine";
+import { act, campaignStage, campaignSteps, canUndo, computeScore, current, productionGroups, resumeSession, undo, type Action, type GameState } from "../../src/engine";
 import { purgeFame } from "../../src/engine/campaign";
 import { loadCatalog } from "../helpers/catalog";
 import { arrange, fk, legal, passUntil, run } from "../helpers/game";
@@ -40,6 +40,25 @@ describe("purge et mini-extensions", async () => {
     expect(s.zones.purged.some((id) => [fk(25), fk(26)].includes(id))).toBe(true);
     expect(s.round).toBe(2);
     expect(s.turn).toBe(1);
+  });
+
+  it("purge : chaque choix s'annule tant qu'elle n'est pas finie, plus jamais ensuite (même en mode Libre)", () => {
+    let sess = resumeSession(catalog, { config: { ...finished().config, undoMode: "free" }, actions: [] }, finished());
+    sess = act(sess, { type: "startExpansion", card: fk(137) });
+    const first = (sess2: typeof sess) => {
+      const r = choice(current(sess2))?.request;
+      return r?.type === "cards" ? r.options.slice(0, r.min) : [];
+    };
+    sess = act(sess, { type: "choose", answer: { cards: first(sess) } });
+    expect(choice(current(sess))?.request.prompt).toBe("Purge : 1 carte à purger (paquet 2/2)");
+    // On revient sur le paquet 1.
+    expect(canUndo(sess)).toBe(true);
+    sess = undo(sess);
+    expect(choice(current(sess))?.request.prompt).toBe("Purge : 1 carte à purger (paquet 1/2)");
+    for (let i = 0; i < 5 && choice(current(sess))?.script === "campaign:purge12"; i++) sess = act(sess, { type: "choose", answer: { cards: first(sess) } });
+    expect(current(sess).zones.purged).toHaveLength(3);
+    expect(sess.record.undoFloor).toBe(sess.record.actions.length);
+    expect(canUndo(sess)).toBe(false);
   });
 
   it("la gloire des cartes purgées est cumulée ; Temple of Light compte +10 par case cochée", () => {

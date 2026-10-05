@@ -430,14 +430,16 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
 
   // Extension en cours (mini-extension, ou carte guide de Merchants) : à chaque nouvelle manche, l'étape jouée de sa
   // carte est montrée en grand ; on la touche pour la fermer, le plateau reste utilisable.
+  // Seulement une fois la manche commencée : pas pendant la purge (manche 0/4).
   const expansionCard = state?.campaign?.current ?? null;
+  const expansionRounds = state?.campaign?.rounds ?? 0;
   useEffect(() => {
-    if (round === null || !expansionCard) {
+    if (round === null || !expansionCard || expansionRounds < 1) {
       setExpansionShown(null);
       return;
     }
     setExpansionShown((x) => (x?.round === round ? x : { round, card: expansionCard }));
-  }, [round, expansionCard]);
+  }, [round, expansionCard, expansionRounds]);
 
   useEffect(() => {
     if (!toast) return;
@@ -865,6 +867,10 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
   };
 
   const fame = computeScore(catalog, state).total;
+  // Purge en cours (demande du 2026-10-05) : on peut revenir sur une carte choisie tant que la purge n'est pas finie ;
+  // une fois finie, le moteur refuse de l'annuler (undoFloor).
+  const purgeUndo =
+    state.pending?.kind === "choice" && state.pending.script.startsWith("campaign:purge") && state.pending.answers.length > 0 && canUndo(session) ? undo : undefined;
   // Permanentes (demande du 2026-10-03) : à gauche celles où l'on accumule des ressources (Army, Treasury, Export…),
   // à droite les objectifs, les autres entre les deux.
   const permanentGroups = (() => {
@@ -935,6 +941,11 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
         // Choix sur le plateau en cours : ce qu'il faut toucher et combien de cartes sont déjà choisies.
         <div className={styles.pickCounter}>
           <IconText text={state.pending.request.prompt} /> <strong>{picked.reduce((n, c) => n + boardChoice.weight(c), 0)}/{boardChoice.count}</strong>
+          {purgeUndo && (
+            <button className={`btn ${styles.pickUndo}`} onClick={purgeUndo}>
+              ↶ Revenir au choix précédent
+            </button>
+          )}
         </div>
       )}
       {counters.length > 0 && (
@@ -1274,7 +1285,9 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
       {discardOpen && (
         <CardListDialog catalog={catalog} state={state} title="Défausse" cards={state.zones.discard} onInspect={setInspect} onClose={() => setDiscardOpen(false)} />
       )}
-      {state.pending && !boardChoice && !boxChoice && <DecisionDialog catalog={catalog} state={state} onAction={(a) => perform([a])} onRestart={restart} onInspect={setInspect} />}
+      {state.pending && !boardChoice && !boxChoice && (
+        <DecisionDialog catalog={catalog} state={state} onAction={(a) => perform([a])} onRestart={restart} onInspect={setInspect} onUndo={purgeUndo} />
+      )}
       {devMode && (
         <DevBar catalog={catalog} state={state} onAction={(a) => perform([a])} onShowDeck={() => setDevList("deck")} onShowBox={() => setDevList("box")} />
       )}

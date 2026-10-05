@@ -3,6 +3,13 @@
 Chaque mise à jour publiée change de version (`package.json`, affichée dans l'appli en bas de l'écran « Mes royaumes »
 et dans la barre de la partie). Convention : `0.5.0` s'affiche **v0.05** ; un correctif `0.5.1` s'affiche **v0.05.1**.
 
+## v0.66 (5 octobre 2026)
+
+- Garde-fou de la purge (mini-extensions et Merchants) :
+  - pendant la purge, un bouton **« ↶ Revenir au choix précédent »** apparaît dès qu'une carte a été choisie, dans la fenêtre des paquets comme dans le bandeau des cartes permanentes ; on revient sur une erreur ou un changement d'avis, carte par carte ;
+  - une fois la purge terminée, elle ne s'annule plus, même en mode Libre et même après avoir rechargé l'appli.
+- La carte de l'extension (début de manche) n'apparaît plus pendant la purge, seulement quand la première manche commence.
+
 ## v0.65 (5 octobre 2026)
 
 - Nouvelle page de fin de partie et de lancement des extensions :

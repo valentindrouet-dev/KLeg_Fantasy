@@ -27,7 +27,7 @@
 
 ### Mini-extension
 
-1. « Jouer The Water Mill » (par exemple) lance d'abord la **purge** : 1 carte par paquet de 12 du deck mélangé, puis 1 carte permanente. Aethan Estate peut sauver des cartes. La gloire des cartes purgées est gardée pour tous les scores suivants.
+1. « Jouer The Water Mill » (par exemple) lance d'abord la **purge** : 1 carte par paquet de 12 du deck mélangé, puis 1 carte permanente. Aethan Estate peut sauver des cartes. La gloire des cartes purgées est gardée pour tous les scores suivants. Pendant la purge, « Revenir au choix précédent » annule le dernier choix ; une fois finie, elle ne s'annule plus, même en mode Libre (v0.66, `GameRecord.undoFloor`).
 2. Ensuite viennent **4 manches sans découverte**. La carte d'extension change d'étape à chaque fin de manche, avec son action de fin (Royal Decree, Obsolete Farms, Resistance…). Au début de chaque manche, l'étape jouée de la carte est montrée en grand (v0.64), avec sa traduction ; on la touche pour la fermer.
 3. Après la 4e manche, la carte est détruite et son score s'ajoute au chemin de score. La fenêtre **« Fin de la mini-extension »** s'ouvre et l'extension jouée y est grisée « Déjà jouée ».
 
@@ -70,7 +70,7 @@ Décisions de règles : `docs/RULES_DECISIONS.md` (2026-10-05, extension Merchan
 | Outil | Ce qu'il fait |
 | --- | --- |
 | Sauvegarde automatique | Après chaque action. On reprend exactement où on s'est arrêté. |
-| **Annuler** | Mode Libre : sans limite, y compris à travers une fin de partie ou une mini-extension entière. Mode Strict : seulement dans le tour en cours, tant que rien n'a été révélé. |
+| **Annuler** | Mode Libre : sans limite, sauf au-delà d'une purge terminée (v0.66). Mode Strict : seulement dans le tour en cours, tant que rien n'a été révélé. |
 | **Dupliquer** (accueil) | Copie complète du royaume à l'instant T, nommée « (copie) ». |
 | **Exporter / Importer** | Fichier JSON du royaume. L'import rejoue toute la partie. |
 | **Recommencer** | Seulement avant la découverte de la carte 23 (règle officielle). |

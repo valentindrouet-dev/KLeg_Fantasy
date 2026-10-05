@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { current, replay, type Action, type Catalog } from "../engine";
+import { current, replay, type Action, type Catalog, type GameRecord } from "../engine";
 import { newKingdomId, summarize, type Kingdom } from "./kingdoms";
 
 // Sauvegarde d'un royaume dans un fichier (spec 6.2 : export / import JSON).
@@ -48,10 +48,13 @@ export function importKingdom(catalog: Catalog, text: string, takenIds: readonly
   const parsed = BackupSchema.safeParse(raw);
   if (!parsed.success) throw new Error("Ce fichier n'est pas une sauvegarde de royaume.");
   const { kingdom } = parsed.data;
-  const record = { config: kingdom.record.config, actions: kingdom.record.actions as Action[] };
+  let record: GameRecord = { config: kingdom.record.config, actions: kingdom.record.actions as Action[] };
   let state;
   try {
-    state = current(replay(catalog, record));
+    // Le rejeu recalcule aussi la limite d'annulation (fin de purge).
+    const session = replay(catalog, record);
+    state = current(session);
+    record = session.record;
   } catch {
     throw new Error("La partie de cette sauvegarde ne peut pas être rejouée.");
   }

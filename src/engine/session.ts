@@ -6,7 +6,11 @@ import type { Action, Catalog, GameConfig, GameState } from "./types";
 // La session garde les états des dernières actions pour annuler sans rejouer ;
 // au-delà, l'annulation (mode Libre) rejoue l'enregistrement.
 
-export type GameRecord = { config: GameConfig; actions: Action[] };
+/**
+ * undoFloor : nombre d'actions en dessous duquel on ne peut plus annuler, quel que soit le mode (fin d'une purge,
+ * demande du 2026-10-05). Absent des parties enregistrées avant : aucune limite.
+ */
+export type GameRecord = { config: GameConfig; actions: Action[]; undoFloor?: number };
 
 /** Nombre d'états gardés en mémoire (un état complet par action, journal compris). */
 export const UNDO_WINDOW = 40;
@@ -33,10 +37,14 @@ export function current(session: Session): GameState {
 }
 
 export function act(session: Session, action: Action): Session {
-  const next = applyAction(session.catalog, current(session), action);
+  const before = current(session);
+  const next = applyAction(session.catalog, before, action);
+  const actions = [...session.record.actions, action];
+  // Purge terminée (des cartes viennent d'être purgées) : elle ne s'annule plus, même en mode Libre.
+  const purged = (next.zones.purged?.length ?? 0) !== (before.zones.purged?.length ?? 0);
   return {
     ...session,
-    record: { ...session.record, actions: [...session.record.actions, action] },
+    record: { ...session.record, actions, ...(purged ? { undoFloor: actions.length } : {}) },
     states: [...session.states, next].slice(-(UNDO_WINDOW + 1)),
   };
 }
@@ -46,7 +54,7 @@ export function act(session: Session, action: Action): Session {
  * qui n'a révélé aucune information (carte du deck, découverte, mélange).
  */
 export function canUndo(session: Session): boolean {
-  if (session.record.actions.length === 0) return false;
+  if (session.record.actions.length <= (session.record.undoFloor ?? 0)) return false;
   if (session.record.config.undoMode === "free") return true;
   const before = session.states.at(-2);
   const after = session.states.at(-1);

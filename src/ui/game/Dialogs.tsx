@@ -235,12 +235,15 @@ export function DecisionDialog({
   onAction,
   onRestart,
   onInspect,
+  onUndo,
 }: {
   catalog: Catalog;
   state: GameState;
   onAction: (a: Action) => void;
   onRestart: () => void;
   onInspect: (card: InstanceId) => void;
+  /** Revenir au choix précédent (purge en cours : demande du 2026-10-05). */
+  onUndo?: () => void;
 }) {
   const p = state.pending;
   if (!p) return null;
@@ -302,7 +305,7 @@ export function DecisionDialog({
 
   if (p.kind === "newCards") return <NewCardsDialog key={p.cards.join(",")} catalog={catalog} state={state} cards={p.cards} onAction={onAction} />;
 
-  if (p.kind === "choice") return <ChoiceDialog key={`${p.source}/${p.script}/${p.answers.length}`} catalog={catalog} state={state} onAction={onAction} onInspect={onInspect} />;
+  if (p.kind === "choice") return <ChoiceDialog key={`${p.source}/${p.script}/${p.answers.length}`} catalog={catalog} state={state} onAction={onAction} onInspect={onInspect} onUndo={onUndo} />;
 
   return (
     <Dialog title={`Découvrir ${p.remaining} carte${p.remaining > 1 ? "s" : ""}`} wide>
@@ -485,7 +488,19 @@ function NewCardsDialog({
   );
 }
 
-function ChoiceDialog({ catalog, state, onAction, onInspect }: { catalog: Catalog; state: GameState; onAction: (a: Action) => void; onInspect: (card: InstanceId) => void }) {
+function ChoiceDialog({
+  catalog,
+  state,
+  onAction,
+  onInspect,
+  onUndo,
+}: {
+  catalog: Catalog;
+  state: GameState;
+  onAction: (a: Action) => void;
+  onInspect: (card: InstanceId) => void;
+  onUndo?: () => void;
+}) {
   const p = state.pending;
   const [cards, setCards] = useState<InstanceId[]>([]);
   const [resources, setResources] = useState<string[]>([]);
@@ -517,6 +532,11 @@ function ChoiceDialog({ catalog, state, onAction, onInspect }: { catalog: Catalo
         : false;
   const actions = (
     <>
+      {onUndo && (
+        <button className="btn" onClick={onUndo}>
+          ↶ Revenir au choix précédent
+        </button>
+      )}
       {cancel}
       {(req.type === "resources" || (req.type === "cards" && !one)) && (
         <button
