@@ -10,8 +10,10 @@ on:
 permissions:
   contents: write
 
+# Groupe propre à ce workflow : « pages » est aussi celui de la publication de GitHub (pages build and deployment) ;
+# partagé, un nouveau push pouvait annuler la mise en ligne précédente encore en attente.
 concurrency:
-  group: pages
+  group: site-deploy
   cancel-in-progress: true
 
 jobs:
