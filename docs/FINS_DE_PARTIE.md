@@ -28,7 +28,7 @@
 ### Mini-extension
 
 1. « Jouer The Water Mill » (par exemple) lance d'abord la **purge** : 1 carte par paquet de 12 du deck mélangé, puis 1 carte permanente. Aethan Estate peut sauver des cartes. La gloire des cartes purgées est gardée pour tous les scores suivants.
-2. Ensuite viennent **4 manches sans découverte**. La carte d'extension change d'étape à chaque fin de manche, avec son action de fin (Royal Decree, Obsolete Farms, Resistance…).
+2. Ensuite viennent **4 manches sans découverte**. La carte d'extension change d'étape à chaque fin de manche, avec son action de fin (Royal Decree, Obsolete Farms, Resistance…). Au début de chaque manche, l'étape jouée de la carte est montrée en grand (v0.64), avec sa traduction ; on la touche pour la fermer.
 3. Après la 4e manche, la carte est détruite et son score s'ajoute au chemin de score. La fenêtre **« Fin de la mini-extension »** s'ouvre et l'extension jouée y est grisée « Déjà jouée ».
 
 ### Grande extension : Merchants (v0.63)

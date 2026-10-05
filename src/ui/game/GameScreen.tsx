@@ -31,6 +31,7 @@ import {
   type Catalog,
   type GameState,
   type InstanceId,
+  expansionName,
 } from "../../engine";
 import type { Orientation } from "../../data/schema";
 import { APP_VERSION } from "../../version";
@@ -169,6 +170,8 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
   const [inspectBack, setInspectBack] = useState<InstanceId[]>([]);
   const [discardOpen, setDiscardOpen] = useState(false);
   const [roundBanner, setRoundBanner] = useState<{ key: number; text: string } | null>(null);
+  /** Extension en cours : sa carte, l'étape active en grand, au début de chaque manche (demande du 2026-10-05). */
+  const [expansionShown, setExpansionShown] = useState<{ round: number; card: InstanceId } | null>(null);
   /** Texte posé sur une carte : traduction en mode FR, ou ce qui manque pour payer. */
   const [note, setNote] = useState<{ card: InstanceId; note: CardNote } | null>(null);
   const lastRound = useRef<number | null>(null);
@@ -424,6 +427,17 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
     const t = window.setTimeout(() => setRoundBanner(null), 2200);
     return () => window.clearTimeout(t);
   }, [round, finalRound]);
+
+  // Extension en cours (mini-extension, ou carte guide de Merchants) : à chaque nouvelle manche, l'étape jouée de sa
+  // carte est montrée en grand ; on la touche pour la fermer, le plateau reste utilisable.
+  const expansionCard = state?.campaign?.current ?? null;
+  useEffect(() => {
+    if (round === null || !expansionCard) {
+      setExpansionShown(null);
+      return;
+    }
+    setExpansionShown((x) => (x?.round === round ? x : { round, card: expansionCard }));
+  }, [round, expansionCard]);
 
   useEffect(() => {
     if (!toast) return;
@@ -1098,6 +1112,36 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
           <div className={styles.roundBanner} key={roundBanner.key} role="status">
             {roundBanner.text}
           </div>
+        )}
+        {expansionShown && state.zones.permanent.includes(expansionShown.card) && activeStage(catalog, state, expansionShown.card) && (
+          <button
+            type="button"
+            className={styles.expansionStage}
+            key={`exp-${expansionShown.round}`}
+            onClick={() => setExpansionShown(null)}
+            aria-label="Étape de l'extension jouée cette manche (toucher pour fermer)"
+          >
+            <span className={styles.expansionStageTitle}>
+              {state.campaign?.grand ?? expansionName({ catalog, s: state }, expansionShown.card)} · manche {state.campaign?.rounds ?? 1}/4
+            </span>
+            <span className={styles.expansionStageName}>{activeStage(catalog, state, expansionShown.card)?.name.replace(/ \(expansion\)$/, "")}</span>
+            <CardView
+              template={tpl(expansionShown.card)}
+              orientation={instance(state, expansionShown.card).orientation}
+              label={cardName(catalog, state, expansionShown.card)}
+              width={300}
+              half
+            />
+            {(() => {
+              const fr = frNote(tpl(expansionShown.card), instance(state, expansionShown.card).orientation, "top");
+              return fr ? (
+                <span className={styles.expansionStageFr}>
+                  <IconText text={fr.text} />
+                </span>
+              ) : null;
+            })()}
+            <span className={styles.expansionStageHint}>Toucher pour fermer</span>
+          </button>
         )}
       </div>
 

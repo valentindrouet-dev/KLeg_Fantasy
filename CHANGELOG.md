@@ -3,6 +3,10 @@
 Chaque mise à jour publiée change de version (`package.json`, affichée dans l'appli en bas de l'écran « Mes royaumes »
 et dans la barre de la partie). Convention : `0.5.0` s'affiche **v0.05** ; un correctif `0.5.1` s'affiche **v0.05.1**.
 
+## v0.64 (5 octobre 2026)
+
+- Mini-extension (et Merchants) : au début de chaque manche, la carte de l'extension est montrée en grand, seulement l'étape jouée cette manche, avec « manche n/4 » et sa traduction française. On la touche pour la fermer ; le plateau reste utilisable pendant qu'elle est affichée.
+
 ## v0.63 (5 octobre 2026)
 
 - L'extension **Merchants** est jouable. Après la partie de base, elle se lance depuis la fenêtre de fin, à côté des mini-extensions (une seule fois par royaume) :

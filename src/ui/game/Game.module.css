@@ -719,6 +719,65 @@
   color: var(--surface);
 }
 
+/* --- Extension en cours : étape jouée de sa carte, au début de chaque manche (toucher pour fermer) --- */
+.expansionStage {
+  position: fixed;
+  top: calc(env(safe-area-inset-top) + 9.5rem);
+  left: 50%;
+  z-index: 69;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  max-width: calc(100vw - 32px);
+  padding: var(--space-3) var(--space-4) var(--space-2);
+  border: 2px solid var(--accent);
+  border-radius: 18px;
+  background: color-mix(in srgb, var(--surface) 96%, transparent);
+  color: var(--text);
+  box-shadow: 0 14px 34px rgb(0 0 0 / 0.35);
+  font: inherit;
+  cursor: pointer;
+  transform: translateX(-50%);
+  animation: expansion-stage-in 350ms ease;
+}
+
+.expansionStageTitle {
+  color: var(--accent);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.expansionStageName {
+  font-size: 1.35rem;
+  font-weight: 800;
+}
+
+.expansionStageFr {
+  max-width: 300px;
+  font-size: 0.9rem;
+  line-height: 1.35;
+  text-align: center;
+}
+
+.expansionStageHint {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+
+@keyframes expansion-stage-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -0.6rem) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
+  }
+}
+
 /* --- Passage de manche : message flottant central --- */
 .roundBanner {
   /* Fixé à l'écran, juste sous la barre du haut (même place sur tous les navigateurs, iPad compris). */
