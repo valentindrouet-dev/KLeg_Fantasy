@@ -1,7 +1,7 @@
 {
   "name": "kleg-fantasy",
   "private": true,
-  "version": "0.64.0",
+  "version": "0.64.1",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -17,7 +17,8 @@
     "text-lines": "tsx scripts/text-lines.ts",
     "checkbox-spots": "tsx scripts/checkbox-spots.ts",
     "upgrade-spots": "tsx scripts/upgrade-spots.ts",
-    "fame-spots": "tsx scripts/fame-spots.ts"
+    "fame-spots": "tsx scripts/fame-spots.ts",
+    "production-spots": "tsx scripts/production-spots.ts"
   },
   "dependencies": {
     "dexie": "^4.4.6",

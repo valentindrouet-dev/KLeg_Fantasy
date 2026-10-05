@@ -3,6 +3,12 @@
 Chaque mise à jour publiée change de version (`package.json`, affichée dans l'appli en bas de l'écran « Mes royaumes »
 et dans la barre de la partie). Convention : `0.5.0` s'affiche **v0.05** ; un correctif `0.5.1` s'affiche **v0.05.1**.
 
+## v0.64.1 (5 octobre 2026)
+
+- Les productions rayées sont enfin visibles. Royal Decree, Attack, Grapes, Manor et toutes les cartes qui « cross out 1 production » les rayaient bien (la carte produisait moins), mais rien ne se voyait sur la carte. Une croix au feutre barre maintenant chaque icône rayée, partout : plateau, défausse, inspection. Les royaumes existants affichent aussi les croix déjà faites.
+- Les coûts d'amélioration rayés se voient aussi dans toutes les vues.
+- Positions des icônes de production mesurées sur les images de Feudal Kingdom et de Merchants (`npm run production-spots`).
+
 ## v0.64 (5 octobre 2026)
 
 - Mini-extension (et Merchants) : au début de chaque manche, la carte de l'extension est montrée en grand, seulement l'étape jouée cette manche, avec « manche n/4 » et sa traduction française. On la touche pour la fermer ; le plateau reste utilisable pendant qu'elle est affichée.

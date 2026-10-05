@@ -7,6 +7,7 @@ import { useGame } from "./store";
 import { boxRects } from "../../data/checkboxes";
 import { fameSpot } from "../../data/fameIcons";
 import { costIconRects } from "../../data/upgradeIcons";
+import { productionIconRects } from "../../data/productionIcons";
 import { effectLines, type TextLine } from "../../data/textLines";
 import { IconText, iconImage } from "../common/IconText";
 import { fameStickerSpots, STICKER_SIZE, stickerSpots } from "./stickerLayout";
@@ -154,6 +155,37 @@ function CostIcons({ template, stage, half, crossed, pick }: { template: CardTem
   );
 }
 
+/**
+ * Productions rayées (Royal Decree, Attack, Grapes…) : croix au feutre sur les icônes imprimées (positions mesurées,
+ * data/productionIcons). Comme le moteur, une production rayée retire la dernière icône de chaque option du groupe.
+ */
+function CrossedProduction({ template, stage, half, crossed }: { template: CardTemplate; stage: StageId | null; half: "top" | "bottom"; crossed: readonly string[] }) {
+  if (stage === null) return null;
+  const st = template.stages[String(stage) as "1"];
+  const rects = productionIconRects(template.expansion, template.serial, stage);
+  if (!st || !rects) return null;
+  const out: { key: string; r: (typeof rects)[number] }[] = [];
+  let at = 0;
+  for (const g of st.production) {
+    const n = crossed.filter((k) => k.startsWith(`${stage}/${g.id}/`)).length;
+    g.options.forEach((o, oi) => {
+      for (let i = Math.max(0, o.length - n); i < o.length; i++) {
+        const r = rects[at + i];
+        if (r) out.push({ key: `${g.id}/${oi}/${i}`, r });
+      }
+      at += o.length;
+    });
+  }
+  return (
+    <>
+      {out.map(({ key, r }) => {
+        const [x, y, w, h] = half === "top" ? r : [1 - r[0] - r[2], 1 - r[1] - r[3], r[2], r[3]];
+        return <span key={key} className={`${styles.box} ${styles.boxChecked}`} style={{ left: `${x * 100}%`, top: `${y * 100}%`, width: `${w * 100}%`, height: `${h * 100}%` }} />;
+      })}
+    </>
+  );
+}
+
 export type CardNote = { half: "top" | "bottom" | "full"; title?: string; text: string; tone: "fr" | "warn" };
 
 const NOTE_PLACES = {
@@ -292,6 +324,7 @@ function Face({
   goal,
   fameNow,
   customName,
+  crossedProduction,
 }: {
   template: CardTemplate;
   orientation: Orientation;
@@ -301,6 +334,8 @@ function Face({
   fameNow?: number;
   /** Nom donné par le joueur (Stranger), écrit sur le bandeau « ________ ». */
   customName?: string;
+  /** Productions rayées de la carte (`${étape}/${groupe}/${indice}`). */
+  crossedProduction?: readonly string[];
   dimBottom?: boolean;
   stickers?: readonly StickerPlacement[];
   exhausted?: (stage: StageId) => ExhaustedEffect[];
@@ -346,6 +381,12 @@ function Face({
           <Boxes template={template} stage={bottomId} views={bottomId === null ? [] : boxes(bottomId)} half="bottom" />
         </>
       )}
+      {(crossedProduction?.length ?? 0) > 0 && (
+        <>
+          <CrossedProduction template={template} stage={topId} half="top" crossed={crossedProduction ?? []} />
+          <CrossedProduction template={template} stage={bottomId} half="bottom" crossed={crossedProduction ?? []} />
+        </>
+      )}
       {((crossedCosts?.length ?? 0) > 0 || (pickCosts?.length ?? 0) > 0) && (
         <>
           <CostIcons template={template} stage={topId} half="top" crossed={crossedCosts ?? []} pick={pickCosts ?? []} />
@@ -371,13 +412,17 @@ function Face({
 }
 
 export function CardView(props: Props) {
-  const { id, template, orientation, label, width, selected, engaged, targetable, dimBottom, flagged, onTwoFinger, dimmed, badge, onTap, onLongPress, zoneLabel, anim, half, note, exhausted, shake, picked, boxes, pickBoxes, crossedCosts, pickCosts, goal } =
+  const { id, template, orientation, label, width, selected, engaged, targetable, dimBottom, flagged, onTwoFinger, dimmed, badge, onTap, onLongPress, zoneLabel, anim, half, note, exhausted, shake, picked, boxes, pickBoxes, pickCosts, goal } =
     props;
   // Carte rayée (demande du 2026-10-04) : glisser le doigt horizontalement sur la carte pose ou retire un halo rouge.
   const markId = props.markId ?? id;
   // Stickers toujours visibles (demande du 2026-10-05) : ceux de la carte de la partie, si l'appelant ne les donne pas.
   const ownStickers = useGame((g) => (markId && g.session ? g.session.states.at(-1)?.cards[markId]?.stickers : undefined));
   const stickers = props.stickers ?? ownStickers;
+  // Productions et coûts rayés : toujours visibles, comme les stickers (demande du 2026-10-05, Royal Decree).
+  const crossedProduction = useGame((g) => (markId ? g.session?.states.at(-1)?.cards[markId]?.crossedOutProduction : undefined));
+  const ownCrossedCosts = useGame((g) => (markId ? g.session?.states.at(-1)?.cards[markId]?.crossedOutCosts : undefined));
+  const crossedCosts = props.crossedCosts ?? ownCrossedCosts;
   // Stranger : le nom donné, écrit sur le blanc du bandeau.
   const customName = useGame((g) => (markId ? g.session?.states.at(-1)?.cards[markId]?.customName : undefined));
   // Gloire variable : seulement sur la face posée comme dans la partie (l'étape du haut est l'étape active).
@@ -460,12 +505,12 @@ export function CardView(props: Props) {
       {anim?.kind === "flip" ? (
         // Retournement : deux faces dos à dos, la carte pivote d'un seul mouvement.
         <div className={styles.flipInner}>
-          <Face template={template} orientation={orientation} label={label} stickers={stickers} exhausted={exhausted} boxes={boxes} pickBoxes={pickBoxes} crossedCosts={crossedCosts} pickCosts={pickCosts} goal={goal} fameNow={fameNow} customName={customName} />
-          <Face template={template} orientation={anim.to} label={label} className={styles.backFace} stickers={stickers} exhausted={exhausted} boxes={boxes} pickBoxes={pickBoxes} crossedCosts={crossedCosts} pickCosts={pickCosts} goal={goal} />
+          <Face template={template} orientation={orientation} label={label} stickers={stickers} exhausted={exhausted} boxes={boxes} pickBoxes={pickBoxes} crossedCosts={crossedCosts} pickCosts={pickCosts} goal={goal} fameNow={fameNow} customName={customName} crossedProduction={crossedProduction} />
+          <Face template={template} orientation={anim.to} label={label} className={styles.backFace} stickers={stickers} exhausted={exhausted} boxes={boxes} pickBoxes={pickBoxes} crossedCosts={crossedCosts} pickCosts={pickCosts} goal={goal} crossedProduction={crossedProduction} />
         </div>
       ) : (
         // Pendant une rotation, la carte n'est plus grisée (sinon la moitié grisée passe en haut).
-        <Face template={template} orientation={orientation} label={label} dimBottom={dimBottom && !anim && !half} stickers={stickers} exhausted={exhausted} boxes={boxes} pickBoxes={pickBoxes} crossedCosts={crossedCosts} pickCosts={pickCosts} goal={goal} fameNow={fameNow} customName={customName} />
+        <Face template={template} orientation={orientation} label={label} dimBottom={dimBottom && !anim && !half} stickers={stickers} exhausted={exhausted} boxes={boxes} pickBoxes={pickBoxes} crossedCosts={crossedCosts} pickCosts={pickCosts} goal={goal} fameNow={fameNow} customName={customName} crossedProduction={crossedProduction} />
       )}
       {rect && !anim && (
         <span

@@ -117,6 +117,6 @@ Kingdom Legacy est un jeu *legacy* : ce qui est fait est fait. Dans la boîte ph
   - récupérer ses cartes (fiches dans `data/cards/<Extension>/`, images, traduction) ;
   - déclarer ses règles dans `GRAND_EXPANSIONS` (`src/engine/campaign.ts`) : purge, carte guide, nombre de manches, sticker du chemin de score ;
   - écrire les effets de ses cartes (`src/engine/effects/merchants.ts` pour Merchants) ;
-  - mesurer ses images : `npm run checkbox-spots -- --expansion <Extension>`, idem `text-lines`, `upgrade-spots`, `fame-spots`, puis les déclarer dans `src/data/*.ts`.
+  - mesurer ses images : `npm run checkbox-spots -- --expansion <Extension>`, idem `text-lines`, `upgrade-spots`, `fame-spots`, `production-spots`, puis les déclarer dans `src/data/*.ts`.
   Ses cartes s'ajoutent à la boîte au lancement (action `startGrandExpansion`) ; les cartes citées par numéro sont cherchées dans l'extension de la carte qui les cite.
 - **Aucune donnée supprimée.** Les nouveaux champs (`summary.stage`, `milestones`) sont facultatifs. Les royaumes existants s'affichent avec leur nouveau statut calculé depuis leur état, sans migration.
