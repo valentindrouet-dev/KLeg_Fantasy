@@ -47,6 +47,7 @@ Tu reprends le projet Kingdom Legacy Digital. Lis dans l'ordre :
 1. SPEC_kingdom_legacy.md (la spécification, elle fait foi)
 2. docs/HANDOFF.md (état du projet, décisions, questions ouvertes)
 3. docs/DATA_EXTRACTION.md (conventions des fiches de cartes)
+3 bis. docs/FINS_DE_PARTIE.md (fins de partie, mini-extensions, campagne, sauvegardes : existant et manques)
 
 Les phases P0 (données), P1 (moteur, docs/ENGINE.md) et P2 (interface,
 docs/UI.md) sont terminées : 140 fiches dans data/cards/FeudalKingdom,
