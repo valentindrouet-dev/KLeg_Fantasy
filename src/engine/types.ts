@@ -74,7 +74,8 @@ export type PendingDecision =
 /** Question posée au joueur au cours d'un effet. */
 export type ChoiceRequest =
   // none : la réponse vide est aussi permise (refuser l'effet), avec ce libellé de bouton.
-  | { type: "cards"; prompt: string; options: InstanceId[]; min: number; max: number; none?: string }
+  // weights + need : choix pondéré (Miners compte pour 2 personnes) : le poids total doit atteindre need, sans carte de trop.
+  | { type: "cards"; prompt: string; options: InstanceId[]; min: number; max: number; none?: string; weights?: Record<InstanceId, number>; need?: number }
   | { type: "resources"; prompt: string; options: ResourceId[]; count: number } // `count` ressources, répétitions permises
   // boxes : cases de la carte source qu'on peut toucher pour répondre (réponse { box }), en plus des options.
   // boxes : cases de la carte source qu'on peut toucher pour répondre (réponse { box }), en plus des options ;

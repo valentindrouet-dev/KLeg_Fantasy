@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useState, type ReactNode } from "react";
-import { canBeNamed,
+import { isValidAnswer, canBeNamed,
   availableExpansions,
   boxViews,
   canRestartKingdom,
@@ -500,7 +500,13 @@ function ChoiceDialog({ catalog, state, onAction, onInspect }: { catalog: Catalo
   );
   const one = req.type === "cards" && req.min === 1 && req.max === 1;
   const ok =
-    req.type === "cards" ? cards.length >= req.min && cards.length <= req.max : req.type === "resources" ? resources.length === req.count : false;
+    req.type === "cards"
+      ? req.need !== undefined
+        ? isValidAnswer(req, { cards }) // choix pondéré (Miners compte pour 2 personnes)
+        : cards.length >= req.min && cards.length <= req.max
+      : req.type === "resources"
+        ? resources.length === req.count
+        : false;
   const actions = (
     <>
       {cancel}

@@ -81,6 +81,21 @@ export function cardName(catalog: Catalog, s: GameState, id: InstanceId): string
   return name ? `${name} (#${c.serial})` : `#${c.serial}`;
 }
 
+/**
+ * Nombre de personnes que compte une carte : 0 (pas une personne), 1, ou 2 pour Miners (#73 : « *May be counted as 2
+ * persons. »). « May » : on la compte pour 2 quand ça avantage le joueur (coût en personnes, gain par personne),
+ * jamais pour une contrainte (Uprising). Demande du 2026-10-05.
+ */
+export function personWeight(catalog: Catalog, s: GameState, id: InstanceId): number {
+  if (!hasKeyword(catalog, s, id, "Person")) return 0;
+  return /May be counted as 2 persons/.test(activeStage(catalog, s, id)?.text ?? "") ? 2 : 1;
+}
+
+/** Personnes comptées dans ces cartes (Miners compte pour 2). */
+export function countPersons(catalog: Catalog, s: GameState, ids: readonly InstanceId[]): number {
+  return ids.reduce((n, id) => n + personWeight(catalog, s, id), 0);
+}
+
 /** Mots-clés du stage actif, y compris ceux des stickers (sticker 11 : Knight). */
 export function keywordsOf(catalog: Catalog, s: GameState, id: InstanceId): string[] {
   const stage = activeStage(catalog, s, id);

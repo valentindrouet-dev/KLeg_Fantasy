@@ -3,6 +3,15 @@
 Chaque mise à jour publiée change de version (`package.json`, affichée dans l'appli en bas de l'écran « Mes royaumes »
 et dans la barre de la partie). Convention : `0.5.0` s'affiche **v0.05** ; un correctif `0.5.1` s'affiche **v0.05.1**.
 
+## v0.61 (5 octobre 2026)
+
+- Miners (#73, « May be counted as 2 persons ») compte pour 2 personnes quand ça t'avantage :
+  - coûts en personnes des améliorations (Spoiled Princess : toucher Miners suffit) ;
+  - effets « Discard 2 / 3 persons » ;
+  - gains par personne en jeu, Cathedral, Strength in Numbers.
+
+  Jamais avec une personne de trop (Miners + une autre pour « 2 Persons » n'est pas proposé). Il compte pour 1 dans ce qui te pénalise (Uprising).
+
 ## v0.60 (5 octobre 2026)
 
 - Stranger (#92) : « Give her a name! » ne faisait rien. Dans l'inspection de la carte (appui long), un champ « Son nom » permet de la nommer ou de la renommer, sans fenêtre. Le nom s'écrit sur le blanc « ________ » du bandeau et remplace le titre partout (journal, questions, listes). C'est une action enregistrée : annulable, sauvegardée.

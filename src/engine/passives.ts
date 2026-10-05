@@ -1,5 +1,5 @@
 import type { ResourceId } from "../data/schema";
-import { activeStage, hasKeyword, instance, isFriendly, type Pool } from "./state";
+import { activeStage, countPersons, hasKeyword, instance, isFriendly, type Pool } from "./state";
 import type { Catalog, GameState, InstanceId } from "./types";
 
 // Effets passifs qui modifient les règles tant que leur carte est en jeu (ou permanente) : bonus de production,
@@ -41,7 +41,7 @@ export const personsInPlay = (catalog: Catalog, s: GameState): InstanceId[] =>
 /** Groupes de production ajoutés par les passifs, une icône par groupe. */
 export function productionBonus(catalog: Catalog, s: GameState, id: InstanceId): ResourceId[][] {
   const coins: number[] = [];
-  if (activeTexts(catalog, s, id).includes(T.cathedral)) coins.push(personsInPlay(catalog, s).length);
+  if (activeTexts(catalog, s, id).includes(T.cathedral)) coins.push(countPersons(catalog, s, personsInPlay(catalog, s)));
   if (hasKeyword(catalog, s, id, "Person")) coins.push(countSources(catalog, s, T.scientist, ["play"]));
   if (hasKeyword(catalog, s, id, "Land")) coins.push(2 * countSources(catalog, s, T.rainLands, ["play"]));
   if (hasKeyword(catalog, s, id, "Building")) coins.push(countSources(catalog, s, T.townWell, ["play"]));

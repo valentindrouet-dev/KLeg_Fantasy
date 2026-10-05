@@ -221,6 +221,23 @@ describe("effets des cartes", async () => {
     expect(isLegal(catalog, s, { type: "manual", op: { kind: "name", card: fk(92), name: " " } })).toBe(false);
   });
 
+  it("Miners compte pour 2 personnes : seul, il paie « 2 Persons » (Spoiled Princess) ; jamais avec une personne de trop", () => {
+    const front180 = { side: "front", rotation: 180 } as const;
+    const s = arrange(catalog, { play: [66, 73, 13, 1], deck: [2], orientation: { 66: front180, 73: front180 } });
+    const ups = getLegalActions(catalog, s).filter((a) => a.type === "upgrade" && a.card === fk(66));
+    const sets = ups.map((a) => (a.type === "upgrade" ? [...a.discard].sort() : []));
+    expect(sets).toContainEqual([fk(73)]);
+    expect(sets).not.toContainEqual([fk(13), fk(73)].sort());
+    const after = run(catalog, s, ups.find((a) => a.type === "upgrade" && a.discard.length === 1 && a.discard[0] === fk(73))!);
+    expect(after.zones.discard).toContain(fk(73));
+    expect(after.cards[fk(66)]?.orientation).toEqual({ side: "front", rotation: 0 }); // Young Princess
+    // Deux autres personnes paient aussi ; Miners avec une autre personne, jamais (une de trop).
+    const two = arrange(catalog, { play: [66, 73, 13, 14], deck: [2], orientation: { 66: front180, 73: front180, 14: { side: "back", rotation: 0 } } });
+    const pairs = getLegalActions(catalog, two).flatMap((a) => (a.type === "upgrade" && a.card === fk(66) ? [[...a.discard].sort()] : []));
+    expect(pairs).toContainEqual([fk(13), fk(14)].sort());
+    expect(pairs.some((p) => p.length === 2 && p.includes(fk(73)))).toBe(false);
+  });
+
   it("Impregnable Fortress peut défausser 2 murs à sa place", () => {
     let s = arrange(catalog, { play: [123, 18, 63], orientation: { 123: back0, 18: back0, 63: back0 } });
     s = run(catalog, s, { type: "produce", card: fk(123), choices: [0] });

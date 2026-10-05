@@ -1,5 +1,5 @@
 import type { CardTemplate, Checkbox, ResourceId, StageId } from "../../data/schema";
-import { askBox, askCards, askCardsOrNone, askOption, askResources, boxOf, cardsOf, optionOf, resourcesOf } from "../choice";
+import { askBox, askCards, askCardsOrNone, askOption, askPersons, askResources, boxOf, cardsOf, optionOf, resourcesOf } from "../choice";
 import { boxCardsBySerial, discardFromDeck, discoverNormally, discoverSerials, offerDiscovery, playCard, staysInPlay } from "../flow";
 import {
   addResourceStickerOf,
@@ -43,7 +43,7 @@ import {
 import { restrictions } from "../passives";
 import { canAddResourceSticker, crossOutProduction, producedIcons, productionCount, productionGroups } from "../production";
 import { shuffle } from "../rng";
-import { activeStage, cardName, gain, instance, log, moveTo, template } from "../state";
+import { activeStage, cardName, countPersons, gain, instance, log, moveTo, personWeight, template } from "../state";
 import type { Answer, ChoiceRequest, Draft, EffectImpl, EffectParams, InstanceId, TriggerCtx, TriggerImpl } from "../types";
 import { cardCostOptions, upgradeCost, upgradeOptions } from "../upgrade";
 import { upgradeCard } from "../actions";
@@ -226,8 +226,14 @@ const gainAnyThen = (n: number, arrow: "rotate" | "flip" | null): Factory => () 
 
 const discardThenGain = (label: string, pick: (d: Draft, self: InstanceId) => InstanceId[], count: number, then: (d: Draft, self: InstanceId, a: Answer[]) => void, more?: Ask): Factory => () =>
   effect({
-    usable: (d, card) => pick(d, card).length >= count,
-    ask: (d, card, a) => (a.length === 0 ? askCards(label, pick(d, card), count) : (more?.(d, card, a) ?? null)),
+    // Défausser des personnes : Miners compte pour 2 (countPersons) ; sinon, autant de cartes que demandé.
+    usable: (d, card) => (pick === persons && count > 1 ? countPersons(d.catalog, d.s, pick(d, card)) : pick(d, card).length) >= count,
+    ask: (d, card, a) =>
+      a.length === 0
+        ? pick === persons && count > 1
+          ? askPersons(label, pick(d, card), count, (id) => personWeight(d.catalog, d.s, id))
+          : askCards(label, pick(d, card), count)
+        : (more?.(d, card, a) ?? null),
     run: (d, card, a) => {
       discardCards(d, cardsOf(a[0]));
       then(d, card, a);
@@ -583,8 +589,8 @@ const EXACT: Record<string, Factory> = {
       ask: steps(() => askOption("Quelle ressource ?", ["{coin}", "{wood}", "{stone}"])),
       pick: (_d, a) => [(["coin", "wood", "stone"] as const)[optionOf(a[0])] ?? "coin"],
     }),
-  "Gain {coin} per person in play.": () => effect({ run: (d) => effectGain(d, d.s.zones.play.filter((id) => isPerson(d, id)).map(() => "coin")) }),
-  "Gain {sword} for each person in play.": () => effect({ run: (d) => effectGain(d, d.s.zones.play.filter((id) => isPerson(d, id)).map(() => "sword")) }),
+  "Gain {coin} per person in play.": () => effect({ run: (d) => effectGain(d, Array.from({ length: countPersons(d.catalog, d.s, d.s.zones.play) }, () => "coin")) }),
+  "Gain {sword} for each person in play.": () => effect({ run: (d) => effectGain(d, Array.from({ length: countPersons(d.catalog, d.s, d.s.zones.play) }, () => "sword")) }),
   "Mark 1 {mark} for each seafaring card in play, including this. When complete, {flip}.": markPerCount((d) => d.s.zones.play.filter((id) => isKind(d, id, "Seafaring")).length, "flip"),
   "Mark 1 {mark} for each seafaring card in play, including this. When complete, {rotate}.": markPerCount((d) => d.s.zones.play.filter((id) => isKind(d, id, "Seafaring")).length, "rotate"),
   "Mark 1 {mark} for every 2 persons you have in play.": markPerCount((d) => Math.floor(d.s.zones.play.filter((id) => isPerson(d, id)).length / 2), null),

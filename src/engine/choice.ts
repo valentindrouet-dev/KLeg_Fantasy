@@ -1,3 +1,4 @@
+import { weightedPicks } from "./upgrade";
 import type { ResourceId } from "../data/schema";
 import type { Answer, ChoiceRequest, InstanceId } from "./types";
 import { combinations } from "./upgrade";
@@ -11,6 +12,12 @@ export function isValidAnswer(req: ChoiceRequest, a: Answer): boolean {
       if (!("cards" in a)) return false;
       const unique = new Set(a.cards);
       if (a.cards.length === 0 && req.none !== undefined) return true;
+      if (req.need !== undefined) {
+        const w = (id: InstanceId) => req.weights?.[id] ?? 1;
+        const total = a.cards.reduce((n, id) => n + w(id), 0);
+        if (total < req.need || a.cards.some((id) => total - w(id) >= req.need!)) return false;
+        return unique.size === a.cards.length && a.cards.length >= 1 && a.cards.every((c) => req.options.includes(c));
+      }
       return unique.size === a.cards.length && a.cards.length >= req.min && a.cards.length <= req.max && a.cards.every((c) => req.options.includes(c));
     }
     case "resources":
@@ -34,6 +41,10 @@ export function enumerateAnswers(req: ChoiceRequest): Answer[] {
   switch (req.type) {
     case "cards": {
       const out: Answer[] = req.none !== undefined && req.min > 0 ? [{ cards: [] }] : [];
+      if (req.need !== undefined) {
+        const need = req.need;
+        return [...out, ...weightedPicks(req.options, need, (id) => req.weights?.[id] ?? 1).slice(0, MAX_ENUMERATED).map((cards) => ({ cards }))];
+      }
       for (let k = req.min; k <= Math.min(req.max, req.options.length); k++) {
         for (const pick of combinations(req.options, k)) {
           out.push({ cards: pick });
@@ -53,6 +64,10 @@ export function enumerateAnswers(req: ChoiceRequest): Answer[] {
 export function forcedAnswer(req: ChoiceRequest): Answer | null {
   switch (req.type) {
     case "cards":
+      if (req.need !== undefined) {
+        const picks = weightedPicks(req.options, req.need, (id) => req.weights?.[id] ?? 1);
+        return req.none === undefined && picks.length === 1 && picks[0] ? { cards: picks[0] } : null;
+      }
       return req.none === undefined && req.min === req.max && req.options.length === req.min ? { cards: [...req.options] } : null;
     case "resources":
       return req.options.length === 1 ? { resources: Array.from({ length: req.count }, () => req.options[0] ?? "") } : null;
@@ -75,6 +90,17 @@ export function nextQuestion(ask: (answers: Answer[]) => ChoiceRequest | null, a
 }
 
 // --- Questions toutes faites ---
+
+/** Choix de personnes qui comptent pour `need` (Miners compte pour 2). */
+export const askPersons = (prompt: string, options: InstanceId[], need: number, weight: (id: InstanceId) => number): ChoiceRequest => ({
+  type: "cards",
+  prompt,
+  options,
+  min: 1,
+  max: Math.min(need, options.length),
+  weights: Object.fromEntries(options.map((id) => [id, weight(id)])),
+  need,
+});
 
 export const askCards = (prompt: string, options: InstanceId[], min: number, max = min): ChoiceRequest => ({
   type: "cards",

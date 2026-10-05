@@ -264,8 +264,10 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
     if (!state || anim || p?.kind !== "choice" || p.request.type !== "cards") return null;
     const r = p.request;
     const onBoard = r.options.every((id) => state.zones.play.includes(id) || state.zones.permanent.includes(id));
-    if (!onBoard || r.min < 1 || (r.min !== r.max && r.none === undefined)) return null;
-    return { options: new Set(r.options), min: r.min, count: r.max, none: r.none ?? null, cancellable: p.cancellable, source: p.source };
+    if (!onBoard || r.min < 1 || (r.min !== r.max && r.none === undefined && r.need === undefined)) return null;
+    // Choix pondéré (Miners compte pour 2 personnes) : il part dès que le total est atteint.
+    const weight = (id: InstanceId) => (r.need !== undefined ? (r.weights?.[id] ?? 1) : 1);
+    return { options: new Set(r.options), min: r.min, count: r.need ?? r.max, weight, none: r.none ?? null, cancellable: p.cancellable, source: p.source };
   }, [state, anim]);
   const [picked, setPicked] = useState<InstanceId[]>([]);
   useEffect(() => setPicked([]), [state?.pending]);
@@ -635,7 +637,7 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
       return true;
     }
     const next = picked.includes(card) ? picked.filter((c) => c !== card) : [...picked, card];
-    if (next.length === boardChoice.count) {
+    if (next.reduce((n, c) => n + boardChoice.weight(c), 0) >= boardChoice.count) {
       setPicked([]);
       run([{ type: "choose", answer: { cards: next } }]);
     } else setPicked(next);
@@ -909,7 +911,7 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
       {boardChoice && state.pending?.kind === "choice" && (
         // Choix sur le plateau en cours : ce qu'il faut toucher et combien de cartes sont déjà choisies.
         <div className={styles.pickCounter}>
-          <IconText text={state.pending.request.prompt} /> <strong>{picked.length}/{boardChoice.count}</strong>
+          <IconText text={state.pending.request.prompt} /> <strong>{picked.reduce((n, c) => n + boardChoice.weight(c), 0)}/{boardChoice.count}</strong>
         </div>
       )}
       {counters.length > 0 && (

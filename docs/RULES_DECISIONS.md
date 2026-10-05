@@ -93,3 +93,9 @@ Choix faits pour ce que les cartes et la spec ne précisent pas ; à confirmer.
 ## 2026-10-04 : face d'une carte à flèches rouges (remplace en partie la décision du 2026-10-03)
 
 - **Décision** (demande du joueur) : une carte à flèches rouges (`chooseSideOnDiscover`) se choisit recto ou verso dans la fenêtre « Nouvelles cartes », qu'elle vienne d'une manche ou d'un effet (recto par défaut ; on touche la face à garder). Les autres cartes arrivent côté recto, sans choix. Parchemin 37 (cartes 38 à 42) : inchangé.
+
+## 2026-10-05 : Miners compte pour 2 personnes
+
+- **Question** : Miners (#73, étape 2) dit « *May be counted as 2 persons. » Quand le compter pour 2 ?
+- **Décision** (demande du joueur) : « may », donc au choix du joueur. Il compte pour 2 dans ce qui l'avantage : coûts en personnes des améliorations, effets « Discard N persons », gains « per person in play », Cathedral, Strength in Numbers. Il compte pour 1 dans ce qui le pénalise (Uprising). Pour un coût, on ne propose jamais une personne de trop (Miners + une autre pour « 2 Persons »).
+- **Cartes** : 73 (et celles qui comptent ou font défausser des personnes).

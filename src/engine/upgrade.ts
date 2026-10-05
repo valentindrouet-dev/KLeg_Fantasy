@@ -1,6 +1,6 @@
 import type { Orientation, ResourceId, Upgrade } from "../data/schema";
 import { payPool } from "./passives";
-import { activeStage, hasKeyword, instance, missingFor } from "./state";
+import { activeStage, hasKeyword, instance, missingFor, personWeight } from "./state";
 import type { Catalog, GameState, InstanceId } from "./types";
 
 // Améliorations (spec 4.4) : coût de la boîte marron, flèche, carte défaussée, fin du tour.
@@ -41,6 +41,21 @@ export function parseOtherCost(text: string | undefined): CardRequirement[] | nu
   return out;
 }
 
+/**
+ * Choix de cartes dont le poids total atteint `need`, sans carte de trop (en retirer une passerait sous `need`) :
+ * « 2 Persons » = Miners seul, ou deux autres personnes.
+ */
+export function weightedPicks<T>(items: readonly T[], need: number, weight: (x: T) => number): T[][] {
+  const out: T[][] = [];
+  for (let k = 1; k <= need; k++) {
+    for (const pick of combinations(items, k)) {
+      const total = pick.reduce((n, x) => n + weight(x), 0);
+      if (total >= need && pick.every((x) => total - weight(x) < need)) out.push(pick);
+    }
+  }
+  return out;
+}
+
 export function combinations<T>(items: readonly T[], k: number): T[][] {
   if (k === 0) return [[]];
   return items.flatMap((first, i) => combinations(items.slice(i + 1), k - 1).map((rest) => [first, ...rest]));
@@ -59,7 +74,9 @@ export function cardCostOptions(
         const eligible = s.zones.play.filter(
           (id) => id !== self && !chosen.includes(id) && hasKeyword(catalog, s, id, req.keyword),
         );
-        return combinations(eligible, req.count).map((pick) => [...chosen, ...pick]);
+        if (req.keyword !== "Person") return combinations(eligible, req.count).map((pick) => [...chosen, ...pick]);
+        // Personnes : Miners compte pour 2 ; on garde les choix sans carte de trop.
+        return weightedPicks(eligible, req.count, (id) => personWeight(catalog, s, id)).map((pick) => [...chosen, ...pick]);
       }),
     [[]],
   );

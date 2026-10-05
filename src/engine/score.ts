@@ -1,6 +1,6 @@
 import type { ResourceId, Stage, StageId } from "../data/schema";
 import { productionGroups } from "./production";
-import { activeStage, cardName, hasKeyword, instance, template } from "./state";
+import { activeStage, cardName, countPersons, hasKeyword, instance, template } from "./state";
 import type { Catalog, GameState, InstanceId } from "./types";
 
 // Score (spec 4.4) : gloire des stages actifs de tout le royaume + gloire purgée cumulée.
@@ -53,7 +53,7 @@ function variableFame(catalog: Catalog, s: GameState, id: InstanceId, stage: Sta
   const perMark = /Worth \+?(-?\d+)\{fame\} (?:per|for every) \{mark\}/.exec(text);
   if (perMark) return stage.fame + Number(perMark[1]) * marks;
   if (text.includes("Worth -5{fame} for each unmarked box.")) return -5 * (own.length - marks);
-  if (text.includes("Worth 2{fame} per person.")) return 2 * kingdomCards(s).filter((x) => hasKeyword(catalog, s, x, "Person")).length;
+  if (text.includes("Worth 2{fame} per person.")) return 2 * countPersons(catalog, s, kingdomCards(s));
   if (text.includes("Worth 2{fame} per production of {sword}.")) return 2 * kingdomProduction(catalog, s, "sword");
   if (text.includes("You want 75 or more cards in your kingdom")) return -2 * Math.max(0, 75 - nonPermanent(s).length);
   if (text.includes("per card with exactly 0{fame}")) return -nonPermanent(s).filter((x) => x !== id && cardFame(catalog, s, x) === 0).length;
