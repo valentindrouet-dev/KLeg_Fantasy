@@ -14,7 +14,10 @@ export const STICKER_ICONS: Readonly<Record<string, string>> = {
   "10": "fame5",
   "11": "knight",
   "13k": "scorePath",
+  "13e": "scorePathMer",
   "16": "fame",
+  "17": "startsInPlay",
+  "18": "bottomOfDeck",
 };
 
 /** Sens d'un sticker, pour le libellé de son symbole. */
@@ -30,7 +33,10 @@ export const STICKER_LABELS: Readonly<Record<string, string>> = {
   "10": "gloire 5",
   "11": "Knight",
   "13k": "chemin de score",
+  "13e": "chemin de score Merchants",
   "16": "gloire écrite",
+  "17": "Starts in play",
+  "18": "dessous du deck",
 };
 
 const STICKER_PHRASE = /(stickers? )(\d+k?(?:\s*(?:\/|&|and|or|,)\s*\d+k?)*)/gi;

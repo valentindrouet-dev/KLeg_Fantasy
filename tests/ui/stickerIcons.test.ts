@@ -16,6 +16,6 @@ describe("stickers cités par numéro", () => {
     expect(ids("Discard 2 buildings to add sticker 1 to 1 land in play.")).toEqual(["1"]);
   });
   it("chaque sticker cité par les cartes a un symbole", () => {
-    for (const n of ["1", "2", "3", "4", "5", "6", "7", "8", "10", "11", "13k", "16"]) expect(STICKER_ICONS[n], n).toBeDefined();
+    for (const n of ["1", "2", "3", "4", "5", "6", "7", "8", "10", "11", "13k", "13e", "16", "17", "18"]) expect(STICKER_ICONS[n], n).toBeDefined();
   });
 });
