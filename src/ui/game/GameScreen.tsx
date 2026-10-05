@@ -89,7 +89,9 @@ function missingText(catalog: Catalog, s: GameState, a: Action, engaged: Instanc
   const cost = actionCost(catalog, s, a);
   if (!cost) return "Conditions non remplies";
   const have: Record<string, number> = { ...s.resources };
-  const pot = engagedPotential(catalog, s, engaged.filter((id) => !("card" in a) || id !== a.card));
+  // Cartes défaussées pour le coût en cartes (« 2 Persons ») ou visées : elles ne produisent pas (règle 4.4).
+  const spent = [...("discard" in a ? a.discard : []), ...("targets" in a ? a.targets : [])];
+  const pot = engagedPotential(catalog, s, engaged.filter((id) => (!("card" in a) || id !== a.card) && !spent.includes(id)));
   for (const [r, n] of Object.entries(pot.fixed)) have[r] = (have[r] ?? 0) + n;
   let flexible = pot.choices.length;
   const missing: ResourceId[] = [];
@@ -108,7 +110,14 @@ function missingText(catalog: Catalog, s: GameState, a: Action, engaged: Instanc
   if (!missing.length) return "Pas payable avec les cartes engagées";
   // La carte de l'action ne peut pas payer avec sa propre production (produire la défausse).
   const own = "card" in a && productionGroups(catalog, s, a.card).some((g) => g.options.some((o) => o.some((r) => missing.includes(r))));
-  return `Il manque ${icons(missing)}${own ? " (la carte ne peut pas payer avec sa propre production)" : ""}`;
+  // Une carte défaussée pour le coût en cartes ne peut pas aussi produire (Miners : 2 personnes ou sa {stone}).
+  const both = spent.filter((id) => engaged.includes(id)).map((id) => cardName(catalog, s, id).replace(/ \(#\d+\)$/, ""));
+  const why = own
+    ? " (la carte ne peut pas payer avec sa propre production)"
+    : both.length
+      ? ` : ${both.join(", ")} est défaussée pour le coût en cartes, elle ne peut pas aussi produire`
+      : "";
+  return `Il manque ${icons(missing)}${why}`;
 }
 
 /** Changement d'orientation que produit un geste sur sa carte (pour l'animer), ou null. */
