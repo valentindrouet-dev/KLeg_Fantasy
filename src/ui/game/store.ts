@@ -5,6 +5,7 @@ import {
   current,
   newSession,
   randomSeed,
+  refreshPendingPrompt,
   resumeSession,
   undo as undoSession,
   type Action,
@@ -94,7 +95,8 @@ export const useGame = create<GameStore>((set, get) => ({
       set({ status: "missing" });
       return;
     }
-    set({ status: "ready", kingdom, session: resumeSession(catalog, kingdom.record, kingdom.state) });
+    // Question en attente : reformulée avec le texte de la version actuelle.
+    set({ status: "ready", kingdom, session: resumeSession(catalog, kingdom.record, refreshPendingPrompt(catalog, kingdom.state)) });
   },
 
   perform: (actions, toast) => {

@@ -20,7 +20,7 @@ import {
   zoneOf,
   totalResources,
 } from "./state";
-import type { Answer, Draft, FlowStep, InstanceId, TriggerCtx, TriggerTiming } from "./types";
+import type { Answer, Catalog, ChoiceRequest, Draft, FlowStep, GameState, InstanceId, TriggerCtx, TriggerTiming } from "./types";
 
 // Déroulement d'une partie (spec 4.3 et 4.4) : tours, manches, découvertes, effets déclenchés.
 // Les étapes passent par une file (`queue`) pour pouvoir s'interrompre sur une décision du joueur.
@@ -35,6 +35,40 @@ export function normalizeState(s: Draft["s"]): void {
   s.zones.purged ??= [];
   s.blocks ??= {};
   s.keepInPlay ??= [];
+}
+
+/**
+ * Question en attente reformulée avec le texte actuel (au chargement d'une partie) : le libellé est enregistré dans
+ * l'état quand la question est posée, une mise à jour qui le précise ne s'appliquait donc qu'aux questions suivantes.
+ * Seul le libellé change, et seulement si la question recalculée est bien la même (type et cartes ou options).
+ */
+export function refreshPendingPrompt(catalog: Catalog, s: GameState): GameState {
+  const p = s.pending;
+  if (p?.kind !== "choice") return s;
+  const d: Draft = { catalog, s: structuredClone(s) };
+  let req: ChoiceRequest | null = null;
+  try {
+    if (p.mode === "effect") {
+      req = catalog.effects.get(p.script)?.ask?.(d, p.source, [...p.answers]) ?? null;
+    } else {
+      const t = catalog.triggers.get(p.script);
+      const first = p.answers[0];
+      const confirm = Boolean(t?.optional) && (!t?.direct || (first !== undefined && "option" in first));
+      if (t && !(confirm && p.answers.length === 0)) req = t.ask?.(d, p.source, confirm ? p.answers.slice(1) : [...p.answers], p.ctx) ?? null;
+    }
+  } catch {
+    return s;
+  }
+  if (!req || req.type !== p.request.type || req.prompt === p.request.prompt) return s;
+  const same = (a: ChoiceRequest, b: ChoiceRequest): boolean => {
+    const { prompt: _a, ...ra } = a;
+    const { prompt: _b, ...rb } = b;
+    void _a;
+    void _b;
+    return JSON.stringify(ra) === JSON.stringify(rb);
+  };
+  if (!same(req, p.request)) return s;
+  return { ...s, pending: { ...p, request: { ...p.request, prompt: req.prompt } } };
 }
 
 /** Exécute les étapes en attente tant qu'aucune décision n'est requise. */

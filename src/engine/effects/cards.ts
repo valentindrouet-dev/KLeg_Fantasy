@@ -1085,11 +1085,11 @@ function exportAsk(d: Draft, card: InstanceId, box: Checkbox, a: Answer[]): Choi
     const targets = inKingdom(d, (id) =>
       kind === "land" ? isKind(d, id, "Land") : kind === "person" ? isPerson(d, id) : kind === "building" ? isKind(d, id, "Building") : kind === "friendly card" ? friendly(d, id) : true,
     );
-    if (a.length === 0 && numbers.length > 1) return askOption("Quel sticker ?", numbers.map(labelFor));
+    if (a.length === 0 && numbers.length > 1) return askOption(`Export ${box.threshold ?? ""} {tradeGood} · ${text} Quel sticker ?`, numbers.map(labelFor));
     const asked = numbers.length > 1 ? 1 : 0;
     const chosen = numbers.length > 1 ? numbers[optionOf(a[0])] : numbers[0];
     const where = { land: "terre", person: "personne", building: "bâtiment", "friendly card": "carte amie", card: "carte" }[kind] ?? "carte";
-    if (a.length === asked) return askCards(`${labelFor(chosen ?? "")} : sur quel${where === "personne" || where.startsWith("carte") || where === "terre" ? "le" : ""} ${where}${count > 1 ? "s" : ""} ?`, targets, count);
+    if (a.length === asked) return askCards(`Export ${box.threshold ?? ""} {tradeGood} · ${labelFor(chosen ?? "")} : sur quel${where === "personne" || where.startsWith("carte") || where === "terre" ? "le" : ""} ${where}${count > 1 ? "s" : ""} ?`, targets, count);
     return null;
   }
   if (text.startsWith("{mark} 1 other permanent card")) return a.length === 0 ? askCards("Carte permanente", trackCards(d, card), 1) : null;

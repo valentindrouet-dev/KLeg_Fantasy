@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { computeScore, exhaustedEffects, getLegalActions, isEffectExhausted, productionGroups, type Action, type Answer, type GameState } from "../../src/engine";
+import { computeScore, exhaustedEffects, getLegalActions, isEffectExhausted, productionGroups, refreshPendingPrompt, type Action, type Answer, type GameState } from "../../src/engine";
 import { canPay } from "../../src/engine/state";
 import { checkKey } from "../../src/engine/ops";
 import { payPool, restrictionSources } from "../../src/engine/passives";
@@ -233,6 +233,18 @@ describe("effets des cartes", async () => {
     s = run(catalog, s, choose({ option: 0 }), choose({ option: 1 }));
     expect(s.cards[fk(1)]?.stickers).toEqual([{ sticker: "2", stage: 1, resource: "wood" }]);
     expect(s.cards[fk(27)]?.checkedBoxes).toEqual([checkKey(1, "c1")]);
+  });
+
+  it("Export, case à 20 : la question dit l'effet (sticker 7, sur une personne) ; une question enregistrée avant est reformulée", () => {
+    let s = arrange(catalog, { play: [1], discard: [13, 103], permanent: [27], resources: { tradeGood: 20 } });
+    s = run(catalog, s, { type: "pass" }, choose({ option: 0 }));
+    // Deux cases atteintes (10 et 20) : la case à 20.
+    s = run(catalog, s, choose({ option: 1 }));
+    expect(pending(s)?.request).toMatchObject({ type: "cards", prompt: "Export 20 {tradeGood} · Sticker 7 (Stays in play) : sur quelle personne ?" });
+    // Partie enregistrée avec l'ancien libellé : il est remplacé au chargement, la question reste la même.
+    const old = structuredClone(s);
+    if (old.pending?.kind === "choice") old.pending.request = { ...old.pending.request, prompt: "Sur quelle carte ?" };
+    expect(refreshPendingPrompt(catalog, old).pending).toEqual(s.pending);
   });
 
   it("toutes les réponses énumérées sont légales", () => {

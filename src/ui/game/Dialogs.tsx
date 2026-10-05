@@ -389,7 +389,7 @@ function ChoiceDialog({ catalog, state, onAction, onInspect }: { catalog: Catalo
   };
   const source = state.cards[p.source];
   const sourceView = source && (
-    <CardView template={template(catalog, source.templateId)} orientation={source.orientation} label={cardName(catalog, state, p.source)} width={150} exhausted={exhaustedOf(catalog, state, p.source)}
+    <CardView template={template(catalog, source.templateId)} orientation={source.orientation} label={cardName(catalog, state, p.source)} width={150} onLongPress={() => onInspect(p.source)} exhausted={exhaustedOf(catalog, state, p.source)}
               boxes={(stage) => boxViews(catalog, state, p.source, stage)} />
   );
   const cancel = p.cancellable && (
