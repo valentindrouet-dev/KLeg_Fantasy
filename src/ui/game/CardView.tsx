@@ -1,10 +1,11 @@
 import { useState, type ReactNode } from "react";
 import { cardImageUrl } from "../../data/loadCards";
 import type { CardTemplate, Orientation, StageId } from "../../data/schema";
-import { isFullImageFace, printedStage, stageIdAt, type BoxView, type ExhaustedEffect, type StickerPlacement } from "../../engine";
+import { activeStage, cardFame, isFullImageFace, kingdomCards, printedStage, stageIdAt, type BoxView, type ExhaustedEffect, type StickerPlacement } from "../../engine";
 import type { GoalView } from "./goals";
 import { useGame } from "./store";
 import { boxRects } from "../../data/checkboxes";
+import { fameSpot } from "../../data/fameIcons";
 import { costIconRects } from "../../data/upgradeIcons";
 import { effectLines, type TextLine } from "../../data/textLines";
 import { IconText, iconImage } from "../common/IconText";
@@ -228,6 +229,19 @@ export const ANIM_MS = 700;
 
 type Hover = { zone: ZoneKind; half: "top" | "bottom"; x: number; y: number };
 
+/** Gloire variable : la valeur actuelle écrite sur la rosette « * » mesurée (demande du 2026-10-05). */
+function FameNow({ template, stage, value }: { template: CardTemplate; stage: StageId; value: number }) {
+  const spot = fameSpot(template.expansion, template.serial, stage);
+  if (!spot) return null;
+  const [cx, cy, d] = spot;
+  const dh = (d * 373) / 520; // diamètre en part de la hauteur
+  return (
+    <span className={styles.fameNow} style={{ left: `${(cx - d / 2) * 100}%`, top: `${(cy - dh / 2) * 100}%`, width: `${d * 100}%` }} title={`Vaut ${value} gloire maintenant`}>
+      {value}
+    </span>
+  );
+}
+
 /** Une face : image dans son orientation + numéros d'étape de chaque moitié. */
 function Face({
   template,
@@ -242,11 +256,14 @@ function Face({
   crossedCosts,
   pickCosts,
   goal,
+  fameNow,
 }: {
   template: CardTemplate;
   orientation: Orientation;
   label: string;
   className?: string;
+  /** Gloire que vaut maintenant l'étape du haut (gloire variable), écrite sur sa rosette « * ». */
+  fameNow?: number;
   dimBottom?: boolean;
   stickers?: readonly StickerPlacement[];
   exhausted?: (stage: StageId) => ExhaustedEffect[];
@@ -308,6 +325,7 @@ function Face({
           })}
         </>
       )}
+      {fameNow !== undefined && topId !== null && <FameNow template={template} stage={topId} value={fameNow} />}
       {/* Grisé du bas par-dessus tout ce qui est posé sur cette moitié (stickers, traits). */}
       {dimBottom && top !== null && bottom !== null && <span className={styles.bottomShade} />}
     </div>
@@ -322,6 +340,14 @@ export function CardView(props: Props) {
   // Stickers toujours visibles (demande du 2026-10-05) : ceux de la carte de la partie, si l'appelant ne les donne pas.
   const ownStickers = useGame((g) => (markId && g.session ? g.session.states.at(-1)?.cards[markId]?.stickers : undefined));
   const stickers = props.stickers ?? ownStickers;
+  // Gloire variable : seulement sur la face posée comme dans la partie (l'étape du haut est l'étape active).
+  const fameNow = useGame((g) => {
+    const s = g.session?.states.at(-1);
+    const c = markId ? s?.cards[markId] : undefined;
+    if (!g.session || !s || !c || c.orientation.side !== orientation.side || c.orientation.rotation !== orientation.rotation) return undefined;
+    if (!kingdomCards(s).includes(c.instanceId) || !activeStage(g.session.catalog, s, c.instanceId)?.fameVariable) return undefined;
+    return cardFame(g.session.catalog, s, c.instanceId);
+  });
   const unwanted = useGame((g) => (markId ? (g.kingdom?.unwanted ?? []).includes(markId) : false));
   const toggleUnwanted = useGame((g) => g.toggleUnwanted);
   const onSwipe = markId && !anim ? () => toggleUnwanted(markId) : undefined;
@@ -394,12 +420,12 @@ export function CardView(props: Props) {
       {anim?.kind === "flip" ? (
         // Retournement : deux faces dos à dos, la carte pivote d'un seul mouvement.
         <div className={styles.flipInner}>
-          <Face template={template} orientation={orientation} label={label} stickers={stickers} exhausted={exhausted} boxes={boxes} pickBoxes={pickBoxes} crossedCosts={crossedCosts} pickCosts={pickCosts} goal={goal} />
+          <Face template={template} orientation={orientation} label={label} stickers={stickers} exhausted={exhausted} boxes={boxes} pickBoxes={pickBoxes} crossedCosts={crossedCosts} pickCosts={pickCosts} goal={goal} fameNow={fameNow} />
           <Face template={template} orientation={anim.to} label={label} className={styles.backFace} stickers={stickers} exhausted={exhausted} boxes={boxes} pickBoxes={pickBoxes} crossedCosts={crossedCosts} pickCosts={pickCosts} goal={goal} />
         </div>
       ) : (
         // Pendant une rotation, la carte n'est plus grisée (sinon la moitié grisée passe en haut).
-        <Face template={template} orientation={orientation} label={label} dimBottom={dimBottom && !anim && !half} stickers={stickers} exhausted={exhausted} boxes={boxes} pickBoxes={pickBoxes} crossedCosts={crossedCosts} pickCosts={pickCosts} goal={goal} />
+        <Face template={template} orientation={orientation} label={label} dimBottom={dimBottom && !anim && !half} stickers={stickers} exhausted={exhausted} boxes={boxes} pickBoxes={pickBoxes} crossedCosts={crossedCosts} pickCosts={pickCosts} goal={goal} fameNow={fameNow} />
       )}
       {rect && !anim && (
         <span

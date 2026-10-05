@@ -12,7 +12,8 @@
   display: grid;
   place-items: center;
   /* En haut : la place de la barre du haut, dont les boutons FR et bug restent utilisables au-dessus des fenêtres. */
-  --dialog-top: calc(env(safe-area-inset-top) + 4.6rem);
+  /* --dev-bar-h : hauteur de la barre du mode développeur quand elle est affichée (DevTools.tsx). */
+  --dialog-top: calc(env(safe-area-inset-top) + 4.6rem + var(--dev-bar-h, 0px));
   padding: var(--dialog-top) var(--space-4) max(var(--space-4), env(safe-area-inset-bottom));
   /* Fenêtre opaque sur fond assombri (demande du 2026-10-04) ; « Voir le jeu » la cache le temps de regarder. */
   background: rgb(0 0 0 / 0.4);

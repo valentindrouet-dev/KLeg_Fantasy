@@ -5,8 +5,9 @@ import { activeStage, cardName, destroy, discard, instance, log, moveTo, stageId
 import { effectKey } from "./effects/registry";
 import { ZONES, type Catalog, type Draft, type GameState, type InstanceId, type ManualOp, type StickerPlacement, type Zone } from "./types";
 
-// Opérations « à la main » de la v0.17. Retirées de l'interface en v0.18 (demande du 2026-10-02 : tous les effets
-// doivent être automatisés) ; gardées dans le moteur pour rejouer les parties qui en contiennent.
+// Opérations « à la main » de la v0.17, retirées de l'interface en v0.18 (tous les effets sont automatisés), reprises
+// par le mode développeur (demande du 2026-10-05) : hors règles, mais enregistrées comme les autres actions, donc
+// annulables, sauvegardées et rejouées à l'import.
 
 const ACTION_EFFECT_TYPES = ["activated", "destroy", "time"];
 
@@ -53,12 +54,20 @@ export function validOrientations(catalog: Catalog, s: GameState, id: InstanceId
 
 /** Les opérations libres (hors effets) : vérifiées ici plutôt qu'énumérées par getLegalActions. */
 export function isManualOpValid(catalog: Catalog, s: GameState, op: ManualOp): boolean {
-  if (s.phase !== "playing" || s.pending) return false;
+  if (s.phase !== "playing") return false;
+  // Pendant une question : seulement les ressources, ou passer la question.
+  if (op.kind === "resource")
+    return catalog.resources.includes(op.resource) && Number.isInteger(op.delta) && op.delta !== 0 && (s.resources[op.resource] ?? 0) + op.delta >= 0;
+  if (op.kind === "skip") return s.pending?.kind === "choice";
+  if (s.pending) return false;
   switch (op.kind) {
-    case "resource":
-      return catalog.resources.includes(op.resource) && Number.isInteger(op.delta) && op.delta !== 0 && (s.resources[op.resource] ?? 0) + op.delta >= 0;
+    case "refresh": {
+      const stage = s.cards[op.card] ? activeStage(catalog, s, op.card) : null;
+      return Boolean(stage) && instance(s, op.card).crossedOutEffects.some((k) => k.startsWith(`${stage?.id}/`));
+    }
     case "move": {
-      if (!s.cards[op.card] || !ZONES.includes(op.to)) return false;
+      // Les zones « bloquées » et « purgées » ne se remplissent que par leurs règles.
+      if (!s.cards[op.card] || !ZONES.includes(op.to) || op.to === "blocked" || op.to === "purged") return false;
       return zoneOf(s, op.card) !== op.to || op.to === "deck";
     }
     case "orient": {
@@ -90,9 +99,22 @@ export function isManualOpValid(catalog: Catalog, s: GameState, op: ManualOp): b
 export function executeManual(d: Draft, op: ManualOp): void {
   const { catalog, s } = d;
   switch (op.kind) {
+    case "skip": {
+      const p = s.pending;
+      log(s, `Mode dev : question passée${p?.kind === "choice" ? ` (${cardName(catalog, s, p.source)})` : ""}`);
+      s.pending = null;
+      return;
+    }
+    case "refresh": {
+      const stage = activeStage(catalog, s, op.card);
+      const c = instance(s, op.card);
+      c.crossedOutEffects = c.crossedOutEffects.filter((k) => !k.startsWith(`${stage?.id}/`));
+      log(s, `Mode dev : effets de ${cardName(catalog, s, op.card)} à nouveau utilisables`);
+      return;
+    }
     case "resource": {
       s.resources[op.resource] = (s.resources[op.resource] ?? 0) + op.delta;
-      log(s, `À la main : ${op.delta > 0 ? "+" : ""}${op.delta} {${op.resource}}`);
+      log(s, `Mode dev : ${op.delta > 0 ? "+" : ""}${op.delta} {${op.resource}}`);
       return;
     }
     case "move": {
@@ -101,16 +123,16 @@ export function executeManual(d: Draft, op: ManualOp): void {
       if ((from === "deck" || from === "box") && op.to !== from) s.revealCount += 1;
       moveTo(s, op.card, op.to, op.position);
       const where = op.to === "deck" ? `${op.position === "top" ? "le dessus" : "le dessous"} de la pioche` : ZONE_FR[op.to];
-      log(s, `À la main : ${cardName(catalog, s, op.card)} va dans ${where}`);
+      log(s, `Mode dev : ${cardName(catalog, s, op.card)} va dans ${where}`);
       return;
     }
     case "orient": {
       instance(s, op.card).orientation = { ...op.orientation };
-      log(s, `À la main : ${cardName(catalog, s, op.card)} est réorientée`);
+      log(s, `Mode dev : ${cardName(catalog, s, op.card)} est réorientée`);
       return;
     }
     case "discover": {
-      log(s, `À la main : découverte de #${instance(s, op.card).serial}`);
+      log(s, `Mode dev : découverte de #${instance(s, op.card).serial}`);
       discover(d, op.card);
       return;
     }
@@ -121,7 +143,7 @@ export function executeManual(d: Draft, op: ManualOp): void {
       const key = checkKey(stage.id, op.box);
       const checked = c.checkedBoxes.includes(key);
       c.checkedBoxes = checked ? c.checkedBoxes.filter((k) => k !== key) : [...c.checkedBoxes, key];
-      log(s, `À la main : ${cardName(catalog, s, op.card)}, case ${op.box} ${checked ? "décochée" : "cochée"}`);
+      log(s, `Mode dev : ${cardName(catalog, s, op.card)}, case ${op.box} ${checked ? "décochée" : "cochée"}`);
       return;
     }
     case "sticker": {
@@ -131,7 +153,7 @@ export function executeManual(d: Draft, op: ManualOp): void {
       if (op.resource !== null) placement.resource = op.resource;
       if (op.fame !== null) placement.fame = op.fame;
       instance(s, op.card).stickers.push(placement);
-      log(s, `À la main : sticker ${op.sticker} sur ${cardName(catalog, s, op.card)}`);
+      log(s, `Mode dev : sticker ${op.sticker} sur ${cardName(catalog, s, op.card)}`);
       return;
     }
     case "effect": {

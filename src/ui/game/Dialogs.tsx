@@ -25,6 +25,7 @@ import { CardView, type CardNote } from "./CardView";
 import { frNote } from "./translationNote";
 import { goalView, stageAtPoint } from "./goals";
 import { referencedSerials } from "./cardRefs";
+import { DevCardTools } from "./DevTools";
 import { useGame } from "./store";
 
 /** Objectifs du royaume en cours et bascule (appui long sur une moitié de carte). */
@@ -80,6 +81,7 @@ export function Inspector({
   onClose,
   onOpen,
   onBack,
+  dev,
 }: {
   catalog: Catalog;
   state: GameState;
@@ -89,6 +91,8 @@ export function Inspector({
   onOpen?: (card: InstanceId) => void;
   /** Revient à la carte inspectée avant (après un renvoi). */
   onBack?: () => void;
+  /** Mode développeur : gestes hors règles sur la carte (DevTools.tsx). */
+  dev?: (a: Action) => void;
 }) {
   const c = instance(state, card);
   const t = template(catalog, c.templateId);
@@ -116,6 +120,7 @@ export function Inspector({
   };
   return (
     <Dialog title={cardName(catalog, state, card)} onClose={onClose} wide>
+      {dev && <DevCardTools catalog={catalog} state={state} card={card} onAction={dev} />}
       {(refs.length > 0 || onBack) && (
         // Cartes citées par le texte (« Discover Shrine (82 / 83) ») : consultables à tout moment (demande du 2026-10-05).
         <div className={styles.cardRefs}>

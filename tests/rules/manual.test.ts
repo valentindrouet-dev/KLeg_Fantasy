@@ -114,4 +114,29 @@ describe("opérations à la main (rejeu des parties v0.17)", async () => {
       expect(canUndo(session)).toBe(false);
     }
   });
+  it("mode dev : passer une question bloquée, ressources pendant une question, rien d'autre", () => {
+    let s = arrange(catalog, { play: [82, 1], deck: [2, 3, 4, 5] });
+    s = run(catalog, s, { type: "pass" });
+    expect(s.pending?.kind).toBe("choice"); // Shrine : carte à garder en jeu
+    expect(isLegal(catalog, s, manual({ kind: "move", card: fk(1), to: "discard", position: "bottom" }))).toBe(false);
+    s = run(catalog, s, manual({ kind: "resource", resource: "coin", delta: 3 }));
+    expect(s.pending?.kind).toBe("choice");
+    s = run(catalog, s, manual({ kind: "skip" }));
+    expect(s.pending?.kind === "choice").toBe(false); // la fin du tour reprend
+    expect(isLegal(catalog, s, manual({ kind: "skip" }))).toBe(false);
+  });
+
+  it("mode dev : rendre utilisables les effets rayés du stage actif", () => {
+    let s = arrange(catalog, { play: [1] });
+    s.cards[fk(1)]!.crossedOutEffects = ["1/e1", "2/e1"];
+    s = run(catalog, s, manual({ kind: "refresh", card: fk(1) }));
+    expect(s.cards[fk(1)]?.crossedOutEffects).toEqual(["2/e1"]);
+    expect(isLegal(catalog, s, manual({ kind: "refresh", card: fk(1) }))).toBe(false);
+  });
+
+  it("mode dev : jamais vers les zones bloquées ou purgées", () => {
+    const s = arrange(catalog, { play: [1] });
+    expect(isLegal(catalog, s, manual({ kind: "move", card: fk(1), to: "blocked", position: "bottom" }))).toBe(false);
+    expect(isLegal(catalog, s, manual({ kind: "move", card: fk(1), to: "purged", position: "bottom" }))).toBe(false);
+  });
 });

@@ -35,7 +35,7 @@ import {
 import type { Orientation } from "../../data/schema";
 import { APP_VERSION } from "../../version";
 import { IconText } from "../common/IconText";
-import { AdvanceIcon, CastleIcon, PassIcon, SaveIcon, SettingsIcon, SortIcon, StatsIcon, TranslateIcon, UndoIcon } from "../common/UiIcons";
+import { AdvanceIcon, CastleIcon, DevIcon, PassIcon, SaveIcon, SettingsIcon, SortIcon, StatsIcon, TranslateIcon, UndoIcon } from "../common/UiIcons";
 import { downloadText } from "../common/download";
 import { BugButton } from "../common/BugButton";
 import { effectLines } from "../../data/textLines";
@@ -56,6 +56,7 @@ import { CardActions, type CardOption } from "./CardActions";
 import { zoneAtCard, type ZoneKind } from "./cardZones";
 import { ANIM_MS, CardView, type CardNote } from "./CardView";
 import { CardListDialog, ConfirmDialog, DecisionDialog, EndDialog, Inspector, StatsDialog } from "./Dialogs";
+import { DevBar } from "./DevTools";
 import { frNote } from "./translationNote";
 import { useGame } from "./store";
 import { usePlayClock } from "./usePlayClock";
@@ -152,6 +153,9 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
   const unsavedPlayMs = usePlayClock(status === "ready" && session !== null && current(session).phase !== "gameOver", addPlayTime);
   const [selected, setSelected] = useState<Selected | null>(null);
   const [inspect, setInspect] = useState<InstanceId | null>(null);
+  /** Mode développeur (demande du 2026-10-05) : hors règles, jamais sauvegardé (repart éteint). */
+  const [devMode, setDevMode] = useState(false);
+  const [devList, setDevList] = useState<"deck" | "box" | null>(null);
   /** Cartes inspectées avant un renvoi vers une carte citée (« ← Retour »). */
   const [inspectBack, setInspectBack] = useState<InstanceId[]>([]);
   const [discardOpen, setDiscardOpen] = useState(false);
@@ -639,6 +643,11 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
   };
 
   const tapCard = (card: InstanceId, p: TapPoint) => {
+    // Mode dev : toucher une carte ouvre ses gestes hors règles (dans l'inspection).
+    if (devMode) {
+      setInspect(card);
+      return;
+    }
     if (pickOnBoard(card)) return;
     if (!paying && !targeting && tapBox(card, p)) return;
     if (paying) {
@@ -802,6 +811,10 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
    * qui peuvent payer s'allument ; plusieurs effets : le menu. Sans effet : l'inspection (appui long aussi).
    */
   const tapPermanent = (id: InstanceId, p?: TapPoint) => {
+    if (devMode) {
+      setInspect(id);
+      return;
+    }
     if (pickOnBoard(id)) return;
     if (p && !paying && !targeting && tapBox(id, p)) return;
     // Mode FR : l'inspection montre la carte en grand, traduite.
@@ -848,7 +861,7 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
     <div className={styles.pile} aria-label={`Deck : ${state.zones.deck.length} cartes`}>
       <span className={styles.pileTitle}>Deck · {state.zones.deck.length}</span>
       {top ? (
-        <div data-pile="deck">{card(top, undefined, playing && (advance || advanceBlockers.length) ? tryAdvance : undefined, false)}</div>
+        <div data-pile="deck">{card(top, undefined, devMode ? () => setDevList("deck") : playing && (advance || advanceBlockers.length) ? tryAdvance : undefined, false)}</div>
       ) : (
         <div className={styles.emptyPile} data-pile="deck">
           Vide
@@ -989,6 +1002,15 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
           title="Infobulles en français"
         >
           <TranslateIcon />
+        </button>
+        <button
+          className={`${styles.iconBtn} ${styles.aboveDialogs} ${devMode ? styles.devOn : ""}`}
+          aria-pressed={devMode}
+          onClick={() => setDevMode((d) => !d)}
+          aria-label="Mode développeur"
+          title="Mode développeur : outrepasser les règles"
+        >
+          <DevIcon />
         </button>
         <BugButton className={`${styles.iconBtn} ${styles.aboveDialogs}`} game={bugContext} />
         <button
@@ -1198,9 +1220,23 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
         <CardListDialog catalog={catalog} state={state} title="Défausse" cards={state.zones.discard} onInspect={setInspect} onClose={() => setDiscardOpen(false)} />
       )}
       {state.pending && !boardChoice && !boxChoice && <DecisionDialog catalog={catalog} state={state} onAction={(a) => perform([a])} onRestart={restart} onInspect={setInspect} />}
+      {devMode && (
+        <DevBar catalog={catalog} state={state} onAction={(a) => perform([a])} onShowDeck={() => setDevList("deck")} onShowBox={() => setDevList("box")} />
+      )}
+      {devMode && devList && (
+        <CardListDialog
+          catalog={catalog}
+          state={state}
+          title={devList === "deck" ? "Pioche (dessus en dernier)" : "Boîte"}
+          cards={devList === "deck" ? state.zones.deck : state.zones.box.filter((id) => instance(state, id).serial > 0)}
+          onInspect={setInspect}
+          onClose={() => setDevList(null)}
+        />
+      )}
       {inspect && (
         <Inspector
           key={inspect}
+          dev={devMode ? (a) => perform([a]) : undefined}
           catalog={catalog}
           state={state}
           card={inspect}

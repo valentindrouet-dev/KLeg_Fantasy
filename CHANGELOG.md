@@ -3,6 +3,14 @@
 Chaque mise à jour publiée change de version (`package.json`, affichée dans l'appli en bas de l'écran « Mes royaumes »
 et dans la barre de la partie). Convention : `0.5.0` s'affiche **v0.05** ; un correctif `0.5.1` s'affiche **v0.05.1**.
 
+## v0.56 (5 octobre 2026)
+
+- Gloire variable : sur les cartes dont la gloire dépend du royaume (« * » : Strength in Numbers, Loyalty, The Ark, Camelot…), la gloire qu'elles valent maintenant est écrite sur leur rosette, sur la face posée comme en jeu. Positions mesurées sur les images (`npm run fame-spots`).
+- Mode développeur (bouton clé à molette dans la barre du haut, rouge quand il est actif ; éteint à chaque ouverture). Pour se dépanner hors des règles :
+  - barre dev : + / − sur chaque ressource, pioche et boîte consultables, « Passer la question » quand une question est bloquée ;
+  - toucher une carte (plateau, permanentes, pioche, défausse, boîte) ouvre son inspection avec les gestes dev : la mettre en jeu, en défausse, dessus ou dessous de la pioche, en permanente, la détruire, la rendre à la boîte ou la découvrir ; choisir son étape ; cocher / décocher ses cases ; poser un sticker ; rendre ses effets rayés utilisables.
+  - Chaque geste est une action enregistrée : annulable, sauvegardée, rejouée à l'import ; le journal les note « Mode dev ».
+
 ## v0.55 (5 octobre 2026)
 
 - Stickers toujours visibles : une carte de la partie montre ses stickers partout où elle est dessinée (questions des effets, défausse, listes, inspection…).

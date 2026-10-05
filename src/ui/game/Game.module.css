@@ -3,9 +3,10 @@
   /* Même disposition en paysage et en portrait : cartes au centre, pioche / boutons / défausse en bas. */
   display: grid;
   grid-template-columns: 12.5rem minmax(0, 1fr) 12.5rem;
-  grid-template-rows: auto auto auto minmax(0, 1fr) auto;
+  grid-template-rows: auto auto auto auto minmax(0, 1fr) auto;
   grid-template-areas:
     "top top top"
+    "dev dev dev"
     "perm perm perm"
     "res res res"
     "play play play"
@@ -1558,4 +1559,125 @@
   font: inherit;
   font-weight: 600;
   cursor: pointer;
+}
+
+/* Gloire variable : valeur actuelle sur la rosette « * » */
+.fameNow {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  border: 2px solid #c9961a;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%, #fff8dc, #f3d77a);
+  color: #3b2a0a;
+  font-size: 7cqw;
+  font-weight: 800;
+  line-height: 1;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.45);
+  pointer-events: none;
+}
+
+/* --- Mode développeur (demande du 2026-10-05) : hors règles, marqué en rouge --- */
+.devOn {
+  border-color: #d32f2f !important;
+  background: #d32f2f !important;
+  color: #fff !important;
+}
+
+/* Barre du mode dev : sous la barre du haut, au-dessus des fenêtres (utilisable pendant une question bloquée) */
+.devBar {
+  grid-area: dev;
+  position: relative;
+  justify-self: center;
+  margin: 4px 0;
+  z-index: 65;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 6px 10px;
+  max-width: calc(100vw - 24px);
+  padding: 6px 12px;
+  border: 2px solid #d32f2f;
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--surface) 94%, #d32f2f);
+  box-shadow: 0 4px 14px rgb(0 0 0 / 0.35);
+  font-size: 0.9rem;
+}
+
+.devTitle {
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: #d32f2f;
+  color: #fff;
+  letter-spacing: 0.08em;
+}
+
+.devRes {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.devHint {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+
+.devBtn {
+  min-width: 36px;
+  min-height: 36px;
+  padding: 4px 10px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface-2);
+  color: var(--text);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.devBtn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.devBtnOn {
+  border-color: #d32f2f;
+  box-shadow: inset 0 0 0 2px #d32f2f;
+}
+
+.devBtnWarn {
+  border-color: #d32f2f;
+  background: #d32f2f;
+  color: #fff;
+}
+
+/* Gestes du mode dev dans l'inspection d'une carte */
+.devTools {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: var(--space-3);
+  padding: 10px;
+  border: 2px dashed #d32f2f;
+  border-radius: 12px;
+}
+
+.devRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.devLabel {
+  min-width: 4.5rem;
+  color: #d32f2f;
+  font-weight: 800;
+  font-size: 0.8rem;
+  text-transform: uppercase;
 }

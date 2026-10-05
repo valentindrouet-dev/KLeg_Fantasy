@@ -152,7 +152,7 @@ export type Action =
   | { type: "choose"; answer: Answer }
   | { type: "cancelChoice" };
 
-/** Résolution à la main (voir manual.ts) : ce que le moteur n'automatise pas encore. */
+/** Résolution à la main (voir manual.ts) : opérations hors règles du mode développeur, rejouables comme les autres. */
 export type ManualOp =
   | { kind: "resource"; resource: ResourceId; delta: number }
   | { kind: "move"; card: InstanceId; to: Zone; position: "top" | "bottom" }
@@ -160,7 +160,10 @@ export type ManualOp =
   | { kind: "discover"; card: InstanceId }
   | { kind: "check"; card: InstanceId; box: string } // coche ou décoche une case du stage actif
   | { kind: "sticker"; card: InstanceId; sticker: string; resource: ResourceId | null; fame: number | null }
-  | { kind: "effect"; card: InstanceId; effect: string };
+  | { kind: "effect"; card: InstanceId; effect: string }
+  // Mode développeur (demande du 2026-10-05) : passer une question bloquée, effacer les effets rayés du stage actif.
+  | { kind: "skip" }
+  | { kind: "refresh"; card: InstanceId };
 
 export type EffectParams = { targets: InstanceId[]; option: number | null; answers?: Answer[] };
 

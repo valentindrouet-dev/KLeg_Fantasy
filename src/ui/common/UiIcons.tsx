@@ -160,3 +160,12 @@ export function BugIcon() {
     </svg>
   );
 }
+
+/** Mode développeur : clé à molette. */
+export function DevIcon() {
+  return (
+    <svg {...base} aria-hidden="true">
+      <path d="M14.7 6.3a4 4 0 0 0 5 5l-8.4 8.4a2.1 2.1 0 0 1-3-3l8.4-8.4a4 4 0 0 0-5-5l2.6 2.6-.6 2.4-2.4.6z" />
+    </svg>
+  );
+}

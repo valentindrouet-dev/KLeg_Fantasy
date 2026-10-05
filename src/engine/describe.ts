@@ -90,5 +90,9 @@ function describeManual(catalog: Catalog, s: GameState, op: ManualOp): string {
       const e = activeStage(catalog, s, op.card)?.effects.find((x) => x.id === op.effect);
       return `${e?.text ?? op.effect} (à la main)`;
     }
+    case "skip":
+      return "Passer la question";
+    case "refresh":
+      return `Effets de ${cardName(catalog, s, op.card)} à nouveau utilisables`;
   }
 }

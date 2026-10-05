@@ -48,6 +48,11 @@ Routage par hash (`src/ui/App.tsx`) : `#/` Mes royaumes, `#/partie/<id>` partie,
   nettement plus horizontal que vertical) pose ou retire un halo rouge : carte dont le joueur n'a plus l'usage, à
   détruire ou purger si besoin. Partout où la carte est dessinée ; `Kingdom.unwanted`, retiré quand la carte quitte
   le royaume. Les cartes acceptent ce geste en `touch-action: pan-y` (le défilement vertical reste au navigateur).
+- **Mode développeur** (demande du 2026-10-05, `DevTools.tsx`) : bouton clé à molette de la barre du haut, jamais
+  sauvegardé. Barre dev (ressources ±, pioche, boîte, passer la question) dans la grille sous la barre du haut, au-dessus
+  des fenêtres (`--dev-bar-h` décale leur haut). Toucher une carte ouvre l'inspection avec les gestes dev. Tout passe par
+  les actions `manual` du moteur (`manual.ts`) : enregistrées, annulables, rejouées.
+- **Gloire variable** : la valeur actuelle sur la rosette « * » mesurée (`data/fameIcons`, `scripts/fame-spots.ts`).
 - **Chronomètre** (⏱, barre du haut et « Mes royaumes », demande du 2026-10-04) : temps de jeu compté seulement quand
   l'appli est à l'écran (`usePlayClock`, visibilité de la page), jusqu'à la fin de la partie ; `Kingdom.playMs`.
 - **Messages** : aucun message après une action ni quand une action est impossible.
