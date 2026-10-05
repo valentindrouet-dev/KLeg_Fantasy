@@ -169,3 +169,12 @@ export function DevIcon() {
     </svg>
   );
 }
+
+/** Tableau des scores de la campagne : coupe. */
+export function TrophyIcon() {
+  return (
+    <svg {...base} aria-hidden="true">
+      <path d="M8 4h8v5a4 4 0 0 1-8 0zM8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4M12 13v4M8.5 20h7M10 17h4" />
+    </svg>
+  );
+}

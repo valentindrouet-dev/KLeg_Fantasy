@@ -1,6 +1,6 @@
 # Fins de partie, mini-extensions et campagne
 
-État au 5 octobre 2026 (v0.56). Ce guide décrit ce que fait l'application aujourd'hui, ce qui manque, et ce qui est faisable. Règles de référence : spec 4.4 (fin de partie), 4.7 (extensions), 6 (royaumes et sauvegardes) ; décision du 2026-10-02 sur la carte 68 dans `docs/RULES_DECISIONS.md`.
+État au 5 octobre 2026 (v0.57). Ce guide décrit ce que fait l'application aujourd'hui, ce qui manque, et ce qui est faisable. Règles de référence : spec 4.4 (fin de partie), 4.7 (extensions), 6 (royaumes et sauvegardes) ; décision du 2026-10-02 sur la carte 68 dans `docs/RULES_DECISIONS.md`.
 
 ## 1. Vocabulaire
 
@@ -31,10 +31,19 @@
 2. Ensuite viennent **4 manches sans découverte**. La carte d'extension change d'étape à chaque fin de manche, avec son action de fin (Royal Decree, Obsolete Farms, Resistance…).
 3. Après la 4e manche, la carte est détruite et son score s'ajoute au chemin de score. La fenêtre **« Fin de la mini-extension »** s'ouvre et l'extension jouée y est grisée « Déjà jouée ».
 
-### Fin de campagne
+### Un royaume n'est jamais clôturé (v0.57)
 
-- La campagne est finie quand les **trois mini-extensions** ont été jouées : il ne reste plus rien à lancer. Le royaume reste consultable, mais aucun écran ne dit « campagne terminée ».
-- Le joueur peut aussi s'arrêter après n'importe quelle étape : rien ne l'oblige à jouer les mini-extensions.
+- Il n'y a pas de « campagne terminée » : un royaume attend toujours la prochaine extension, même quand toutes celles connues sont jouées, puisque d'autres pourront être ajoutées.
+- Statuts sur l'accueil (`campaignStage`) :
+
+| Statut | Quand | Bouton |
+| --- | --- | --- |
+| En cours | Partie de base en cours | Continuer |
+| *Nom* · manche n/4 | Mini-extension en cours | Continuer |
+| Extension à lancer | Une extension disponible n'a pas été jouée | Extensions |
+| En attente de nouvelles extensions | Toutes les extensions disponibles sont jouées | Consulter |
+
+- Le joueur peut s'arrêter après n'importe quelle étape : rien ne l'oblige à jouer les extensions.
 
 ### Scores visibles aujourd'hui
 
@@ -43,7 +52,8 @@
 | Barre du haut | Gloire actuelle, chronomètre total du royaume. |
 | Stats → Gloire | Les cartes qui rapportent ou font perdre de la gloire. |
 | Fenêtre de fin | Score, chemin de score (base + chaque mini-extension), détail par carte. |
-| Accueil | Manche, gloire actuelle, dernière carte découverte, durée, statut En cours / Terminé. |
+| Accueil | Manche, gloire actuelle, dernière carte découverte, durée, statut de la campagne. |
+| Accueil → coupe (à côté de Continuer) | **Tableau des scores** : partie de base et chaque extension (état, score, date de fin, temps de jeu), gloire actuelle, gloire purgée, temps total ; grandes extensions « À venir » dès qu'elles sont déclarées. |
 
 ### Sauvegardes et retours en arrière
 
@@ -57,10 +67,10 @@
 
 ## 3. Ce qui manque
 
-1. **Rouvrir l'écran de fin.** Une fois fermé avec « Voir le royaume », il ne revient qu'en rechargeant la page. Le chemin de score n'est donc plus visible.
-2. **Tableau des scores de la campagne.** Aucun bouton ne montre, à tout moment, la partie de base et chaque mini-extension avec leur score, leur date et leur durée.
-3. **Statut sur l'accueil.** On ne voit ni « Mini-extension en cours (The Water Mill, manche 2/4) » ni « Campagne terminée ». Pendant une mini-extension, le royaume est simplement « En cours ».
-4. **Date et durée de chaque étape.** Le chronomètre compte le royaume entier, sans découpage par partie ou par mini-extension.
+1. **Rouvrir l'écran de fin.** Une fois fermé avec « Voir le royaume », il ne revient qu'en rechargeant la page. Le tableau des scores de l'accueil montre maintenant le chemin de score.
+2. ~~Tableau des scores de la campagne~~ : fait en v0.57.
+3. ~~Statut sur l'accueil~~ : fait en v0.57.
+4. ~~Date et durée de chaque étape~~ : fait en v0.57 (`Kingdom.milestones`). Les étapes finies avant n'ont ni date ni durée : elles ne sont pas inventées.
 5. **Points de sauvegarde nommés** (prévus par la spec 6.1). Ils ne sont pas faits ; voir la section 4 avant de les ajouter.
 6. **Grandes extensions.** Hors périmètre tant que leurs cartes ne sont pas récupérées.
 
@@ -86,3 +96,16 @@ Kingdom Legacy est un jeu *legacy* : ce qui est fait est fait. Dans la boîte ph
 | D | **Confirmation avant d'annuler au-delà d'un jalon** (mode Libre). | Faible | Évite de défaire une fin sans le vouloir. |
 | E | Points de sauvegarde nommés restaurables. | Moyen | Déconseillé (embranchements) : Dupliquer fait déjà ce travail. |
 | F | Grandes extensions. | Grand | Il faut d'abord leurs cartes et leurs règles. |
+
+## 6. Préparé pour les grandes extensions (v0.57)
+
+- **`campaignSteps(catalog, state)`** (moteur) liste les étapes : la partie de base, puis chaque extension, avec leur état (terminée, en cours, à jouer, à venir) et leur score. Aujourd'hui les extensions sont les mini-extensions 136 à 138. Une grande extension s'y ajoutera comme une étape de plus.
+- **`campaignStage(state)`** donne le statut du royaume (base, extension, between, waiting), jamais « terminé ».
+- **Tableau des scores** : les extensions déclarées dans `data/expansions.json` avec `kind: "grand"` ou `"custom"` apparaissent « À venir » sans rien d'autre à coder.
+- **Jalons** (`Kingdom.milestones`) : identifiés par l'étape (« base », numéro de la carte d'extension). Une grande extension aura son propre identifiant.
+- **Pour jouer une grande extension**, il restera à faire :
+  - récupérer ses cartes ;
+  - ajouter ses instances à la boîte des royaumes existants, sans toucher aux autres cartes ;
+  - écrire ses règles de lancement et de fin (purge ? nombre de manches ?) ;
+  - la rendre « à jouer » dans `campaignSteps`.
+- **Aucune donnée supprimée.** Les nouveaux champs (`summary.stage`, `milestones`) sont facultatifs. Les royaumes existants s'affichent avec leur nouveau statut calculé depuis leur état, sans migration.

@@ -16,7 +16,7 @@ import {
 } from "../../engine";
 import type { StageId } from "../../data/schema";
 import { getKingdom, saveKingdom } from "../../persistence/db";
-import { summarize, type Kingdom } from "../../persistence/kingdoms";
+import { summarize, updateMilestones, type Kingdom } from "../../persistence/kingdoms";
 import { goalOpen } from "./goals";
 
 // Store de l'écran de partie : session du moteur + royaume, sauvegarde automatique après chaque geste.
@@ -59,6 +59,11 @@ function persist(catalog: Catalog, kingdom: Kingdom, session: Session): Kingdom 
     ...kingdom,
     // Objectif atteint (carte construite jusqu'à cette étape) ou carte sortie du royaume : il tombe.
     ...(kingdom.goals ? { goals: kingdom.goals.filter((g) => goalOpen(catalog, state, g)) } : {}),
+    // Fin d'une étape de la campagne : date et temps de jeu (tableau des scores).
+    ...(() => {
+      const milestones = updateMilestones(catalog, kingdom, state, Date.now());
+      return milestones ? { milestones } : {};
+    })(),
     // Carte rayée détruite, purgée ou rendue à la boîte : la marque tombe.
     ...(kingdom.unwanted ? { unwanted: kingdom.unwanted.filter((id) => inKingdom(state, id)) } : {}),
     updatedAt: Date.now(),

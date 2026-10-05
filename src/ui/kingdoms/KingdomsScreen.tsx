@@ -6,8 +6,9 @@ import { Dialog } from "../common/Dialog";
 import { IconText } from "../common/IconText";
 import { APP_VERSION } from "../../version";
 import { BugButton } from "../common/BugButton";
-import { CardsIcon, CopyIcon, EditIcon, ImportIcon, PlayIcon, PlusIcon, RestartIcon, TrashIcon } from "../common/UiIcons";
+import { CardsIcon, CopyIcon, EditIcon, ImportIcon, PlayIcon, PlusIcon, RestartIcon, TrashIcon, TrophyIcon } from "../common/UiIcons";
 import { importKingdom } from "../../persistence/backup";
+import { kingdomStatus, ScoreBoard } from "./ScoreBoard";
 import styles from "./Kingdoms.module.css";
 
 // Écran « Mes royaumes » (spec 6.1) : premier écran de l'appli.
@@ -129,6 +130,7 @@ type Menu = { kind: "rename" | "delete" | "restart"; kingdom: Kingdom };
 export function KingdomsScreen({ catalog }: { catalog: Catalog }) {
   const [kingdoms, setKingdoms] = useState<Kingdom[] | null>(null);
   const [creating, setCreating] = useState(false);
+  const [scores, setScores] = useState<Kingdom | null>(null);
   const [menu, setMenu] = useState<Menu | null>(null);
   const [search, setSearch] = useState("");
   const [importError, setImportError] = useState<string | null>(null);
@@ -192,8 +194,8 @@ export function KingdomsScreen({ catalog }: { catalog: Catalog }) {
               <a className={styles.main} href={`#/partie/${k.id}`}>
                 <span className={styles.crest}>{k.emoji}</span>
                 <span className={styles.name}>{k.name}</span>
-                <span className={styles.status} data-status={k.summary.status}>
-                  {k.summary.status === "finished" ? "Terminé" : "En cours"}
+                <span className={styles.status} data-status={kingdomStatus(catalog, k).stage}>
+                  {kingdomStatus(catalog, k).label}
                 </span>
                 <span className={styles.stats}>
                   Manche {k.summary.round} · <IconText text={`{fame} ${k.summary.fame}`} />
@@ -204,8 +206,11 @@ export function KingdomsScreen({ catalog }: { catalog: Catalog }) {
               </a>
               <div className={styles.actions}>
                 <a className={styles.play} href={`#/partie/${k.id}`}>
-                  <PlayIcon /> {k.summary.status === "finished" ? "Consulter" : "Continuer"}
+                  <PlayIcon /> {kingdomStatus(catalog, k).play}
                 </a>
+                <button className={styles.tool} onClick={() => setScores(k)} aria-label="Tableau des scores" title="Tableau des scores de la campagne">
+                  <TrophyIcon />
+                </button>
                 <button className={styles.tool} onClick={() => setMenu({ kind: "rename", kingdom: k })} aria-label="Renommer" title="Renommer">
                   <EditIcon />
                 </button>
@@ -239,6 +244,7 @@ export function KingdomsScreen({ catalog }: { catalog: Catalog }) {
         </Dialog>
       )}
       {creating && <NewKingdomDialog catalog={catalog} onClose={() => setCreating(false)} />}
+      {scores && <ScoreBoard catalog={catalog} kingdom={scores} onClose={() => setScores(null)} />}
       {menu?.kind === "rename" && (
         <RenameDialog
           kingdom={menu.kingdom}

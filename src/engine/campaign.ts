@@ -5,7 +5,7 @@ import { crossOutProduction, productionCount } from "./production";
 import { shuffle } from "./rng";
 import { cardFame, computeScore } from "./score";
 import { activeStage, cardName, instance, log, moveTo, template, zoneOf } from "./state";
-import type { Campaign, ChoiceRequest, Draft, GameState, InstanceId, TriggerImpl } from "./types";
+import type { Campaign, Catalog, ChoiceRequest, Draft, GameState, InstanceId, TriggerImpl } from "./types";
 
 // Après la partie de base (spec 4.7) : mini-extensions 136, 137, 138. Chacune : purge 12, purge d'une carte
 // permanente, puis 4 manches sans découverte de 2 cartes ; la carte d'extension change d'étape à chaque fin de manche.
@@ -60,6 +60,52 @@ export function startExpansion(d: Draft, card: InstanceId): void {
   log(d.s, `Mini-extension : ${expansionName(d, card)}. Purge 12, puis 1 carte permanente`);
   pushFront(d, { kind: "nextRound" });
   queueScript(d, card, PURGE_SCRIPT);
+}
+
+// --- Vue de la campagne (tableau des scores, statut du royaume) ---
+
+/**
+ * Où en est le royaume. Un royaume n'est jamais clôturé (demande du 2026-10-05) : après la partie de base, il attend la
+ * prochaine extension, et quand toutes celles connues sont jouées, il attend les suivantes.
+ *   base : partie de base en cours ; expansion : mini-extension en cours ; between : une extension peut être lancée ;
+ *   waiting : toutes les extensions disponibles sont jouées, en attente de nouvelles.
+ */
+export type CampaignStage = "base" | "expansion" | "between" | "waiting";
+
+export function campaignStage(s: GameState): CampaignStage {
+  if (inExpansion(s)) return "expansion";
+  if (s.phase !== "gameOver") return "base";
+  return availableExpansions(s).length > 0 ? "between" : "waiting";
+}
+
+/** Une étape de la campagne : la partie de base, puis chaque extension (identifiant : « base » ou numéro de carte). */
+export type CampaignStep = {
+  id: string;
+  kind: "base" | "mini";
+  name: string;
+  status: "done" | "current" | "available" | "upcoming";
+  /** Score du royaume à la fin de l'étape (chemin de score), ou null si elle n'est pas finie. */
+  score: number | null;
+  /** Étape en cours : manche (partie de base) ou manche de la mini-extension (sur 4). */
+  round?: number;
+};
+
+export function campaignSteps(catalog: Catalog, s: GameState): CampaignStep[] {
+  const camp = s.campaign;
+  const baseDone = (camp?.base ?? null) !== null || (s.phase === "gameOver" && !inExpansion(s));
+  const baseScore = camp?.base ?? (baseDone ? computeScore(catalog, s).total : null);
+  const steps: CampaignStep[] = [
+    { id: "base", kind: "base", name: "Partie de base", status: baseDone ? "done" : "current", score: baseScore, ...(baseDone ? {} : { round: s.round }) },
+  ];
+  const available = new Set(availableExpansions(s));
+  for (const c of Object.values(s.cards).filter((x) => (EXPANSION_SERIALS as readonly number[]).includes(x.serial)).sort((a, b) => a.serial - b.serial)) {
+    const name = expansionName({ catalog, s }, c.instanceId);
+    const played = camp?.played.find((p) => p.serial === c.serial);
+    if (played) steps.push({ id: String(c.serial), kind: "mini", name, status: "done", score: played.score });
+    else if (camp?.current === c.instanceId) steps.push({ id: String(c.serial), kind: "mini", name, status: "current", score: null, round: camp.rounds });
+    else steps.push({ id: String(c.serial), kind: "mini", name, status: available.has(c.instanceId) ? "available" : "upcoming", score: null });
+  }
+  return steps;
 }
 
 // --- Purge (spec 4.7) ---

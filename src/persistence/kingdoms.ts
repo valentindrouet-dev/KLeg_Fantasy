@@ -1,4 +1,4 @@
-import { computeScore, type Catalog, type GameRecord, type GameState } from "../engine";
+import { campaignStage, campaignSteps, computeScore, type CampaignStage, type Catalog, type GameRecord, type GameState } from "../engine";
 
 // Royaumes (spec 6.1) : une partie indépendante, avec sa propre boîte de cartes.
 // Le royaume stocke l'enregistrement (config + actions) et le dernier état, pour reprendre sans rejouer.
@@ -8,8 +8,11 @@ export type KingdomSummary = {
   turn: number;
   fame: number;
   lastDiscovered: number | null;
+  /** Partie de base finie (ancien statut, gardé tel quel) ; le royaume, lui, n'est jamais clôturé : voir `stage`. */
   status: "playing" | "finished";
   actions: number;
+  /** Où en est la campagne (absent des résumés enregistrés avant la v0.57 : recalculé depuis l'état). */
+  stage?: CampaignStage;
 };
 
 export type Kingdom = {
@@ -27,7 +30,28 @@ export type Kingdom = {
   unwanted?: string[];
   /** Temps de jeu (ms), compté seulement quand l'appli est à l'écran (demande du 2026-10-04). */
   playMs?: number;
+  /**
+   * Fin de chaque étape de la campagne (« base », puis numéro de la mini-extension) : date et temps de jeu cumulé à ce
+   * moment, pour le tableau des scores (demande du 2026-10-05). Absent des étapes finies avant la v0.57.
+   */
+  milestones?: Milestone[];
 };
+
+export type Milestone = { step: string; at: number; playMs: number };
+
+/** Jalons à jour : les étapes qui viennent de finir sont ajoutées, celles défaites par une annulation retirées. */
+export function updateMilestones(catalog: Catalog, k: Kingdom, state: GameState, now: number): Milestone[] | undefined {
+  const done = campaignSteps(catalog, state)
+    .filter((x) => x.status === "done")
+    .map((x) => x.id);
+  const kept = (k.milestones ?? []).filter((m) => done.includes(m.step));
+  const known = new Set((k.milestones ?? []).map((m) => m.step));
+  // Une étape finie avant la v0.57 n'a pas de jalon : on n'en invente pas (ni date ni durée), sauf si elle vient de finir.
+  const before = k.state ? campaignSteps(catalog, k.state).filter((x) => x.status === "done").map((x) => x.id) : [];
+  const fresh = done.filter((id) => !known.has(id) && !before.includes(id)).map((step) => ({ step, at: now, playMs: k.playMs ?? 0 }));
+  const next = [...kept, ...fresh];
+  return next.length || k.milestones ? next : undefined;
+}
 
 /** Durée de jeu lisible : « 42 min », « 1 h 05 ». */
 export function formatPlayTime(ms: number): string {
@@ -46,6 +70,7 @@ export function summarize(catalog: Catalog, record: GameRecord, state: GameState
     lastDiscovered: state.discoveries.at(-1) ?? null,
     status: state.phase === "gameOver" ? "finished" : "playing",
     actions: record.actions.length,
+    stage: campaignStage(state),
   };
 }
 

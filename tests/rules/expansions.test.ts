@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { computeScore, productionGroups, type Action, type GameState } from "../../src/engine";
+import { campaignStage, campaignSteps, computeScore, productionGroups, type Action, type GameState } from "../../src/engine";
 import { purgeFame } from "../../src/engine/campaign";
 import { loadCatalog } from "../helpers/catalog";
 import { arrange, fk, legal, passUntil, run } from "../helpers/game";
@@ -92,5 +92,35 @@ describe("purge et mini-extensions", async () => {
     let s = arrange(catalog, { play: [13], permanent: [136], deck: [42, 1, 2, 3], orientation: { 136: { side: "back", rotation: 180 } } });
     s = run(catalog, s, { type: "advance" });
     expect(s.cards[fk(136)]?.checkedBoxes).toEqual(["3/c1"]);
+  });
+  it("campagne : étapes et statut, le royaume n'est jamais clôturé", () => {
+    let s = finished();
+    expect(campaignStage(s)).toBe("between");
+    const base = computeScore(catalog, s).total;
+    expect(campaignSteps(catalog, s).map((x) => [x.id, x.status, x.score])).toEqual([
+      ["base", "done", base],
+      ["136", "available", null],
+      ["137", "available", null],
+      ["138", "available", null],
+    ]);
+    s = purgeFirst(run(catalog, s, { type: "startExpansion", card: fk(137) }));
+    expect(campaignStage(s)).toBe("expansion");
+    expect(campaignSteps(catalog, s).find((x) => x.id === "137")).toMatchObject({ status: "current", round: 1 });
+    for (let round = 0; round < 4 && s.phase === "playing"; round++) {
+      const r = s.round;
+      s = passUntil(catalog, s, (x) => x.round !== r || x.phase === "gameOver");
+    }
+    expect(campaignStage(s)).toBe("between");
+    expect(campaignSteps(catalog, s).find((x) => x.id === "137")).toMatchObject({ status: "done", score: computeScore(catalog, s).total });
+    // Toutes jouées : en attente de nouvelles extensions, jamais « terminé ».
+    s.campaign!.played.push({ serial: 136, name: "x", score: 0 }, { serial: 138, name: "y", score: 0 });
+    for (const n of [136, 138]) s.zones.box = s.zones.box.filter((id) => id !== fk(n));
+    expect(campaignStage(s)).toBe("waiting");
+  });
+
+  it("partie de base en cours : étape courante avec sa manche", () => {
+    const s = arrange(catalog, { play: [1], deck: [2, 3] });
+    expect(campaignStage(s)).toBe("base");
+    expect(campaignSteps(catalog, s)[0]).toMatchObject({ id: "base", status: "current", round: s.round });
   });
 });

@@ -3,6 +3,13 @@
 Chaque mise à jour publiée change de version (`package.json`, affichée dans l'appli en bas de l'écran « Mes royaumes »
 et dans la barre de la partie). Convention : `0.5.0` s'affiche **v0.05** ; un correctif `0.5.1` s'affiche **v0.05.1**.
 
+## v0.57 (5 octobre 2026)
+
+- Accueil : un bouton coupe à côté de « Continuer » ouvre le **tableau des scores** de la campagne du royaume. On y trouve la partie de base et chaque extension, avec leur état (terminée, en cours avec la manche, à jouer, à venir), leur score, la date de fin et le temps de jeu ; en dessous, la gloire actuelle, la gloire purgée et le temps total. Les étapes finies avant cette version n'ont pas de date : elle n'était pas enregistrée.
+- Un royaume n'est jamais « terminé » : « En cours », « *Mini-extension* · manche n/4 », « Extension à lancer » (bouton « Extensions ») ou « En attente de nouvelles extensions ».
+- Préparation des grandes extensions : étapes de campagne génériques ; une extension déclarée dans les données apparaît « À venir » dans le tableau. Guide : `docs/FINS_DE_PARTIE.md`.
+- Aucune donnée existante n'est supprimée : nouveaux champs facultatifs, statuts calculés depuis l'état des royaumes.
+
 ## v0.56 (5 octobre 2026)
 
 - Gloire variable : sur les cartes dont la gloire dépend du royaume (« * » : Strength in Numbers, Loyalty, The Ark, Camelot…), la gloire qu'elles valent maintenant est écrite sur leur rosette, sur la face posée comme en jeu. Positions mesurées sur les images (`npm run fame-spots`).

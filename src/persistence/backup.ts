@@ -18,6 +18,7 @@ const BackupSchema = z.object({
     emoji: z.string(),
     createdAt: z.number(),
     playMs: z.number().nonnegative().optional(),
+    milestones: z.array(z.object({ step: z.string(), at: z.number(), playMs: z.number() })).optional(),
     record: z.object({
       config: z.object({ expansion: z.string().min(1), seed: z.number(), undoMode: z.enum(["strict", "free"]) }),
       actions: z.array(z.record(z.string(), z.unknown())),
@@ -26,8 +27,8 @@ const BackupSchema = z.object({
 });
 
 export function exportKingdom(k: Kingdom, appVersion: string): string {
-  const { id, name, emoji, createdAt, record, playMs } = k;
-  return JSON.stringify({ format: FORMAT, appVersion, exportedAt: new Date().toISOString(), kingdom: { id, name, emoji, createdAt, playMs, record } }, null, 1);
+  const { id, name, emoji, createdAt, record, playMs, milestones } = k;
+  return JSON.stringify({ format: FORMAT, appVersion, exportedAt: new Date().toISOString(), kingdom: { id, name, emoji, createdAt, playMs, milestones, record } }, null, 1);
 }
 
 export function backupFileName(k: Kingdom): string {
@@ -66,5 +67,6 @@ export function importKingdom(catalog: Catalog, text: string, takenIds: readonly
     record,
     state,
     ...(kingdom.playMs !== undefined ? { playMs: kingdom.playMs } : {}),
+    ...(kingdom.milestones ? { milestones: kingdom.milestones } : {}),
   };
 }

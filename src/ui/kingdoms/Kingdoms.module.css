@@ -247,3 +247,58 @@
 .tool svg {
   flex: none;
 }
+
+/* Statuts de la campagne : un royaume n'est jamais « terminé » (demande du 2026-10-05) */
+.status[data-status="expansion"] {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.status[data-status="between"] {
+  color: var(--ok);
+  font-weight: 700;
+}
+
+.status[data-status="waiting"] {
+  color: var(--text-muted);
+}
+
+/* Tableau des scores de la campagne */
+.scoreBoard {
+  width: 100%;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+
+.scoreBoard th,
+.scoreBoard td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+}
+
+.scoreBoard th {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.scoreBoard tr[data-status="current"] td {
+  font-weight: 700;
+}
+
+.scoreBoard tr[data-status="upcoming"] td,
+.scoreBoard tr[data-status="available"] td:not(:first-child) {
+  color: var(--text-muted);
+}
+
+.scoreBoardFoot {
+  margin: var(--space-3) 0 0;
+  font-weight: 600;
+}
+
+.scoreBoardNote {
+  margin: var(--space-2) 0 0;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
