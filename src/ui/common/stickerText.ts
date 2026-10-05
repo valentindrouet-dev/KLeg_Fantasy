@@ -48,3 +48,10 @@ export function splitStickers(text: string): (string | { sticker: string })[] {
   out.push(text.slice(last));
   return out.filter((x) => x !== "");
 }
+
+/** Numéros de stickers cités dans ces textes, dans l'ordre, sans doublon. */
+export function stickersIn(texts: readonly string[]): string[] {
+  const out: string[] = [];
+  for (const t of texts) for (const x of splitStickers(t)) if (typeof x !== "string" && !out.includes(x.sticker)) out.push(x.sticker);
+  return out;
+}

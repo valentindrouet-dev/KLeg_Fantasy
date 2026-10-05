@@ -1,5 +1,5 @@
 import { Fragment } from "react";
-import { splitStickers, STICKER_ICONS, STICKER_LABELS } from "./stickerText";
+import { splitStickers, stickersIn, STICKER_ICONS, STICKER_LABELS } from "./stickerText";
 import styles from "./common.module.css";
 
 // Icônes du jeu découpées dans les cartes (scripts/extract-icons.ts) ; les autres restent en caractères.
@@ -74,6 +74,26 @@ export function IconText({ text }: { text: string }) {
   return (
     <span>
       {parts.map((p, i) => (i % 2 === 1 ? <Icon key={i} id={p} /> : <PlainText key={i} text={p} />))}
+    </span>
+  );
+}
+
+/**
+ * Légende des stickers cités par le texte imprimé d'une carte (« Add sticker 6 and 10 ») : sur l'image, seul le numéro
+ * est écrit ; on montre le symbole et le sens de chacun (demandes du 2026-10-05).
+ */
+export function StickerLegend({ texts, className }: { texts: readonly string[]; className?: string }) {
+  const ids = stickersIn(texts).filter((id) => STICKER_ICONS[id]);
+  if (ids.length === 0) return null;
+  return (
+    <span className={`${styles.stickerLegend} ${className ?? ""}`}>
+      {ids.map((id) => (
+        <span key={id} className={styles.stickerLegendItem}>
+          Sticker {id}
+          <StickerIcon id={id} />
+          <span className={styles.stickerLegendText}>{STICKER_LABELS[id]}</span>
+        </span>
+      ))}
     </span>
   );
 }

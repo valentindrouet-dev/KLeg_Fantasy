@@ -1235,6 +1235,35 @@
   flex-direction: column;
   align-items: center;
   gap: var(--space-4);
+  max-width: 100%;
+}
+
+/* Une carte découverte : recto et verso, puis la légende de ses stickers. Jamais plus large que la fenêtre : les
+   faces rétrécissent (iPad en portrait, demande du 2026-10-05). */
+.newCardRow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  max-width: 100%;
+}
+
+.newCardRow .bothSides {
+  max-width: 100%;
+}
+
+.newCardRow .choice {
+  flex: 0 1 auto;
+  min-width: 0;
+}
+
+.newCardRow .card {
+  max-width: 100%;
+}
+
+.inspectorLegend {
+  display: flex;
+  margin-bottom: var(--space-3);
 }
 
 /* Stats : toutes les cartes par numéro */

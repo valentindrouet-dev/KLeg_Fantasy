@@ -1,4 +1,4 @@
-import { Fragment, useState, type ReactNode } from "react";
+import { Fragment, useEffect, useState, type ReactNode } from "react";
 import {
   availableExpansions,
   boxViews,
@@ -18,9 +18,10 @@ import {
   type GameState,
   type InstanceId,
 } from "../../engine";
-import type { Side, StageId } from "../../data/schema";
+import type { CardTemplate, Side, StageId } from "../../data/schema";
 import { Dialog } from "../common/Dialog";
-import { Icon, IconText } from "../common/IconText";
+import { Icon, IconText, StickerLegend } from "../common/IconText";
+import { stickersIn } from "../common/stickerText";
 import { CardView, type CardNote } from "./CardView";
 import { frNote } from "./translationNote";
 import { goalView, stageAtPoint } from "./goals";
@@ -56,11 +57,35 @@ function pairWidth(): number {
   return Math.floor(Math.max(130, Math.min(320, byWidth, byHeight)));
 }
 
-/** Largeur des cartes empilées en rangées (recto + verso par rangée) : toutes les rangées tiennent sans défiler. */
-function stackedWidth(rows: number): number {
-  const byHeight = ((window.innerHeight - 230 - (rows - 1) * 16) / Math.max(1, rows)) * (373 / 520);
-  const byWidth = (Math.min(window.innerWidth, 1500) - 140 - 16) / 2;
-  return Math.floor(Math.max(120, Math.min(420, byHeight, byWidth)));
+/** Hauteur de la barre du mode développeur (0 sans elle), qui repousse le haut des fenêtres. */
+function devBarHeight(): number {
+  return Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--dev-bar-h")) || 0;
+}
+
+/**
+ * Largeur des cartes empilées en rangées (recto + verso par rangée) : toutes les rangées tiennent sans défiler, en
+ * largeur comme en hauteur (iPad en portrait, demande du 2026-10-05). `below` : hauteur sous chaque rangée (libellés,
+ * légende des stickers). Marges mesurées : haut des fenêtres 74 px, en-tête et pied 140, corps 32, bas 16.
+ */
+function stackedWidth(rows: number, below: number): number {
+  const n = Math.max(1, rows);
+  const free = window.innerHeight - devBarHeight() - 74 - 140 - 32 - 24 - (n - 1) * 16 - n * below;
+  const byHeight = (free / n) * (373 / 520);
+  const byWidth = (Math.min(document.documentElement.clientWidth, 1500) - 32 - 2 - 32 - 8) / 2;
+  return Math.floor(Math.max(110, Math.min(420, byHeight, byWidth)));
+}
+
+/** Textes imprimés de toutes les étapes d'une carte (pour la légende des stickers cités). */
+const stageTexts = (t: CardTemplate): string[] => Object.values(t.stages).map((st) => st?.text ?? "");
+
+/** Rendu à nouveau quand la fenêtre change de taille (rotation de l'iPad). */
+function useViewport(): void {
+  const [, set] = useState(0);
+  useEffect(() => {
+    const on = () => set((n) => n + 1);
+    window.addEventListener("resize", on);
+    return () => window.removeEventListener("resize", on);
+  }, []);
 }
 
 /** Largeur d'une grande carte dans une fenêtre : `count` cartes côte à côte, la plus grande qui tient. */
@@ -137,6 +162,7 @@ export function Inspector({
           ))}
         </div>
       )}
+      <StickerLegend texts={stageTexts(t)} className={styles.inspectorLegend} />
       <div className={styles.inspector}>
         <CardView
           markId={card}
@@ -364,8 +390,11 @@ function NewCardsDialog({
 }) {
   const [sides, setSides] = useState<Record<InstanceId, Side>>({});
   const { goals, toggleGoal } = useGoals();
-  const width = stackedWidth(cards.length);
+  useViewport();
   const tOf = (id: InstanceId) => template(catalog, instance(state, id).templateId);
+  const anyChoose = cards.some((id) => tOf(id).chooseSideOnDiscover);
+  const anyLegend = cards.some((id) => stickersIn(stageTexts(tOf(id))).length > 0);
+  const width = stackedWidth(cards.length, (anyChoose ? 30 : 0) + (anyLegend ? 30 : 0));
   const chosen = Object.fromEntries(Object.entries(sides).filter(([id]) => tOf(id).chooseSideOnDiscover));
   return (
     <Dialog
@@ -383,7 +412,8 @@ function NewCardsDialog({
           const choose = tOf(id).chooseSideOnDiscover;
           const current = sides[id] ?? instance(state, id).orientation.side;
           return (
-            <div key={id} className={styles.bothSides}>
+            <div key={id} className={styles.newCardRow}>
+              <div className={styles.bothSides}>
               {(["front", "back"] as const).map((side) => (
                 <figure key={side} className={styles.choice}>
                   <CardView
@@ -410,6 +440,8 @@ function NewCardsDialog({
                   {choose && <span className={styles.sideLabel}>{current === side ? "✓ Gardée" : "Toucher pour garder"}</span>}
                 </figure>
               ))}
+              </div>
+              <StickerLegend texts={stageTexts(tOf(id))} />
             </div>
           );
         })}

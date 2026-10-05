@@ -3,6 +3,11 @@
 Chaque mise à jour publiée change de version (`package.json`, affichée dans l'appli en bas de l'écran « Mes royaumes »
 et dans la barre de la partie). Convention : `0.5.0` s'affiche **v0.05** ; un correctif `0.5.1` s'affiche **v0.05.1**.
 
+## v0.58 (5 octobre 2026)
+
+- Fenêtre des nouvelles cartes : elle tient entière dans l'écran, sans défilement ni carte coupée à droite (iPad en portrait comme en paysage, avec ou sans la barre du mode dev). La taille des cartes tient compte des libellés « Gardée » et de la légende des stickers, et se recalcule quand on tourne l'iPad.
+- Stickers cités sur l'image d'une carte (« Add sticker 6 and 10 ») : une légende sous la carte donne le symbole et le sens de chacun (« Sticker 6 [symbole] marchandise · Sticker 10 [symbole] gloire 5 »), dans la fenêtre des nouvelles cartes et dans l'inspection (appui long).
+
 ## v0.57 (5 octobre 2026)
 
 - Accueil : un bouton coupe à côté de « Continuer » ouvre le **tableau des scores** de la campagne du royaume. On y trouve la partie de base et chaque extension, avec leur état (terminée, en cours avec la manche, à jouer, à venir), leur score, la date de fin et le temps de jeu ; en dessous, la gloire actuelle, la gloire purgée et le temps total. Les étapes finies avant cette version n'ont pas de date : elle n'était pas enregistrée.
