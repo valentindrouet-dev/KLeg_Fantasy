@@ -24,6 +24,7 @@ import { Icon, IconText } from "../common/IconText";
 import { CardView, type CardNote } from "./CardView";
 import { frNote } from "./translationNote";
 import { goalView, stageAtPoint } from "./goals";
+import { referencedSerials } from "./cardRefs";
 import { useGame } from "./store";
 
 /** Objectifs du royaume en cours et bascule (appui long sur une moitié de carte). */
@@ -72,7 +73,23 @@ function bigCard(count = 1): number {
  * Inspection : à gauche la carte telle qu'elle est posée, à droite l'autre face, même sens : stage 1 à côté du 4,
  * stage 2 à côté du 3, à l'envers (demande du 2026-10-02, qui remplace la rotation inversée).
  */
-export function Inspector({ catalog, state, card, onClose }: { catalog: Catalog; state: GameState; card: InstanceId; onClose: () => void }) {
+export function Inspector({
+  catalog,
+  state,
+  card,
+  onClose,
+  onOpen,
+  onBack,
+}: {
+  catalog: Catalog;
+  state: GameState;
+  card: InstanceId;
+  onClose: () => void;
+  /** Ouvre l'inspection d'une carte citée par celle-ci. */
+  onOpen?: (card: InstanceId) => void;
+  /** Revient à la carte inspectée avant (après un renvoi). */
+  onBack?: () => void;
+}) {
   const c = instance(state, card);
   const t = template(catalog, c.templateId);
   const other = { side: c.orientation.side === "front" ? "back" : "front", rotation: c.orientation.rotation } as const;
@@ -84,6 +101,10 @@ export function Inspector({ catalog, state, card, onClose }: { catalog: Catalog;
     const n = frNote(t, o, p.y < 0.5 ? "top" : "bottom");
     setNote(n && !(note?.face === face && note.note.half === n.half) ? { face, note: n } : null);
   };
+  const refs = referencedSerials(t).flatMap((serial) => {
+    const ref = Object.values(state.cards).find((x) => x.serial === serial && template(catalog, x.templateId).expansion === t.expansion);
+    return ref ? [{ id: ref.instanceId, serial, name: template(catalog, ref.templateId).stages["1"]?.name ?? "" }] : [];
+  });
   // Carte permanente dont on a choisi la face (objectifs…) : l'autre face ne servira plus, on ne la montre pas.
   const single = t.chooseSideOnDiscover && state.zones.permanent.includes(card);
   // Appui long sur une moitié : objectif doré (demande du 2026-10-04).
@@ -95,6 +116,22 @@ export function Inspector({ catalog, state, card, onClose }: { catalog: Catalog;
   };
   return (
     <Dialog title={cardName(catalog, state, card)} onClose={onClose} wide>
+      {(refs.length > 0 || onBack) && (
+        // Cartes citées par le texte (« Discover Shrine (82 / 83) ») : consultables à tout moment (demande du 2026-10-05).
+        <div className={styles.cardRefs}>
+          {onBack && (
+            <button className={styles.cardRef} onClick={onBack}>
+              ← Retour
+            </button>
+          )}
+          {refs.length > 0 && <span className={styles.muted}>Cartes citées :</span>}
+          {refs.map((r) => (
+            <button key={r.id} className={styles.cardRef} onClick={() => onOpen?.(r.id)} disabled={!onOpen}>
+              #{r.serial} {r.name}
+            </button>
+          ))}
+        </div>
+      )}
       <div className={styles.inspector}>
         <CardView
           markId={card}

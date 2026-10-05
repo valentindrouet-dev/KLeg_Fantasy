@@ -315,10 +315,13 @@ function Face({
 }
 
 export function CardView(props: Props) {
-  const { id, template, orientation, label, width, selected, engaged, targetable, dimBottom, flagged, onTwoFinger, dimmed, badge, onTap, onLongPress, zoneLabel, anim, stickers, half, note, exhausted, shake, picked, boxes, pickBoxes, crossedCosts, pickCosts, goal } =
+  const { id, template, orientation, label, width, selected, engaged, targetable, dimBottom, flagged, onTwoFinger, dimmed, badge, onTap, onLongPress, zoneLabel, anim, half, note, exhausted, shake, picked, boxes, pickBoxes, crossedCosts, pickCosts, goal } =
     props;
   // Carte rayée (demande du 2026-10-04) : glisser le doigt horizontalement sur la carte pose ou retire un halo rouge.
   const markId = props.markId ?? id;
+  // Stickers toujours visibles (demande du 2026-10-05) : ceux de la carte de la partie, si l'appelant ne les donne pas.
+  const ownStickers = useGame((g) => (markId && g.session ? g.session.states.at(-1)?.cards[markId]?.stickers : undefined));
+  const stickers = props.stickers ?? ownStickers;
   const unwanted = useGame((g) => (markId ? (g.kingdom?.unwanted ?? []).includes(markId) : false));
   const toggleUnwanted = useGame((g) => g.toggleUnwanted);
   const onSwipe = markId && !anim ? () => toggleUnwanted(markId) : undefined;

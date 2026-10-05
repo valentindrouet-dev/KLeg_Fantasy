@@ -56,6 +56,8 @@ Routage par hash (`src/ui/App.tsx`) : `#/` Mes royaumes, `#/partie/<id>` partie,
 - **Appli iPad** : `public/manifest.webmanifest`, icônes pièce sur fond noir (`scripts/make-app-icons.ts`).
 - **Tri ⇅** : cartes en jeu par ressource (défaut), par type de terrain ou ordre d'arrivée (`sortCards.ts`, affichage seulement).
 - **Stats** : cartes par zone, par étape (1 à 4), production par ressource, gloire, types (en anglais), découvertes / détruites / boîte ; cases colorées (`engine/stats.ts`).
+- **Cartes citées** (inspection, demande du 2026-10-05) : boutons « #82 Shrine »… pour chaque carte citée par le texte
+  (`cardRefs.ts`), consultable à tout moment comme le permet le jeu ; « ← Retour » remonte la chaîne.
 - **Inspection** : face visible telle qu'elle est posée + autre face dans le même sens (1 à côté de 4, 2 à côté de 3 à l'envers).
 - **Questions des effets** (`ChoiceDialog`) : la carte source, la question, puis des cartes à toucher, des ressources
   à choisir (une par toucher, retirer en touchant la sélection) ou des boutons d'option ; « Valider » quand plusieurs

@@ -152,6 +152,8 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
   const unsavedPlayMs = usePlayClock(status === "ready" && session !== null && current(session).phase !== "gameOver", addPlayTime);
   const [selected, setSelected] = useState<Selected | null>(null);
   const [inspect, setInspect] = useState<InstanceId | null>(null);
+  /** Cartes inspectées avant un renvoi vers une carte citée (« ← Retour »). */
+  const [inspectBack, setInspectBack] = useState<InstanceId[]>([]);
   const [discardOpen, setDiscardOpen] = useState(false);
   const [roundBanner, setRoundBanner] = useState<{ key: number; text: string } | null>(null);
   /** Texte posé sur une carte : traduction en mode FR, ou ce qui manque pour payer. */
@@ -1196,7 +1198,30 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
         <CardListDialog catalog={catalog} state={state} title="Défausse" cards={state.zones.discard} onInspect={setInspect} onClose={() => setDiscardOpen(false)} />
       )}
       {state.pending && !boardChoice && !boxChoice && <DecisionDialog catalog={catalog} state={state} onAction={(a) => perform([a])} onRestart={restart} onInspect={setInspect} />}
-      {inspect && <Inspector catalog={catalog} state={state} card={inspect} onClose={() => setInspect(null)} />}
+      {inspect && (
+        <Inspector
+          key={inspect}
+          catalog={catalog}
+          state={state}
+          card={inspect}
+          onClose={() => {
+            setInspect(null);
+            setInspectBack([]);
+          }}
+          onOpen={(id) => {
+            setInspectBack((b) => [...b, inspect]);
+            setInspect(id);
+          }}
+          onBack={
+            inspectBack.length
+              ? () => {
+                  setInspect(inspectBack.at(-1) ?? null);
+                  setInspectBack((b) => b.slice(0, -1));
+                }
+              : undefined
+          }
+        />
+      )}
       {state.phase === "gameOver" && !endClosed && (
         <EndDialog
           catalog={catalog}

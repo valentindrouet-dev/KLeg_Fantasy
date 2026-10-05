@@ -3,6 +3,11 @@
 Chaque mise à jour publiée change de version (`package.json`, affichée dans l'appli en bas de l'écran « Mes royaumes »
 et dans la barre de la partie). Convention : `0.5.0` s'affiche **v0.05** ; un correctif `0.5.1` s'affiche **v0.05.1**.
 
+## v0.55 (5 octobre 2026)
+
+- Stickers toujours visibles : une carte de la partie montre ses stickers partout où elle est dessinée (questions des effets, défausse, listes, inspection…).
+- Inspection (appui long) : en haut, un bouton par carte citée dans le texte de la carte (« Discover Shrine (82 / 83) », « cards 31-34 », « Discover Dubbing (86) »…), avec son numéro et son nom. Le toucher ouvre l'inspection de cette carte, même encore dans la boîte ; « ← Retour » revient à la carte précédente.
+
 ## v0.54 (5 octobre 2026)
 
 - Questions d'Export : elles rappellent la case utilisée et son effet (« Export 20 {tradeGood} · Sticker 7 [symbole] (Stays in play) : sur quelle personne ? »).
