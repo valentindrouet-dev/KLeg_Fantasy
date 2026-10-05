@@ -3,6 +3,7 @@ import { isValidAnswer, canBeNamed,
   availableExpansions,
   availableGrandExpansions,
   grandExpansions,
+  GRAND_EXPANSIONS,
   boxViews,
   canRestartKingdom,
   EXPANSION_SERIALS,
@@ -614,6 +615,21 @@ function ChoiceDialog({ catalog, state, onAction, onInspect }: { catalog: Catalo
   );
 }
 
+/** Flèche entre deux étapes du parcours du royaume. */
+function JourneyArrow() {
+  return (
+    <svg className={styles.journeyArrow} viewBox="0 0 32 16" aria-hidden="true">
+      <path d="M1 8h26M21 2l7 6-7 6" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+/**
+ * Fin de partie, ou d'une extension : la page de lancement des extensions (demande du 2026-10-05). En haut, le parcours
+ * du royaume dans l'ordre accompli (partie de base, puis chaque extension, avec son score) ; dessous, les extensions,
+ * cochées en vert quand elles sont faites, comme une carte choisie en jeu. Pas de liste de cartes : le détail de la
+ * gloire reste dans Stats.
+ */
 export function EndDialog({
   catalog,
   state,
@@ -628,23 +644,41 @@ export function EndDialog({
   onAction: (a: Action) => void;
 }) {
   const score = computeScore(catalog, state);
-  const lines = score.lines.filter((l) => l.fame !== 0 || l.variable).sort((a, b) => b.fame - a.fame);
   const camp = state.campaign;
-  // Mini-extensions (spec 4.7) : 136, 137, 138, une seule fois par royaume ; celles déjà jouées sont grisées.
+  // Mini-extensions (spec 4.7) : 136, 137, 138, une seule fois par royaume.
   const available = new Set(availableExpansions(state));
-  const expansions = Object.values(state.cards)
+  const minis = Object.values(state.cards)
     .filter((c) => (EXPANSION_SERIALS as readonly number[]).includes(c.serial) && c.templateId.startsWith(`${state.config.expansion}-`))
-    .sort((a, b) => a.serial - b.serial);
-  // Grandes extensions (Merchants) : leur parchemin 00 sert d'image ; une seule fois par royaume.
+    .sort((a, b) => a.serial - b.serial)
+    .map((c) => {
+      const played = camp?.played.find((p) => p.expansion === undefined && p.serial === c.serial);
+      return {
+        key: c.instanceId,
+        name: expansionName({ catalog, s: state }, c.instanceId),
+        kind: "Mini-extension",
+        template: template(catalog, c.templateId),
+        side: "front" as const,
+        played,
+        open: available.has(c.instanceId),
+        action: { type: "startExpansion", card: c.instanceId } as Action,
+      };
+    });
+  // Grandes extensions (Merchants) : le dos de leurs cartes en image ; une seule fois par royaume.
   const grandOpen = new Set(availableGrandExpansions(catalog, state));
   const grands = grandExpansions(catalog).flatMap((id) => {
-    const t = catalog.templates.get(`${id}-000`);
-    return t ? [{ id, t }] : [];
+    const t = catalog.templates.get(`${id}-${String(GRAND_EXPANSIONS[id]?.cover ?? 0).padStart(3, "0")}`);
+    if (!t) return [];
+    const played = camp?.played.find((p) => p.expansion === id);
+    return [{ key: id, name: id, kind: "Extension", template: t, side: "back" as const, played, open: grandOpen.has(id), action: { type: "startGrandExpansion", expansion: id } as Action }];
   });
+  const tiles = [...grands, ...minis];
+  // Parcours : partie de base, puis les extensions dans l'ordre où elles ont été jouées.
+  const steps = [{ name: "Partie de base", score: camp?.base ?? score.total }, ...(camp?.played ?? []).map((p) => ({ name: p.name, score: p.score }))];
   const last = camp?.played.at(-1);
+  const remaining = tiles.filter((x) => x.open).length;
   return (
     <Dialog
-      title={last ? (last.expansion ? `Fin de l'extension ${last.name}` : "Fin de la mini-extension") : "Fin de la partie"}
+      title={last ? (last.expansion ? `Fin de l'extension ${last.name}` : `Fin de ${last.name}`) : "Fin de la partie"}
       onClose={onClose}
       wide
       actions={
@@ -661,60 +695,70 @@ export function EndDialog({
       <p className={styles.bigScore}>
         <IconText text={`${score.total} {fame}`} />
       </p>
-      {camp && camp.base !== null && (
-        <ol className={styles.scorePath} aria-label="Chemin de score">
-          <li>
-            <span>Partie de base</span> <IconText text={`${camp.base} {fame}`} />
-          </li>
-          {camp.played.map((p) => (
-            <li key={`${p.expansion ?? ""}${p.serial}`}>
-              <span>{p.name}</span> <IconText text={`${p.score} {fame}`} />
-            </li>
+      <section className={styles.journeySection}>
+        <h3 className={styles.endHeading}>Parcours du royaume</h3>
+        <ol className={styles.journey} aria-label="Parcours du royaume">
+          {steps.map((st, i) => (
+            <Fragment key={`${i}-${st.name}`}>
+              {i > 0 && (
+                <li className={styles.journeyArrowItem} aria-hidden="true">
+                  <JourneyArrow />
+                </li>
+              )}
+              <li className={styles.journeyStep}>
+                <span className={styles.journeyIndex}>{i === 0 ? "Base" : `Étape ${i + 1}`}</span>
+                <span className={styles.journeyName}>{st.name}</span>
+                <span className={styles.journeyScore}>
+                  <IconText text={`${st.score} {fame}`} />
+                </span>
+              </li>
+            </Fragment>
           ))}
-        </ol>
-      )}
-      <div className={styles.expansionChoice}>
-        {expansions.map((c) => {
-          const name = expansionName({ catalog, s: state }, c.instanceId);
-          const open = available.has(c.instanceId);
-          return (
-            <figure key={c.instanceId} className={`${styles.choice} ${open ? "" : styles.expansionDone}`}>
-              <CardView template={template(catalog, c.templateId)} orientation={{ side: "front", rotation: 0 }} label={name} width={150} />
-              <button className="btn btn-primary" disabled={!open} onClick={() => onAction({ type: "startExpansion", card: c.instanceId })}>
-                {open ? `Jouer ${name}` : "Déjà jouée"}
-              </button>
-            </figure>
-          );
-        })}
-        {grands.map(({ id, t }) => {
-          const open = grandOpen.has(id);
-          return (
-            <figure key={id} className={`${styles.choice} ${open ? "" : styles.expansionDone}`}>
-              <CardView template={t} orientation={{ side: "front", rotation: 0 }} label={id} width={150} />
-              <button className="btn btn-primary" disabled={!open} onClick={() => onAction({ type: "startGrandExpansion", expansion: id })}>
-                {open ? `Jouer ${id}` : "Déjà jouée"}
-              </button>
-            </figure>
-          );
-        })}
-      </div>
-      <table className={styles.scoreTable}>
-        <tbody>
-          {lines.map((l) => (
-            <tr key={l.card}>
-              <td>{l.name}</td>
-              <td>{l.fame}</td>
-            </tr>
-          ))}
-          {score.purgedFame > 0 && (
-            <tr>
-              <td>Gloire purgée</td>
-              <td>{score.purgedFame}</td>
-              <td />
-            </tr>
+          {remaining > 0 && (
+            <>
+              <li className={styles.journeyArrowItem} aria-hidden="true">
+                <JourneyArrow />
+              </li>
+              <li className={`${styles.journeyStep} ${styles.journeyNext}`}>
+                <span className={styles.journeyIndex}>Étape {steps.length + 1}</span>
+                <span className={styles.journeyName}>À choisir</span>
+              </li>
+            </>
           )}
-        </tbody>
-      </table>
+        </ol>
+      </section>
+      <section>
+        <h3 className={styles.endHeading}>{remaining > 0 ? "Choisis la prochaine extension" : "Toutes les extensions sont faites"}</h3>
+        <div className={styles.expansionGrid}>
+          {tiles.map((x) => (
+            <figure key={x.key} className={`${styles.expansionTile} ${x.played ? styles.expansionTileDone : ""}`}>
+              <CardView
+                template={x.template}
+                orientation={{ side: x.side, rotation: 0 }}
+                label={x.name}
+                width={150}
+                picked={Boolean(x.played)}
+                onTap={x.open ? () => onAction(x.action) : undefined}
+              />
+              <figcaption className={styles.expansionCaption}>
+                <span className={styles.expansionKind}>{x.kind}</span>
+                <span className={styles.expansionName}>{x.name}</span>
+                {x.played ? (
+                  <span className={styles.expansionState}>
+                    Faite · <IconText text={`${x.played.score} {fame}`} />
+                  </span>
+                ) : x.open ? (
+                  <button className="btn btn-primary" onClick={() => onAction(x.action)}>
+                    Jouer
+                  </button>
+                ) : (
+                  <span className={styles.expansionState}>Plus tard</span>
+                )}
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+      </section>
     </Dialog>
   );
 }

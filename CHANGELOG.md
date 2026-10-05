@@ -3,6 +3,14 @@
 Chaque mise à jour publiée change de version (`package.json`, affichée dans l'appli en bas de l'écran « Mes royaumes »
 et dans la barre de la partie). Convention : `0.5.0` s'affiche **v0.05** ; un correctif `0.5.1` s'affiche **v0.05.1**.
 
+## v0.65 (5 octobre 2026)
+
+- Nouvelle page de fin de partie et de lancement des extensions :
+  - **Parcours du royaume** : la partie de base, puis chaque extension dans l'ordre où elle a été jouée, avec son score, reliées par des flèches ; la prochaine étape « À choisir » en pointillés.
+  - **Extensions** : une tuile par extension. Celles déjà faites sont cochées en vert, comme une carte choisie en jeu, avec leur score. Les autres ont un bouton « Jouer » ; toucher l'image lance aussi l'extension.
+  - Merchants est montrée par le dos de ses cartes (« Kingdom Legacy · Merchants »), les mini-extensions par leur carte.
+  - La liste des cartes avec leur gloire n'est plus affichée ici : elle reste dans Stats → Gloire.
+
 ## v0.64.1 (5 octobre 2026)
 
 - Les productions rayées sont enfin visibles. Royal Decree, Attack, Grapes, Manor et toutes les cartes qui « cross out 1 production » les rayaient bien (la carte produisait moins), mais rien ne se voyait sur la carte. Une croix au feutre barre maintenant chaque icône rayée, partout : plateau, défausse, inspection. Les royaumes existants affichent aussi les croix déjà faites.

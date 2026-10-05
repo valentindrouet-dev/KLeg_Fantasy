@@ -18,11 +18,11 @@
 
 1. La découverte de la **carte 68** (parchemin « This is your last round », qui fait découvrir 69 et 70) annonce la dernière manche. Le journal note « C'est la dernière manche » et la barre du haut affiche « (dernière) ».
 2. À la fin de cette manche, la partie est **terminée** (`phase = gameOver`). Score = gloire de toutes les cartes du royaume + gloire purgée.
-3. La fenêtre **« Fin de la partie »** s'ouvre. Elle montre :
+3. La fenêtre **« Fin de la partie »** s'ouvre (refaite en v0.65). Elle montre :
    - le score ;
-   - le chemin de score ;
-   - le détail de la gloire carte par carte ;
-   - les trois mini-extensions, chacune avec un bouton « Jouer ».
+   - le **parcours du royaume** : partie de base, puis chaque extension dans l'ordre joué, avec son score, reliées par des flèches ;
+   - les **extensions** en tuiles : faites, cochées en vert avec leur score ; à jouer, avec un bouton « Jouer ». Merchants est montrée par le dos de ses cartes.
+   Le détail de la gloire carte par carte est dans Stats → Gloire.
 4. « Voir le royaume » ferme la fenêtre pour regarder le plateau final. « Retour aux royaumes » revient à l'accueil, où le royaume est marqué **Terminé**.
 
 ### Mini-extension
@@ -61,7 +61,7 @@ Décisions de règles : `docs/RULES_DECISIONS.md` (2026-10-05, extension Merchan
 | --- | --- |
 | Barre du haut | Gloire actuelle, chronomètre total du royaume. |
 | Stats → Gloire | Les cartes qui rapportent ou font perdre de la gloire. |
-| Fenêtre de fin | Score, chemin de score (base + chaque mini-extension), détail par carte. |
+| Fenêtre de fin | Score, parcours du royaume (base puis chaque extension, dans l'ordre joué), extensions faites et à jouer. |
 | Accueil | Manche, gloire actuelle, dernière carte découverte, durée, statut de la campagne. |
 | Accueil → coupe (à côté de Continuer) | **Tableau des scores** : partie de base et chaque extension (état, score, date de fin, temps de jeu), gloire actuelle, gloire purgée, temps total ; grandes extensions « À venir » dès qu'elles sont déclarées. |
 

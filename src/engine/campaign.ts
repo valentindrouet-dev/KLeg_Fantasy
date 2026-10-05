@@ -21,10 +21,11 @@ const PACKET = 12;
 /**
  * Grandes extensions jouables (nouvelle boîte de cartes ajoutée au royaume). Chacune : sa purge (paquets de `packet`
  * cartes, puis `permanents` cartes permanentes), lancée par son parchemin 00 ; `guide` : la carte qui mène les manches
- * (Merchants 01, puis 10) ; `rounds` manches sans découverte automatique ; `scorePath` : sticker du chemin de score.
+ * (Merchants 01, puis 10) ; `rounds` manches sans découverte automatique ; `scorePath` : sticker du chemin de score ;
+ * `cover` : carte dont le dos montre l'extension (Merchants 05).
  */
-export const GRAND_EXPANSIONS: Record<string, { packet: number; permanents: number; guide: number; rounds: number; scorePath: string }> = {
-  Merchants: { packet: 7, permanents: 2, guide: 1, rounds: 4, scorePath: "13e" },
+export const GRAND_EXPANSIONS: Record<string, { packet: number; permanents: number; guide: number; rounds: number; scorePath: string; cover: number }> = {
+  Merchants: { packet: 7, permanents: 2, guide: 1, rounds: 4, scorePath: "13e", cover: 5 },
 };
 export const grandPurgeScript = (expansion: string): string => `campaign:purge:${expansion}`;
 

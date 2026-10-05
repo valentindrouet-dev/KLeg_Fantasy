@@ -299,21 +299,6 @@
   text-align: center;
 }
 
-.scoreTable {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.scoreTable td {
-  padding: var(--space-1) var(--space-2);
-  border-bottom: 1px solid var(--surface-2);
-}
-
-.scoreTable td:nth-child(2) {
-  text-align: right;
-  font-variant-numeric: tabular-nums;
-}
-
 .toast {
   position: fixed;
   left: 50%;
@@ -1402,35 +1387,129 @@
 }
 
 /* Fin de partie : chemin de score et mini-extensions */
-.scorePath {
+/* --- Page de lancement des extensions (fenêtre de fin) --- */
+.endHeading {
+  margin: 0 0 var(--space-2);
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.journeySection {
+  margin-bottom: var(--space-6);
+}
+
+/* Parcours du royaume : étapes dans l'ordre accompli, reliées par des flèches */
+.journey {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   justify-content: center;
   gap: var(--space-2);
-  margin: 0 0 var(--space-3);
+  margin: 0;
   padding: 0;
   list-style: none;
 }
 
-.scorePath li {
-  padding: 4px 12px;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  background: var(--surface-2);
-  font-weight: 600;
+.journeyStep {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 7.5rem;
+  padding: var(--space-2) var(--space-3);
+  border: 2px solid var(--accent);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--accent) 8%, var(--surface));
+  box-shadow: 0 2px 8px rgb(0 0 0 / 0.12);
 }
 
-.expansionChoice {
+.journeyIndex {
+  color: var(--accent);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.journeyName {
+  font-size: 1.05rem;
+  font-weight: 800;
+  text-align: center;
+}
+
+.journeyScore {
+  font-size: 1rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Étape à venir : en pointillés */
+.journeyNext {
+  border-style: dashed;
+  background: transparent;
+  box-shadow: none;
+  opacity: 0.75;
+}
+
+.journeyArrowItem {
+  display: flex;
+  color: var(--accent);
+}
+
+.journeyArrow {
+  width: 2rem;
+  height: 1rem;
+}
+
+/* Extensions : une tuile par extension, cochée en vert quand elle est faite */
+.expansionGrid {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: var(--space-4);
-  margin-bottom: var(--space-4);
+  gap: var(--space-6) var(--space-4);
+  margin-bottom: var(--space-2);
 }
 
-.expansionDone {
-  opacity: 0.45;
-  filter: grayscale(0.7);
+.expansionTile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  width: 170px;
+  margin: 0;
+  padding-top: 8px;
+}
+
+.expansionCaption {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  text-align: center;
+}
+
+.expansionKind {
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.expansionName {
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.expansionState {
+  font-weight: 600;
+}
+
+.expansionTileDone .expansionState {
+  color: var(--ok);
 }
 
 /* Cases à cocher (positions mesurées sur les images) */
