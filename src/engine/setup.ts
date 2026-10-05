@@ -1,11 +1,13 @@
 import type { CardTemplate, ResourceId } from "../data/schema";
-import { campaignScripts } from "./campaign";
+import { campaignScripts, GRAND_EXPANSIONS, grandParchment } from "./campaign";
+import { cardId } from "../data/schema";
 import { cardEffects, cardTriggers } from "./effects/cards";
 import { textEffects } from "./effects/textEffects";
+import { STICKER_EFFECTS, stickerEffectKey } from "./effects/merchants";
 import { runQueue } from "./flow";
 import { feudalKingdomParchments } from "./scripts/parchments";
 import { emptyResources, instance, log } from "./state";
-import type { CardInstance, Catalog, Draft, GameConfig, GameState, InstanceId } from "./types";
+import type { CardInstance, Catalog, Draft, EffectImpl, GameConfig, GameState, InstanceId, ParchmentImpl } from "./types";
 
 // Catalogue des cartes et mise en place d'une partie (spec 4.3).
 
@@ -16,8 +18,15 @@ export function createCatalog(templates: readonly CardTemplate[], resources: rea
   return {
     templates: new Map(templates.map((t) => [t.id, t])),
     resources,
-    effects: new Map([...textEffects(templates, resources), ...cardEffects(templates)]),
-    parchments: feudalKingdomParchments,
+    effects: new Map([
+      ...textEffects(templates, resources),
+      ...cardEffects(templates),
+      ...Object.entries(STICKER_EFFECTS).map(([n, make]): [string, EffectImpl] => [stickerEffectKey(n), make()]),
+    ]),
+    parchments: new Map([
+      ...feudalKingdomParchments,
+      ...Object.keys(GRAND_EXPANSIONS).map((id): [string, ParchmentImpl] => [cardId(id, 0), grandParchment(id)]),
+    ]),
     triggers: new Map([...cardTriggers(templates), ...campaignScripts()]),
   };
 }
@@ -78,5 +87,5 @@ export function createGame(catalog: Catalog, config: GameConfig): GameState {
 
 /** Reset officiel (spec 4.6) : possible tant que la carte 23 n'est pas découverte. */
 export function canRestartKingdom(s: GameState): boolean {
-  return Object.values(s.cards).some((c) => c.serial === 23 && s.zones.box.includes(c.instanceId));
+  return Object.values(s.cards).some((c) => c.serial === 23 && c.templateId.startsWith(`${s.config.expansion}-`) && s.zones.box.includes(c.instanceId));
 }

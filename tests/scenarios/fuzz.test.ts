@@ -38,3 +38,37 @@ describe("parties au hasard", async () => {
     }, GAME_TIMEOUT);
   }
 });
+
+// Extension Merchants jouée au hasard après une partie de base jouée au hasard : elle se termine, sans erreur, et
+// aucune carte du royaume n'est perdue en route (demande du 2026-10-05 : ne rien supprimer).
+describe("Merchants au hasard", async () => {
+  const catalog = await loadCatalog();
+  for (const seed of [21, 22, 23, 24, 25, 26]) {
+    it(`graine ${seed}`, () => {
+      const rand = mulberry(seed * 104729);
+      const play = (from: GameState): GameState => {
+        let s = from;
+        let steps = 0;
+        while (s.phase === "playing" && steps < 8000) {
+          const pool = getLegalActions(catalog, s).filter((a) => a.type !== "cancelChoice");
+          const weighted = pool.filter((a) => a.type !== "pass" || rand() < 0.15);
+          const list = weighted.length ? weighted : pool;
+          const pick = list[Math.floor(rand() * list.length)];
+          if (!pick) break;
+          s = applyAction(catalog, s, pick);
+          invariants(s);
+          steps++;
+        }
+        return s;
+      };
+      let s = play(newGame(catalog, seed));
+      expect(s.phase).toBe("gameOver");
+      const before = Object.keys(s.cards).length;
+      s = applyAction(catalog, s, { type: "startGrandExpansion", expansion: "Merchants" });
+      s = play(s);
+      expect(s.phase).toBe("gameOver");
+      expect(Object.keys(s.cards)).toHaveLength(before + 26);
+      expect(s.campaign?.played.some((p) => p.expansion === "Merchants")).toBe(true);
+    }, GAME_TIMEOUT * 2);
+  }
+});

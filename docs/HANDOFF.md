@@ -95,7 +95,8 @@ Phases P0 (données), P1 (moteur) et P2 (interface jouable) terminées. P3 en gr
 | Fiches de cartes | `data/cards/FeudalKingdom/0.json` à `139.json` | 140 fiches, 0 invalide |
 | Images | `data/images/FeudalKingdom/*.webp` | 280 images, 16 Mo |
 | Tests des fiches | `tests/data/cards.test.ts` | 142 tests |
-| Catalogue de stickers | `data/stickers.json` | fait (planche Feudal Kingdom v4.1, 12 stickers) |
+| Catalogue de stickers | `data/stickers.json` | fait (planche v4.1 : Feudal Kingdom et Merchants, dont 13e, 17 et 18) |
+| Extension Merchants (v0.63) | `data/cards/Merchants/`, `src/engine/effects/merchants.ts`, `GRAND_EXPANSIONS` dans `src/engine/campaign.ts` | jouable : lancement après la partie de base, purge 7 + 2 permanentes, 4 manches menées par Merchants 01 puis 10, effets des 26 cartes, mesures des images ; décisions dans `docs/RULES_DECISIONS.md` |
 | Moteur de règles (P1) | `src/engine/` | fait : tours, manches, actions, découvertes, annulation, score ; effets de toutes les cartes 1 à 135 (v0.19) |
 | Partie en ligne de commande | `scripts/play.ts` (`npm run play`) | fait |
 | Tests du moteur | `tests/rules/`, `tests/scenarios/` | 56 tests |
@@ -130,6 +131,7 @@ Versions installées : Node 24, Vite 8, React 19, TypeScript 7, Zod 4, Vitest 5.
 3. ~~**Sticker 16**~~ : réglé le 2026-10-02 avec la planche officielle : c'est un ruban de gloire vierge où l'on écrit le nombre, utilisé pour la gloire purgée comme pour la carte 138. Catalogue dans `data/stickers.json`.
 4. ~~**GitHub Pages est public**~~ : accepté le 2026-10-02, le dépôt et le site sont publics (`docs/DEPLOY.md`).
 5. **Carte 0 et carte 139** : marquées parchemin par analogie visuelle ; elles ne sont jamais découvertes en jeu.
+6. **Merchants** : règles lues sur les cartes sans la FAQ du site (Turmeric, Hangover, Brigands, fin de l'extension…). À confronter à la FAQ : `docs/RULES_DECISIONS.md`, entrée du 2026-10-05.
 
 ## 6. Ce qui n'est pas dans le dépôt
 

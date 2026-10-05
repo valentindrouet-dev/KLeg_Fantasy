@@ -314,7 +314,7 @@ describe("effets épuisés", async () => {
 
   it("Dark Prince et Rain : les cartes qui interdisent d'avancer, d'améliorer, les effets {time}", () => {
     const s = arrange(catalog, { play: [61, 44, 1], orientation: { 44: { side: "back", rotation: 0 } } });
-    expect(restrictionSources(catalog, s)).toEqual({ advance: [fk(61), fk(44)], upgrade: [fk(61)], time: [fk(61)] });
+    expect(restrictionSources(catalog, s)).toEqual({ advance: [fk(61), fk(44)], upgrade: [fk(61)], time: [fk(61)], play: [] });
     expect(legal(catalog, s).some((a) => a.type === "advance")).toBe(false);
   });
 

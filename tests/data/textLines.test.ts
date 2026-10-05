@@ -8,7 +8,7 @@ import type { StageId } from "../../src/data/schema";
 // Lignes de texte mesurées sur les images (scripts/text-lines.ts) : un effet qui peut s'épuiser doit pouvoir être
 // barré ligne par ligne.
 // Extensions dont les effets sont automatisés et les images mesurées ; les autres (Merchants…) s'y ajoutent une fois faites.
-const INTEGRATED = ["FeudalKingdom"];
+const INTEGRATED = ["FeudalKingdom", "Merchants"];
 
 describe("lignes de texte des effets", async () => {
   const catalog = await loadCatalog();

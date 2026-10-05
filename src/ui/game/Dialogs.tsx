@@ -1,6 +1,8 @@
 import { Fragment, useEffect, useState, type ReactNode } from "react";
 import { isValidAnswer, canBeNamed,
   availableExpansions,
+  availableGrandExpansions,
+  grandExpansions,
   boxViews,
   canRestartKingdom,
   EXPANSION_SERIALS,
@@ -430,7 +432,12 @@ function NewCardsDialog({
       actions={
         <button className="btn btn-primary" onClick={() => onAction(Object.keys(chosen).length ? { type: "acknowledgeDiscoveries", sides: chosen } : { type: "acknowledgeDiscoveries" })}>
           {/* Début de manche : les cartes vont être mélangées ; découverte par un effet : elles sont dans la défausse. */}
-          {state.queue[0]?.kind === "shuffle" ? "Mélanger dans le deck" : "Ajouter au deck"}
+          {/* Cartes permanentes seulement (Merchants 01) : elles ne vont pas dans le deck. */}
+          {cards.every((id) => state.zones.permanent.includes(id))
+            ? "Ajouter aux permanentes"
+            : state.queue[0]?.kind === "shuffle"
+              ? "Mélanger dans le deck"
+              : "Ajouter au deck"}
         </button>
       }
     >
@@ -626,11 +633,18 @@ export function EndDialog({
   // Mini-extensions (spec 4.7) : 136, 137, 138, une seule fois par royaume ; celles déjà jouées sont grisées.
   const available = new Set(availableExpansions(state));
   const expansions = Object.values(state.cards)
-    .filter((c) => (EXPANSION_SERIALS as readonly number[]).includes(c.serial))
+    .filter((c) => (EXPANSION_SERIALS as readonly number[]).includes(c.serial) && c.templateId.startsWith(`${state.config.expansion}-`))
     .sort((a, b) => a.serial - b.serial);
+  // Grandes extensions (Merchants) : leur parchemin 00 sert d'image ; une seule fois par royaume.
+  const grandOpen = new Set(availableGrandExpansions(catalog, state));
+  const grands = grandExpansions(catalog).flatMap((id) => {
+    const t = catalog.templates.get(`${id}-000`);
+    return t ? [{ id, t }] : [];
+  });
+  const last = camp?.played.at(-1);
   return (
     <Dialog
-      title={camp?.played.length ? "Fin de la mini-extension" : "Fin de la partie"}
+      title={last ? (last.expansion ? `Fin de l'extension ${last.name}` : "Fin de la mini-extension") : "Fin de la partie"}
       onClose={onClose}
       wide
       actions={
@@ -653,7 +667,7 @@ export function EndDialog({
             <span>Partie de base</span> <IconText text={`${camp.base} {fame}`} />
           </li>
           {camp.played.map((p) => (
-            <li key={p.serial}>
+            <li key={`${p.expansion ?? ""}${p.serial}`}>
               <span>{p.name}</span> <IconText text={`${p.score} {fame}`} />
             </li>
           ))}
@@ -668,6 +682,17 @@ export function EndDialog({
               <CardView template={template(catalog, c.templateId)} orientation={{ side: "front", rotation: 0 }} label={name} width={150} />
               <button className="btn btn-primary" disabled={!open} onClick={() => onAction({ type: "startExpansion", card: c.instanceId })}>
                 {open ? `Jouer ${name}` : "Déjà jouée"}
+              </button>
+            </figure>
+          );
+        })}
+        {grands.map(({ id, t }) => {
+          const open = grandOpen.has(id);
+          return (
+            <figure key={id} className={`${styles.choice} ${open ? "" : styles.expansionDone}`}>
+              <CardView template={t} orientation={{ side: "front", rotation: 0 }} label={id} width={150} />
+              <button className="btn btn-primary" disabled={!open} onClick={() => onAction({ type: "startGrandExpansion", expansion: id })}>
+                {open ? `Jouer ${id}` : "Déjà jouée"}
               </button>
             </figure>
           );

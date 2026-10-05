@@ -12,7 +12,7 @@ import {
 } from "../state";
 import type { EffectImpl } from "../types";
 import { applyArrow } from "../upgrade";
-import { NO_PARAMS, effectKey, spendToGain } from "./registry";
+import { NO_PARAMS, effectKey, spendToGain, withExpansion } from "./registry";
 
 // Effets reconnus à leur texte imprimé exact. Couvre les cartes 1 à 10 (périmètre P1) et,
 // mécaniquement, les autres cartes qui portent exactement le même texte.
@@ -125,7 +125,7 @@ export function textEffects(templates: Iterable<CardTemplate>, resources: readon
         for (const match of matchers) {
           const impl = match(e.text, t, resources);
           if (impl) {
-            out.set(effectKey(t.id, Number(key) as StageId, e.id), impl);
+            out.set(effectKey(t.id, Number(key) as StageId, e.id), withExpansion(impl, t.expansion));
             break;
           }
         }

@@ -13,13 +13,13 @@ const dateFormat = new Intl.DateTimeFormat("fr-FR", { dateStyle: "medium" });
 
 /** Statut d'un royaume pour l'accueil : il n'est jamais « terminé ». */
 export function kingdomStatus(catalog: Catalog, k: Kingdom): { label: string; stage: string; play: string } {
-  const stage = campaignStage(k.state);
-  const current = campaignSteps(catalog, k.state).find((x) => x.status === "current" && x.kind === "mini");
+  const stage = campaignStage(k.state, catalog);
+  const current = campaignSteps(catalog, k.state).find((x) => x.status === "current" && x.kind !== "base");
   switch (stage) {
     case "base":
       return { label: "En cours", stage, play: "Continuer" };
     case "expansion":
-      return { label: `${current?.name ?? "Mini-extension"} · manche ${current?.round ?? 1}/4`, stage, play: "Continuer" };
+      return { label: `${current?.name ?? "Extension"} · manche ${current?.round ?? 1}/4`, stage, play: "Continuer" };
     case "between":
       return { label: "Extension à lancer", stage, play: "Extensions" };
     case "waiting":
@@ -59,7 +59,8 @@ export function ScoreBoard({ catalog, kingdom, onClose }: { catalog: Catalog; ki
     return start === null || end === undefined ? "—" : formatPlayTime(Math.max(0, end - start));
   };
   const score = computeScore(catalog, kingdom.state);
-  const future = expansions.filter((e) => e.kind === "grand" || e.kind === "custom");
+  // Extensions déclarées mais pas encore jouables dans l'appli (leurs cartes ou leurs règles manquent).
+  const future = expansions.filter((e) => (e.kind === "grand" || e.kind === "custom") && !steps.some((x) => x.id === e.id));
   return (
     <Dialog title={`${kingdom.emoji} ${kingdom.name} : tableau des scores`} onClose={onClose} wide>
       <table className={styles.scoreBoard}>
@@ -101,7 +102,7 @@ export function ScoreBoard({ catalog, kingdom, onClose }: { catalog: Catalog; ki
         {score.purgedFame > 0 && <IconText text={` · gloire purgée : ${score.purgedFame} {fame}`} />}
         {(kingdom.playMs ?? 0) > 0 && ` · temps de jeu total : ${formatPlayTime(kingdom.playMs ?? 0)}`}
       </p>
-      {future.length === 0 && <p className={styles.scoreBoardNote}>Les grandes extensions s'ajouteront ici quand leurs cartes seront disponibles : le royaume reste ouvert.</p>}
+      {future.length === 0 && steps.every((x) => x.kind !== "grand") && <p className={styles.scoreBoardNote}>Les grandes extensions s'ajouteront ici quand leurs cartes seront disponibles : le royaume reste ouvert.</p>}
     </Dialog>
   );
 }

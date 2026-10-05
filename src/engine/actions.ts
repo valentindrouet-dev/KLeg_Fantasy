@@ -3,6 +3,7 @@ import { enumerateAnswers, isValidAnswer, nextQuestion } from "./choice";
 import { effectKey } from "./effects/registry";
 import { isEffectExhausted } from "./exhausted";
 import { substituteScript } from "./effects/substitutes";
+import { stickerEffectKey } from "./effects/merchants";
 import {
   advance,
   continueTrigger,
@@ -15,8 +16,8 @@ import {
   runQueue,
 } from "./flow";
 import { queueScript } from "./ops";
-import { payPool, restrictions } from "./passives";
-import { availableExpansions, startExpansion } from "./campaign";
+import { payPool, playsFromDiscard, restrictions, timeBlockedFor } from "./passives";
+import { availableExpansions, availableGrandExpansions, startExpansion, startGrandExpansion } from "./campaign";
 import { producedIcons, productionChoices, productionGroups } from "./production";
 import {
   activeStage,
@@ -57,15 +58,32 @@ export function usableEffects(catalog: Catalog, s: GameState, id: InstanceId): U
   const stage = activeStage(catalog, s, id);
   if (!stage) return [];
   const c = instance(s, id);
-  return stage.effects.flatMap((effect) => {
+  const printed = stage.effects.flatMap((effect) => {
     if (isEffectExhausted(catalog, s, id, stage.id, effect)) return [];
     const impl = catalog.effects.get(effectKey(c.templateId, stage.id, effect.id));
     return impl ? [{ stage, effect, impl }] : [];
   });
+  // Effets ajoutés par un sticker sur ce stage (sticker 18 de Merchants) : identifiant « sticker18 ».
+  const stickers = c.stickers.flatMap((st): UsableEffect[] => {
+    const impl = st.stage === stage.id && st.effect ? catalog.effects.get(stickerEffectKey(st.sticker)) : undefined;
+    return impl && st.effect ? [{ stage, effect: { id: `sticker${st.sticker}`, type: "activated", text: st.effect }, impl }] : [];
+  });
+  return [...printed, ...stickers.filter((x, i) => stickers.findIndex((y) => y.effect.id === x.effect.id) === i)];
+}
+
+/** Clé du catalogue d'un effet (celle d'un sticker pour les effets ajoutés par sticker). */
+function scriptKey(c: { templateId: string }, stage: Stage, effect: Effect): string {
+  const sticker = /^sticker(\w+)$/.exec(effect.id);
+  return sticker ? stickerEffectKey(sticker[1] ?? "") : effectKey(c.templateId, stage.id, effect.id);
 }
 
 export function getLegalActions(catalog: Catalog, s: GameState): Action[] {
-  if (s.phase === "gameOver") return availableExpansions(s).map((card) => ({ type: "startExpansion", card }));
+  if (s.phase === "gameOver") {
+    return [
+      ...availableExpansions(s).map((card): Action => ({ type: "startExpansion", card })),
+      ...availableGrandExpansions(catalog, s).map((expansion): Action => ({ type: "startGrandExpansion", expansion })),
+    ];
+  }
   const p = s.pending;
   if (p) {
     switch (p.kind) {
@@ -107,7 +125,8 @@ export function getLegalActions(catalog: Catalog, s: GameState): Action[] {
   }
   for (const card of [...s.zones.play, ...s.zones.permanent]) {
     for (const { effect, impl } of usableEffects(catalog, s, card)) {
-      if (effect.type === "time" && banned.noTime) continue;
+      if (effect.type === "time" && banned.noTime && timeBlockedFor(catalog, s, card)) continue;
+      if (banned.noPlay && playsFromDiscard(effect.text)) continue;
       for (const p of impl.params(d, card)) {
         actions.push({ type: "useEffect", card, effect: effect.id, targets: p.targets, option: p.option });
       }
@@ -233,7 +252,7 @@ function execute(d: Draft, a: Action): void {
         const answers: Answer[] = [];
         const request = nextQuestion((x) => ask(d, a.card, x), answers);
         if (request) {
-          const key = effectKey(instance(s, a.card).templateId, found.stage.id, found.effect.id);
+          const key = scriptKey(instance(s, a.card), found.stage, found.effect);
           s.pending = { kind: "choice", source: a.card, script: key, mode: "effect", effect: a.effect, answers, request, cancellable: true, ctx: {} };
           return;
         }
@@ -297,6 +316,9 @@ function execute(d: Draft, a: Action): void {
     }
     case "startExpansion":
       startExpansion(d, a.card);
+      return;
+    case "startGrandExpansion":
+      startGrandExpansion(d, a.expansion);
       return;
   }
 }

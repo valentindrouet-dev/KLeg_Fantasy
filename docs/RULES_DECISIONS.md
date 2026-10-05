@@ -99,3 +99,25 @@ Choix faits pour ce que les cartes et la spec ne précisent pas ; à confirmer.
 - **Question** : Miners (#73, étape 2) dit « *May be counted as 2 persons. » Quand le compter pour 2 ?
 - **Décision** (demande du joueur) : « may », donc au choix du joueur. Il compte pour 2 dans ce qui l'avantage : coûts en personnes des améliorations, effets « Discard N persons », gains « per person in play », Cathedral, Strength in Numbers. Il compte pour 1 dans ce qui le pénalise (Uprising). Pour un coût, on ne propose jamais une personne de trop (Miners + une autre pour « 2 Persons »).
 - **Cartes** : 73 (et celles qui comptent ou font défausser des personnes).
+
+## 2026-10-05 : extension Merchants (à confirmer avec la FAQ du site)
+
+Lecture des cartes 00 à 25, sans la FAQ du site (inaccessible d'ici). Chaque point peut être revu sur simple demande.
+
+- **Quand la jouer** : comme les mini-extensions, une fois la partie de base terminée et aucune extension en cours, une seule fois par royaume. Elle se lance depuis la fenêtre de fin de partie.
+- **Lancement** : les 26 cartes de Merchants s'ajoutent à la boîte du royaume ; aucune carte n'est retirée. Le deck est rassemblé et mélangé comme pour une mini-extension. Le parchemin 00 est lu, puis la purge : 1 carte par paquet complet de 7, puis 2 cartes permanentes. Merchants 01 est ensuite découverte (permanente).
+- **Manches** : 4 manches sans découverte automatique. Ce sont les « End of Round » de Merchants 01 puis 10 qui les mènent : Brigands (19) découverts et 01 retournée, puis 01 détruite et 10 découverte, puis 10 retournée, puis 10 détruite. L'extension se termine après la 4e manche.
+- **Fin** : le score rejoint le chemin de score (sticker 13e). Les cartes de Merchants restées dans la boîte et citées par une carte découverte (Pair of Camels 24 / 25, Chicken 20 / 21, Pair of Sheep 22 / 23) y restent : elles ne sont jamais découvertes en début de manche, seulement par leur effet. Les autres sont détruites.
+- **Numéros** : une carte de Merchants qui cite un numéro cite une carte de Merchants (Brigands 19 n'est pas la carte 19 de Feudal Kingdom), et inversement.
+- **Copies** (« Pair of Camels (24 / 25) ») : les cartes citées sont identiques ; on découvre la première encore dans la boîte, sans choix.
+- **Spices** : « any orientation » propose les trois autres étapes (Cummin, Turmeric, Coriander). Une épice dont les 4 cases sont cochées n'est plus utilisable (les cases restent cochées après le reset).
+- **Turmeric** : on utilise l'effet {activated} ou {time} d'une personne en jeu et on en paie le coût. La personne reste en jeu, sans être défaussée. Un effet {time} finit quand même le tour.
+- **Camel Fur** : le sticker 18 n'est pas une production (erreur d'impression signalée par le site) ; il donne à la personne l'effet « {activated} Place this at the bottom of your deck ».
+- **Sticker 17** (Rabbit Fur) : la carte commence chaque manche en jeu, posée après le mélange. Elle n'est pas « jouée » : pas d'effet « when played », pas de passage compté.
+- **Grapes** : « replacing another production » raye 1 icône de production imprimée de la terre (au choix du groupe s'il y en a plusieurs), puis pose le sticker 6.
+- **Beer** : « up to 2 » : 1 ou 2 personnes de la défausse s'il y en a ; sinon la case se coche sans rien jouer.
+- **Hangover** : toute personne jouée pendant qu'elle est en jeu, y compris une jouée en même temps qu'elle, est défaussée et coche une case.
+- **Too Much Mead** : les 3 prochaines ressources gagnées ce tour, production comprise, sont perdues.
+- **Brigands** : « You cannot play cards » interdit d'avancer et les effets qui jouent une carte de la défausse. « Other {time} effects » : leur propre effet {time} (les vaincre) reste permis. Brigand Boss : la carte à 3 productions ou plus peut être n'importe quelle carte en jeu.
+- **Pistes** (Weaving, Fishing, Brewing, Basketry, Shoemaking) : la case suivante dit combien défausser et quoi payer ; la gloire vaut la plus haute case cochée. Shoemaking : on booste une personne en jeu qui produit déjà, s'il y en a.
+- **Cartes** : Merchants 00 à 25.

@@ -162,29 +162,42 @@ const NOTE_PLACES = {
   full: { top: 0, height: "100%" },
 } as const;
 
-/** Image d'un sticker : ressource, gloire, Knight, « Stays in play ». */
+/** Image d'un sticker : ressource, gloire, Knight, « Stays in play », « Starts in play », effet du sticker 18. */
 function stickerIcon(st: StickerPlacement): { src: string | undefined; text: string } {
   if (st.resource) return { src: iconImage(st.resource), text: st.resource };
   if (st.fame !== undefined) return { src: iconImage(`fame${st.fame}`) ?? iconImage("fame"), text: String(st.fame) };
   if (st.keyword) return { src: iconImage(st.keyword.toLowerCase()), text: st.keyword };
+  // Merchants : sticker 17 « Starts in play », sticker 18 « Place this at the bottom of your deck ».
+  if (st.startsInPlay) return { src: iconImage("startsInPlay"), text: "17" };
+  if (st.effect !== undefined) return { src: iconImage("bottomOfDeck"), text: st.sticker };
   return { src: iconImage("staysInPlay"), text: "∞" };
 }
 
 /** Stickers d'une moitié : en haut à l'endroit, en bas à l'envers (même place, carte tournée de 180°). */
 function Stickers({ template, stage, stickers, half }: { template: CardTemplate; stage: StageId | null; stickers: readonly StickerPlacement[]; half: "top" | "bottom" }) {
   if (stage === null) return null;
-  // « Stays in play » (sticker 7) : bandeau lisible au-dessus du texte des effets, pas dans la rangée des ressources.
-  const stays = stickers.some((st) => st.stage === stage && st.staysInPlay);
+  // Stickers à texte : « Stays in play » (7), « Starts in play » (17), effet du sticker 18. Bandeaux lisibles au-dessus du
+  // texte des effets, comme le texte imprimé, pas dans la rangée des ressources.
+  const here = stickers.filter((st) => st.stage === stage);
+  const isText = (st: StickerPlacement) => Boolean(st.staysInPlay || st.startsInPlay || st.effect !== undefined);
+  const banners: { key: string; small: boolean; content: ReactNode }[] = [];
+  if (here.some((st) => st.staysInPlay)) banners.push({ key: "7", small: false, content: <><b className={styles.stayInfinity}>∞</b> Stays in play.</> });
+  if (here.some((st) => st.startsInPlay)) banners.push({ key: "17", small: false, content: <><b className={styles.stayInfinity}>∞</b> Starts in play.</> });
+  for (const st of here.filter((x) => x.effect !== undefined)) banners.push({ key: `e${st.sticker}`, small: true, content: <IconText text={`{activated} ${st.effect ?? ""}`} /> });
   // Gloire (stickers 8, 10, 16) sur la ligne de la rosette de gloire ; ressources et mots-clés dans la rangée des ressources.
   const isFame = (st: StickerPlacement) => st.fame !== undefined && !st.resource;
-  const own = [...stickers.filter((st) => st.stage === stage && !st.staysInPlay && !isFame(st)), ...stickers.filter((st) => st.stage === stage && isFame(st))];
-  if (own.length === 0 && !stays) return null;
+  const own = [...here.filter((st) => !isText(st) && !isFame(st)), ...here.filter((st) => !isText(st) && isFame(st))];
+  if (own.length === 0 && banners.length === 0) return null;
   const st0 = template.stages[String(stage) as "1"];
   const nFame = own.filter(isFame).length;
   const spots = [...stickerSpots(st0, own.length - nFame), ...fameStickerSpots(st0, nFame, fameSpot(template.expansion, template.serial, stage))];
   return (
     <>
-      {stays && <StayBanner template={template} stage={stage} half={half} />}
+      {banners.map((b, i) => (
+        <StayBanner key={b.key} template={template} stage={stage} half={half} index={i} small={b.small}>
+          {b.content}
+        </StayBanner>
+      ))}
       {own.map((st, i) => {
         const spot = spots[i];
         if (!spot) return null;
@@ -209,22 +222,39 @@ function Stickers({ template, stage, stickers, half }: { template: CardTemplate;
 }
 
 /**
- * Bandeau du sticker « Stays in play » : centré au-dessus du bloc d'effets (lignes mesurées sur l'image, sinon le haut
- * de la zone d'effet), comme le texte imprimé des cartes qui restent en jeu.
+ * Bandeau d'un sticker à texte (« Stays in play »…) : centré au-dessus du bloc d'effets (lignes mesurées sur l'image,
+ * sinon le haut de la zone d'effet), comme le texte imprimé des cartes qui restent en jeu. Plusieurs : empilés vers le haut.
  */
-function StayBanner({ template, stage, half }: { template: CardTemplate; stage: StageId; half: "top" | "bottom" }) {
+function StayBanner({
+  template,
+  stage,
+  half,
+  index,
+  small,
+  children,
+}: {
+  template: CardTemplate;
+  stage: StageId;
+  half: "top" | "bottom";
+  index: number;
+  small: boolean;
+  children: ReactNode;
+}) {
   const st = template.stages[String(stage) as "1"];
   const lines = (st?.effects ?? []).flatMap((e) => effectLines(template.expansion, template.serial, stage, e.id) ?? []);
   const full = (["front", "back"] as const).some((side) => isFullImageFace(template, side) && [template.orientationToStage[`${side}-0`], template.orientationToStage[`${side}-180`]].includes(stage));
   const textTop = lines.length ? Math.min(...lines.map((l) => l[0])) : full ? 0.6 : 0.33;
   const center = lines.length ? (Math.min(...lines.map((l) => l[2])) + Math.max(...lines.map((l) => l[3]))) / 2 : 0.4;
   const height = 0.055;
-  const top = Math.max(0.12, textTop - height - 0.008);
+  const top = Math.max(0.12, textTop - (height + 0.008) * (index + 1));
   const y = half === "top" ? top : 1 - top - height;
   const x = half === "top" ? center : 1 - center;
   return (
-    <span className={`${styles.stayBanner} ${half === "bottom" ? styles.rotated : ""}`} style={{ top: `${y * 100}%`, left: `${x * 100}%`, height: `${height * 100}%` }}>
-      <b className={styles.stayInfinity}>∞</b> Stays in play.
+    <span
+      className={`${styles.stayBanner} ${small ? styles.stayBannerSmall : ""} ${half === "bottom" ? styles.rotated : ""}`}
+      style={{ top: `${y * 100}%`, left: `${x * 100}%`, height: `${height * 100}%` }}
+    >
+      {children}
     </span>
   );
 }

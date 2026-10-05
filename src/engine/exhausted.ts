@@ -20,9 +20,13 @@ export function isEffectExhausted(catalog: Catalog, s: GameState, id: InstanceId
   const c = instance(s, id);
   if (c.crossedOutEffects.includes(`${stage}/${effect.id}`)) return true;
   // Découverte conditionnelle (« When complete, discover … ») ou avec une autre issue (« … or gain … ») : pas épuisée.
-  const serials = /when complete|\bor gain\b/i.test(effect.text) ? [] : discoveredSerials(effect.text);
+  // Déclencheur qui fait autre chose aussi (« discover Brigands (19), then {flip} ») : jamais épuisé, le reste a lieu.
+  const triggered = effect.type === "triggeredForced" || effect.type === "triggeredOptional";
+  const more = /when complete|\bor gain\b/i.test(effect.text) || (triggered && /\bthen\b|\band\b/i.test(effect.text));
+  const serials = more ? [] : discoveredSerials(effect.text);
   if (serials.length) {
-    const inBox = s.zones.box.some((b) => serials.includes(instance(s, b).serial));
+    const expansion = template(catalog, c.templateId).expansion;
+    const inBox = s.zones.box.some((b) => serials.includes(instance(s, b).serial) && template(catalog, instance(s, b).templateId).expansion === expansion);
     if (!inBox) return true;
   }
   if (effect.text.includes("{mark}")) {
@@ -36,10 +40,12 @@ export function isEffectExhausted(catalog: Catalog, s: GameState, id: InstanceId
  * Options d'un effet à liste (« Destroy one of the following cards…; Lumberjack - discover card 100 … ») : une par
  * ligne, en fin de texte ; une option est épuisée quand sa carte a quitté la boîte.
  */
-function exhaustedOptions(s: GameState, effect: Effect): { done: number[]; count: number } | null {
-  const items = [...effect.text.matchAll(/ - discover card (\d+)/g)].map((m) => Number(m[1]));
+function exhaustedOptions(catalog: Catalog, s: GameState, expansion: string, effect: Effect): { done: number[]; count: number } | null {
+  // « Choose one: Spend 7{coin} to discover Camels (02). … » (Merchants 01 et 10) : une ligne par choix, elle aussi.
+  const list = effect.text.startsWith("Choose one: ") ? /discover [^(.]+\((\d+)\)/g : / - discover card (\d+)/g;
+  const items = [...effect.text.matchAll(list)].map((m) => Number(m[1]));
   if (items.length < 2) return null;
-  const inBox = new Set(s.zones.box.map((b) => instance(s, b).serial));
+  const inBox = new Set(s.zones.box.filter((b) => template(catalog, instance(s, b).templateId).expansion === expansion).map((b) => instance(s, b).serial));
   return { done: items.flatMap((n, i) => (inBox.has(n) ? [] : [i])), count: items.length };
 }
 
@@ -48,10 +54,11 @@ function exhaustedOptions(s: GameState, effect: Effect): { done: number[]; count
  * Effet à liste en partie épuisé : `options` dit quelles lignes de la liste barrer (demande du 2026-10-04).
  */
 export function exhaustedEffects(catalog: Catalog, s: GameState, id: InstanceId, stage: StageId): ExhaustedEffect[] {
-  const effects = template(catalog, instance(s, id).templateId).stages[String(stage) as "1"]?.effects ?? [];
+  const t = template(catalog, instance(s, id).templateId);
+  const effects = t.stages[String(stage) as "1"]?.effects ?? [];
   return effects.flatMap((e, index): ExhaustedEffect[] => {
     if (isEffectExhausted(catalog, s, id, stage, e)) return [{ id: e.id, index, count: effects.length }];
-    const opts = exhaustedOptions(s, e);
+    const opts = exhaustedOptions(catalog, s, t.expansion, e);
     return opts && opts.done.length ? [{ id: e.id, index, count: effects.length, options: opts }] : [];
   });
 }

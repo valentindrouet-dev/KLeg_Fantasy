@@ -18,6 +18,8 @@ export type StickerPlacement = {
   fame?: number;
   keyword?: string;
   staysInPlay?: boolean;
+  startsInPlay?: boolean; // sticker 17 (Merchants) : la carte commence chaque manche en jeu
+  effect?: string; // sticker 18 (Merchants) : effet activé ajouté à la carte (texte imprimé du sticker)
 };
 
 export type CardInstance = {
@@ -108,9 +110,11 @@ export type FlowStep =
  */
 export type Campaign = {
   base: number | null;
-  played: { serial: number; name: string; score: number }[];
+  // expansion : grande extension (absente pour les mini-extensions, identifiées par le numéro de leur carte).
+  played: { serial: number; name: string; score: number; expansion?: string }[];
   current: InstanceId | null;
-  rounds: number; // manches jouées dans la mini-extension en cours
+  rounds: number; // manches jouées dans l'extension en cours
+  grand?: string; // grande extension en cours (Merchants) : current est sa carte guide
   stageAtRoundStart: number | null; // étape de la carte d'extension au début de la manche
 };
 
@@ -130,6 +134,10 @@ export type GameState = {
   queue: FlowStep[];
   purgedFame: number;
   discoveries: number[]; // numéros des cartes découvertes, dans l'ordre (parchemins compris)
+  // Les mêmes, par instance (les numéros des grandes extensions recoupent ceux de la boîte de base) ; complété au
+  // chargement des parties enregistrées avant (normalizeState).
+  discoveredIds?: InstanceId[];
+  loseNext?: number; // Too Much Mead : ressources encore à perdre ce tour
   revealCount: number; // augmente à chaque information nouvelle (carte du deck, découverte, mélange)
   lostResources: ResourceCounts; // ressources perdues pendant la dernière action
   log: LogEntry[];
@@ -150,6 +158,7 @@ export type Action =
   // sides : face choisie des cartes à flèches rouges présentées (absente = recto).
   | { type: "acknowledgeDiscoveries"; sides?: Record<InstanceId, Side> }
   | { type: "startExpansion"; card: InstanceId } // partie terminée : jouer une mini-extension (136, 137, 138)
+  | { type: "startGrandExpansion"; expansion: string } // partie terminée : jouer une grande extension (Merchants)
   | { type: "manual"; op: ManualOp }
   | { type: "choose"; answer: Answer }
   | { type: "cancelChoice" };
@@ -171,8 +180,11 @@ export type ManualOp =
 
 export type EffectParams = { targets: InstanceId[]; option: number | null; answers?: Answer[] };
 
-/** Contexte de travail : le catalogue (statique) et un brouillon d'état qu'on peut muter. */
-export type Draft = { catalog: Catalog; s: GameState };
+/**
+ * Contexte de travail : le catalogue (statique) et un brouillon d'état qu'on peut muter. `expansion` : extension de la
+ * carte dont l'effet s'applique, pour trouver les cartes citées par numéro (Merchants 19 n'est pas Feudal Kingdom 19).
+ */
+export type Draft = { catalog: Catalog; s: GameState; expansion?: string };
 
 export type EffectImpl = {
   /** Jeux de paramètres légaux ; tableau vide = effet inutilisable maintenant. */
@@ -192,6 +204,8 @@ export type EffectImpl = {
    * possibles, un par paramètre `option`. La carte s'engage alors comme une carte de production.
    */
   gains?: (d: Draft) => ResourceId[][];
+  /** Libellés des paramètres `option` (« Choose one » de Merchants), pour le menu de choix. */
+  labels?: (d: Draft, card: InstanceId) => string[];
   /** Questions au joueur, une à la fois, avant tout paiement ; null quand tout est choisi (réponses dans p.answers). */
   ask?: (d: Draft, card: InstanceId, answers: Answer[]) => ChoiceRequest | null;
 };

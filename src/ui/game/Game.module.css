@@ -1474,6 +1474,11 @@
   line-height: 1;
 }
 
+/* Texte long (sticker 18 : « Place this at the bottom of your deck. ») : plus petit pour tenir sur la carte */
+.stayBannerSmall {
+  font-size: 4.4cqw;
+}
+
 .stayBanner.rotated {
   transform: translateX(-50%) rotate(180deg);
 }

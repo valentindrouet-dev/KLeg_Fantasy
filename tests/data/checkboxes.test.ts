@@ -4,7 +4,7 @@ import { loadCatalog } from "../helpers/catalog";
 
 // Positions des cases mesurées sur les images (scripts/checkbox-spots.ts) : une par case de la fiche, dans la carte.
 // Extensions dont les effets sont automatisés et les images mesurées ; les autres (Merchants…) s'y ajoutent une fois faites.
-const INTEGRATED = ["FeudalKingdom"];
+const INTEGRATED = ["FeudalKingdom", "Merchants"];
 
 describe("positions des cases à cocher", async () => {
   const catalog = await loadCatalog();

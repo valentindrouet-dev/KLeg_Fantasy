@@ -23,7 +23,11 @@ export function describeAction(catalog: Catalog, s: GameState, a: Action): strin
       return `Améliorer ${cardName(catalog, s, a.card)} ${arrow} ${target ?? "?"} pour ${formatIcons(u?.cost ?? []) || "rien"}${extra} (fin du tour)`;
     }
     case "useEffect": {
-      const e = usableEffects(catalog, s, a.card).find((x) => x.effect.id === a.effect)?.effect;
+      const found = usableEffects(catalog, s, a.card).find((x) => x.effect.id === a.effect);
+      const e = found?.effect;
+      // Effet à choix nommés (« Choose one » de Merchants, Chicken Farm) : le choix seul.
+      const named = a.option !== null ? found?.impl.labels?.({ catalog, s }, a.card)[a.option] : undefined;
+      if (named) return named;
       // Option d'un « / » : on affiche l'alternative choisie (« {wood}/{stone} » → « {stone} »).
       const alternatives = /gain (.+)\.$/i.exec(e?.text ?? "")?.[1]?.split("/") ?? [];
       const chosen = a.option !== null && alternatives.length > 1 ? alternatives[a.option] : undefined;
@@ -48,6 +52,8 @@ export function describeAction(catalog: Catalog, s: GameState, a: Action): strin
       return describeAnswer(catalog, s, a.answer);
     case "cancelChoice":
       return "Annuler l'effet";
+    case "startGrandExpansion":
+      return `Jouer l'extension ${a.expansion}`;
     case "startExpansion":
       return `Jouer la mini-extension ${template(catalog, instance(s, a.card).templateId).stages["1"]?.name.replace(/ \(expansion\)$/, "") ?? ""}`;
   }

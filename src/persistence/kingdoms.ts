@@ -70,7 +70,7 @@ export function summarize(catalog: Catalog, record: GameRecord, state: GameState
     lastDiscovered: state.discoveries.at(-1) ?? null,
     status: state.phase === "gameOver" ? "finished" : "playing",
     actions: record.actions.length,
-    stage: campaignStage(state),
+    stage: campaignStage(state, catalog),
   };
 }
 

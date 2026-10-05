@@ -27,7 +27,7 @@ describe("purge et mini-extensions", async () => {
 
   it("après la partie, les trois mini-extensions sont proposées ; en lancer une commence par la purge 12", () => {
     let s = finished();
-    expect(legal(catalog, s)).toEqual([136, 137, 138].map((n) => ({ type: "startExpansion", card: fk(n) })));
+    expect(legal(catalog, s)).toEqual([...[136, 137, 138].map((n) => ({ type: "startExpansion", card: fk(n) })), { type: "startGrandExpansion", expansion: "Merchants" }]);
     const base = computeScore(catalog, s).total;
     s = run(catalog, s, { type: "startExpansion", card: fk(136) });
     expect(s.phase).toBe("playing");
@@ -65,7 +65,7 @@ describe("purge et mini-extensions", async () => {
     expect(s.campaign?.played).toEqual([{ serial: 137, name: "The Water Mill", score: computeScore(catalog, s).total }]);
     expect(s.campaign?.current).toBeNull();
     // Une extension jouée n'est plus proposée.
-    expect(legal(catalog, s)).toEqual([136, 138].map((n) => ({ type: "startExpansion", card: fk(n) })));
+    expect(legal(catalog, s)).toEqual([...[136, 138].map((n) => ({ type: "startExpansion", card: fk(n) })), { type: "startGrandExpansion", expansion: "Merchants" }]);
   });
 
   it("Surplus : une terre qui produit {coin} peut produire {tradeGood} à la place", () => {
@@ -102,6 +102,7 @@ describe("purge et mini-extensions", async () => {
       ["136", "available", null],
       ["137", "available", null],
       ["138", "available", null],
+      ["Merchants", "available", null],
     ]);
     s = purgeFirst(run(catalog, s, { type: "startExpansion", card: fk(137) }));
     expect(campaignStage(s)).toBe("expansion");
@@ -116,6 +117,8 @@ describe("purge et mini-extensions", async () => {
     s.campaign!.played.push({ serial: 136, name: "x", score: 0 }, { serial: 138, name: "y", score: 0 });
     for (const n of [136, 138]) s.zones.box = s.zones.box.filter((id) => id !== fk(n));
     expect(campaignStage(s)).toBe("waiting");
+    // Merchants reste à jouer : seul le catalogue le sait.
+    expect(campaignStage(s, catalog)).toBe("between");
   });
 
   it("partie de base en cours : étape courante avec sa manche", () => {

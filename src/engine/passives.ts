@@ -20,6 +20,9 @@ const T = {
   prosperity: "Play 1 round where all friendly cards have +{coin} production. Then {rotate}.",
   surplus: "Play 1 round where lands that produce {coin} may produce {tradeGood} instead. Then {rotate}.",
   borderDispute: "Play 1 round where all lands stay in play. Then {rotate}.",
+  // Merchants 19 : Brigands (leur propre effet {time}, les vaincre, reste permis), puis Brigand Boss.
+  brigands: "You cannot play cards, upgrade, or use other {time} effects.",
+  brigandBoss: "You cannot play cards, upgrade, or use {time} effects.",
 } as const;
 
 /** Effets actifs (non rayés) du stage visible d'une carte. */
@@ -59,20 +62,30 @@ export function payPool(catalog: Catalog, s: GameState): Pool {
   return countSources(catalog, s, T.woodShipment, ["play"]) > 0 ? ["wood", "tradeGood"] : null;
 }
 
-export type Restrictions = { noAdvance: boolean; noUpgrade: boolean; noTime: boolean };
+// noPlay : « You cannot play cards » (Brigands) : ni avancer, ni jouer une carte de la défausse par un effet.
+export type Restrictions = { noAdvance: boolean; noUpgrade: boolean; noTime: boolean; noPlay: boolean };
 
 export function restrictions(catalog: Catalog, s: GameState): Restrictions {
   const src = restrictionSources(catalog, s);
-  return { noAdvance: src.advance.length > 0, noUpgrade: src.upgrade.length > 0, noTime: src.time.length > 0 };
+  return { noAdvance: src.advance.length > 0, noUpgrade: src.upgrade.length > 0, noTime: src.time.length > 0, noPlay: src.play.length > 0 };
 }
 
-/** Cartes en jeu responsables de chaque interdiction (Dark Prince, Rain) : l'interface les fait trembler. */
-export function restrictionSources(catalog: Catalog, s: GameState): { advance: InstanceId[]; upgrade: InstanceId[]; time: InstanceId[] } {
+/** Cartes en jeu responsables de chaque interdiction (Dark Prince, Rain, Brigands) : l'interface les fait trembler. */
+export function restrictionSources(catalog: Catalog, s: GameState): { advance: InstanceId[]; upgrade: InstanceId[]; time: InstanceId[]; play: InstanceId[] } {
   const withText = (text: string) => s.zones.play.filter((id) => activeTexts(catalog, s, id).includes(text));
   const dark = withText(T.darkRestriction);
   const rain = withText(T.rainNoAdvance);
-  return { advance: [...dark, ...rain], upgrade: dark, time: dark };
+  const brigands = [...withText(T.brigands), ...withText(T.brigandBoss)];
+  return { advance: [...dark, ...rain, ...brigands], upgrade: [...dark, ...brigands], time: [...dark, ...brigands], play: brigands };
 }
+
+/** Les effets {time} de cette carte sont-ils interdits ? Brigands interdit les « other {time} effects », pas le sien. */
+export function timeBlockedFor(catalog: Catalog, s: GameState, card: InstanceId): boolean {
+  return restrictionSources(catalog, s).time.some((src) => src !== card || !activeTexts(catalog, s, src).includes(T.brigands));
+}
+
+/** Effet qui joue une carte de la défausse (« Play 1 land … from discard pile », Beer) : interdit par Brigands. */
+export const playsFromDiscard = (text: string): boolean => /\bplay\b[^.]*from (?:the |your )?discard pile/i.test(text);
 
 /** Watchtower en jeu : on peut voir la deuxième carte de la pioche. */
 export const canPeekSecond = (catalog: Catalog, s: GameState): boolean => countSources(catalog, s, "You may look at the top 2 cards of your deck.", ["play"]) > 0;

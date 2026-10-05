@@ -1,4 +1,4 @@
-import type { Side } from "../data/schema";
+import { cardId, type Side } from "../data/schema";
 import { expansionEnd, expansionRoundStart, inExpansion } from "./campaign";
 import { askOption, nextQuestion } from "./choice";
 import { effectKey } from "./effects/registry";
@@ -35,6 +35,18 @@ export function normalizeState(s: Draft["s"]): void {
   s.zones.purged ??= [];
   s.blocks ??= {};
   s.keepInPlay ??= [];
+  // Avant les grandes extensions, toutes les cartes découvertes venaient de la boîte de base.
+  s.discoveredIds ??= s.discoveries.map((n) => cardId(s.config.expansion, n));
+}
+
+/** Extension des cartes citées par numéro dans l'effet en cours : celle de sa carte, sinon la boîte de base. */
+export const sourceExpansion = (d: Draft): string => d.expansion ?? d.s.config.expansion;
+
+/** Note une découverte (numéro et instance). */
+export function recordDiscovery(s: GameState, id: InstanceId): void {
+  const ids = (s.discoveredIds ??= s.discoveries.map((n) => cardId(s.config.expansion, n)));
+  s.discoveries.push(instance(s, id).serial);
+  ids.push(id);
 }
 
 /**
@@ -287,6 +299,7 @@ function cleanupTurn(d: Draft): void {
     if (!staysInPlay(d, id)) discardWithBlocked(d, id);
   }
   d.s.keepInPlay = [];
+  delete d.s.loseNext;
   const lost = totalResources(d.s.resources);
   clearResources(d.s);
   log(d.s, lost ? `Fin du tour (${lost} ressource(s) perdue(s))` : "Fin du tour");
@@ -311,7 +324,7 @@ function nextRound(d: Draft): void {
     if (expansionRoundStart(d)) return;
     d.s.round += 1;
     d.s.turn = 0;
-    log(d.s, `Manche ${d.s.round} (mini-extension, manche ${d.s.campaign?.rounds ?? 0}/4)`);
+    log(d.s, `Manche ${d.s.round} (${d.s.campaign?.grand ?? "mini-extension"}, manche ${d.s.campaign?.rounds ?? 0}/4)`);
     pushFront(d, { kind: "shuffle" }, { kind: "startTurn" });
     queueTriggers(d, "betweenRounds", [...d.s.zones.permanent]);
     return;
@@ -332,10 +345,15 @@ function nextRound(d: Draft): void {
 
 /** Avant le mélange, le joueur voit les cartes découvertes depuis la fin de la manche (hors parchemins). */
 function reviewDiscoveries(d: Draft, since: number): void {
-  const serials = new Set(d.s.discoveries.slice(since));
-  const cards = Object.values(d.s.cards)
-    .filter((c) => serials.has(c.serial) && !template(d.catalog, c.templateId).isParchment)
-    .map((c) => c.instanceId)
+  const ids = d.s.discoveredIds;
+  const found =
+    ids && ids.length === d.s.discoveries.length
+      ? [...new Set(ids.slice(since))]
+      : Object.values(d.s.cards)
+          .filter((c) => d.s.discoveries.slice(since).includes(c.serial) && template(d.catalog, c.templateId).expansion === d.s.config.expansion)
+          .map((c) => c.instanceId);
+  const cards = found
+    .filter((id) => !template(d.catalog, instance(d.s, id).templateId).isParchment)
     .filter((id) => !["box", "destroyed"].includes(zoneOf(d.s, id)));
   if (cards.length) d.s.pending = { kind: "newCards", cards };
 }
@@ -350,21 +368,36 @@ function shuffleDeck(d: Draft): void {
   d.s.zones.play = [];
   d.s.revealCount += 1;
   log(d.s, `Mélange : ${r.items.length} cartes dans le deck`);
+  // Sticker 17 (Merchants) : « Start each round with this card already in your play area. » Elle n'est pas jouée.
+  for (const id of r.items.filter((x) => startsInPlay(d, x))) {
+    moveTo(d.s, id, "play");
+    log(d.s, `${cardName(d.catalog, d.s, id)} commence la manche en jeu`);
+  }
+}
+
+/** Sticker 17 sur le stage visible. */
+export function startsInPlay(d: Draft, id: InstanceId): boolean {
+  const stage = activeStage(d.catalog, d.s, id);
+  return stage !== null && instance(d.s, id).stickers.some((st) => st.stage === stage.id && st.startsInPlay);
 }
 
 // --- Découvertes (spec 4.4 et 4.6) ---
 
-/** Prochaines cartes de la boîte dans l'ordre des numéros (la carte 0 n'est jamais découverte). */
+/**
+ * Prochaines cartes de la boîte dans l'ordre des numéros (la carte 0 n'est jamais découverte). Seulement celles de la
+ * boîte de base : les cartes d'une grande extension restées dans la boîte sont « derrière » (parchemin Merchants 00).
+ */
 export function nextInBox(d: Draft, n: number): InstanceId[] {
   return [...d.s.zones.box]
-    .filter((id) => instance(d.s, id).serial >= 1)
+    .filter((id) => instance(d.s, id).serial >= 1 && template(d.catalog, instance(d.s, id).templateId).expansion === d.s.config.expansion)
     .sort((a, b) => instance(d.s, a).serial - instance(d.s, b).serial)
     .slice(0, n);
 }
 
-/** Les cartes de la boîte qui portent ces numéros. */
+/** Les cartes de la boîte qui portent ces numéros, dans l'extension de l'effet en cours (sourceExpansion). */
 export function boxCardsBySerial(d: Draft, serials: readonly number[]): InstanceId[] {
-  return d.s.zones.box.filter((id) => serials.includes(instance(d.s, id).serial));
+  const expansion = sourceExpansion(d);
+  return d.s.zones.box.filter((id) => serials.includes(instance(d.s, id).serial) && template(d.catalog, instance(d.s, id).templateId).expansion === expansion);
 }
 
 /** Début de manche : découvrir les 2 cartes suivantes, ou lire le parchemin s'il vient en premier. */
@@ -402,7 +435,7 @@ function markFinalRound(d: Draft, id: InstanceId): void {
 
 function revealParchment(d: Draft, id: InstanceId): void {
   d.s.revealCount += 1;
-  d.s.discoveries.push(instance(d.s, id).serial);
+  recordDiscovery(d.s, id);
   markFinalRound(d, id);
   log(d.s, `Parchemin découvert : ${cardName(d.catalog, d.s, id)}`);
   d.s.pending = { kind: "parchment", card: id };
@@ -445,7 +478,7 @@ export function resolveSide(d: Draft, id: InstanceId, side: Side): void {
 
 function placeDiscovered(d: Draft, id: InstanceId, seen: boolean): void {
   discard(d, id);
-  d.s.discoveries.push(instance(d.s, id).serial);
+  recordDiscovery(d.s, id);
   log(d.s, `Carte découverte : ${cardName(d.catalog, d.s, id)}`);
   // Carte à flèches rouges : toujours présentée, on y choisit sa face.
   if (!seen || template(d.catalog, instance(d.s, id).templateId).chooseSideOnDiscover) presentDiscovery(d);

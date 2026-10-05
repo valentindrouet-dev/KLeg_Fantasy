@@ -1,11 +1,13 @@
+import { cardId } from "../data/schema";
 import { askCards, cardsOf } from "./choice";
-import { pushFront } from "./flow";
+import { discoveredSerials } from "./exhausted";
+import { pushFront, recordDiscovery } from "./flow";
 import { canBeDestroyed, destroyCards, friendly, isKind, kingdom, queueScript, turnCard } from "./ops";
 import { crossOutProduction, productionCount } from "./production";
 import { shuffle } from "./rng";
 import { cardFame, computeScore } from "./score";
 import { activeStage, cardName, instance, log, moveTo, template, zoneOf } from "./state";
-import type { Campaign, Catalog, ChoiceRequest, Draft, GameState, InstanceId, TriggerImpl } from "./types";
+import type { Campaign, CardInstance, Catalog, ChoiceRequest, Draft, FlowStep, GameState, InstanceId, TriggerImpl } from "./types";
 
 // Après la partie de base (spec 4.7) : mini-extensions 136, 137, 138. Chacune : purge 12, purge d'une carte
 // permanente, puis 4 manches sans découverte de 2 cartes ; la carte d'extension change d'étape à chaque fin de manche.
@@ -15,6 +17,16 @@ export const EXPANSION_SERIALS = [136, 137, 138] as const;
 export const PURGE_SCRIPT = "campaign:purge12";
 export const expansionEndScript = (serial: number, stage: number): string => `campaign:end:${serial}/${stage}`;
 const PACKET = 12;
+
+/**
+ * Grandes extensions jouables (nouvelle boîte de cartes ajoutée au royaume). Chacune : sa purge (paquets de `packet`
+ * cartes, puis `permanents` cartes permanentes), lancée par son parchemin 00 ; `guide` : la carte qui mène les manches
+ * (Merchants 01, puis 10) ; `rounds` manches sans découverte automatique ; `scorePath` : sticker du chemin de score.
+ */
+export const GRAND_EXPANSIONS: Record<string, { packet: number; permanents: number; guide: number; rounds: number; scorePath: string }> = {
+  Merchants: { packet: 7, permanents: 2, guide: 1, rounds: 4, scorePath: "13e" },
+};
+export const grandPurgeScript = (expansion: string): string => `campaign:purge:${expansion}`;
 
 export function campaignOf(s: GameState): Campaign {
   s.campaign ??= { base: null, played: [], current: null, rounds: 0, stageAtRoundStart: null };
@@ -30,10 +42,101 @@ export function expansionName(d: Pick<Draft, "catalog" | "s">, card: InstanceId)
   return (t.stages["1"]?.name ?? `#${t.serial}`).replace(/ \(expansion\)$/, "");
 }
 
+/** Carte d'une mini-extension (136, 137, 138 de la boîte de base). */
+const isMiniCard = (s: GameState, c: CardInstance): boolean =>
+  (EXPANSION_SERIALS as readonly number[]).includes(c.serial) && c.templateId === cardId(s.config.expansion, c.serial);
+
 /** Mini-extensions encore jouables : partie terminée, carte jamais sortie de la boîte. */
 export function availableExpansions(s: GameState): InstanceId[] {
   if (s.phase !== "gameOver" || inExpansion(s)) return [];
-  return s.zones.box.filter((id) => (EXPANSION_SERIALS as readonly number[]).includes(instance(s, id).serial));
+  return s.zones.box.filter((id) => isMiniCard(s, instance(s, id)));
+}
+
+/** Grande extension déjà jouée (ou lancée) dans ce royaume : chacune ne se joue qu'une fois. */
+const grandStarted = (s: GameState, expansion: string): boolean =>
+  s.campaign?.grand === expansion || (s.campaign?.played ?? []).some((p) => p.expansion === expansion);
+
+/** Grandes extensions dont les cartes sont chargées (catalogue), dans l'ordre de GRAND_EXPANSIONS. */
+export function grandExpansions(catalog: Catalog): string[] {
+  return Object.keys(GRAND_EXPANSIONS).filter((id) => catalog.templates.has(cardId(id, 0)));
+}
+
+/** Grandes extensions jouables maintenant : partie terminée, aucune extension en cours, jamais jouée. */
+export function availableGrandExpansions(catalog: Catalog, s: GameState): string[] {
+  if (s.phase !== "gameOver" || inExpansion(s)) return [];
+  return grandExpansions(catalog).filter((id) => !grandStarted(s, id));
+}
+
+/**
+ * Lance une grande extension (parchemin Merchants 00) : ses cartes rejoignent la boîte du royaume (rien n'est retiré),
+ * le deck est rassemblé et mélangé, puis le parchemin 00 est lu : sa purge, puis la découverte de la carte guide.
+ */
+export function startGrandExpansion(d: Draft, expansion: string): void {
+  const rules = GRAND_EXPANSIONS[expansion];
+  if (!rules) return;
+  const camp = campaignOf(d.s);
+  if (camp.base === null) camp.base = computeScore(d.catalog, d.s).total;
+  for (const t of [...d.catalog.templates.values()].filter((x) => x.expansion === expansion).sort((a, b) => a.serial - b.serial)) {
+    if (d.s.cards[t.id]) continue;
+    d.s.cards[t.id] = { instanceId: t.id, templateId: t.id, serial: t.serial, orientation: { side: "front", rotation: 0 }, stickers: [], checkedBoxes: [], crossedOutEffects: [], crossedOutProduction: [] };
+    d.s.zones.box.push(t.id);
+  }
+  camp.current = cardId(expansion, rules.guide);
+  camp.grand = expansion;
+  camp.rounds = 0;
+  camp.stageAtRoundStart = null;
+  d.s.phase = "playing";
+  d.s.finalRound = false;
+  d.s.queue = [];
+  d.s.turn = 0;
+  for (const id of [...d.s.zones.play, ...d.s.zones.discard, ...d.s.zones.blocked]) moveTo(d.s, id, "deck");
+  d.s.blocks = {};
+  const r = shuffle(d.s.zones.deck, d.s.rng);
+  d.s.rng = r.state;
+  d.s.zones.deck = r.items;
+  d.s.revealCount += 1;
+  log(d.s, `Extension : ${expansion}`);
+  pushFront(d, { kind: "discover", card: cardId(expansion, 0) }, { kind: "nextRound" });
+}
+
+/** Parchemin 00 d'une grande extension, après lecture : purge, puis découverte de la carte guide (permanente). */
+export function grandParchment(expansion: string): (d: Draft) => void {
+  return (d) => {
+    const rules = GRAND_EXPANSIONS[expansion];
+    if (!rules) return;
+    log(d.s, `Purge ${rules.packet}, puis ${rules.permanents} cartes permanentes`);
+    // La purge a pour source le parchemin 00 qui la demande (il est montré avec la question).
+    pushFront(
+      d,
+      { kind: "trigger", card: cardId(expansion, 0), script: grandPurgeScript(expansion), ctx: {} },
+      { kind: "discover", card: cardId(expansion, rules.guide) } satisfies FlowStep,
+    );
+  };
+}
+
+/**
+ * Fin d'une grande extension (parchemin Merchants 00, verso) : les cartes de l'extension restées dans la boîte et
+ * citées par une carte découverte y restent (« derrière » les cartes de la boîte de base) ; les autres sont détruites.
+ */
+function finishGrand(d: Draft, expansion: string): void {
+  const camp = campaignOf(d.s);
+  const own = Object.values(d.s.cards).filter((c) => template(d.catalog, c.templateId).expansion === expansion);
+  const discovered = own.filter((c) => !["box", "destroyed", "purged"].includes(zoneOf(d.s, c.instanceId)));
+  const cited = new Set(
+    discovered.flatMap((c) => Object.values(template(d.catalog, c.templateId).stages).flatMap((st) => (st ? st.effects.flatMap((e) => discoveredSerials(e.text)) : []))),
+  );
+  for (const c of own.filter((x) => zoneOf(d.s, x.instanceId) === "box")) {
+    if (cited.has(c.serial)) log(d.s, `${expansion} #${c.serial} reste dans la boîte`);
+    else moveTo(d.s, c.instanceId, "destroyed");
+  }
+  const score = computeScore(d.catalog, d.s).total;
+  camp.played.push({ serial: 0, expansion, name: expansion, score });
+  camp.current = null;
+  delete camp.grand;
+  camp.stageAtRoundStart = null;
+  d.s.phase = "gameOver";
+  d.s.queue = [];
+  log(d.s, `Fin de l'extension ${expansion} : ${score} gloire`);
 }
 
 /** Lance une mini-extension : la carte rejoint les permanentes, le deck est rassemblé et mélangé, puis la purge. */
@@ -50,7 +153,7 @@ export function startExpansion(d: Draft, card: InstanceId): void {
   const c = instance(d.s, card);
   c.orientation = { side: "front", rotation: 0 };
   moveTo(d.s, card, "permanent");
-  d.s.discoveries.push(c.serial);
+  recordDiscovery(d.s, card);
   for (const id of [...d.s.zones.play, ...d.s.zones.discard, ...d.s.zones.blocked]) moveTo(d.s, id, "deck");
   d.s.blocks = {};
   const r = shuffle(d.s.zones.deck, d.s.rng);
@@ -72,21 +175,21 @@ export function startExpansion(d: Draft, card: InstanceId): void {
  */
 export type CampaignStage = "base" | "expansion" | "between" | "waiting";
 
-export function campaignStage(s: GameState): CampaignStage {
+export function campaignStage(s: GameState, catalog?: Catalog): CampaignStage {
   if (inExpansion(s)) return "expansion";
   if (s.phase !== "gameOver") return "base";
-  return availableExpansions(s).length > 0 ? "between" : "waiting";
+  return availableExpansions(s).length > 0 || (catalog !== undefined && availableGrandExpansions(catalog, s).length > 0) ? "between" : "waiting";
 }
 
 /** Une étape de la campagne : la partie de base, puis chaque extension (identifiant : « base » ou numéro de carte). */
 export type CampaignStep = {
   id: string;
-  kind: "base" | "mini";
+  kind: "base" | "mini" | "grand";
   name: string;
   status: "done" | "current" | "available" | "upcoming";
   /** Score du royaume à la fin de l'étape (chemin de score), ou null si elle n'est pas finie. */
   score: number | null;
-  /** Étape en cours : manche (partie de base) ou manche de la mini-extension (sur 4). */
+  /** Étape en cours : manche (partie de base) ou manche de l'extension (sur 4). */
   round?: number;
 };
 
@@ -98,12 +201,20 @@ export function campaignSteps(catalog: Catalog, s: GameState): CampaignStep[] {
     { id: "base", kind: "base", name: "Partie de base", status: baseDone ? "done" : "current", score: baseScore, ...(baseDone ? {} : { round: s.round }) },
   ];
   const available = new Set(availableExpansions(s));
-  for (const c of Object.values(s.cards).filter((x) => (EXPANSION_SERIALS as readonly number[]).includes(x.serial)).sort((a, b) => a.serial - b.serial)) {
+  for (const c of Object.values(s.cards).filter((x) => isMiniCard(s, x)).sort((a, b) => a.serial - b.serial)) {
     const name = expansionName({ catalog, s }, c.instanceId);
-    const played = camp?.played.find((p) => p.serial === c.serial);
+    const played = camp?.played.find((p) => p.serial === c.serial && p.expansion === undefined);
     if (played) steps.push({ id: String(c.serial), kind: "mini", name, status: "done", score: played.score });
     else if (camp?.current === c.instanceId) steps.push({ id: String(c.serial), kind: "mini", name, status: "current", score: null, round: camp.rounds });
     else steps.push({ id: String(c.serial), kind: "mini", name, status: available.has(c.instanceId) ? "available" : "upcoming", score: null });
+  }
+  // Grandes extensions : identifiant = nom de l'extension (« Merchants »).
+  const grandOpen = new Set(availableGrandExpansions(catalog, s));
+  for (const id of grandExpansions(catalog)) {
+    const played = camp?.played.find((p) => p.expansion === id);
+    if (played) steps.push({ id, kind: "grand", name: played.name, status: "done", score: played.score });
+    else if (camp?.grand === id) steps.push({ id, kind: "grand", name: id, status: "current", score: null, round: camp.rounds });
+    else steps.push({ id, kind: "grand", name: id, status: grandOpen.has(id) ? "available" : "upcoming", score: null });
   }
   return steps;
 }
@@ -127,21 +238,27 @@ export function purgeFame(d: Draft, id: InstanceId): number {
   return cardFame(d.catalog, d.s, id) + (bonus ? Number(bonus[1]) * marks : 0);
 }
 
-/** Nombre de paquets complets de 12 dans le deck mélangé (les dernières cartes, moins de 12, ne sont pas purgées). */
-const packetCount = (d: Draft): number => Math.floor(d.s.zones.deck.length / PACKET);
-
-const purgeTrigger: TriggerImpl = {
+/**
+ * Purge (spec 4.7) : 1 carte par paquet complet de `size` cartes du deck mélangé (les dernières, moins de `size`, ne
+ * sont pas purgées), puis `permanents` cartes permanentes. Mini-extensions : purge 12 et 1 permanente ; Merchants :
+ * purge 7 et 2 permanentes.
+ */
+const purgeTrigger = (size: number, permanents: number): TriggerImpl => {
+  const packetCount = (d: Draft): number => Math.floor(d.s.zones.deck.length / size);
+  return {
   timing: "manual",
   optional: false,
   ask: (d, card, answers): ChoiceRequest | null => {
     const packets = packetCount(d);
     const i = answers.length;
     if (i < packets) {
-      const packet = d.s.zones.deck.slice(i * PACKET, (i + 1) * PACKET);
+      const packet = d.s.zones.deck.slice(i * size, (i + 1) * size);
       return askCards(`Purge : 1 carte à purger (paquet ${i + 1}/${packets})`, packet.filter((id) => purgeable(d, id)), 1);
     }
     if (i === packets) {
-      return askCards("Carte permanente à purger", d.s.zones.permanent.filter((id) => id !== card && purgeable(d, id)), 1);
+      const options = d.s.zones.permanent.filter((id) => id !== card && purgeable(d, id));
+      const n = Math.min(permanents, options.length);
+      return askCards(n > 1 ? `${n} cartes permanentes à purger` : "Carte permanente à purger", options, n);
     }
     const chosen = answers.slice(0, packets + 1).flatMap(cardsOf);
     const savers = chosen.filter((id) => saves(d, id) > 0);
@@ -167,6 +284,7 @@ const purgeTrigger: TriggerImpl = {
     d.s.purgedFame += fame;
     log(d.s, `Gloire purgée : +${fame}, total ${d.s.purgedFame}`);
   },
+  };
 };
 
 // --- Manches d'une mini-extension ---
@@ -176,6 +294,16 @@ export function expansionRoundStart(d: Draft): boolean {
   const camp = campaignOf(d.s);
   const card = camp.current;
   if (!card) return false;
+  // Grande extension : ses manches sont menées par ses cartes (Merchants 01 puis 10) ; elle finit après la dernière.
+  const grand = camp.grand;
+  if (grand !== undefined) {
+    if (camp.rounds >= (GRAND_EXPANSIONS[grand]?.rounds ?? 4)) {
+      finishGrand(d, grand);
+      return true;
+    }
+    camp.rounds += 1;
+    return false;
+  }
   if (zoneOf(d.s, card) !== "permanent" || camp.rounds >= 4) {
     finishExpansion(d, card);
     return true;
@@ -205,7 +333,7 @@ function finishExpansion(d: Draft, card: InstanceId): void {
 export function expansionEnd(d: Draft): void {
   const camp = campaignOf(d.s);
   const card = camp.current;
-  if (!card || zoneOf(d.s, card) !== "permanent") return;
+  if (!card || camp.grand !== undefined || zoneOf(d.s, card) !== "permanent") return;
   const stage = activeStage(d.catalog, d.s, card);
   if (!stage || stage.id !== camp.stageAtRoundStart) return;
   const script = expansionEndScript(instance(d.s, card).serial, stage.id);
@@ -273,5 +401,9 @@ const producesCoinD = (d: Draft, id: InstanceId): boolean =>
 
 /** Scripts de la campagne (purge, fins d'étape), ajoutés au catalogue des déclencheurs. */
 export function campaignScripts(): Map<string, TriggerImpl> {
-  return new Map([[PURGE_SCRIPT, purgeTrigger], ...endScripts()]);
+  return new Map([
+    [PURGE_SCRIPT, purgeTrigger(PACKET, 1)],
+    ...Object.entries(GRAND_EXPANSIONS).map(([id, r]): [string, TriggerImpl] => [grandPurgeScript(id), purgeTrigger(r.packet, r.permanents)]),
+    ...endScripts(),
+  ]);
 }

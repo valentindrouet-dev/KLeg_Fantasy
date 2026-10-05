@@ -14,7 +14,8 @@ import type { CardTemplate } from "../src/data/schema";
 type Rect = { x: number; y: number; w: number; h: number; fill: number };
 type Raw = { data: Buffer; width: number; height: number };
 
-const expansion = "FeudalKingdom";
+const expansionArg = process.argv.indexOf("--expansion");
+const expansion = expansionArg >= 0 ? (process.argv[expansionArg + 1] ?? "FeudalKingdom") : "FeudalKingdom";
 const onlyArg = process.argv.indexOf("--only");
 const only = onlyArg >= 0 ? new Set((process.argv[onlyArg + 1] ?? "").split(",").map(Number)) : null;
 const withSheets = process.argv.includes("--sheet");

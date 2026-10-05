@@ -10,7 +10,8 @@ import path from "node:path";
 import sharp from "sharp";
 import type { CardTemplate } from "../src/data/schema";
 
-const expansion = "FeudalKingdom";
+const expansionArg = process.argv.indexOf("--expansion");
+const expansion = expansionArg >= 0 ? (process.argv[expansionArg + 1] ?? "FeudalKingdom") : "FeudalKingdom";
 const W = 373;
 const H = 520;
 /** Rosette de #38 : centre (40, 155), 44 px de côté pour le gabarit. */
@@ -57,7 +58,8 @@ function ncc(a: Float32Array, b: Float32Array): number {
 }
 
 const dir = path.join("data/cards", expansion);
-const ref = await gray(path.join("data/images", expansion, "FK_Page_077.webp"), false);
+// Modèle de l'icône « * » : une carte de Feudal Kingdom (même gabarit pour toutes les extensions).
+const ref = await gray(path.join("data/images", "FeudalKingdom", "FK_Page_077.webp"), false);
 const template = patch(ref, 40 - T / 2, 155 - T / 2);
 const result: Record<string, number[]> = {};
 const missed: string[] = [];

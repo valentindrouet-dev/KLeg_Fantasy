@@ -47,9 +47,10 @@ import { activeStage, cardName, countPersons, gain, instance, log, moveTo, perso
 import type { Answer, ChoiceRequest, Draft, EffectImpl, EffectParams, InstanceId, TriggerCtx, TriggerImpl } from "../types";
 import { cardCostOptions, upgradeCost, upgradeOptions } from "../upgrade";
 import { upgradeCard } from "../actions";
-import { NO_PARAMS, effectKey } from "./registry";
+import { NO_PARAMS, effectKey, withExpansion } from "./registry";
 import { FORTRESS_TEXT } from "./substitutes";
 import { EXPANSION_EFFECTS, EXPANSION_TRIGGERS } from "./expansions";
+import { MERCHANTS_EFFECTS, MERCHANTS_TRIGGERS, merchantsPattern } from "./merchants";
 
 // Effets des cartes de Feudal Kingdom (cartes 11 à 135), reconnus à leur texte imprimé exact : toutes les copies
 // d'une carte en profitent. Les questions au joueur passent par `ask` (une à la fois, avant tout paiement), puis
@@ -59,7 +60,7 @@ type Ask = (d: Draft, card: InstanceId, a: Answer[]) => ChoiceRequest | null;
 type Run = (d: Draft, card: InstanceId, a: Answer[]) => void;
 
 /** Effet utilisé comme action : coût en ressources, condition d'usage, questions, application. */
-function effect(o: { cost?: readonly ResourceId[]; usable?: (d: Draft, card: InstanceId) => boolean; ask?: Ask; run: Run }): EffectImpl {
+export function effect(o: { cost?: readonly ResourceId[]; usable?: (d: Draft, card: InstanceId) => boolean; ask?: Ask; run: Run }): EffectImpl {
   const cost = o.cost ?? [];
   const impl: EffectImpl = {
     params: (d, card) => ((cost.length === 0 || canPayD(d, cost)) && (o.usable?.(d, card) ?? true) ? [NO_PARAMS] : []),
@@ -77,18 +78,18 @@ type TriggerSpec = Omit<TriggerImpl, "run" | "ask"> & {
   ask?: (d: Draft, card: InstanceId, a: Answer[], ctx: TriggerCtx) => ChoiceRequest | null;
   run: (d: Draft, card: InstanceId, a: Answer[], ctx: TriggerCtx) => void;
 };
-const trigger = (t: TriggerSpec): TriggerImpl => t;
+export const trigger = (t: TriggerSpec): TriggerImpl => t;
 
 // --- Outils ---
 
 const ICON = /\{(\w+)\}/g;
 const iconsIn = (text: string): ResourceId[] => [...text.matchAll(ICON)].map((m) => m[1] ?? "");
-const RESOURCES = (d: Draft): readonly ResourceId[] => d.catalog.resources;
-const icon = (r: string): string => `{${r}}`;
+export const RESOURCES = (d: Draft): readonly ResourceId[] => d.catalog.resources;
+export const icon = (r: string): string => `{${r}}`;
 const serialsIn = (text: string): number[] => [...text.matchAll(/\d+/g)].map((m) => Number(m[0]));
 
 /** n-ième question d'une suite : chaque étape reçoit les réponses précédentes et renvoie sa question ou null (fin). */
-function steps(...fns: ((d: Draft, card: InstanceId, prev: Answer[]) => ChoiceRequest | null)[]): Ask {
+export function steps(...fns: ((d: Draft, card: InstanceId, prev: Answer[]) => ChoiceRequest | null)[]): Ask {
   return (d, card, a) => {
     const fn = fns[a.length];
     return fn ? fn(d, card, a) : null;
@@ -98,10 +99,10 @@ function steps(...fns: ((d: Draft, card: InstanceId, prev: Answer[]) => ChoiceRe
 const anyResources = (n: number) => (d: Draft) => (n > 0 ? askResources(`Choisis ${n} ressource${n > 1 ? "s" : ""}`, RESOURCES(d), n) : null);
 
 /** Personnes en jeu (autres que la carte), Healing Potion comprise. */
-const persons = (d: Draft, self: InstanceId) => discardablePersons(d, self);
+export const persons = (d: Draft, self: InstanceId) => discardablePersons(d, self);
 
 /** Défaite d'un ennemi selon sa fiche (spec 4.6) : détruit ou retourné, plus son bonus. */
-function defeat(d: Draft, enemy: InstanceId, gainAny: ResourceId[]): void {
+export function defeat(d: Draft, enemy: InstanceId, gainAny: ResourceId[]): void {
   const stage = activeStage(d.catalog, d.s, enemy);
   const spec = stage?.defeat;
   if (!stage || !spec) return;
@@ -127,7 +128,7 @@ function applyBoxText(d: Draft, card: InstanceId, text: string | undefined): voi
 }
 
 /** Coche la prochaine case libre (de gauche à droite) du stage actif et applique son texte. */
-function markNext(d: Draft, card: InstanceId, payCost = false): boolean {
+export function markNext(d: Draft, card: InstanceId, payCost = false): boolean {
   const next = unmarkedBoxes(d, card)[0];
   if (!next) return false;
   if (payCost && next.cost?.length) payD(d, next.cost);
@@ -140,8 +141,11 @@ function markNext(d: Draft, card: InstanceId, payCost = false): boolean {
 const trackCards = (d: Draft, except: InstanceId | null): InstanceId[] =>
   d.s.zones.permanent.filter((id) => id !== except && unmarkedBoxes(d, id).length > 0);
 
+/** Sticker 18 (Merchants) : « {activated} Place this at the bottom of your deck. » */
+export const STICKER_18_EFFECT = "Place this at the bottom of your deck.";
+
 /** Stickers de la planche cités par numéro sur les cartes. */
-const STICKER_DEF: Record<string, { resource?: ResourceId; fame?: number; staysInPlay?: boolean; keyword?: string }> = {
+export const STICKER_DEF: Record<string, { resource?: ResourceId; fame?: number; staysInPlay?: boolean; keyword?: string; startsInPlay?: boolean; effect?: string }> = {
   "1": { resource: "coin" },
   "2": { resource: "wood" },
   "3": { resource: "stone" },
@@ -152,18 +156,21 @@ const STICKER_DEF: Record<string, { resource?: ResourceId; fame?: number; staysI
   "8": { fame: 2 },
   "10": { fame: 5 },
   "11": { keyword: "Knight" },
+  // Planche Merchants.
+  "17": { startsInPlay: true },
+  "18": { effect: STICKER_18_EFFECT },
 };
 
-function placeSticker(d: Draft, card: InstanceId, n: string): void {
+export function placeSticker(d: Draft, card: InstanceId, n: string): void {
   const def = STICKER_DEF[n];
   if (!def) return;
   addSticker(d, card, { sticker: n, ...def });
 }
 
 // Le symbole du sticker est ajouté à l'affichage, après son numéro (IconText) : le libellé dit seulement son sens.
-const labelFor = (n: string): string => {
+export const labelFor = (n: string): string => {
   const def = STICKER_DEF[n];
-  return `Sticker ${n}` + (def?.staysInPlay ? " (Stays in play)" : "") + (def?.keyword ? ` (${def.keyword})` : "");
+  return `Sticker ${n}` + (def?.staysInPlay ? " (Stays in play)" : "") + (def?.keyword ? ` (${def.keyword})` : "") + (def?.startsInPlay ? " (Starts in play)" : "");
 };
 
 // --- Effets utilisés comme action, par texte exact ---
@@ -947,7 +954,7 @@ export function cardEffects(templates: Iterable<CardTemplate>): Map<string, Effe
       const sid = Number(key) as StageId;
       for (const e of stage.effects) {
         if (e.type === "triggeredForced" || e.type === "triggeredOptional") continue;
-        const expansion = EXPANSION_EFFECTS[e.text];
+        const expansion = EXPANSION_EFFECTS[e.text] ?? MERCHANTS_EFFECTS[e.text] ?? merchantsPattern(e.text);
         let factory: Factory | undefined = EXACT[e.text] ?? (expansion ? () => expansion() : undefined);
         if (!factory) {
           for (const [re, make] of PATTERNS) {
@@ -959,7 +966,7 @@ export function cardEffects(templates: Iterable<CardTemplate>): Map<string, Effe
           }
         }
         const impl = factory?.(t, sid);
-        if (impl) out.set(effectKey(t.id, sid, e.id), impl);
+        if (impl) out.set(effectKey(t.id, sid, e.id), withExpansion(impl, t.expansion));
       }
     }
   }
@@ -1418,9 +1425,9 @@ export function cardTriggers(templates: Iterable<CardTemplate>): Map<string, Tri
       if (!stage) continue;
       const sid = Number(key) as StageId;
       for (const e of stage.effects) {
-        const make = TRIGGERS[e.text] ?? EXPANSION_TRIGGERS[e.text];
+        const make = TRIGGERS[e.text] ?? EXPANSION_TRIGGERS[e.text] ?? MERCHANTS_TRIGGERS[e.text];
         const impl = make?.() ?? stayTrigger(e.text) ?? playCountTrigger(e.text);
-        if (impl) out.set(effectKey(t.id, sid, e.id), impl);
+        if (impl) out.set(effectKey(t.id, sid, e.id), withExpansion(impl, t.expansion));
       }
     }
   }

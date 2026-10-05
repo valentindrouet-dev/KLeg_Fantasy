@@ -1,6 +1,6 @@
 # Fins de partie, mini-extensions et campagne
 
-État au 5 octobre 2026 (v0.57). Ce guide décrit ce que fait l'application aujourd'hui, ce qui manque, et ce qui est faisable. Règles de référence : spec 4.4 (fin de partie), 4.7 (extensions), 6 (royaumes et sauvegardes) ; décision du 2026-10-02 sur la carte 68 dans `docs/RULES_DECISIONS.md`.
+État au 5 octobre 2026 (v0.63). Ce guide décrit ce que fait l'application aujourd'hui, ce qui manque, et ce qui est faisable. Règles de référence : spec 4.4 (fin de partie), 4.7 (extensions), 6 (royaumes et sauvegardes) ; décision du 2026-10-02 sur la carte 68 dans `docs/RULES_DECISIONS.md`.
 
 ## 1. Vocabulaire
 
@@ -9,7 +9,7 @@
 | **Royaume** | Une boîte de jeu virtuelle (140 cartes). C'est aussi la **campagne** : tout ce qui suit se passe dans le même royaume. |
 | **Partie de base** | Cartes 1 à 70, de la première manche jusqu'à la fin de la manche lancée par la carte 68. |
 | **Mini-extension** | Cartes 136 (Uprising…), 137 (The Water Mill…), 138 (Resistance…). Jouables après la partie de base, chacune une fois. |
-| **Grande extension** | Nouvelles boîtes de cartes (jusqu'à 10 dans le jeu). **Pas dans l'appli** : leurs cartes ne sont pas encore récupérées. |
+| **Grande extension** | Nouvelle boîte de cartes ajoutée au royaume. **Merchants** (cartes 00 à 25) est jouable depuis la v0.63 ; les autres attendent leurs cartes. |
 | **Chemin de score** | Le score de la partie de base, puis le score après chaque mini-extension (sticker 13k dans le jeu). |
 
 ## 2. Ce qui existe
@@ -30,6 +30,16 @@
 1. « Jouer The Water Mill » (par exemple) lance d'abord la **purge** : 1 carte par paquet de 12 du deck mélangé, puis 1 carte permanente. Aethan Estate peut sauver des cartes. La gloire des cartes purgées est gardée pour tous les scores suivants.
 2. Ensuite viennent **4 manches sans découverte**. La carte d'extension change d'étape à chaque fin de manche, avec son action de fin (Royal Decree, Obsolete Farms, Resistance…).
 3. Après la 4e manche, la carte est détruite et son score s'ajoute au chemin de score. La fenêtre **« Fin de la mini-extension »** s'ouvre et l'extension jouée y est grisée « Déjà jouée ».
+
+### Grande extension : Merchants (v0.63)
+
+1. « Jouer Merchants » (fenêtre de fin, à côté des mini-extensions) ajoute ses 26 cartes à la boîte du royaume, sans rien retirer, puis rassemble et mélange le deck.
+2. Le parchemin 00 (« Welcome ») se lit, puis la **purge 7** : 1 carte par paquet complet de 7, puis **2 cartes permanentes**.
+3. Merchants 01 est découverte (permanente). Pas de découverte automatique pendant 4 manches : on découvre les cartes proposées par Merchants 01, puis 10 (effet {time} : on touche la carte, puis le choix dans le menu).
+4. Les fins de manche de Merchants 01 et 10 mènent l'extension : Brigands (19), puis Merchants 10, puis la fin. Le score rejoint le chemin de score (sticker 13e) ; la fenêtre « Fin de l'extension Merchants » s'ouvre.
+5. Les cartes de Merchants restées dans la boîte et citées par une carte découverte y restent (découvrables par leur effet seulement) ; les autres sont détruites. Merchants ne se joue qu'une fois par royaume.
+
+Décisions de règles : `docs/RULES_DECISIONS.md` (2026-10-05, extension Merchants).
 
 ### Un royaume n'est jamais clôturé (v0.57)
 
@@ -72,7 +82,7 @@
 3. ~~Statut sur l'accueil~~ : fait en v0.57.
 4. ~~Date et durée de chaque étape~~ : fait en v0.57 (`Kingdom.milestones`). Les étapes finies avant n'ont ni date ni durée : elles ne sont pas inventées.
 5. **Points de sauvegarde nommés** (prévus par la spec 6.1). Ils ne sont pas faits ; voir la section 4 avant de les ajouter.
-6. **Grandes extensions.** Hors périmètre tant que leurs cartes ne sont pas récupérées.
+6. **Grandes extensions.** Merchants est jouable (v0.63). Les autres (Ridding the Woods, Feudal Kingdom Adventures…) attendent leurs cartes.
 
 ## 4. Embranchements : recommencer une extension ?
 
@@ -103,9 +113,10 @@ Kingdom Legacy est un jeu *legacy* : ce qui est fait est fait. Dans la boîte ph
 - **`campaignStage(state)`** donne le statut du royaume (base, extension, between, waiting), jamais « terminé ».
 - **Tableau des scores** : les extensions déclarées dans `data/expansions.json` avec `kind: "grand"` ou `"custom"` apparaissent « À venir » sans rien d'autre à coder.
 - **Jalons** (`Kingdom.milestones`) : identifiés par l'étape (« base », numéro de la carte d'extension). Une grande extension aura son propre identifiant.
-- **Pour jouer une grande extension**, il restera à faire :
-  - récupérer ses cartes ;
-  - ajouter ses instances à la boîte des royaumes existants, sans toucher aux autres cartes ;
-  - écrire ses règles de lancement et de fin (purge ? nombre de manches ?) ;
-  - la rendre « à jouer » dans `campaignSteps`.
+- **Pour jouer une grande extension** (fait pour Merchants en v0.63) :
+  - récupérer ses cartes (fiches dans `data/cards/<Extension>/`, images, traduction) ;
+  - déclarer ses règles dans `GRAND_EXPANSIONS` (`src/engine/campaign.ts`) : purge, carte guide, nombre de manches, sticker du chemin de score ;
+  - écrire les effets de ses cartes (`src/engine/effects/merchants.ts` pour Merchants) ;
+  - mesurer ses images : `npm run checkbox-spots -- --expansion <Extension>`, idem `text-lines`, `upgrade-spots`, `fame-spots`, puis les déclarer dans `src/data/*.ts`.
+  Ses cartes s'ajoutent à la boîte au lancement (action `startGrandExpansion`) ; les cartes citées par numéro sont cherchées dans l'extension de la carte qui les cite.
 - **Aucune donnée supprimée.** Les nouveaux champs (`summary.stage`, `milestones`) sont facultatifs. Les royaumes existants s'affichent avec leur nouveau statut calculé depuis leur état, sans migration.

@@ -17,7 +17,7 @@ export { cardBadges, showsTopHalfOnly } from "./badges";
 export { exhaustedEffects, isEffectExhausted, type ExhaustedEffect } from "./exhausted";
 export { staysInPlay, isStayInPlayCard } from "./flow";
 export { canPeekSecond, restrictions, restrictionSources } from "./passives";
-export { availableExpansions, campaignStage, campaignSteps, expansionName, EXPANSION_SERIALS, inExpansion, type CampaignStage, type CampaignStep } from "./campaign";
+export { availableExpansions, availableGrandExpansions, grandExpansions, GRAND_EXPANSIONS, campaignStage, campaignSteps, expansionName, EXPANSION_SERIALS, inExpansion, type CampaignStage, type CampaignStep } from "./campaign";
 export { boxViews, isOrderedTrack, type BoxView } from "./boxes";
 export { refreshPendingPrompt } from "./flow";
 export { isValidAnswer } from "./choice";

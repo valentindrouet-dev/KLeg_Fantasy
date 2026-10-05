@@ -215,7 +215,16 @@ export function pay(s: GameState, cost: readonly ResourceId[], pool: Pool = null
 }
 
 export function gain(s: GameState, icons: readonly ResourceId[]): void {
-  for (const r of icons) s.resources[r] = (s.resources[r] ?? 0) + 1;
+  for (const r of icons) {
+    // Too Much Mead : « lose the next 3 resources you gain this turn ».
+    if ((s.loseNext ?? 0) > 0) {
+      s.loseNext = (s.loseNext ?? 0) - 1;
+      s.lostResources[r] = (s.lostResources[r] ?? 0) + 1;
+      log(s, `{${r}} perdue (Too Much Mead)`);
+      continue;
+    }
+    s.resources[r] = (s.resources[r] ?? 0) + 1;
+  }
 }
 
 export function totalResources(r: ResourceCounts): number {

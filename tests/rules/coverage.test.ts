@@ -27,12 +27,16 @@ const RULES_ELSEWHERE = new Set([
   "Play 1 round where all lands stay in play. Then {rotate}.",
   "Play 1 round. Then, for each {mark} on Uprising, you must cross out 1 production on 1 card. Then destroy this.",
   "Play 1 round. Then destroy this and 1 card with {coin} production.",
+  // Merchants : passives.ts (Brigands, Brigand Boss) ; interface (les cartes proposées s'inspectent depuis la carte).
+  "You cannot play cards, upgrade, or use other {time} effects.",
+  "You cannot play cards, upgrade, or use {time} effects.",
+  "You may look at the cards offered.",
 ]);
 // Purge (campaign.ts) : Aethan Estate.
 const PURGE = /^When you purge this card/;
 
-// Extensions dont les effets sont automatisés et les images mesurées ; les autres (Merchants…) s'y ajoutent une fois faites.
-const INTEGRATED = ["FeudalKingdom"];
+// Extensions dont les effets sont automatisés ; les autres s'y ajoutent une fois faites.
+const INTEGRATED = ["FeudalKingdom", "Merchants"];
 
 describe("couverture des effets", async () => {
   const catalog = await loadCatalog();

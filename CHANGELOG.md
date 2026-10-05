@@ -3,6 +3,20 @@
 Chaque mise à jour publiée change de version (`package.json`, affichée dans l'appli en bas de l'écran « Mes royaumes »
 et dans la barre de la partie). Convention : `0.5.0` s'affiche **v0.05** ; un correctif `0.5.1` s'affiche **v0.05.1**.
 
+## v0.63 (5 octobre 2026)
+
+- L'extension **Merchants** est jouable. Après la partie de base, elle se lance depuis la fenêtre de fin, à côté des mini-extensions (une seule fois par royaume) :
+  - ses 26 cartes s'ajoutent à la boîte du royaume, sans rien retirer ;
+  - le parchemin 00 est lu, puis la purge 7 et 2 cartes permanentes ;
+  - Merchants 01 arrive dans les permanentes. Pendant 4 manches, sans découverte automatique, on la touche pour choisir dans le menu la carte à découvrir (avec ce qu'il manque pour la payer) ;
+  - ses fins de manche découvrent Brigands, puis Merchants 10, puis terminent l'extension. Le score rejoint le chemin de score ; la fenêtre « Fin de l'extension Merchants » s'ouvre.
+- Les effets des 26 cartes sont automatisés : épices (Spices, Cummin, Coriander, Turmeric), fourrures et leurs stickers, pistes (Weaving, Fishing, Brewing, Basketry, Shoemaking), Grain, Grapes, Wine, Beer, Hangover, Mead, Too Much Mead, Viking Warrior, poulets, moutons, chameaux, Brigands et Brigand Boss.
+- Nouveaux stickers de la planche Merchants : 17 (la carte commence chaque manche en jeu), 18 (« Place this at the bottom of your deck », un effet ajouté à la personne) et 13e (chemin de score).
+- Les cartes citées par numéro sont celles de l'extension de la carte qui les cite : Brigands (Merchants 19) n'est pas la carte 19 de Feudal Kingdom.
+- Cases à cocher, lignes d'effet et icônes de coût des cartes Merchants mesurées sur les images : on les touche comme celles de Feudal Kingdom.
+- Les règles lues sur les cartes, sans la FAQ du site, sont notées dans les décisions de règles, à confirmer.
+- Aucune donnée existante n'est touchée : les royaumes en cours gardent leurs cartes et leur progression.
+
 ## v0.62 (5 octobre 2026)
 
 - Extension **Merchants** importée (fiches extraites sur le Mac) : 26 cartes (0 à 25) et leurs 52 images, toutes valides avec le schéma ; 16 ont des points à vérifier. Traduction française de toutes les cartes (infobulles FR). Elle est visible dans la visionneuse de données et « À venir » dans le tableau des scores. Elle n'est pas encore jouable : ses règles (purge 7 + 2 permanentes, 4 manches sans découverte automatique) et les effets de ses cartes restent à écrire.

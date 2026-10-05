@@ -19,7 +19,8 @@ import type { CardTemplate, Stage } from "../src/data/schema";
 type Line = [number, number, number, number];
 type Raw = { data: Buffer; width: number; height: number };
 
-const expansion = "FeudalKingdom";
+const expansionArg = process.argv.indexOf("--expansion");
+const expansion = expansionArg >= 0 ? (process.argv[expansionArg + 1] ?? "FeudalKingdom") : "FeudalKingdom";
 const onlyArg = process.argv.indexOf("--only");
 const only = onlyArg >= 0 ? new Set((process.argv[onlyArg + 1] ?? "").split(",").map(Number)) : null;
 const withSheets = process.argv.includes("--sheet");
