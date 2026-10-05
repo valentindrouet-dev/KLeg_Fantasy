@@ -1,0 +1,191 @@
+{
+  "id": "Merchants-025",
+  "expansion": "Merchants",
+  "serial": 25,
+  "origin": "official",
+  "images": {
+    "front": "Merchants/Merchants_Cards_Page_51.webp",
+    "back": "Merchants/Merchants_Cards_Page_52.webp"
+  },
+  "orientationToStage": {
+    "front-0": 1,
+    "front-180": 2,
+    "back-0": 4,
+    "back-180": 3
+  },
+  "isParchment": false,
+  "chooseSideOnDiscover": false,
+  "stages": {
+    "1": {
+      "id": 1,
+      "name": "Pair of Camels",
+      "keywords": [
+        "Livestock"
+      ],
+      "category": "livestock",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [
+        {
+          "id": "p1",
+          "options": [
+            [
+              "coin"
+            ]
+          ]
+        }
+      ],
+      "upgrades": [
+        {
+          "id": "u1",
+          "cost": [
+            "coin",
+            "coin"
+          ],
+          "arrow": "rotate",
+          "toStage": 2
+        }
+      ],
+      "effects": [],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "",
+      "siteKeywords": []
+    },
+    "2": {
+      "id": 2,
+      "name": "Camels",
+      "keywords": [
+        "Livestock"
+      ],
+      "category": "livestock",
+      "negative": false,
+      "permanent": false,
+      "fame": 1,
+      "production": [
+        {
+          "id": "p1",
+          "options": [
+            [
+              "coin",
+              "coin"
+            ]
+          ]
+        }
+      ],
+      "upgrades": [
+        {
+          "id": "u1",
+          "cost": [
+            "coin",
+            "coin",
+            "coin"
+          ],
+          "arrow": "flip",
+          "toStage": 3
+        }
+      ],
+      "effects": [],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "",
+      "siteKeywords": []
+    },
+    "3": {
+      "id": 3,
+      "name": "Camel Herd",
+      "keywords": [
+        "Livestock"
+      ],
+      "category": "livestock",
+      "negative": false,
+      "permanent": false,
+      "fame": 3,
+      "production": [
+        {
+          "id": "p1",
+          "options": [
+            [
+              "coin",
+              "coin"
+            ]
+          ]
+        }
+      ],
+      "upgrades": [
+        {
+          "id": "u1",
+          "cost": [
+            "coin",
+            "coin",
+            "coin"
+          ],
+          "arrow": "rotate",
+          "toStage": 4
+        }
+      ],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "time",
+          "text": "Reset this to discover Pair of Camels (24)."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "{time} Reset this to discover Pair of Camels (24).",
+      "siteKeywords": [
+        "Time Effect",
+        "Reset",
+        "Discover"
+      ],
+      "helpText": "SPOILER: This card leads to <a href=\"/cards/Merchants/24\">this</a>."
+    },
+    "4": {
+      "id": 4,
+      "name": "Camel Caravan",
+      "keywords": [
+        "Livestock"
+      ],
+      "category": "livestock",
+      "negative": false,
+      "permanent": false,
+      "fame": 5,
+      "production": [
+        {
+          "id": "p1",
+          "options": [
+            [
+              "coin",
+              "coin",
+              "tradeGood"
+            ]
+          ]
+        }
+      ],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "triggeredOptional",
+          "text": "End of Turn: Make 1 person stay in play."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "{triggeredOptional} End of Turn: Make 1 person stay in play.",
+      "siteKeywords": [
+        "Triggered Optional Effect"
+      ],
+      "helpText": "Note that in order to use this cards Triggered Optional Effect, you cannot also produce with it."
+    }
+  },
+  "description": "This card is made accessible a Camel Herd (<a href=\"/cards/Merchants/2\">this </a>or <a href=\"/cards/Merchants/24\">this</a>).",
+  "source": {
+    "url": "https://www.kingdomlegacygame.com/cards/Merchants/25",
+    "scrapedAt": "2026-10-05T18:31:47.602Z"
+  },
+  "confidence": 0.95,
+  "to_verify": []
+}

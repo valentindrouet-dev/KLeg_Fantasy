@@ -1,0 +1,53 @@
+{
+  "id": "Merchants-009",
+  "expansion": "Merchants",
+  "serial": 9,
+  "origin": "official",
+  "images": {
+    "front": "Merchants/Merchants_Cards_Page_19.webp",
+    "back": "Merchants/Merchants_Cards_Page_20.webp"
+  },
+  "orientationToStage": {
+    "front-0": 1,
+    "front-180": null,
+    "back-0": null,
+    "back-180": null
+  },
+  "isParchment": false,
+  "chooseSideOnDiscover": false,
+  "stages": {
+    "1": {
+      "id": 1,
+      "name": "Ether Enhancer",
+      "keywords": [
+        "Artifact"
+      ],
+      "category": "other",
+      "negative": false,
+      "permanent": true,
+      "fame": 10,
+      "production": [],
+      "upgrades": [],
+      "effects": [],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "cannotBeDestroyed": true,
+      "flavor": "The effect of this magical artifact hasn't been uncovered yet.",
+      "text": "This card cannot be destroyed.",
+      "siteKeywords": [
+        "Permanent"
+      ],
+      "helpText": "Note that this card cannot be destroyed. This is not considered an effect, since there is no effect icon next to it. So, crossing out an effect would not make it possible either. Like you would ever want to..."
+    }
+  },
+  "description": "This is one of the offers on stage 4 of the card <a href=\"/cards/Merchants/1\">Merchants</a>. It looks shiny, and valuable... and magical. You must have it!  Someday, you will surely know what it's for...",
+  "source": {
+    "url": "https://www.kingdomlegacygame.com/cards/Merchants/9",
+    "scrapedAt": "2026-10-05T18:30:54.768Z"
+  },
+  "confidence": 0.9,
+  "to_verify": [
+    "Le verso est le dos de carte générique : aucun stage.",
+    "Permanente, indestructible (imprimé) ; cannotBePurged non posé (non imprimé)."
+  ]
+}

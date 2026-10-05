@@ -7,9 +7,12 @@ import type { StageId } from "../../src/data/schema";
 
 // Lignes de texte mesurées sur les images (scripts/text-lines.ts) : un effet qui peut s'épuiser doit pouvoir être
 // barré ligne par ligne.
+// Extensions dont les effets sont automatisés et les images mesurées ; les autres (Merchants…) s'y ajoutent une fois faites.
+const INTEGRATED = ["FeudalKingdom"];
+
 describe("lignes de texte des effets", async () => {
   const catalog = await loadCatalog();
-  const effects = [...catalog.templates.values()].flatMap((t) =>
+  const effects = [...catalog.templates.values()].filter((t) => INTEGRATED.includes(t.expansion)).flatMap((t) =>
     Object.values(t.stages).flatMap((st) => (st ? st.effects.map((e) => ({ t, stage: st.id as StageId, e })) : [])),
   );
 

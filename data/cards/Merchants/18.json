@@ -1,0 +1,183 @@
+{
+  "id": "Merchants-018",
+  "expansion": "Merchants",
+  "serial": 18,
+  "origin": "official",
+  "images": {
+    "front": "Merchants/Merchants_Cards_Page_37.webp",
+    "back": "Merchants/Merchants_Cards_Page_38.webp"
+  },
+  "orientationToStage": {
+    "front-0": 1,
+    "front-180": 2,
+    "back-0": 4,
+    "back-180": 3
+  },
+  "isParchment": false,
+  "chooseSideOnDiscover": false,
+  "stages": {
+    "1": {
+      "id": 1,
+      "name": "Pair of Sheep",
+      "keywords": [
+        "Livestock"
+      ],
+      "category": "livestock",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [
+        {
+          "id": "p1",
+          "options": [
+            [
+              "coin"
+            ]
+          ]
+        }
+      ],
+      "upgrades": [
+        {
+          "id": "u1",
+          "cost": [
+            "coin",
+            "coin"
+          ],
+          "arrow": "rotate",
+          "toStage": 2
+        }
+      ],
+      "effects": [],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "",
+      "siteKeywords": []
+    },
+    "2": {
+      "id": 2,
+      "name": "Sheep Family",
+      "keywords": [
+        "Livestock"
+      ],
+      "category": "livestock",
+      "negative": false,
+      "permanent": false,
+      "fame": 1,
+      "production": [
+        {
+          "id": "p1",
+          "options": [
+            [
+              "coin",
+              "coin"
+            ]
+          ]
+        }
+      ],
+      "upgrades": [
+        {
+          "id": "u1",
+          "cost": [
+            "coin",
+            "coin",
+            "coin"
+          ],
+          "arrow": "flip",
+          "toStage": 3
+        }
+      ],
+      "effects": [],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "",
+      "siteKeywords": []
+    },
+    "3": {
+      "id": 3,
+      "name": "Sheep Flock",
+      "keywords": [
+        "Livestock"
+      ],
+      "category": "livestock",
+      "negative": false,
+      "permanent": false,
+      "fame": 2,
+      "production": [
+        {
+          "id": "p1",
+          "options": [
+            [
+              "coin",
+              "coin"
+            ]
+          ]
+        }
+      ],
+      "upgrades": [
+        {
+          "id": "u1",
+          "cost": [
+            "coin",
+            "coin",
+            "coin",
+            "coin"
+          ],
+          "arrow": "rotate",
+          "toStage": 4
+        }
+      ],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "activated",
+          "text": "Reset this and discard 1 person to discover Pair of Sheep (22 / 23)."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "{activated} Reset this and discard 1 person to discover Pair of Sheep (22 / 23).",
+      "siteKeywords": [
+        "Activated Effect",
+        "Reset",
+        "Discover"
+      ],
+      "helpText": "SPOILER: This card leads to <a href=\"/cards/Merchants/22\">this </a>or <a href=\"/cards/Merchants/23\">this</a>."
+    },
+    "4": {
+      "id": 4,
+      "name": "Sheep Herd",
+      "keywords": [
+        "Livestock"
+      ],
+      "category": "livestock",
+      "negative": false,
+      "permanent": false,
+      "fame": 3,
+      "production": [
+        {
+          "id": "p1",
+          "options": [
+            [
+              "coin",
+              "coin",
+              "coin"
+            ]
+          ]
+        }
+      ],
+      "upgrades": [],
+      "effects": [],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "",
+      "siteKeywords": []
+    }
+  },
+  "description": "This is one of the offers on stage 4 of the second Merchants <a href=\"/cards/Merchants/10\">card</a>. Valuable critters, giving you solid [money]production. Nurture them, and they will multiply!",
+  "source": {
+    "url": "https://www.kingdomlegacygame.com/cards/Merchants/18",
+    "scrapedAt": "2026-10-05T18:31:24.539Z"
+  },
+  "confidence": 0.95,
+  "to_verify": []
+}

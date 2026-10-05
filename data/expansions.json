@@ -7,6 +7,14 @@
       "serialFrom": 0,
       "serialTo": 139,
       "sourceUrl": "https://www.kingdomlegacygame.com/expansions/FeudalKingdom"
+    },
+    {
+      "id": "Merchants",
+      "name": "Merchants",
+      "kind": "grand",
+      "serialFrom": 0,
+      "serialTo": 25,
+      "sourceUrl": "https://www.kingdomlegacygame.com/expansions/Merchants"
     }
   ]
 }

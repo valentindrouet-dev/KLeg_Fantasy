@@ -1,0 +1,110 @@
+{
+  "id": "Merchants-001",
+  "expansion": "Merchants",
+  "serial": 1,
+  "origin": "official",
+  "images": {
+    "front": "Merchants/Merchants_Cards_Page_03.webp",
+    "back": "Merchants/Merchants_Cards_Page_04.webp"
+  },
+  "orientationToStage": {
+    "front-0": 1,
+    "front-180": null,
+    "back-0": 4,
+    "back-180": null
+  },
+  "isParchment": false,
+  "chooseSideOnDiscover": false,
+  "stages": {
+    "1": {
+      "id": 1,
+      "name": "Merchants",
+      "keywords": [],
+      "category": "other",
+      "negative": false,
+      "permanent": true,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "time",
+          "text": "Choose one: Spend 7{coin} to discover Camels (02). Spend 4{tradeGood} to discover Spices (03). Spend 4{metal} to discover Furs (04). Spend 5{tradeGood} to discover Weaving (05)."
+        },
+        {
+          "id": "e2",
+          "type": "passive",
+          "text": "You may look at the cards offered."
+        },
+        {
+          "id": "e3",
+          "type": "triggeredForced",
+          "text": "End of Round: discover Brigands (19), then {flip}."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "This card is permanent. {time} Choose one: Spend 7{coin} to discover Camels (02). Spend 4{tradeGood} to discover Spices (03). Spend 4{metal} to discover Furs (04). Spend 5{tradeGood} to discover Weaving (05). {passive} You may look at the cards offered. {triggeredForced} End of Round: discover Brigands (19), then {flip}.",
+      "siteKeywords": [
+        "Permanent",
+        "Time Effect",
+        "Passive Effect",
+        "Forced Triggered Effect",
+        "End of Round",
+        "Discover"
+      ],
+      "helpText": "SPOILER: This card leads to <a href=\"/cards/Merchants/2\">this</a>, <a href=\"/cards/Merchants/3\">this</a>, <a href=\"/cards/Merchants/4\">this</a>, <a href=\"/cards/Merchants/5\">this </a>and <a href=\"/cards/Merchants/19\">this</a>."
+    },
+    "4": {
+      "id": 4,
+      "name": "Merchants",
+      "keywords": [],
+      "category": "other",
+      "negative": false,
+      "permanent": true,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "time",
+          "text": "Choose one: Spend 6{coin} to discover Grain (06). Spend 6{sword} to discover Grapes (07). Spend 5{tradeGood} to discover Fishing (08). Spend 7{wood} to discover Artifact (09)."
+        },
+        {
+          "id": "e2",
+          "type": "passive",
+          "text": "You may look at the cards offered."
+        },
+        {
+          "id": "e3",
+          "type": "triggeredForced",
+          "text": "End of Round: destroy this and discover Merchants (10)."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "This card is permanent. {time} Choose one: Spend 6{coin} to discover Grain (06). Spend 6{sword} to discover Grapes (07). Spend 5{tradeGood} to discover Fishing (08). Spend 7{wood} to discover Artifact (09). {passive} You may look at the cards offered. {triggeredForced} End of Round: destroy this and discover Merchants (10).",
+      "siteKeywords": [
+        "Permanent",
+        "Time Effect",
+        "Discover",
+        "Passive Effect",
+        "Forced Triggered Effect",
+        "End of Round"
+      ],
+      "helpText": "SPOILER: This card leads to <a href=\"/cards/Merchants/6\">this</a>, <a href=\"/cards/Merchants/7\">this</a>, <a href=\"/cards/Merchants/8\">this</a>, <a href=\"/cards/Merchants/9\">this </a>and <a href=\"/cards/Merchants/10\">this</a>."
+    }
+  },
+  "description": "This is 1 of the 2 doublesided Merchant-cards that guide you through this expansion. This card is permanent. As a Time Effect, you can pay any 1 of the costs to discover the indicated card. The Passive Effect lets you look at all the cards offered, to make informed decisions. At the end of the round, the cards you did not acquire will be lost forever...",
+  "source": {
+    "url": "https://www.kingdomlegacygame.com/cards/Merchants/1",
+    "scrapedAt": "2026-10-05T18:30:28.360Z"
+  },
+  "confidence": 0.9,
+  "to_verify": [
+    "Bandeau rose avec la seule mention « Permanent » : aucun mot-clé de type, category=other.",
+    "L'effet {time} offre 4 choix, chacun avec son coût ; gardé en un seul effet texte (à structurer avec le DSL)."
+  ]
+}

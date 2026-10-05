@@ -1,0 +1,86 @@
+{
+  "id": "Merchants-016",
+  "expansion": "Merchants",
+  "serial": 16,
+  "origin": "official",
+  "images": {
+    "front": "Merchants/Merchants_Cards_Page_33.webp",
+    "back": "Merchants/Merchants_Cards_Page_34.webp"
+  },
+  "orientationToStage": {
+    "front-0": 1,
+    "front-180": null,
+    "back-0": 4,
+    "back-180": null
+  },
+  "isParchment": false,
+  "chooseSideOnDiscover": false,
+  "stages": {
+    "1": {
+      "id": 1,
+      "name": "Mead",
+      "keywords": [
+        "Item"
+      ],
+      "category": "other",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "activated",
+          "text": "Gain each person's production as resources, then {flip}."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": true,
+      "text": "{passive} Stays in play. {activated} Gain each person's production as resources, then {flip}.",
+      "siteKeywords": [
+        "Stays in play",
+        "Activated Effect"
+      ]
+    },
+    "4": {
+      "id": 4,
+      "name": "Too Much Mead",
+      "keywords": [
+        "Event"
+      ],
+      "category": "negative",
+      "negative": true,
+      "permanent": false,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "triggeredForced",
+          "text": "When played, lose the next 3 resources you gain this turn."
+        },
+        {
+          "id": "e2",
+          "type": "triggeredForced",
+          "text": "End of Turn: {flip}."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "{triggeredForced} When played, lose the next 3 resources you gain this turn. {triggeredForced} End of Turn: {flip}.",
+      "siteKeywords": [
+        "Forced Triggered Effect"
+      ],
+      "helpText": "Note that resources are gained when you use effects or produce them. This means you can always choose which resources you want to produce first and let go to waste. But there will be waste..."
+    }
+  },
+  "description": "This is one of the offers on stage 4 of the second Merchants <a href=\"/cards/Merchants/10\">card</a>. Wow, this drink really does enhance my skills! I hope there's no backlash to it...",
+  "source": {
+    "url": "https://www.kingdomlegacygame.com/cards/Merchants/16",
+    "scrapedAt": "2026-10-05T18:31:17.891Z"
+  },
+  "confidence": 0.95,
+  "to_verify": []
+}

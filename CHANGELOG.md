@@ -3,6 +3,11 @@
 Chaque mise à jour publiée change de version (`package.json`, affichée dans l'appli en bas de l'écran « Mes royaumes »
 et dans la barre de la partie). Convention : `0.5.0` s'affiche **v0.05** ; un correctif `0.5.1` s'affiche **v0.05.1**.
 
+## v0.62 (5 octobre 2026)
+
+- Extension **Merchants** importée (fiches extraites sur le Mac) : 26 cartes (0 à 25) et leurs 52 images, toutes valides avec le schéma ; 16 ont des points à vérifier. Traduction française de toutes les cartes (infobulles FR). Elle est visible dans la visionneuse de données et « À venir » dans le tableau des scores. Elle n'est pas encore jouable : ses règles (purge 7 + 2 permanentes, 4 manches sans découverte automatique) et les effets de ses cartes restent à écrire.
+- Les parties en cours ne sont pas touchées : une partie ne prend que les cartes de son extension.
+
 ## v0.61.1 (5 octobre 2026)
 
 - Message d'une amélioration impayable plus clair : quand une carte engagée doit aussi être défaussée pour le coût en cartes (« 2 Persons »), le message dit ce qui manque et pourquoi. Par exemple, pour Guild : « Il manque [pierre] : Miners est défaussée pour le coût en cartes, elle ne peut pas aussi produire ». Avant : « Pas payable avec les cartes engagées ».

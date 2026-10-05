@@ -1,5 +1,5 @@
+/// <reference types="vite/client" />
 import { z } from "zod";
-import frJson from "../../data/translations/FeudalKingdom.fr.json";
 import type { StageId } from "./schema";
 
 // Traductions françaises des cartes (affichage au survol). Fichier séparé des fiches : les fiches restent
@@ -9,7 +9,9 @@ export const StageTranslationSchema = z.strictObject({ name: z.string(), text: z
 export const TranslationsFileSchema = z.record(z.string(), z.record(z.string(), StageTranslationSchema));
 export type StageTranslation = z.infer<typeof StageTranslationSchema>;
 
-const fr = TranslationsFileSchema.parse(frJson);
+// Un fichier par extension (data/translations/<Extension>.fr.json), tous fusionnés.
+const files = import.meta.glob<unknown>("/data/translations/*.fr.json", { eager: true, import: "default" });
+const fr = Object.assign({}, ...Object.values(files).map((f) => TranslationsFileSchema.parse(f))) as z.infer<typeof TranslationsFileSchema>;
 
 export function stageFr(templateId: string, stage: StageId): StageTranslation | undefined {
   return fr[templateId]?.[String(stage)];

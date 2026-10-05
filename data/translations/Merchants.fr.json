@@ -1,0 +1,322 @@
+{
+ "Merchants-000": {
+  "1": {
+   "name": "Bienvenue",
+   "text": "BIENVENUE dans Merchants ! Si tu as une question sur une carte, notre site et sa FAQ complète sont à un scan d'ici. Avant de commencer : fais une purge 7 et purge aussi 2 cartes permanentes. Après la purge, {flip}."
+  },
+  "4": {
+   "name": "",
+   "text": "Joue avec les règles normales, mais sans découvrir de cartes automatiquement à chaque manche. Découvre seulement Merchants (01) : c'est elle qui décide des cartes que tu peux découvrir et te guide pendant 4 manches (les marchands sont permanents). Une fois terminé : ajoute le sticker 13e au chemin de score sur le côté de ta boîte et écris ton nouveau score à côté. Chaque royaume ne peut jouer Merchants qu'une fois. Cherche chaque carte de cette extension que tu as découverte. Si elles renvoient à des cartes non découvertes, place ces cartes derrière tes propres cartes à découvrir dans ta boîte. Détruis les cartes restantes de cette extension."
+  }
+ },
+ "Merchants-001": {
+  "1": {
+   "name": "Marchands",
+   "text": "Cette carte est permanente. {time} Choisis une option : dépense 7{coin} pour découvrir Camels (02). Dépense 4{tradeGood} pour découvrir Spices (03). Dépense 4{metal} pour découvrir Furs (04). Dépense 5{tradeGood} pour découvrir Weaving (05). {passive} Tu peux regarder les cartes proposées. {triggeredForced} Fin de manche : découvre Brigands (19), puis {flip}."
+  },
+  "4": {
+   "name": "Marchands",
+   "text": "Cette carte est permanente. {time} Choisis une option : dépense 6{coin} pour découvrir Grain (06). Dépense 6{sword} pour découvrir Grapes (07). Dépense 5{tradeGood} pour découvrir Fishing (08). Dépense 7{wood} pour découvrir Artifact (09). {passive} Tu peux regarder les cartes proposées. {triggeredForced} Fin de manche : détruis cette carte et découvre Merchants (10)."
+  }
+ },
+ "Merchants-002": {
+  "1": {
+   "name": "Paire de chameaux",
+   "text": ""
+  },
+  "2": {
+   "name": "Chameaux",
+   "text": ""
+  },
+  "3": {
+   "name": "Troupeau de chameaux",
+   "text": "{time} Remets cette carte à zéro pour découvrir Pair of Camels (24 / 25)."
+  },
+  "4": {
+   "name": "Caravane de chameaux",
+   "text": "{triggeredOptional} Fin de tour : fais rester 1 personne en jeu."
+  }
+ },
+ "Merchants-003": {
+  "1": {
+   "name": "Épices",
+   "text": "{activated} Défausse 1 personne pour tourner cette carte dans n'importe quelle orientation."
+  },
+  "2": {
+   "name": "Cumin",
+   "text": "{activated} Coche {mark} pour gagner {coin}{coin}{coin}. Quand c'est complet, remets à zéro."
+  },
+  "3": {
+   "name": "Coriandre",
+   "text": "{activated} Coche {mark} pour gagner la production d'1 personne comme ressources. Quand c'est complet, remets à zéro."
+  },
+  "4": {
+   "name": "Curcuma",
+   "text": "{activated} Coche {mark} pour utiliser l'effet {activated} ou {time} d'1 personne en jeu. Quand c'est complet, remets à zéro."
+  }
+ },
+ "Merchants-004": {
+  "1": {
+   "name": "Fourrure de chèvre",
+   "text": "{activated} Ajoute le sticker 1 à une personne en jeu. Puis {rotate}."
+  },
+  "2": {
+   "name": "Fourrure de chameau",
+   "text": "{activated} Ajoute le sticker 18 comme production à une personne en jeu, puis {flip}."
+  },
+  "3": {
+   "name": "Fourrure de guépard",
+   "text": "{activated} Ajoute le sticker 7 à une personne en jeu, puis {rotate}."
+  },
+  "4": {
+   "name": "Fourrure de lapin",
+   "text": "{destroy} Ajoute le sticker 17 à une personne en jeu."
+  }
+ },
+ "Merchants-005": {
+  "1": {
+   "name": "Tissage",
+   "text": "Cette carte est permanente. {time} Défausse 1 personne ET dépense les {coin} ci-dessous pour améliorer ton tissage : coche {mark} de gauche à droite. Cette carte vaut la plus haute {fame} cochée. Toutes : défausse 1 personne."
+  }
+ },
+ "Merchants-006": {
+  "1": {
+   "name": "Céréales",
+   "text": "{activated} Coche {mark} pour ajouter le sticker 1 comme production à une terre en jeu."
+  }
+ },
+ "Merchants-007": {
+  "1": {
+   "name": "Raisins",
+   "text": "{activated} Coche {mark} pour ajouter le sticker 6 à une terre en jeu, à la place d'une autre production."
+  },
+  "4": {
+   "name": "Vin",
+   "text": "{time} Dépense {tradeGood}{tradeGood} et coche {mark} pour ajouter le sticker 6 comme production ici."
+  }
+ },
+ "Merchants-008": {
+  "1": {
+   "name": "Pêche",
+   "text": "Cette carte est permanente. {time} Défausse le nombre de cartes maritimes imprimé pour chaque case afin de développer ta flotte de pêche : coche {mark} de gauche à droite. Cette carte vaut la plus haute {fame} cochée."
+  }
+ },
+ "Merchants-009": {
+  "1": {
+   "name": "Amplificateur d'éther",
+   "text": "Cette carte ne peut pas être détruite."
+  }
+ },
+ "Merchants-010": {
+  "1": {
+   "name": "Marchands",
+   "text": "Cette carte est permanente. {time} Choisis une option : dépense 7{coin} pour découvrir Chicken (11). Dépense 4{tradeGood} pour découvrir Beer (12). Dépense 5{tradeGood} pour découvrir Brewing (13). Dépense 7{wood} pour découvrir Basketry (14). {passive} Tu peux regarder les cartes proposées. {triggeredForced} Fin de manche : {flip}."
+  },
+  "4": {
+   "name": "Marchands",
+   "text": "Cette carte est permanente. {time} Choisis une option : dépense 6{coin} pour découvrir Warrior (15). Dépense 6{tradeGood} pour découvrir Mead (16). Dépense 5{metal} pour découvrir Shoemaking (17). Dépense 7{tradeGood} pour découvrir Sheep (18). {passive} Tu peux regarder les cartes proposées. {triggeredForced} Fin de manche : détruis cette carte. L'extension est terminée."
+  }
+ },
+ "Merchants-011": {
+  "1": {
+   "name": "Poule",
+   "text": "{activated} Dépense {coin}{coin} pour {rotate}."
+  },
+  "2": {
+   "name": "Groupe de poules",
+   "text": "{activated} Dépense {coin}{coin} pour {flip}."
+  },
+  "3": {
+   "name": "Beaucoup de poules",
+   "text": "{activated} Dépense {coin}{coin}{coin} pour {rotate}."
+  },
+  "4": {
+   "name": "Élevage de poules",
+   "text": "{activated} Remets à zéro pour découvrir Chicken (20 / 21) ou pour gagner 8{tradeGood}."
+  }
+ },
+ "Merchants-012": {
+  "1": {
+   "name": "Bière",
+   "text": "{activated} Coche {mark} pour jouer jusqu'à 2 personnes depuis la défausse. Quand c'est complet, {flip}."
+  },
+  "4": {
+   "name": "Gueule de bois",
+   "text": "{passive} Reste en jeu. {triggeredForced} Quand une personne est jouée, défausse-la et coche {mark}. Quand c'est complet, {destroy}."
+  }
+ },
+ "Merchants-013": {
+  "1": {
+   "name": "Brasserie",
+   "text": "Cette carte est permanente. {passive} Défausse le nombre de personnes ET dépense les {coin} imprimés pour chaque case ci-dessous pour cocher {mark} de gauche à droite ET gagner 5{tradeGood}. Cette carte vaut la plus haute {fame} cochée. Toutes : défausse autant de personnes que de {coin}. (À chaque case, gagne 5{tradeGood})"
+  }
+ },
+ "Merchants-014": {
+  "1": {
+   "name": "Vannerie",
+   "text": "Cette carte est permanente. {passive} Défausse 1 personne ET dépense les {wood} imprimés pour chaque case afin de faire des paniers : coche {mark} de gauche à droite et gagne 5{tradeGood}. Cette carte vaut la plus haute {fame} cochée. Toutes : défausse 1 personne. (À chaque case, gagne 5{tradeGood})"
+  }
+ },
+ "Merchants-015": {
+  "1": {
+   "name": "Guerrier viking",
+   "text": "{activated} Dépense {coin}{coin} pour cocher n'importe quelle {mark}. Quand c'est complet, {flip}."
+  },
+  "4": {
+   "name": "Vétéran viking",
+   "text": ""
+  }
+ },
+ "Merchants-016": {
+  "1": {
+   "name": "Hydromel",
+   "text": "{passive} Reste en jeu. {activated} Gagne la production de chaque personne comme ressources, puis {flip}."
+  },
+  "4": {
+   "name": "Trop d'hydromel",
+   "text": "{triggeredForced} Quand elle est jouée, perds les 3 prochaines ressources que tu gagnes ce tour. {triggeredForced} Fin de tour : {flip}."
+  }
+ },
+ "Merchants-017": {
+  "1": {
+   "name": "Cordonnerie",
+   "text": "Cette carte est permanente. {time} Dépense les ressources imprimées pour chaque case afin d'améliorer ta cordonnerie : coche {mark} de gauche à droite et augmente la production d'1 personne en jeu. Cette carte vaut la plus haute {fame} cochée. (À chaque case, augmente la production d'1 personne.)"
+  }
+ },
+ "Merchants-018": {
+  "1": {
+   "name": "Paire de moutons",
+   "text": ""
+  },
+  "2": {
+   "name": "Famille de moutons",
+   "text": ""
+  },
+  "3": {
+   "name": "Troupeau de moutons",
+   "text": "{activated} Remets cette carte à zéro et défausse 1 personne pour découvrir Pair of Sheep (22 / 23)."
+  },
+  "4": {
+   "name": "Grand troupeau de moutons",
+   "text": ""
+  }
+ },
+ "Merchants-019": {
+  "1": {
+   "name": "Brigands",
+   "text": "{passive} Tu ne peux pas jouer de cartes, améliorer ni utiliser d'autres effets {time}. {activated} Détruis 2 cartes amies en jeu qui produisent pour {flip}. {time} Dépense 8{sword} pour vaincre ({flip})."
+  },
+  "4": {
+   "name": "Chef des brigands",
+   "text": "{passive} Tu ne peux pas jouer de cartes, améliorer ni utiliser d'effets {time}. {activated} Détruis 1 carte en jeu qui a 3 productions ou plus pour vaincre ({destroy}). {activated} Dépense 10{sword} pour vaincre ({destroy})."
+  }
+ },
+ "Merchants-020": {
+  "1": {
+   "name": "Poule",
+   "text": "{activated} Dépense {coin}{coin} pour {rotate}."
+  },
+  "2": {
+   "name": "Groupe de poules",
+   "text": "{activated} Dépense {coin}{coin} pour {flip}."
+  },
+  "3": {
+   "name": "Beaucoup de poules",
+   "text": "{activated} Dépense {coin}{coin}{coin} pour {rotate}."
+  },
+  "4": {
+   "name": "Élevage de poules",
+   "text": "{activated} Remets à zéro pour découvrir Chicken (21) ou pour gagner 8{tradeGood}."
+  }
+ },
+ "Merchants-021": {
+  "1": {
+   "name": "Poule",
+   "text": "{activated} Dépense {coin}{coin} pour {rotate}."
+  },
+  "2": {
+   "name": "Groupe de poules",
+   "text": "{activated} Dépense {coin}{coin} pour {flip}."
+  },
+  "3": {
+   "name": "Beaucoup de poules",
+   "text": "{activated} Dépense {coin}{coin}{coin} pour {rotate}."
+  },
+  "4": {
+   "name": "Élevage de poules",
+   "text": "{activated} Remets à zéro pour découvrir Chicken (20) ou pour gagner 8{tradeGood}."
+  }
+ },
+ "Merchants-022": {
+  "1": {
+   "name": "Paire de moutons",
+   "text": ""
+  },
+  "2": {
+   "name": "Famille de moutons",
+   "text": ""
+  },
+  "3": {
+   "name": "Troupeau de moutons",
+   "text": "{activated} Remets cette carte à zéro et défausse 1 personne pour découvrir Pair of Sheep (23)."
+  },
+  "4": {
+   "name": "Grand troupeau de moutons",
+   "text": ""
+  }
+ },
+ "Merchants-023": {
+  "1": {
+   "name": "Paire de moutons",
+   "text": ""
+  },
+  "2": {
+   "name": "Famille de moutons",
+   "text": ""
+  },
+  "3": {
+   "name": "Troupeau de moutons",
+   "text": "{activated} Remets cette carte à zéro et défausse 1 personne pour découvrir Pair of Sheep (22)."
+  },
+  "4": {
+   "name": "Grand troupeau de moutons",
+   "text": ""
+  }
+ },
+ "Merchants-024": {
+  "1": {
+   "name": "Paire de chameaux",
+   "text": ""
+  },
+  "2": {
+   "name": "Chameaux",
+   "text": ""
+  },
+  "3": {
+   "name": "Troupeau de chameaux",
+   "text": "{time} Remets cette carte à zéro pour découvrir Pair of Camels (25)."
+  },
+  "4": {
+   "name": "Caravane de chameaux",
+   "text": "{triggeredOptional} Fin de tour : fais rester 1 personne en jeu."
+  }
+ },
+ "Merchants-025": {
+  "1": {
+   "name": "Paire de chameaux",
+   "text": ""
+  },
+  "2": {
+   "name": "Chameaux",
+   "text": ""
+  },
+  "3": {
+   "name": "Troupeau de chameaux",
+   "text": "{time} Remets cette carte à zéro pour découvrir Pair of Camels (24)."
+  },
+  "4": {
+   "name": "Caravane de chameaux",
+   "text": "{triggeredOptional} Fin de tour : fais rester 1 personne en jeu."
+  }
+ }
+}

@@ -1,0 +1,132 @@
+{
+  "id": "Merchants-017",
+  "expansion": "Merchants",
+  "serial": 17,
+  "origin": "official",
+  "images": {
+    "front": "Merchants/Merchants_Cards_Page_35.webp",
+    "back": "Merchants/Merchants_Cards_Page_36.webp"
+  },
+  "orientationToStage": {
+    "front-0": 1,
+    "front-180": null,
+    "back-0": null,
+    "back-180": null
+  },
+  "isParchment": false,
+  "chooseSideOnDiscover": false,
+  "stages": {
+    "1": {
+      "id": 1,
+      "name": "Shoemaking",
+      "keywords": [],
+      "category": "none",
+      "negative": false,
+      "permanent": true,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "time",
+          "text": "Spend the resources printed for each spot to improve your shoemaking: mark {mark} from left to right and boost the production of 1 person in play."
+        }
+      ],
+      "checkboxes": [
+        {
+          "id": "c1",
+          "cost": [
+            "coin",
+            "coin",
+            "wood",
+            "wood"
+          ],
+          "fame": 1
+        },
+        {
+          "id": "c2",
+          "cost": [
+            "coin",
+            "coin",
+            "wood",
+            "wood"
+          ],
+          "fame": 2
+        },
+        {
+          "id": "c3",
+          "cost": [
+            "coin",
+            "coin",
+            "coin",
+            "wood",
+            "wood",
+            "wood"
+          ],
+          "fame": 3
+        },
+        {
+          "id": "c4",
+          "cost": [
+            "coin",
+            "coin",
+            "coin",
+            "wood",
+            "wood",
+            "wood"
+          ],
+          "fame": 5
+        },
+        {
+          "id": "c5",
+          "cost": [
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "wood",
+            "wood",
+            "wood",
+            "wood"
+          ],
+          "fame": 7
+        },
+        {
+          "id": "c6",
+          "cost": [
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "wood",
+            "wood",
+            "wood",
+            "wood"
+          ],
+          "fame": 10
+        }
+      ],
+      "staysInPlay": false,
+      "fameVariable": true,
+      "flavor": "From the rugged shores of the north, crafted with care.",
+      "text": "This card is permanent. {time} Spend the resources printed for each spot to improve your shoemaking: mark {mark} from left to right and boost the production of 1 person in play. This card is worth the highest marked {fame}. (Each claim, boost 1 person's production.)",
+      "siteKeywords": [
+        "Permanent",
+        "Time Effect",
+        "Boost 1 production"
+      ]
+    }
+  },
+  "description": "This is one of the offers on stage 4 of the second Merchants <a href=\"/cards/Merchants/10\">card</a>. It is a <i><b>track</b></i> card, letting you spend [money] and [wood] to gain fame [vp] and boost production on 1 person in play. End your turn by spending an increasing amount of [money] and [wood] to cross out the boxes from left to right. You must take them in order, and only one per turn (unless you use an effect that prevents your turn from ending). Remember that for each claim, you may boost production on 1 person in play.",
+  "source": {
+    "url": "https://www.kingdomlegacygame.com/cards/Merchants/17",
+    "scrapedAt": "2026-10-05T18:31:21.199Z"
+  },
+  "confidence": 0.85,
+  "to_verify": [
+    "Carte de piste : la gloire vaut la plus haute case cochée (fameVariable) ; coûts et gloire de chaque case lus sur l'image.",
+    "Le verso est le dos de carte générique : aucun stage.",
+    "Coûts par case : autant d'or que de bois (2+2, 2+2, 3+3, 3+3, 4+4, 4+4)."
+  ]
+}

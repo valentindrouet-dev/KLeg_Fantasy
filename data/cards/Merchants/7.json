@@ -1,0 +1,128 @@
+{
+  "id": "Merchants-007",
+  "expansion": "Merchants",
+  "serial": 7,
+  "origin": "official",
+  "images": {
+    "front": "Merchants/Merchants_Cards_Page_15.webp",
+    "back": "Merchants/Merchants_Cards_Page_16.webp"
+  },
+  "orientationToStage": {
+    "front-0": 1,
+    "front-180": null,
+    "back-0": 4,
+    "back-180": null
+  },
+  "isParchment": false,
+  "chooseSideOnDiscover": false,
+  "stages": {
+    "1": {
+      "id": 1,
+      "name": "Grapes",
+      "keywords": [
+        "Item"
+      ],
+      "category": "other",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [
+        {
+          "id": "p1",
+          "options": [
+            [
+              "tradeGood"
+            ]
+          ]
+        }
+      ],
+      "upgrades": [
+        {
+          "id": "u1",
+          "cost": [
+            "tradeGood",
+            "tradeGood",
+            "tradeGood"
+          ],
+          "arrow": "flip",
+          "toStage": 4
+        }
+      ],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "activated",
+          "text": "Mark {mark} to add sticker 6 to a land in play, replacing another production."
+        }
+      ],
+      "checkboxes": [
+        {
+          "id": "c1"
+        },
+        {
+          "id": "c2"
+        },
+        {
+          "id": "c3"
+        }
+      ],
+      "staysInPlay": false,
+      "text": "{activated} Mark {mark} to add sticker 6 to a land in play, replacing another production.",
+      "siteKeywords": [
+        "Activated Effect"
+      ]
+    },
+    "4": {
+      "id": 4,
+      "name": "Wine",
+      "keywords": [
+        "Item"
+      ],
+      "category": "other",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [
+        {
+          "id": "p1",
+          "options": [
+            [
+              "tradeGood"
+            ]
+          ]
+        }
+      ],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "time",
+          "text": "Spend {tradeGood}{tradeGood} and mark {mark} to add sticker 6 as production here."
+        }
+      ],
+      "checkboxes": [
+        {
+          "id": "c1"
+        },
+        {
+          "id": "c2"
+        },
+        {
+          "id": "c3"
+        }
+      ],
+      "staysInPlay": false,
+      "text": "{time} Spend {tradeGood}{tradeGood} and mark {mark} to add sticker 6 as production here.",
+      "siteKeywords": [
+        "Time Effect"
+      ]
+    }
+  },
+  "description": "This is one of the offers on stage 4 of the card <a href=\"/cards/Merchants/1\">Merchants</a>. Grapes will let you increase [tradegoods]production at the expense of other resources on your lands, and Wine just gets better with time. ",
+  "source": {
+    "url": "https://www.kingdomlegacygame.com/cards/Merchants/7",
+    "scrapedAt": "2026-10-05T18:30:48.166Z"
+  },
+  "confidence": 0.95,
+  "to_verify": []
+}

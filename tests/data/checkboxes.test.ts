@@ -3,11 +3,15 @@ import { boxRects } from "../../src/data/checkboxes";
 import { loadCatalog } from "../helpers/catalog";
 
 // Positions des cases mesurées sur les images (scripts/checkbox-spots.ts) : une par case de la fiche, dans la carte.
+// Extensions dont les effets sont automatisés et les images mesurées ; les autres (Merchants…) s'y ajoutent une fois faites.
+const INTEGRATED = ["FeudalKingdom"];
+
 describe("positions des cases à cocher", async () => {
   const catalog = await loadCatalog();
   it("chaque étape à cases a autant de positions que de cases, dans la carte", () => {
     const wrong: string[] = [];
     for (const t of catalog.templates.values()) {
+      if (!INTEGRATED.includes(t.expansion)) continue;
       for (const st of Object.values(t.stages)) {
         if (!st || st.checkboxes.length === 0) continue;
         const rects = boxRects(t.expansion, t.serial, st.id) ?? [];

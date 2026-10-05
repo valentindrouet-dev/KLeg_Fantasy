@@ -1,0 +1,68 @@
+{
+  "id": "Merchants-000",
+  "expansion": "Merchants",
+  "serial": 0,
+  "origin": "official",
+  "images": {
+    "front": "Merchants/Merchants_Cards_Page_01.webp",
+    "back": "Merchants/Merchants_Cards_Page_02.webp"
+  },
+  "orientationToStage": {
+    "front-0": 1,
+    "front-180": null,
+    "back-0": 4,
+    "back-180": null
+  },
+  "isParchment": true,
+  "chooseSideOnDiscover": false,
+  "stages": {
+    "1": {
+      "id": 1,
+      "name": "Welcome",
+      "keywords": [],
+      "category": "none",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "triggeredForced",
+          "text": "Before you start: Perform a purge 7 and also purge 2 permanent cards. After the purge, {flip}."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "WELCOME to Merchants! If you have any questions about any card, our website with a full FAQ is just one scan away. Before you start: Perform a purge 7 and also purge 2 permanent cards. After the purge, {flip}.",
+      "siteKeywords": []
+    },
+    "4": {
+      "id": 4,
+      "name": "",
+      "keywords": [],
+      "category": "none",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "Play with normal rules, but without discovering any cards automatically each round. Instead, only discover Merchants (01), and it will determine what cards you can discover and will guide you through 4 rounds of gameplay (note that the merchants are permanent). When you are done: Add sticker 13e to your score path on the side of your box and write your new score next to it. Each kingdom may only play Merchants once. Search each card you have discovered from this expansion. If they refer to undiscovered cards, place those cards behind your own discoverable cards in your box. Destroy any remaining cards from this expansion.",
+      "siteKeywords": []
+    }
+  },
+  "description": "This is a parchment card. Follow its instructions, and when you are done with it, destroy it. For all intents and purposes, this is not considered a card at all. Especially not when you have destroyed it.",
+  "source": {
+    "url": "https://www.kingdomlegacygame.com/cards/Merchants/0",
+    "scrapedAt": "2026-10-05T18:30:25.208Z"
+  },
+  "confidence": 0.9,
+  "to_verify": [
+    "Instructions de parchemin : classées triggeredForced (à appliquer à la découverte, puis détruire la carte) ; le site ne donne pas de type d'effet.",
+    "Règles de l'extension : purge 7 + 2 permanentes, 4 manches, aucune découverte automatique (seule Merchants 01 est découverte), sticker 13e."
+  ]
+}
