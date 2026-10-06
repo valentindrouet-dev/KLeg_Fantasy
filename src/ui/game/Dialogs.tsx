@@ -4,6 +4,7 @@ import { isValidAnswer, canBeNamed,
   availableGrandExpansions,
   grandExpansions,
   GRAND_EXPANSIONS,
+  canRestartLastExpansion,
   boxViews,
   canRestartKingdom,
   EXPANSION_SERIALS,
@@ -31,6 +32,7 @@ import { goalView, stageAtPoint } from "./goals";
 import { referencedSerials } from "./cardRefs";
 import { DevCardTools } from "./DevTools";
 import { useGame } from "./store";
+import { formatPlayTime } from "../../persistence/kingdoms";
 
 /** Objectifs du royaume en cours et bascule (appui long sur une moitié de carte). */
 function useGoals() {
@@ -665,6 +667,7 @@ export function EndDialog({
 }) {
   const score = computeScore(catalog, state);
   const camp = state.campaign;
+  const last = camp?.played.at(-1);
   // Mini-extensions (spec 4.7) : 136, 137, 138, une seule fois par royaume.
   const available = new Set(availableExpansions(state));
   const minis = Object.values(state.cards)
@@ -693,8 +696,26 @@ export function EndDialog({
   });
   const tiles = [...grands, ...minis];
   // Parcours : partie de base, puis les extensions dans l'ordre où elles ont été jouées.
-  const steps = [{ name: "Partie de base", score: camp?.base ?? score.total }, ...(camp?.played ?? []).map((p) => ({ name: p.name, score: p.score }))];
-  const last = camp?.played.at(-1);
+  const steps = [
+    { id: "base", name: "Partie de base", score: camp?.base ?? score.total },
+    ...(camp?.played ?? []).map((p) => ({ id: p.expansion ?? String(p.serial), name: p.name, score: p.score })),
+  ];
+  // Temps de jeu de chaque étape (demande du 2026-10-06) : écart entre les jalons de fin d'étape. Une étape finie
+  // avant la v0.57 n'a pas de jalon : pas de durée inventée.
+  const milestones = useGame((g) => g.kingdom?.milestones);
+  const endAt = (id: string) => milestones?.find((m) => m.step === id)?.playMs;
+  const durationOf = (i: number): string | null => {
+    const end = endAt(steps[i]?.id ?? "");
+    const start = i === 0 ? 0 : endAt(steps[i - 1]?.id ?? "");
+    return end === undefined || start === undefined ? null : formatPlayTime(Math.max(0, end - start));
+  };
+  // Recommencer la dernière extension jouée (demande du 2026-10-06) : seulement elle, pour ne pas créer d'embranchement.
+  const record = useGame((g) => g.session?.record);
+  const restartLastExpansion = useGame((g) => g.restartLastExpansion);
+  const [confirmRestart, setConfirmRestart] = useState(false);
+  const [restartError, setRestartError] = useState<string | null>(null);
+  const lastKey = last ? (last.expansion ?? `${state.config.expansion}-${String(last.serial).padStart(3, "0")}`) : null;
+  const restartable = last !== undefined && record !== undefined && canRestartLastExpansion(record);
   const remaining = tiles.filter((x) => x.open).length;
   return (
     <Dialog
@@ -731,6 +752,7 @@ export function EndDialog({
                 <span className={styles.journeyScore}>
                   <IconText text={`${st.score} {fame}`} />
                 </span>
+                {durationOf(i) && <span className={styles.journeyTime}>⏱ {durationOf(i)}</span>}
               </li>
             </Fragment>
           ))}
@@ -764,9 +786,21 @@ export function EndDialog({
                 <span className={styles.expansionKind}>{x.kind}</span>
                 <span className={styles.expansionName}>{x.name}</span>
                 {x.played ? (
-                  <span className={styles.expansionState}>
-                    Faite · <IconText text={`${x.played.score} {fame}`} />
-                  </span>
+                  <>
+                    <span className={styles.expansionState}>
+                      Faite · <IconText text={`${x.played.score} {fame}`} />
+                    </span>
+                    {(() => {
+                      const i = steps.findIndex((st) => st.id === (x.played?.expansion ?? String(x.played?.serial)));
+                      const d = i > 0 ? durationOf(i) : null;
+                      return d ? <span className={styles.expansionTime}>⏱ {d}</span> : null;
+                    })()}
+                    {restartable && x.key === lastKey && (
+                      <button className="btn" onClick={() => setConfirmRestart(true)}>
+                        ↺ Recommencer
+                      </button>
+                    )}
+                  </>
                 ) : x.open ? (
                   <button className="btn btn-primary" onClick={() => onAction(x.action)}>
                     Jouer
@@ -778,7 +812,19 @@ export function EndDialog({
             </figure>
           ))}
         </div>
+        {restartError && <p className={styles.restartError}>{restartError}</p>}
       </section>
+      {confirmRestart && last && (
+        <ConfirmDialog
+          message={`Recommencer ${last.name} ? Tout ce qui a été joué depuis son lancement, purge comprise, sera effacé : tu reviens juste avant de la lancer, avec le royaume tel qu'il était.`}
+          confirm={`Recommencer ${last.name}`}
+          onCancel={() => setConfirmRestart(false)}
+          onConfirm={() => {
+            setRestartError(restartLastExpansion());
+            setConfirmRestart(false);
+          }}
+        />
+      )}
     </Dialog>
   );
 }

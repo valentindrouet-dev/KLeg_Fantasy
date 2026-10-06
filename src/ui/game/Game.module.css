@@ -1515,6 +1515,19 @@
   font-weight: 600;
 }
 
+.journeyTime,
+.expansionTime {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.restartError {
+  margin: var(--space-3) 0 0;
+  color: var(--danger, #b3261e);
+  text-align: center;
+}
+
 .expansionTileDone .expansionState {
   color: var(--ok);
 }

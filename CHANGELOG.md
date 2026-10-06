@@ -3,6 +3,13 @@
 Chaque mise à jour publiée change de version (`package.json`, affichée dans l'appli en bas de l'écran « Mes royaumes »
 et dans la barre de la partie). Convention : `0.5.0` s'affiche **v0.05** ; un correctif `0.5.1` s'affiche **v0.05.1**.
 
+## v0.67 (6 octobre 2026)
+
+- **Recommencer la dernière extension** : sur la page de fin, la tuile de la dernière extension jouée a un bouton « ↺ Recommencer ». Après confirmation, tout ce qui a été joué depuis son lancement est effacé, purge comprise : on revient juste avant de la lancer, avec le royaume tel qu'il était. Seule la dernière peut l'être, pour ne pas créer d'embranchement.
+  - Désormais, l'état du royaume est gardé au lancement de chaque extension : recommencer est alors immédiat.
+  - Pour une extension lancée avant cette version, la partie est rejouée jusqu'à son lancement (quelques secondes). Si une ancienne version de l'appli a joué la partie avec d'autres règles, le rejeu peut échouer : un message le dit et rien n'est modifié.
+- **Temps de jeu de chaque étape** sur la page de fin : partie de base et chaque extension, dans le parcours et sur les tuiles (« ⏱ 40 min »). Les étapes finies avant la v0.57 n'ont pas de temps enregistré : rien n'est affiché pour elles.
+
 ## v0.66 (5 octobre 2026)
 
 - Garde-fou de la purge (mini-extensions et Merchants) :

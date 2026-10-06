@@ -1,5 +1,20 @@
 import { describe, expect, it } from "vitest";
-import { act, campaignStage, campaignSteps, canUndo, computeScore, current, productionGroups, resumeSession, undo, type Action, type GameState } from "../../src/engine";
+import {
+  act,
+  beforeLastExpansion,
+  campaignStage,
+  campaignSteps,
+  canRestartLastExpansion,
+  canUndo,
+  computeScore,
+  current,
+  getLegalActions,
+  productionGroups,
+  resumeSession,
+  undo,
+  type Action,
+  type GameState,
+} from "../../src/engine";
 import { purgeFame } from "../../src/engine/campaign";
 import { loadCatalog } from "../helpers/catalog";
 import { arrange, fk, legal, passUntil, run } from "../helpers/game";
@@ -7,6 +22,7 @@ import { arrange, fk, legal, passUntil, run } from "../helpers/game";
 // Mini-extensions 136, 137, 138 et purge (spec 4.7).
 describe("purge et mini-extensions", async () => {
   const catalog = await loadCatalog();
+  const newConfig = () => ({ expansion: "FeudalKingdom", seed: 1, undoMode: "free" as const });
   const choice = (s: GameState) => (s.pending?.kind === "choice" ? s.pending : null);
   /** Partie de base terminée : 30 cartes dans le royaume, Army et Treasury permanentes. */
   const finished = (): GameState => {
@@ -59,6 +75,31 @@ describe("purge et mini-extensions", async () => {
     expect(current(sess).zones.purged).toHaveLength(3);
     expect(sess.record.undoFloor).toBe(sess.record.actions.length);
     expect(canUndo(sess)).toBe(false);
+  });
+
+  it("recommencer la dernière extension : retour juste avant son lancement, depuis l'état gardé ou en rejouant", () => {
+    const start = finished();
+    let sess = resumeSession(catalog, { config: start.config, actions: [] }, start);
+    expect(canRestartLastExpansion(sess.record)).toBe(false);
+    sess = act(sess, { type: "startExpansion", card: fk(137) });
+    for (let i = 0; i < 400 && current(sess).phase === "playing"; i++) {
+      const s = current(sess);
+      const r = s.pending?.kind === "choice" ? s.pending.request : null;
+      const a: Action | undefined =
+        r?.type === "cards" ? { type: "choose", answer: { cards: r.options.slice(0, r.min) } } : getLegalActions(catalog, s).find((x) => x.type === "pass") ?? getLegalActions(catalog, s)[0];
+      if (!a) break;
+      sess = act(sess, a);
+    }
+    expect(current(sess).campaign?.played.map((p) => p.serial)).toEqual([137]);
+    expect(canRestartLastExpansion(sess.record)).toBe(true);
+    // Depuis l'état gardé au lancement : identique à l'état d'avant, sans rejouer.
+    const fromSnapshot = beforeLastExpansion(catalog, sess.record, { actions: 0, state: start });
+    expect(fromSnapshot?.record.actions).toEqual([]);
+    expect(current(fromSnapshot!)).toEqual(start);
+    // Sans état gardé (extension lancée avant la v0.67) : on rejoue jusqu'au lancement.
+    const replayed = beforeLastExpansion(catalog, { config: newConfig(), actions: [{ type: "startExpansion", card: fk(137) }] });
+    expect(replayed?.record.actions).toEqual([]);
+    expect(current(replayed!).phase).toBe("playing");
   });
 
   it("la gloire des cartes purgées est cumulée ; Temple of Light compte +10 par case cochée", () => {

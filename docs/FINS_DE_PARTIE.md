@@ -86,6 +86,10 @@ Décisions de règles : `docs/RULES_DECISIONS.md` (2026-10-05, extension Merchan
 
 ## 4. Embranchements : recommencer une extension ?
 
+**Décision du 2026-10-06 (v0.67)** : on peut **recommencer la dernière extension jouée**, et seulement elle (bouton « ↺ Recommencer » sur sa tuile de la page de fin, avec confirmation). Merchants vient d'arriver et peut contenir des bugs. On revient juste avant son lancement : depuis `Kingdom.expansionSnapshot`, l'état gardé au lancement, ou en rejouant l'enregistrement pour une extension lancée avant la v0.67. Le jalon de l'étape tombe avec elle. Une extension plus ancienne ne se recommence pas : ce serait un embranchement.
+
+Analyse d'origine (v0.57) :
+
 Kingdom Legacy est un jeu *legacy* : ce qui est fait est fait. Dans la boîte physique, on ne rejoue pas une mini-extension, et une carte détruite l'est pour toujours. L'appli permet déjà deux formes d'embranchement :
 
 - **Dupliquer** crée un second royaume, qui suit ensuite sa propre histoire. C'est explicite et ça ne touche pas l'original : c'est la bonne façon de « tenter autre chose ».

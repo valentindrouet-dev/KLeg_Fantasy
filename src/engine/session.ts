@@ -84,3 +84,38 @@ export function replay(catalog: Catalog, record: GameRecord): Session {
     return act(next, a);
   }, newSession(catalog, record.config));
 }
+
+// --- Recommencer la dernière extension (demande du 2026-10-06) ---
+
+const startsExpansion = (a: Action): boolean => a.type === "startExpansion" || a.type === "startGrandExpansion";
+
+/** Rang de l'action qui a lancé la dernière extension (mini ou grande), ou -1. */
+export function lastExpansionStart(record: GameRecord): number {
+  for (let i = record.actions.length - 1; i >= 0; i--) {
+    const a = record.actions[i];
+    if (a && startsExpansion(a)) return i;
+  }
+  return -1;
+}
+
+/** État gardé au lancement d'une extension (Kingdom.expansionSnapshot) : `actions` actions avant le lancement. */
+export type ExpansionSnapshot = { actions: number; state: GameState; undoFloor?: number };
+
+/** On peut recommencer la dernière extension jouée, finie ou en cours ; jamais une plus ancienne (pas d'embranchement). */
+export function canRestartLastExpansion(record: GameRecord): boolean {
+  return lastExpansionStart(record) >= 0;
+}
+
+/**
+ * La partie juste avant le lancement de la dernière extension : depuis l'état gardé à son lancement s'il lui correspond
+ * (immédiat, sans rejouer), sinon en rejouant l'enregistrement jusque-là. null s'il n'y a pas d'extension lancée.
+ */
+export function beforeLastExpansion(catalog: Catalog, record: GameRecord, snapshot?: ExpansionSnapshot): Session | null {
+  const i = lastExpansionStart(record);
+  if (i < 0) return null;
+  const actions = record.actions.slice(0, i);
+  if (snapshot && snapshot.actions === i) {
+    return resumeSession(catalog, { config: record.config, actions, ...(snapshot.undoFloor !== undefined ? { undoFloor: snapshot.undoFloor } : {}) }, snapshot.state);
+  }
+  return replay(catalog, { config: record.config, actions });
+}

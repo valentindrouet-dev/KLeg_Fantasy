@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import {
   act,
+  beforeLastExpansion,
   canUndo,
   current,
   newSession,
@@ -47,6 +48,8 @@ type GameStore = {
   addPlayTime: (ms: number) => void;
   /** Reset officiel (avant la carte 23) : le royaume repart des cartes 1 à 10, nouveau mélange. */
   restart: () => void;
+  /** Revenir juste avant le lancement de la dernière extension (demande du 2026-10-06). Renvoie un message d'erreur, ou null. */
+  restartLastExpansion: () => string | null;
   undo: () => void;
   dismissToast: () => void;
 };
@@ -109,10 +112,16 @@ export const useGame = create<GameStore>((set, get) => ({
     if (!session || !kingdom || actions.length === 0) return;
     const next = actions.reduce((s, a) => act(s, a), session);
     const inPlay = current(next).zones.play;
+    // Lancement d'une extension : l'état d'avant est gardé, pour pouvoir la recommencer sans tout rejouer.
+    const starts = actions.findIndex((a) => a.type === "startExpansion" || a.type === "startGrandExpansion");
+    const before = starts < 0 ? null : actions.slice(0, starts).reduce((s, a) => act(s, a), session);
+    const base: Kingdom = before
+      ? { ...kingdom, expansionSnapshot: { actions: before.record.actions.length, state: current(before), ...(before.record.undoFloor !== undefined ? { undoFloor: before.record.undoFloor } : {}) } }
+      : kingdom;
     set({
       flagged: flagged.filter((id) => inPlay.includes(id)),
       session: next,
-      kingdom: persist(session.catalog, kingdom, next),
+      kingdom: persist(session.catalog, base, next),
       engaged: keepEngaged(engaged, current(session), current(next)),
       groups: [...groups, actions.length],
       toast: toast && canUndo(next) ? { id: ++toastSeq, text: toast } : null,
@@ -157,6 +166,20 @@ export const useGame = create<GameStore>((set, get) => ({
     if (!session || !kingdom) return;
     const fresh = newSession(session.catalog, { ...session.record.config, seed: randomSeed() });
     set({ session: fresh, kingdom: persist(session.catalog, kingdom, fresh), engaged: [], groups: [], toast: null });
+  },
+
+  restartLastExpansion: () => {
+    const { session, kingdom } = get();
+    if (!session || !kingdom) return "Aucune partie ouverte";
+    let next: Session | null;
+    try {
+      next = beforeLastExpansion(session.catalog, session.record, kingdom.expansionSnapshot);
+    } catch {
+      return "Cette partie, commencée avec une version plus ancienne, ne peut pas être rejouée jusqu'au lancement de l'extension.";
+    }
+    if (!next) return "Aucune extension à recommencer";
+    set({ session: next, kingdom: persist(session.catalog, kingdom, next), engaged: [], flagged: [], groups: [], toast: null });
+    return null;
   },
 
   undo: () => {

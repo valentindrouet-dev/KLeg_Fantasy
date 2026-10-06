@@ -1,4 +1,4 @@
-import { campaignStage, campaignSteps, computeScore, type CampaignStage, type Catalog, type GameRecord, type GameState } from "../engine";
+import { campaignStage, campaignSteps, computeScore, type CampaignStage, type Catalog, type ExpansionSnapshot, type GameRecord, type GameState } from "../engine";
 
 // Royaumes (spec 6.1) : une partie indépendante, avec sa propre boîte de cartes.
 // Le royaume stocke l'enregistrement (config + actions) et le dernier état, pour reprendre sans rejouer.
@@ -35,6 +35,11 @@ export type Kingdom = {
    * moment, pour le tableau des scores (demande du 2026-10-05). Absent des étapes finies avant la v0.57.
    */
   milestones?: Milestone[];
+  /**
+   * État juste avant le lancement de la dernière extension (demande du 2026-10-06) : « Recommencer la dernière
+   * extension » y revient sans rejouer toute la partie. Absent des extensions lancées avant la v0.67 (on rejoue alors).
+   */
+  expansionSnapshot?: ExpansionSnapshot;
 };
 
 export type Milestone = { step: string; at: number; playMs: number };
