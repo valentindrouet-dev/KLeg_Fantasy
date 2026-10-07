@@ -3,6 +3,10 @@
 Chaque mise à jour publiée change de version (`package.json`, affichée dans l'appli en bas de l'écran « Mes royaumes »
 et dans la barre de la partie). Convention : `0.5.0` s'affiche **v0.05** ; un correctif `0.5.1` s'affiche **v0.05.1**.
 
+## v0.67.1 (7 octobre 2026)
+
+- La gloire écrite dans une médaille est maintenant visible. Grand Guild Hall (« write that number in 1 {fame} ») et Vassal States (« 20 ») la comptaient bien dans le score, mais le nombre n'était écrit nulle part sur la carte. Il est écrit au feutre dans sa médaille, partout : plateau, défausse, inspection. Les nombres déjà écrits dans les royaumes existants apparaissent aussi.
+
 ## v0.67 (6 octobre 2026)
 
 - **Recommencer la dernière extension** : sur la page de fin, la tuile de la dernière extension jouée a un bouton « ↺ Recommencer ». Après confirmation, tout ce qui a été joué depuis son lancement est effacé, purge comprise : on revient juste avant de la lancer, avec le royaume tel qu'il était. Seule la dernière peut l'être, pour ne pas créer d'embranchement.

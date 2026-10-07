@@ -1560,6 +1560,24 @@
   transform: translateY(-50%) rotate(-47deg);
 }
 
+/* Gloire écrite dans une médaille (Grand Guild Hall, Vassal States) : chiffre au feutre, centré sur la case */
+.written {
+  position: absolute;
+  z-index: 3;
+  color: rgb(20 16 12 / 0.92);
+  font-family: "Segoe Print", "Bradley Hand", "Comic Sans MS", cursive;
+  font-size: 7.5cqw;
+  font-weight: 700;
+  line-height: 1;
+  text-shadow: 0 0 2px rgb(255 248 230 / 0.9);
+  transform: translate(-50%, -50%) rotate(-6deg);
+  pointer-events: none;
+}
+
+.written.rotated {
+  transform: translate(-50%, -50%) rotate(174deg);
+}
+
 /* Prochaine case d'une piste à ordre imposé : léger halo */
 .boxNext {
   border-radius: 12%;
