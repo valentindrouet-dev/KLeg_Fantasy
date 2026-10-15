@@ -63,7 +63,9 @@ export function usePress(onTap: (p: TapPoint) => void, onLongPress?: (p: TapPoin
       fired.current = false;
       start.current = { x: e.clientX, y: e.clientY };
       el.current = e.currentTarget as HTMLElement;
-      if (onSwipe) {
+      // Carte dans une rangée qui défile à l'horizontale (permanentes) : le glissé fait défiler, ce n'est pas un geste.
+      const scrolls = typeof getComputedStyle === "function" && getComputedStyle(el.current).touchAction.includes("pan-x");
+      if (onSwipe && !scrolls) {
         swipe.current = { x: e.clientX, y: e.clientY, width: el.current.getBoundingClientRect().width };
         // Le doigt peut sortir de la carte pendant le glissé : la carte garde le pointeur jusqu'au lâcher.
         try {

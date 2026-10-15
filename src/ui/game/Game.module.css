@@ -51,6 +51,10 @@
   gap: var(--space-2);
   padding: var(--space-2) var(--space-3);
   overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-x;
   border-bottom: 1px solid var(--border);
 }
 
@@ -1779,6 +1783,13 @@
 .card.swipeable,
 .play .card.swipeable {
   touch-action: pan-y;
+}
+
+/* Rangée des permanentes : le glissé horizontal fait défiler la rangée (demande du 2026-10-15). Rayer une permanente
+   se fait dans sa vue agrandie (appui long). */
+.permanents .card,
+.permanents .card.swipeable {
+  touch-action: pan-x;
 }
 
 /* Deux demi-cartes « stays in play » l'une sur l'autre, centrées sur la hauteur d'une carte (ennemi à côté) */
