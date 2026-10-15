@@ -1,7 +1,7 @@
 import type { Orientation, ResourceId, StageId } from "../data/schema";
 import { orientationKey } from "../data/schema";
 import { pushFront } from "./flow";
-import { coinMalus, payPool } from "./passives";
+import { coinMalus, gainWithRules, payPool } from "./passives";
 import { canAddResourceSticker, productionCount } from "./production";
 import { cardFame } from "./score";
 import {
@@ -10,7 +10,6 @@ import {
   cardName,
   destroy,
   discard,
-  gain,
   hasKeyword,
   instance,
   isFriendly,
@@ -36,7 +35,7 @@ export function effectGain(d: Draft, icons: readonly ResourceId[]): void {
     if (j < 0) break;
     out = [...out.slice(0, j), ...out.slice(j + 1)];
   }
-  gain(d.s, out);
+  gainWithRules(d.catalog, d.s, out);
 }
 
 export const canPayD = (d: Draft, cost: readonly ResourceId[]): boolean => canPay(d.s, cost, payPool(d.catalog, d.s));

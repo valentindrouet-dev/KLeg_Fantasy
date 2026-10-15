@@ -32,6 +32,8 @@ import {
   type GameState,
   type InstanceId,
   expansionName,
+  expansionRounds,
+  grandName,
 } from "../../engine";
 import type { Orientation } from "../../data/schema";
 import { APP_VERSION } from "../../version";
@@ -432,14 +434,14 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
   // carte est montrée en grand ; on la touche pour la fermer, le plateau reste utilisable.
   // Seulement une fois la manche commencée : pas pendant la purge (manche 0/4).
   const expansionCard = state?.campaign?.current ?? null;
-  const expansionRounds = state?.campaign?.rounds ?? 0;
+  const roundsPlayed = state?.campaign?.rounds ?? 0;
   useEffect(() => {
-    if (round === null || !expansionCard || expansionRounds < 1) {
+    if (round === null || !expansionCard || roundsPlayed < 1) {
       setExpansionShown(null);
       return;
     }
     setExpansionShown((x) => (x?.round === round ? x : { round, card: expansionCard }));
-  }, [round, expansionCard, expansionRounds]);
+  }, [round, expansionCard, roundsPlayed]);
 
   useEffect(() => {
     if (!toast) return;
@@ -1133,7 +1135,8 @@ export function GameScreen({ catalog, kingdomId }: { catalog: Catalog; kingdomId
             aria-label="Étape de l'extension jouée cette manche (toucher pour fermer)"
           >
             <span className={styles.expansionStageTitle}>
-              {state.campaign?.grand ?? expansionName({ catalog, s: state }, expansionShown.card)} · manche {state.campaign?.rounds ?? 1}/4
+              {state.campaign?.grand !== undefined ? grandName(state.campaign.grand) : expansionName({ catalog, s: state }, expansionShown.card)} · manche {state.campaign?.rounds ?? 1}/
+              {expansionRounds(state)}
             </span>
             <span className={styles.expansionStageName}>{activeStage(catalog, state, expansionShown.card)?.name.replace(/ \(expansion\)$/, "")}</span>
             <CardView

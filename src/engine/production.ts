@@ -11,11 +11,16 @@ export function productionGroups(catalog: Catalog, s: GameState, id: InstanceId)
   const stage = activeStage(catalog, s, id);
   if (!stage) return [];
   const c = instance(s, id);
-  // Icônes rayées (Manor, Attack…) : clé `${stage}/${groupe}/${indice}`, retirées de chaque option du groupe.
+  // Icônes rayées (Manor, Attack…) : clé `${stage}/${groupe}/${indice}`, retirées de chaque option du groupe ; une icône
+  // précise (« cross out 1 {coin} production ») : clé `${stage}/${groupe}/o${option}i${icône}`.
   const printed = stage.production.flatMap((g): ProductionGroup[] => {
-    const crossed = c.crossedOutProduction.filter((k) => k.startsWith(`${stage.id}/${g.id}/`)).length;
-    if (crossed === 0) return [g];
-    const options = g.options.map((o) => o.slice(0, Math.max(0, o.length - crossed))).filter((o) => o.length > 0);
+    const crossed = truncatedCount(c.crossedOutProduction, stage.id, g.id);
+    const exact = exactCrossings(c.crossedOutProduction, stage.id, g.id);
+    if (crossed === 0 && exact.length === 0) return [g];
+    const options = g.options
+      .map((o, oi) => o.filter((_, i) => !exact.some((x) => x.option === oi && x.icon === i)))
+      .map((o) => o.slice(0, Math.max(0, o.length - crossed)))
+      .filter((o) => o.length > 0);
     return options.length ? [{ id: g.id, options }] : [];
   });
   const stickers = c.stickers
@@ -62,6 +67,19 @@ function withoutCoins(groups: ProductionGroup[], n: number): ProductionGroup[] {
   return out;
 }
 
+/** Rayures « en fin de groupe » (clé à indice simple) d'un groupe de production. */
+export function truncatedCount(keys: readonly string[], stage: number, group: string): number {
+  return keys.filter((k) => new RegExp(`^${stage}/${group}/\\d+$`).test(k)).length;
+}
+
+/** Icônes rayées précisément (clé `…/o${option}i${icône}`) d'un groupe de production. */
+export function exactCrossings(keys: readonly string[], stage: number, group: string): { option: number; icon: number }[] {
+  return keys.flatMap((k) => {
+    const m = new RegExp(`^${stage}/${group}/o(\\d+)i(\\d+)$`).exec(k);
+    return m ? [{ option: Number(m[1]), icon: Number(m[2]) }] : [];
+  });
+}
+
 /** Raye une icône de production du stage actif (« cross out 1 production ») ; false s'il n'y en a plus. */
 export function crossOutProduction(catalog: Catalog, s: GameState, id: InstanceId, groupId?: string): boolean {
   const stage = activeStage(catalog, s, id);
@@ -69,14 +87,41 @@ export function crossOutProduction(catalog: Catalog, s: GameState, id: InstanceI
   const c = instance(s, id);
   const groups = stage.production.filter((g) => groupId === undefined || g.id === groupId);
   for (const g of groups) {
-    const crossed = c.crossedOutProduction.filter((k) => k.startsWith(`${stage.id}/${g.id}/`)).length;
+    const crossed = truncatedCount(c.crossedOutProduction, stage.id, g.id);
+    const exact = exactCrossings(c.crossedOutProduction, stage.id, g.id).length;
     const size = Math.max(...g.options.map((o) => o.length));
-    if (crossed < size) {
+    if (crossed + exact < size) {
       c.crossedOutProduction.push(`${stage.id}/${g.id}/${crossed}`);
       return true;
     }
   }
   return false;
+}
+
+/** Icônes imprimées d'une ressource encore visibles sur le stage actif (pour en rayer une précisément). */
+export function crossableIcons(catalog: Catalog, s: GameState, id: InstanceId, resource?: ResourceId): { key: string; resource: ResourceId }[] {
+  const stage = activeStage(catalog, s, id);
+  if (!stage) return [];
+  const c = instance(s, id);
+  return stage.production.flatMap((g) => {
+    const crossed = truncatedCount(c.crossedOutProduction, stage.id, g.id);
+    const exact = exactCrossings(c.crossedOutProduction, stage.id, g.id);
+    return g.options.flatMap((o, oi) => {
+      const visible = o.map((r, i) => ({ r, i })).filter(({ i }) => !exact.some((x) => x.option === oi && x.icon === i));
+      return visible
+        .slice(0, Math.max(0, visible.length - crossed))
+        .filter(({ r }) => resource === undefined || r === resource)
+        .map(({ r, i }) => ({ key: `${stage.id}/${g.id}/o${oi}i${i}`, resource: r }));
+    });
+  });
+}
+
+/** Raye précisément une icône d'une ressource (la dernière visible de cette ressource) ; false s'il n'y en a pas. */
+export function crossOutIcon(catalog: Catalog, s: GameState, id: InstanceId, resource: ResourceId): boolean {
+  const icon = crossableIcons(catalog, s, id, resource).at(-1);
+  if (!icon) return false;
+  instance(s, id).crossedOutProduction.push(icon.key);
+  return true;
 }
 
 /** Nombre de ressources produites (pour un « / », l'option la plus fournie). */

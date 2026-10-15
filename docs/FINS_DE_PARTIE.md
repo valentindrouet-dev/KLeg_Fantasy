@@ -9,7 +9,7 @@
 | **Royaume** | Une boîte de jeu virtuelle (140 cartes). C'est aussi la **campagne** : tout ce qui suit se passe dans le même royaume. |
 | **Partie de base** | Cartes 1 à 70, de la première manche jusqu'à la fin de la manche lancée par la carte 68. |
 | **Mini-extension** | Cartes 136 (Uprising…), 137 (The Water Mill…), 138 (Resistance…). Jouables après la partie de base, chacune une fois. |
-| **Grande extension** | Nouvelle boîte de cartes ajoutée au royaume. **Merchants** (cartes 00 à 25) est jouable depuis la v0.63 ; les autres attendent leurs cartes. |
+| **Grande extension** | Nouvelle boîte de cartes ajoutée au royaume. **Merchants** (cartes 00 à 25) est jouable depuis la v0.63, **Ridding the Woods** (00 à 29) depuis la v0.68. |
 | **Chemin de score** | Le score de la partie de base, puis le score après chaque mini-extension (sticker 13k dans le jeu). |
 
 ## 2. Ce qui existe
@@ -40,6 +40,16 @@
 5. Les cartes de Merchants restées dans la boîte et citées par une carte découverte y restent (découvrables par leur effet seulement) ; les autres sont détruites. Merchants ne se joue qu'une fois par royaume.
 
 Décisions de règles : `docs/RULES_DECISIONS.md` (2026-10-05, extension Merchants).
+
+### Grande extension : Ridding the Woods (v0.68)
+
+1. « Jouer » sur sa tuile (le dos de ses cartes, le chasseur en vert) ajoute ses 30 cartes à la boîte du royaume, sans rien retirer, puis rassemble et mélange le deck.
+2. Le parchemin 00 est lu : purge 8 « focus 2{wood} » (tant que 2 cartes qui produisent du bois ne sont pas choisies, les paquets qui en ont ne proposent qu'elles), puis 2 cartes permanentes.
+3. 5 manches aux règles normales, mais au début de chacune, les 5 cartes suivantes de l'extension sont découvertes (01-05, puis 06-10…). Pas de carte guide : la bannière de manche dit « Ridding the Woods, manche n/5 ».
+4. Après la 5e manche, le score rejoint le chemin de score (sticker 13c). Les cartes 26 à 29 restent dans la boîte (découvrables par effet) ; A Certain Lady perd son effet.
+5. Prisonniers : à chaque purge suivante (mini-extension, autre grande extension), jusqu'à 2 Prisonniers du royaume peuvent s'y ajouter.
+
+Décisions de règles : `docs/RULES_DECISIONS.md` (2026-10-15, extension Ridding the Woods).
 
 ### Un royaume n'est jamais clôturé (v0.57)
 
@@ -82,7 +92,7 @@ Décisions de règles : `docs/RULES_DECISIONS.md` (2026-10-05, extension Merchan
 3. ~~Statut sur l'accueil~~ : fait en v0.57.
 4. ~~Date et durée de chaque étape~~ : fait en v0.57 (`Kingdom.milestones`). Les étapes finies avant n'ont ni date ni durée : elles ne sont pas inventées.
 5. **Points de sauvegarde nommés** (prévus par la spec 6.1). Ils ne sont pas faits ; voir la section 4 avant de les ajouter.
-6. **Grandes extensions.** Merchants est jouable (v0.63). Les autres (Ridding the Woods, Feudal Kingdom Adventures…) attendent leurs cartes.
+6. **Grandes extensions.** Merchants (v0.63) et Ridding the Woods (v0.68) sont jouables. Feudal Kingdom Adventures est importée (cartes, images, traductions) : ses règles restent à écrire.
 
 ## 4. Embranchements : recommencer une extension ?
 

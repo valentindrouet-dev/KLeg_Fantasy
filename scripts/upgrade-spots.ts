@@ -19,6 +19,8 @@ const expansion = expansionArg >= 0 ? (process.argv[expansionArg + 1] ?? "Feudal
 const onlyArg = process.argv.indexOf("--only");
 const only = onlyArg >= 0 ? new Set((process.argv[onlyArg + 1] ?? "").split(",").map(Number)) : null;
 const withSheets = process.argv.includes("--sheet");
+/** Boîtes « ↓ » de 4 rangées (Forest Outpost de Ridding the Woods) : pas dans Feudal Kingdom, dont les mesures ne bougent pas. */
+const TALL = expansion !== "FeudalKingdom";
 
 async function load(file: string, rotate: boolean): Promise<{ raw: Raw; png: Buffer }> {
   const png = await (rotate ? sharp(file).rotate(180) : sharp(file)).png().toBuffer();
@@ -106,10 +108,17 @@ function findArrow(img: Raw, arrow: "flip" | "rotate"): Rect | null {
 function templateIcons(img: Raw, n: number, arrow: "flip" | "rotate"): Rect[] {
   const arrowRect = findArrow(img, arrow);
   let best: { rects: Rect[]; score: number } | null = null;
-  // Disposition imprimée : « → » une colonne jusqu'à 3 icônes, puis deux ; « ↓ » une rangée jusqu'à 3, puis 2 ou 3
+  // Disposition imprimée : « → » une colonne jusqu'à 3 icônes, puis deux, trois à partir de 10 (Sheriff, Powerful
+  // Prince de Ridding the Woods) ; « ↓ » une rangée jusqu'à 3, puis 2 ou 3
   // rangées (6 icônes : 2 × 3 ou 3 × 2 selon la carte).
   const shapes: number[] =
-    arrow === "flip" ? [n <= 3 ? 1 : 2] : n <= 3 ? [n] : [2, 3, 4].filter((c) => c < n && Math.ceil(n / c) <= 3 && Math.ceil(n / c) >= 2);
+    arrow === "flip"
+      ? n >= 10
+        ? [3]
+        : [n <= 3 ? 1 : 2]
+      : n <= 3
+        ? [n]
+        : [2, 3, 4].filter((c) => c < n && Math.ceil(n / c) <= (TALL ? 4 : 3) && Math.ceil(n / c) >= 2);
   for (const cols of shapes) {
   const rows = Math.ceil(n / cols);
   for (const align of ["left", "right"] as const) {
@@ -125,8 +134,8 @@ function templateIcons(img: Raw, n: number, arrow: "flip" | "rotate"): Rect[] {
       // Calage sur la flèche : « → » au-dessus des icônes, centrée ; « ↓ » à droite des icônes, centrée en hauteur.
     const [ax, ay] = arrowRect
       ? arrow === "flip"
-        ? [arrowRect.x + arrowRect.w / 2 - width / 2, arrowRect.y + arrowRect.h + 4]
-        : [arrowRect.x - 3 - width, arrowRect.y + arrowRect.h / 2 - height / 2]
+        ? [cols === 3 ? arrowRect.x + arrowRect.w - 22 - width : arrowRect.x + arrowRect.w / 2 - width / 2, arrowRect.y + arrowRect.h + 4]
+        : [arrowRect.x - 3 - width, rows >= 4 ? arrowRect.y + arrowRect.h - height : arrowRect.y + arrowRect.h / 2 - height / 2]
       : arrow === "flip"
         ? [326 - width / 2, 44]
         : [330 - width, 250 - height];

@@ -1,6 +1,7 @@
 import { z } from "zod";
 import fkJson from "../../data/textLines/FeudalKingdom.json";
 import merchantsJson from "../../data/textLines/Merchants.json";
+import riddingJson from "../../data/textLines/RiddingTheWoods.json";
 import type { StageId } from "./schema";
 
 // Lignes de texte des effets, mesurées sur les images (scripts/text-lines.ts) : [haut, bas, gauche, droite] en
@@ -13,6 +14,7 @@ const LinesFileSchema = z.record(z.string(), z.array(z.tuple([z.number(), z.numb
 const files: Record<string, Record<string, TextLine[]>> = {
   FeudalKingdom: LinesFileSchema.parse(fkJson),
   Merchants: LinesFileSchema.parse(merchantsJson),
+  RiddingTheWoods: LinesFileSchema.parse(riddingJson),
 };
 
 /** Lignes d'un effet, ou undefined si elles n'ont pas été mesurées. */

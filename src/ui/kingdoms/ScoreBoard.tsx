@@ -19,7 +19,7 @@ export function kingdomStatus(catalog: Catalog, k: Kingdom): { label: string; st
     case "base":
       return { label: "En cours", stage, play: "Continuer" };
     case "expansion":
-      return { label: `${current?.name ?? "Extension"} · manche ${current?.round ?? 1}/4`, stage, play: "Continuer" };
+      return { label: `${current?.name ?? "Extension"} · manche ${current?.round ?? 1}/${current?.rounds ?? 4}`, stage, play: "Continuer" };
     case "between":
       return { label: "Extension à lancer", stage, play: "Extensions" };
     case "waiting":
@@ -32,7 +32,7 @@ function statusText(step: CampaignStep, baseDone: boolean): string {
     case "done":
       return "Terminée";
     case "current":
-      return step.kind === "base" ? `En cours · manche ${step.round ?? 1}` : `En cours · manche ${step.round ?? 1}/4`;
+      return step.kind === "base" ? `En cours · manche ${step.round ?? 1}` : `En cours · manche ${step.round ?? 1}/${step.rounds ?? 4}`;
     case "available":
       return "À jouer";
     case "upcoming":

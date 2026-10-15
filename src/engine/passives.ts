@@ -1,5 +1,5 @@
 import type { ResourceId } from "../data/schema";
-import { activeStage, countPersons, hasKeyword, instance, isFriendly, type Pool } from "./state";
+import { activeStage, countPersons, gain, hasKeyword, instance, isFriendly, log, type Pool } from "./state";
 import type { Catalog, GameState, InstanceId } from "./types";
 
 // Effets passifs qui modifient les règles tant que leur carte est en jeu (ou permanente) : bonus de production,
@@ -23,6 +23,11 @@ const T = {
   // Merchants 19 : Brigands (leur propre effet {time}, les vaincre, reste permis), puis Brigand Boss.
   brigands: "You cannot play cards, upgrade, or use other {time} effects.",
   brigandBoss: "You cannot play cards, upgrade, or use {time} effects.",
+  // Ridding the Woods : Robbin' Leader, Huge Robber, camps de brigands, Sobbing.
+  onlySwords: "You cannot gain other resources than {sword}.",
+  hugeRobber: "You cannot advance.",
+  robberCamp: "You may not use {sword} except to upgrade cards.",
+  sobbing: "When advancing, you play 2 additional cards.",
 } as const;
 
 /** Effets actifs (non rayés) du stage visible d'une carte. */
@@ -74,7 +79,7 @@ export function restrictions(catalog: Catalog, s: GameState): Restrictions {
 export function restrictionSources(catalog: Catalog, s: GameState): { advance: InstanceId[]; upgrade: InstanceId[]; time: InstanceId[]; play: InstanceId[] } {
   const withText = (text: string) => s.zones.play.filter((id) => activeTexts(catalog, s, id).includes(text));
   const dark = withText(T.darkRestriction);
-  const rain = withText(T.rainNoAdvance);
+  const rain = [...withText(T.rainNoAdvance), ...withText(T.hugeRobber)];
   const brigands = [...withText(T.brigands), ...withText(T.brigandBoss)];
   return { advance: [...dark, ...rain, ...brigands], upgrade: [...dark, ...brigands], time: [...dark, ...brigands], play: brigands };
 }
@@ -91,7 +96,28 @@ export const playsFromDiscard = (text: string): boolean => /\bplay\b[^.]*from (?
 export const canPeekSecond = (catalog: Catalog, s: GameState): boolean => countSources(catalog, s, "You may look at the top 2 cards of your deck.", ["play"]) > 0;
 
 /** Cartes jouées en plus quand on avance (Blood Curse). */
-export const extraAdvance = (catalog: Catalog, s: GameState): number => 2 * countSources(catalog, s, T.bloodCurse, ["play"]);
+export const extraAdvance = (catalog: Catalog, s: GameState): number => 2 * (countSources(catalog, s, T.bloodCurse, ["play"]) + countSources(catalog, s, T.sobbing, ["play"]));
+
+/** Robber Camp en jeu : les {sword} ne servent qu'à améliorer des cartes (pas aux effets). */
+export const swordsOnlyForUpgrades = (catalog: Catalog, s: GameState): InstanceId[] => s.zones.play.filter((id) => activeTexts(catalog, s, id).includes(T.robberCamp));
+
+/** Robbin' Leader en jeu : seules les {sword} se gagnent, les autres ressources sont perdues. */
+export const onlySwordsGained = (catalog: Catalog, s: GameState): boolean => countSources(catalog, s, T.onlySwords, ["play"]) > 0;
+
+/** Gain de ressources (production, effets) : Robbin' Leader ne laisse gagner que des {sword}. */
+export function gainWithRules(catalog: Catalog, s: GameState, icons: readonly ResourceId[]): void {
+  if (!onlySwordsGained(catalog, s)) {
+    gain(s, icons);
+    return;
+  }
+  const lost = icons.filter((r) => r !== "sword");
+  for (const r of lost) s.lostResources[r] = (s.lostResources[r] ?? 0) + 1;
+  if (lost.length) log(s, `${lost.map((r) => `{${r}}`).join("")} perdue(s) : seules les {sword} se gagnent (Robbin' Leader)`);
+  gain(
+    s,
+    icons.filter((r) => r === "sword"),
+  );
+}
 
 /** Surplus (mini-extension 137) : les terres peuvent produire {tradeGood} à la place de {coin}. */
 export const surplusActive = (catalog: Catalog, s: GameState): boolean => countSources(catalog, s, T.surplus, ["permanent"]) > 0;

@@ -1,5 +1,5 @@
 import { cardId, type Side } from "../data/schema";
-import { expansionEnd, expansionRoundStart, inExpansion } from "./campaign";
+import { expansionEnd, expansionRoundStart, expansionRounds, GRAND_EXPANSIONS, grandName, inExpansion } from "./campaign";
 import { askOption, nextQuestion } from "./choice";
 import { effectKey } from "./effects/registry";
 import { isEffectExhausted } from "./exhausted";
@@ -83,13 +83,30 @@ export function refreshPendingPrompt(catalog: Catalog, s: GameState): GameState 
   return { ...s, pending: { ...p, request: { ...p.request, prompt: req.prompt } } };
 }
 
-/** Exécute les étapes en attente tant qu'aucune décision n'est requise. */
+/**
+ * Exécute les étapes en attente tant qu'aucune décision n'est requise. Quand il n'y a plus rien à faire, les conditions
+ * d'état des cartes en jeu (« If there are 2 enemies in play, {flip} ») sont vérifiées, et appliquées s'il le faut.
+ */
 export function runQueue(d: Draft): void {
-  while (!d.s.pending && d.s.phase === "playing") {
-    const step = d.s.queue.shift();
-    if (!step) return;
-    runStep(d, step);
+  for (let checks = 0; checks < 50; checks++) {
+    while (!d.s.pending && d.s.phase === "playing") {
+      const step = d.s.queue.shift();
+      if (!step) break;
+      runStep(d, step);
+    }
+    if (d.s.pending || d.s.phase !== "playing" || d.s.queue.length > 0 || !queueChecks(d)) return;
   }
+}
+
+/** Met en file les conditions d'état vérifiées maintenant ; renvoie false s'il n'y en a aucune. */
+function queueChecks(d: Draft): boolean {
+  const steps = [...d.s.zones.play, ...d.s.zones.permanent].flatMap((card) =>
+    triggersOf(d, card, "check")
+      .filter((script) => d.catalog.triggers.get(script)?.when?.(d, card, {}) ?? false)
+      .map((script): FlowStep => ({ kind: "trigger", card, script, ctx: {} })),
+  );
+  pushFront(d, ...steps);
+  return steps.length > 0;
 }
 
 /** Ajoute des étapes en tête de file, dans l'ordre donné. */
@@ -121,6 +138,9 @@ function runStep(d: Draft, step: FlowStep): void {
       return reviewDiscoveries(d, step.since);
     case "expansionEnd":
       return expansionEnd(d);
+    case "roundStart":
+      // « Start of Round » des cartes permanentes, après les découvertes de la manche (carte des aventures).
+      return queueTriggers(d, "roundStart", [...d.s.zones.permanent]);
   }
 }
 
@@ -324,8 +344,19 @@ function nextRound(d: Draft): void {
     if (expansionRoundStart(d)) return;
     d.s.round += 1;
     d.s.turn = 0;
-    log(d.s, `Manche ${d.s.round} (${d.s.campaign?.grand ?? "mini-extension"}, manche ${d.s.campaign?.rounds ?? 0}/4)`);
-    pushFront(d, { kind: "shuffle" }, { kind: "startTurn" });
+    const grand = d.s.campaign?.grand;
+    log(d.s, `Manche ${d.s.round} (${grand !== undefined ? grandName(grand) : "mini-extension"}, manche ${d.s.campaign?.rounds ?? 0}/${expansionRounds(d.s)})`);
+    // Ridding the Woods : « At the start of each round, discover 5 cards from this expansion (instead of 2). »
+    const rules = grand !== undefined ? GRAND_EXPANSIONS[grand] : undefined;
+    const found = rules?.perRound && grand !== undefined ? nextOfExpansion(d, grand, rules.perRound, rules.upTo ?? Infinity) : [];
+    pushFront(
+      d,
+      ...found.map((card): FlowStep => ({ kind: "discover", card })),
+      ...(found.length ? [{ kind: "reviewDiscoveries", since: d.s.discoveries.length } satisfies FlowStep] : []),
+      { kind: "roundStart" },
+      { kind: "shuffle" },
+      { kind: "startTurn" },
+    );
     queueTriggers(d, "betweenRounds", [...d.s.zones.permanent]);
     return;
   }
@@ -339,7 +370,7 @@ function nextRound(d: Draft): void {
   d.s.round += 1;
   d.s.turn = 0;
   log(d.s, `Manche ${d.s.round}`);
-  pushFront(d, { kind: "roundDiscovery" }, { kind: "reviewDiscoveries", since: d.s.discoveries.length }, { kind: "shuffle" }, { kind: "startTurn" });
+  pushFront(d, { kind: "roundDiscovery" }, { kind: "reviewDiscoveries", since: d.s.discoveries.length }, { kind: "roundStart" }, { kind: "shuffle" }, { kind: "startTurn" });
   queueTriggers(d, "betweenRounds", [...d.s.zones.permanent]);
 }
 
@@ -390,6 +421,17 @@ export function startsInPlay(d: Draft, id: InstanceId): boolean {
 export function nextInBox(d: Draft, n: number): InstanceId[] {
   return [...d.s.zones.box]
     .filter((id) => instance(d.s, id).serial >= 1 && template(d.catalog, instance(d.s, id).templateId).expansion === d.s.config.expansion)
+    .sort((a, b) => instance(d.s, a).serial - instance(d.s, b).serial)
+    .slice(0, n);
+}
+
+/** Les n prochaines cartes d'une grande extension dans la boîte, jusqu'au numéro `upTo` (les suivantes se découvrent par effet). */
+function nextOfExpansion(d: Draft, expansion: string, n: number, upTo: number): InstanceId[] {
+  return d.s.zones.box
+    .filter((id) => {
+      const c = instance(d.s, id);
+      return c.serial >= 1 && c.serial <= upTo && template(d.catalog, c.templateId).expansion === expansion;
+    })
     .sort((a, b) => instance(d.s, a).serial - instance(d.s, b).serial)
     .slice(0, n);
 }

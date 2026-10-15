@@ -1,6 +1,6 @@
 import type { CardTemplate, Checkbox, ResourceId, StageId } from "../../data/schema";
 import { askBox, askCards, askCardsOrNone, askOption, askPersons, askResources, boxOf, cardsOf, optionOf, resourcesOf } from "../choice";
-import { boxCardsBySerial, discardFromDeck, discoverNormally, discoverSerials, offerDiscovery, playCard, staysInPlay } from "../flow";
+import { boxCardsBySerial, discardFromDeck, discoverNormally, discoverSerials, offerDiscovery, playCard, queueTriggers, staysInPlay } from "../flow";
 import {
   addResourceStickerOf,
   addSticker,
@@ -40,10 +40,10 @@ import {
   undiscover,
   unmarkedBoxes,
 } from "../ops";
-import { restrictions } from "../passives";
+import { gainWithRules, restrictions } from "../passives";
 import { canAddResourceSticker, crossOutProduction, producedIcons, productionCount, productionGroups } from "../production";
 import { shuffle } from "../rng";
-import { activeStage, cardName, countPersons, gain, instance, log, moveTo, personWeight, template } from "../state";
+import { activeStage, cardName, countPersons, instance, log, moveTo, personWeight, template } from "../state";
 import type { Answer, ChoiceRequest, Draft, EffectImpl, EffectParams, InstanceId, TriggerCtx, TriggerImpl } from "../types";
 import { cardCostOptions, upgradeCost, upgradeOptions } from "../upgrade";
 import { upgradeCard } from "../actions";
@@ -51,6 +51,7 @@ import { NO_PARAMS, effectKey, withExpansion } from "./registry";
 import { FORTRESS_TEXT } from "./substitutes";
 import { EXPANSION_EFFECTS, EXPANSION_TRIGGERS } from "./expansions";
 import { MERCHANTS_EFFECTS, MERCHANTS_TRIGGERS, merchantsPattern } from "./merchants";
+import { RIDDING_EFFECTS, RIDDING_TRIGGERS, riddingPattern, robbinDefeated } from "./ridding";
 
 // Effets des cartes de Feudal Kingdom (cartes 11 à 135), reconnus à leur texte imprimé exact : toutes les copies
 // d'une carte en profitent. Les questions au joueur passent par `ask` (une à la fois, avant tout paiement), puis
@@ -101,30 +102,38 @@ const anyResources = (n: number) => (d: Draft) => (n > 0 ? askResources(`Choisis
 /** Personnes en jeu (autres que la carte), Healing Potion comprise. */
 export const persons = (d: Draft, self: InstanceId) => discardablePersons(d, self);
 
-/** Défaite d'un ennemi selon sa fiche (spec 4.6) : détruit ou retourné, plus son bonus. */
+/**
+ * Défaite d'un ennemi selon sa fiche (spec 4.6) : détruit ou retourné, plus son bonus. Piste de défaite (« … mark 1
+ * {mark} … When complete: … ») : ce qui arrive quand elle est complète. Puis les cartes en jeu qui guettent les
+ * défaites (Unsafe Forest : « When you defeat an enemy, … »).
+ */
 export function defeat(d: Draft, enemy: InstanceId, gainAny: ResourceId[]): void {
   const stage = activeStage(d.catalog, d.s, enemy);
   const spec = stage?.defeat;
   if (!stage || !spec) return;
   log(d.s, `${cardName(d.catalog, d.s, enemy)} est vaincu`);
   const text = spec.text ?? "";
-  if (spec.kind === "turn") turnCard(d, enemy, "flip");
+  const watchers = d.s.zones.play.filter((id) => id !== enemy);
+  if (spec.kind === "checkbox" && /If you have A Certain Lady/.test(text)) robbinDefeated(d, enemy);
+  else if (spec.kind === "turn" || (spec.kind === "checkbox" && /defeat \(\{flip\}/.test(text))) turnCard(d, enemy, "flip");
   else destroyCards(d, [enemy]);
   if (gainAny.length) effectGain(d, gainAny);
-  const lagoon = /discover [^(]+\((\d+)\)/.exec(text);
+  const lagoon = /discover [^(]+\((\d+)\)/.exec(text) ?? /discover (\d+)\)/.exec(text);
   if (lagoon) discoverSerials(d, [Number(lagoon[1])]);
+  queueTriggers(d, "enemyDefeated", watchers, () => ({ cards: [enemy] }));
 }
 
 /** Nombre de ressources « any N » d'une défaite (« and gain any 2 resources »). */
 const defeatGain = (d: Draft, enemy: InstanceId): number => Number(/gain any (\d+)/.exec(activeStage(d.catalog, d.s, enemy)?.defeat?.text ?? "")?.[1] ?? 0);
 
 /** Applique le texte d'une case qu'on vient de cocher (« Discover Vassal State (135) and {flip} », « {flip} »). */
-function applyBoxText(d: Draft, card: InstanceId, text: string | undefined): void {
+export function applyBoxText(d: Draft, card: InstanceId, text: string | undefined): void {
   if (!text) return;
   const disc = /Discover [^(]+\((\d+)\)/.exec(text);
   if (disc) discoverSerials(d, [Number(disc[1])]);
   if (text.includes("{flip}")) turnCard(d, card, "flip");
   else if (text.includes("{rotate}")) turnCard(d, card, "rotate");
+  else if (text.includes("{destroy}") && canBeDestroyed(d, card)) destroyCards(d, [card]);
 }
 
 /** Coche la prochaine case libre (de gauche à droite) du stage actif et applique son texte. */
@@ -195,7 +204,7 @@ const gainProductionOf = (keyword: string): Factory => () =>
       const groups = productionGroups(d.catalog, d.s, target);
       let k = 1;
       const choices = groups.map((g) => (g.options.length > 1 ? Math.max(0, optionOf(a[k++])) : 0));
-      gain(d.s, producedIcons(groups, choices));
+      gainWithRules(d.catalog, d.s, producedIcons(groups, choices));
     },
   });
 
@@ -954,7 +963,7 @@ export function cardEffects(templates: Iterable<CardTemplate>): Map<string, Effe
       const sid = Number(key) as StageId;
       for (const e of stage.effects) {
         if (e.type === "triggeredForced" || e.type === "triggeredOptional") continue;
-        const expansion = EXPANSION_EFFECTS[e.text] ?? MERCHANTS_EFFECTS[e.text] ?? merchantsPattern(e.text);
+        const expansion = EXPANSION_EFFECTS[e.text] ?? MERCHANTS_EFFECTS[e.text] ?? merchantsPattern(e.text) ?? RIDDING_EFFECTS[e.text] ?? riddingPattern(e.text);
         let factory: Factory | undefined = EXACT[e.text] ?? (expansion ? () => expansion() : undefined);
         if (!factory) {
           for (const [re, make] of PATTERNS) {
@@ -990,19 +999,25 @@ const producesCoin = (d: Draft, id: InstanceId) => productionGroups(d.catalog, d
 
 /** « Discard to make [up to] N [other] card(s)/person(s) stay in play. » et variantes sans défausse. */
 function stayTrigger(text: string): TriggerImpl | null {
-  const m = /^End of Turn: (Discard to make|Make) (up to )?(\d+|another|this or another) ?(other )?(cards?|persons?)? ?stay in play\.$/.exec(text);
+  const m = /^End of Turn: (Discard to make|Make) (up to )?(\d+|another|this or another|all) ?(other )?(cards?|persons?|lands?)? ?stay in play\.$/.exec(text);
   if (!m) return null;
   const discardSelf = m[1] === "Discard to make";
+  const all = m[3] === "all";
   const upTo = m[2] !== undefined;
   const includeSelf = m[3] === "this or another";
-  const n = m[3] === "another" || m[3] === "this or another" ? 1 : Number(m[3]);
   const onlyPersons = (m[5] ?? "").startsWith("person");
+  // Pallisades, Forest Outpost, Walled Outpost (Ridding the Woods) : des terres, ou toutes les terres.
+  const onlyLands = (m[5] ?? "").startsWith("land");
+  if (all) return allLandsStay(discardSelf);
+  const n = m[3] === "another" || m[3] === "this or another" ? 1 : Number(m[3]);
   // Jamais les ennemis, ni les cartes qui restent déjà en jeu (texte, sticker, gardées par une autre carte) : les
   // proposer ne servirait à rien et prêtait à confusion (demande du 2026-10-03).
   const options = (d: Draft, self: InstanceId) =>
-    d.s.zones.play.filter((id) => (includeSelf || id !== self) && (!onlyPersons || isPerson(d, id)) && !isEnemy(d, id) && !staysInPlay(d, id));
+    d.s.zones.play.filter(
+      (id) => (includeSelf || id !== self) && (!onlyPersons || isPerson(d, id)) && (!onlyLands || isKind(d, id, "Land")) && !isEnemy(d, id) && !staysInPlay(d, id),
+    );
   // Pas de question Oui/Non : les cartes possibles sont entourées sur le plateau, un bouton refuse (demande du 2026-10-04).
-  const what = `${upTo ? "jusqu'à " : ""}${n} ${onlyPersons ? "personne" : "carte"}${n > 1 ? "s" : ""} à garder en jeu`;
+  const what = `${upTo ? "jusqu'à " : ""}${n} ${onlyPersons ? "personne" : onlyLands ? "terre" : "carte"}${n > 1 ? "s" : ""} à garder en jeu`;
   const prompt = (d: Draft, card: InstanceId) => `${activeStage(d.catalog, d.s, card)?.name ?? ""}${discardSelf ? " se défausse" : ""} : ${what}`;
   return trigger({
     timing: "endTurn",
@@ -1012,6 +1027,24 @@ function stayTrigger(text: string): TriggerImpl | null {
     ask: steps((d, card) => askCardsOrNone(prompt(d, card), options(d, card), upTo ? 1 : n, n, "Je ne veux rien garder")),
     run: (d, card, a) => {
       keepInPlay(d, cardsOf(a[0]));
+      if (discardSelf) {
+        d.s.keepInPlay = (d.s.keepInPlay ?? []).filter((id) => id !== card);
+        discardCards(d, [card]);
+      }
+    },
+  });
+}
+
+/** Walled Outpost : « End of Turn: Discard to make all lands stay in play. » (Oui / Non : toutes les terres.) */
+function allLandsStay(discardSelf: boolean): TriggerImpl {
+  const lands = (d: Draft, self: InstanceId) => otherInPlay(d, self, (id) => isKind(d, id, "Land") && !isEnemy(d, id) && !staysInPlay(d, id));
+  return trigger({
+    timing: "endTurn",
+    optional: true,
+    prompt: "Défausser cette carte pour garder toutes les terres en jeu ?",
+    when: (d, card) => d.s.zones.play.includes(card) && lands(d, card).length > 0,
+    run: (d, card) => {
+      keepInPlay(d, lands(d, card));
       if (discardSelf) {
         d.s.keepInPlay = (d.s.keepInPlay ?? []).filter((id) => id !== card);
         discardCards(d, [card]);
@@ -1425,7 +1458,7 @@ export function cardTriggers(templates: Iterable<CardTemplate>): Map<string, Tri
       if (!stage) continue;
       const sid = Number(key) as StageId;
       for (const e of stage.effects) {
-        const make = TRIGGERS[e.text] ?? EXPANSION_TRIGGERS[e.text] ?? MERCHANTS_TRIGGERS[e.text];
+        const make = TRIGGERS[e.text] ?? EXPANSION_TRIGGERS[e.text] ?? MERCHANTS_TRIGGERS[e.text] ?? RIDDING_TRIGGERS[e.text];
         const impl = make?.() ?? stayTrigger(e.text) ?? playCountTrigger(e.text);
         if (impl) out.set(effectKey(t.id, sid, e.id), withExpansion(impl, t.expansion));
       }

@@ -4,6 +4,7 @@ import { isValidAnswer, canBeNamed,
   availableGrandExpansions,
   grandExpansions,
   GRAND_EXPANSIONS,
+  grandName,
   canRestartLastExpansion,
   boxViews,
   canRestartKingdom,
@@ -692,7 +693,7 @@ export function EndDialog({
     const t = catalog.templates.get(`${id}-${String(GRAND_EXPANSIONS[id]?.cover ?? 0).padStart(3, "0")}`);
     if (!t) return [];
     const played = camp?.played.find((p) => p.expansion === id);
-    return [{ key: id, name: id, kind: "Extension", template: t, side: "back" as const, played, open: grandOpen.has(id), action: { type: "startGrandExpansion", expansion: id } as Action }];
+    return [{ key: id, name: grandName(id), kind: "Extension", template: t, side: "back" as const, played, open: grandOpen.has(id), action: { type: "startGrandExpansion", expansion: id } as Action }];
   });
   const tiles = [...grands, ...minis];
   // Parcours : partie de base, puis les extensions dans l'ordre où elles ont été jouées.

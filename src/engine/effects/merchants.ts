@@ -27,9 +27,9 @@ import {
   turnCard,
   unmarkedBoxes,
 } from "../ops";
-import { timeBlockedFor } from "../passives";
-import { canAddResourceSticker, crossOutProduction, producedIcons, productionCount, productionGroups } from "../production";
-import { activeStage, cardName, gain, instance, log, personWeight, template } from "../state";
+import { gainWithRules, timeBlockedFor } from "../passives";
+import { canAddResourceSticker, crossOutProduction, exactCrossings, producedIcons, productionCount, productionGroups, truncatedCount } from "../production";
+import { activeStage, cardName, instance, log, personWeight, template } from "../state";
 import type { Answer, ChoiceRequest, Draft, EffectImpl, EffectParams, InstanceId, TriggerImpl } from "../types";
 import { NO_PARAMS } from "./registry";
 import { defeat, effect, icon, labelFor, markNext, persons, placeSticker, STICKER_DEF, steps, trigger } from "./cards";
@@ -74,7 +74,7 @@ function gainProductionOf(d: Draft, target: InstanceId, a: Answer[], from: numbe
   const groups = productionGroups(d.catalog, d.s, target);
   let k = from;
   const choices = groups.map((g) => (g.options.length > 1 ? Math.max(0, optionOf(a[k++])) : 0));
-  gain(d.s, producedIcons(groups, choices));
+  gainWithRules(d.catalog, d.s, producedIcons(groups, choices));
   return k;
 }
 
@@ -333,7 +333,9 @@ export const MERCHANTS_EFFECTS: Record<string, () => EffectImpl> = {
       const stage = activeStage(d.catalog, d.s, id);
       if (!stage) return [];
       const c = instance(d.s, id);
-      return stage.production.filter((g) => c.crossedOutProduction.filter((k) => k.startsWith(`${stage.id}/${g.id}/`)).length < Math.max(...g.options.map((o) => o.length)));
+      return stage.production.filter(
+        (g) => truncatedCount(c.crossedOutProduction, stage.id, g.id) + exactCrossings(c.crossedOutProduction, stage.id, g.id).length < Math.max(...g.options.map((o) => o.length)),
+      );
     };
     const lands = (d: Draft, self: InstanceId) => otherInPlay(d, self, (id) => isKind(d, id, "Land") && crossable(d, id).length > 0);
     return effect({

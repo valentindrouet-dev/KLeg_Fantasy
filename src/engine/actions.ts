@@ -16,7 +16,7 @@ import {
   runQueue,
 } from "./flow";
 import { queueScript } from "./ops";
-import { payPool, playsFromDiscard, restrictions, timeBlockedFor } from "./passives";
+import { gainWithRules, payPool, playsFromDiscard, restrictions, swordsOnlyForUpgrades, timeBlockedFor } from "./passives";
 import { availableExpansions, availableGrandExpansions, startExpansion, startGrandExpansion } from "./campaign";
 import { producedIcons, productionChoices, productionGroups } from "./production";
 import {
@@ -26,7 +26,6 @@ import {
   destroy,
   discard,
   formatIcons,
-  gain,
   instance,
   log,
   pay,
@@ -123,11 +122,14 @@ export function getLegalActions(catalog: Catalog, s: GameState): Action[] {
       }
     }
   }
+  // Robber Camp (Ridding the Woods) : « You may not use {sword} except to upgrade cards. »
+  const noSwords = swordsOnlyForUpgrades(catalog, s).length > 0;
   for (const card of [...s.zones.play, ...s.zones.permanent]) {
     for (const { effect, impl } of usableEffects(catalog, s, card)) {
       if (effect.type === "time" && banned.noTime && timeBlockedFor(catalog, s, card)) continue;
       if (banned.noPlay && playsFromDiscard(effect.text)) continue;
       for (const p of impl.params(d, card)) {
+        if (noSwords && (impl.costOf?.(d, card, p) ?? impl.cost ?? []).includes("sword")) continue;
         actions.push({ type: "useEffect", card, effect: effect.id, targets: p.targets, option: p.option });
       }
     }
@@ -228,7 +230,7 @@ function execute(d: Draft, a: Action): void {
       log(s, `${cardName(catalog, s, a.card)} produit ${formatIcons(icons)}`);
       queueTriggers(d, "produced", [a.card]);
       discardSelf(d, a.card);
-      gain(s, icons);
+      gainWithRules(catalog, s, icons);
       return;
     }
     case "upgrade": {

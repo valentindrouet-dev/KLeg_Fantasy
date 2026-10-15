@@ -3,6 +3,20 @@
 Chaque mise à jour publiée change de version (`package.json`, affichée dans l'appli en bas de l'écran « Mes royaumes »
 et dans la barre de la partie). Convention : `0.5.0` s'affiche **v0.05** ; un correctif `0.5.1` s'affiche **v0.05.1**.
 
+## v0.68 (15 octobre 2026)
+
+- **Nouvelle extension : Ridding the Woods.** Elle se lance depuis la page de fin, à côté de Merchants et des mini-extensions (tuile au dos de ses cartes). Ses 30 cartes s'ajoutent au royaume, rien n'est retiré.
+  - Purge 8 « focus 2 bois » : tant que 2 cartes qui produisent du bois ne sont pas choisies, un paquet qui en contient ne propose qu'elles. Puis 2 cartes permanentes.
+  - 5 manches : au début de chacune, les 5 cartes suivantes de l'extension sont découvertes et montrées avant le mélange.
+  - Tous les effets des 30 cartes sont automatisés : ennemis et leurs défaites, Robbin' Leader (seules les épées se gagnent ; vaincu, il emporte A Certain Lady), camps de brigands (les épées ne servent plus qu'à améliorer), Huge Robber (on ne peut plus avancer), villes qui défaussent quand un ennemi arrive, gardes qui partent quand il n'y a plus d'ennemi, Prisonniers qui se retournent quand 2 ennemis sont en jeu, Treasure Wagon, Ceremony, The Chase…
+  - **Prisonniers et purge** : à chaque purge (mini-extension ou grande extension), jusqu'à 2 Prisonniers du royaume peuvent s'y ajouter, avec un bouton « Aucun prisonnier ». Walled Outpost, Treasure Wagon et Sobbing ont leur gloire spéciale à la purge.
+  - Fin après la 5e manche : le score rejoint le parcours du royaume ; les cartes 26 à 29 restent dans la boîte, découvrables par effet.
+  - Cases, lignes d'effets, icônes de coût et de production mesurées sur les images, comme pour les autres cartes.
+- Rayer « 1 production de {coin} » raye maintenant l'icône précise sur la carte, plus seulement la dernière du groupe.
+- Correctif : Extended Treasury (verso de Treasury, Feudal Kingdom) compte maintenant 50 **+ la plus haute case cochée** ; seule la valeur 50 était comptée.
+- Les extensions affichent leur vrai nombre de manches (« manche 2/5 » pour Ridding the Woods) sur l'accueil, le tableau des scores et la carte de l'extension.
+- Feudal Kingdom Adventures est importée (cartes, images, traductions) mais pas encore jouable.
+
 ## v0.67.1 (7 octobre 2026)
 
 - La gloire écrite dans une médaille est maintenant visible. Grand Guild Hall (« write that number in 1 {fame} ») et Vassal States (« 20 ») la comptaient bien dans le score, mais le nombre n'était écrit nulle part sur la carte. Il est écrit au feutre dans sa médaille, partout : plateau, défausse, inspection. Les nombres déjà écrits dans les royaumes existants apparaissent aussi.

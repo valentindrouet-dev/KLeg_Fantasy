@@ -16,7 +16,9 @@ import {
   type GameState,
 } from "../../src/engine";
 import { purgeFame } from "../../src/engine/campaign";
-import { loadCatalog } from "../helpers/catalog";
+import { grandStarts, loadCatalog } from "../helpers/catalog";
+
+const GRAND_STARTS = await grandStarts();
 import { arrange, fk, legal, passUntil, run } from "../helpers/game";
 
 // Mini-extensions 136, 137, 138 et purge (spec 4.7).
@@ -43,7 +45,7 @@ describe("purge et mini-extensions", async () => {
 
   it("après la partie, les trois mini-extensions sont proposées ; en lancer une commence par la purge 12", () => {
     let s = finished();
-    expect(legal(catalog, s)).toEqual([...[136, 137, 138].map((n) => ({ type: "startExpansion", card: fk(n) })), { type: "startGrandExpansion", expansion: "Merchants" }]);
+    expect(legal(catalog, s)).toEqual([...[136, 137, 138].map((n) => ({ type: "startExpansion", card: fk(n) })), ...GRAND_STARTS]);
     const base = computeScore(catalog, s).total;
     s = run(catalog, s, { type: "startExpansion", card: fk(136) });
     expect(s.phase).toBe("playing");
@@ -125,7 +127,7 @@ describe("purge et mini-extensions", async () => {
     expect(s.campaign?.played).toEqual([{ serial: 137, name: "The Water Mill", score: computeScore(catalog, s).total }]);
     expect(s.campaign?.current).toBeNull();
     // Une extension jouée n'est plus proposée.
-    expect(legal(catalog, s)).toEqual([...[136, 138].map((n) => ({ type: "startExpansion", card: fk(n) })), { type: "startGrandExpansion", expansion: "Merchants" }]);
+    expect(legal(catalog, s)).toEqual([...[136, 138].map((n) => ({ type: "startExpansion", card: fk(n) })), ...GRAND_STARTS]);
   });
 
   it("Surplus : une terre qui produit {coin} peut produire {tradeGood} à la place", () => {
@@ -163,6 +165,7 @@ describe("purge et mini-extensions", async () => {
       ["137", "available", null],
       ["138", "available", null],
       ["Merchants", "available", null],
+      ["RiddingTheWoods", "available", null],
     ]);
     s = purgeFirst(run(catalog, s, { type: "startExpansion", card: fk(137) }));
     expect(campaignStage(s)).toBe("expansion");

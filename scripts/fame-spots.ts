@@ -74,7 +74,7 @@ for (const f of (await readdir(dir)).filter((x) => x.endsWith(".json"))) {
       if (!stage?.fameVariable) continue;
       const img = await gray(path.join("data/images", src), rotate);
       let best = { score: -1, x: 0, y: 0 };
-      for (let y = 60; y <= 200 - T; y++)
+      for (let y = 60; y <= 250 - T; y++)
         for (let x = 5; x <= 160 - T; x++) {
           const score = ncc(template, patch(img, x, y));
           if (score > best.score) best = { score, x, y };

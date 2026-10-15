@@ -31,12 +31,18 @@ const RULES_ELSEWHERE = new Set([
   "You cannot play cards, upgrade, or use other {time} effects.",
   "You cannot play cards, upgrade, or use {time} effects.",
   "You may look at the cards offered.",
+  // Ridding the Woods : passives.ts (Robbin' Leader, Huge Robber, camps, Sobbing) ; campaign.ts (Prisoner, à la purge).
+  "You cannot gain other resources than {sword}.",
+  "You cannot advance.",
+  "You may not use {sword} except to upgrade cards.",
+  "When advancing, you play 2 additional cards.",
+  "After selecting cards for a purge, add up to 2 Prisoners to that purge.",
 ]);
 // Purge (campaign.ts) : Aethan Estate.
 const PURGE = /^When you purge this card/;
 
 // Extensions dont les effets sont automatisés ; les autres s'y ajoutent une fois faites.
-const INTEGRATED = ["FeudalKingdom", "Merchants"];
+const INTEGRATED = ["FeudalKingdom", "Merchants", "RiddingTheWoods"];
 
 describe("couverture des effets", async () => {
   const catalog = await loadCatalog();

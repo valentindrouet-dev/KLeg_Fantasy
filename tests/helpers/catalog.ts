@@ -14,3 +14,9 @@ export function loadCatalog(): Promise<Catalog> {
   })();
   return cached;
 }
+
+/** Lancements de grandes extensions proposés à la fin d'une partie (toutes celles du catalogue, dans l'ordre). */
+export async function grandStarts(): Promise<{ type: "startGrandExpansion"; expansion: string }[]> {
+  const { grandExpansions } = await import("../../src/engine");
+  return grandExpansions(await loadCatalog()).map((expansion) => ({ type: "startGrandExpansion", expansion }));
+}

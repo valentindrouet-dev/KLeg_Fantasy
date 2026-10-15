@@ -92,7 +92,7 @@ describe("extension Merchants", async () => {
     expect(s.campaign?.grand).toBeUndefined();
     // Rien de Merchants ne reste dans la boîte : aucune carte découverte n'en cite.
     expect(s.zones.box.filter((id) => id.startsWith("Merchants"))).toEqual([]);
-    expect(legal(catalog, s).some((a) => a.type === "startGrandExpansion")).toBe(false);
+    expect(legal(catalog, s).some((a) => a.type === "startGrandExpansion" && a.expansion === "Merchants")).toBe(false);
     expect(campaignSteps(catalog, s).find((x) => x.id === "Merchants")).toMatchObject({ kind: "grand", status: "done" });
   });
 

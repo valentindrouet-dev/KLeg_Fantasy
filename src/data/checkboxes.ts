@@ -1,6 +1,7 @@
 import { z } from "zod";
 import fkJson from "../../data/checkboxes/FeudalKingdom.json";
 import merchantsJson from "../../data/checkboxes/Merchants.json";
+import riddingJson from "../../data/checkboxes/RiddingTheWoods.json";
 import type { StageId } from "./schema";
 
 // Position des cases à cocher de chaque étape, mesurée sur les images (scripts/checkbox-spots.ts) : [gauche, haut,
@@ -13,6 +14,7 @@ const BoxesFileSchema = z.record(z.string(), z.array(z.tuple([z.number(), z.numb
 const files: Record<string, Record<string, BoxRect[]>> = {
   FeudalKingdom: BoxesFileSchema.parse(fkJson),
   Merchants: BoxesFileSchema.parse(merchantsJson),
+  RiddingTheWoods: BoxesFileSchema.parse(riddingJson),
 };
 
 /** Cases d'une étape, ou undefined si elles n'ont pas été mesurées. */

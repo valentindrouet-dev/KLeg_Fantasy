@@ -121,3 +121,26 @@ Lecture des cartes 00 à 25, sans la FAQ du site (inaccessible d'ici). Chaque po
 - **Brigands** : « You cannot play cards » interdit d'avancer et les effets qui jouent une carte de la défausse. « Other {time} effects » : leur propre effet {time} (les vaincre) reste permis. Brigand Boss : la carte à 3 productions ou plus peut être n'importe quelle carte en jeu.
 - **Pistes** (Weaving, Fishing, Brewing, Basketry, Shoemaking) : la case suivante dit combien défausser et quoi payer ; la gloire vaut la plus haute case cochée. Shoemaking : on booste une personne en jeu qui produit déjà, s'il y en a.
 - **Cartes** : Merchants 00 à 25.
+
+## 2026-10-15 : extension Ridding the Woods (à confirmer avec la FAQ du site)
+
+Lecture des cartes 00 à 29, sans la FAQ du site (inaccessible d'ici). Chaque point peut être revu sur simple demande.
+
+- **Quand la jouer** : comme Merchants, une fois la partie terminée et aucune extension en cours, une seule fois par royaume, depuis la fenêtre de fin de partie.
+- **Lancement** : les 30 cartes s'ajoutent à la boîte, rien n'est retiré. Le parchemin 00 est lu, puis la purge 8 « focus 2{wood} » : tant que 2 cartes qui produisent du {wood} ne sont pas choisies, un paquet qui en contient ne propose qu'elles. Puis 2 cartes permanentes.
+- **Manches** : 5 manches. Au début de chacune, les 5 cartes suivantes de l'extension sont découvertes (01-05, 06-10… 21-25), montrées avant le mélange. Les cartes 26 à 29 ne se découvrent que par effet.
+- **Fin** : le score rejoint le chemin de score (sticker 13c). Les cartes 26 à 29 restées dans la boîte y restent (citées par les cartes découvertes). L'effet d'A Certain Lady est rayé (« After finishing Ridding the Woods, {oneTime} »), où qu'elle soit.
+- **Conditions d'état** (« If there are 2 enemies in play, {flip} », « If there is no enemy in play, discard this ») : vérifiées dès que plus rien n'est en attente (après chaque action et ses effets). Un Prisonnier retourné redevient un ennemi, défaussé (règle d'or 3).
+- **A Certain Lady** : une case par ennemi en jeu quand elle arrive, puis une par ennemi qui arrive ensuite. La 4e case la retourne (Rogue Lady).
+- **Robbin' Leader** : chaque {sword}{sword}{sword} coche une case ; il est vaincu quand la piste est complète (c'est alors seulement qu'Unsafe Forest le voit). A Certain Lady est cherchée dans tout le royaume ; si elle était dans le deck, il est remélangé. Vaincu d'un coup par The Army, il suit la même fin. Tant qu'il est en jeu, toute ressource autre que {sword} gagnée (production comprise) est perdue.
+- **Camps de brigands** : « You may not use {sword} except to upgrade cards » : un effet qui coûte des {sword} n'est plus proposé (vaincre un ennemi compris), Unsafe Forest non plus ; les améliorations se paient normalement.
+- **Huge Robber** : interdit d'avancer, comme Rain. **Sobbing** : 2 cartes de plus quand on avance, comme Blood Curse.
+- **Villes** (Terrified, Uneasy) : chaque ennemi joué, y compris en même temps qu'elles, fait défausser 3 (ou 2) cartes amies en jeu, la ville comprise. Deux ennemis : deux fois plus.
+- **Treasure Wagon** : arrivé avec un ennemi en jeu, 1 production rayée ; puis 1 par ennemi qui arrive. À la purge : 5 {fame} par production restante.
+- **Rayer « 1 {coin} production »** (Rogue Lady) ou « any 1 production » (Robber Saboteur) : une icône précise est rayée, pas la dernière du groupe.
+- **Bait and Trap** : il faut une dame en jeu et un ennemi dans la défausse.
+- **Prisonniers et purge** : après le choix des cartes d'une purge (mini-extensions et grandes extensions), jusqu'à 2 Prisonniers du royaume s'y ajoutent, au choix (2 au total, pas 2 par Prisonnier). Ils valent 2 {fame} chacun.
+- **Gloire à la purge** : Walled Outpost 5 + 2 par autre carte purgée en même temps (Prisonniers compris) ; Treasure Wagon 5 par production ; Sobbing -4. Hors purge, ils valent leur gloire imprimée (5, 0, 0).
+- **Large Dungeon** : compteur des prisonniers défaussés, 2 {fame} chacun. **Tax Collector** : -1 {fame} par case.
+- **Treasury** (Feudal Kingdom 26 et Ridding the Woods 28) : Extended / Famed Treasury vaut 50 + la plus haute case cochée (la plus haute case n'était pas comptée avant la v0.68).
+- **Cartes** : Ridding the Woods 00 à 29.

@@ -102,7 +102,8 @@ export type FlowStep =
   | { kind: "endRound" }
   | { kind: "nextRound" }
   | { kind: "reviewDiscoveries"; since: number } // montre les cartes découvertes depuis discoveries[since]
-  | { kind: "expansionEnd" }; // fin de manche d'une mini-extension : la carte change d'étape (ou est détruite)
+  | { kind: "expansionEnd" } // fin de manche d'une mini-extension : la carte change d'étape (ou est détruite)
+  | { kind: "roundStart" }; // effets « Start of Round » des permanentes, après les découvertes de la manche
 
 /**
  * Suivi du royaume après la partie de base (spec 4.7) : score de la partie de base, mini-extensions jouées et leur
@@ -218,6 +219,9 @@ export type TriggerTiming =
   | "upgraded" // la carte vient d'être améliorée
   | "produced" // la carte vient de produire
   | "betweenRounds" // cartes permanentes, avant la découverte de la manche
+  | "roundStart" // cartes permanentes, après les découvertes de la manche (« Start of Round »)
+  | "enemyDefeated" // un ennemi vient d'être vaincu (ctx.cards : l'ennemi) ; cartes en jeu
+  | "check" // condition d'état (« If there are 2 enemies in play »), vérifiée quand plus rien n'est en attente
   | "manual"; // lancé explicitement par un autre effet (queueScript)
 
 /** Effet déclenché (types triggeredForced / triggeredOptional). */

@@ -1,5 +1,6 @@
 import type { ResourceId, StageId } from "../../data/schema";
-import { canPay, gain, pay } from "../state";
+import { gainWithRules } from "../passives";
+import { canPay, pay } from "../state";
 import type { Draft, EffectImpl, EffectParams } from "../types";
 
 // Registre des effets automatisés. En P1 : effets des cartes 1 à 10, écrits à la main.
@@ -44,7 +45,7 @@ export function spendToGain(cost: readonly ResourceId[], gains: readonly (readon
     params: (d) => (canPay(d.s, cost) ? gains.map((_, i) => ({ targets: [], option: i })) : []),
     apply: (d, _card, p) => {
       pay(d.s, cost);
-      gain(d.s, gains[p.option ?? 0] ?? []);
+      gainWithRules(d.catalog, d.s, gains[p.option ?? 0] ?? []);
     },
   };
 }

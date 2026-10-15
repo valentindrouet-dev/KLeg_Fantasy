@@ -1,7 +1,7 @@
 import { useState, type ReactNode } from "react";
 import { cardImageUrl } from "../../data/loadCards";
 import type { CardTemplate, Orientation, StageId } from "../../data/schema";
-import { activeStage, cardFame, isFullImageFace, kingdomCards, printedStage, stageIdAt, type BoxView, type ExhaustedEffect, type StickerPlacement } from "../../engine";
+import { activeStage, cardFame, exactCrossings, isFullImageFace, kingdomCards, printedStage, stageIdAt, truncatedCount, type BoxView, type ExhaustedEffect, type StickerPlacement } from "../../engine";
 import type { GoalView } from "./goals";
 import { useGame } from "./store";
 import { boxRects } from "../../data/checkboxes";
@@ -197,9 +197,13 @@ function CrossedProduction({ template, stage, half, crossed }: { template: CardT
   const out: { key: string; r: (typeof rects)[number] }[] = [];
   let at = 0;
   for (const g of st.production) {
-    const n = crossed.filter((k) => k.startsWith(`${stage}/${g.id}/`)).length;
+    const n = truncatedCount(crossed, stage, g.id);
+    const exact = exactCrossings(crossed, stage, g.id);
     g.options.forEach((o, oi) => {
-      for (let i = Math.max(0, o.length - n); i < o.length; i++) {
+      // Icônes rayées précisément (« cross out 1 {coin} production »), puis les dernières encore visibles.
+      const visible = o.map((_, i) => i).filter((i) => !exact.some((x) => x.option === oi && x.icon === i));
+      const hidden = [...exact.filter((x) => x.option === oi).map((x) => x.icon), ...visible.slice(Math.max(0, visible.length - n))];
+      for (const i of hidden) {
         const r = rects[at + i];
         if (r) out.push({ key: `${g.id}/${oi}/${i}`, r });
       }

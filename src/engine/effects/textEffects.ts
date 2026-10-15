@@ -3,7 +3,6 @@ import { boxCardsBySerial, offerDiscovery, playCard } from "../flow";
 import {
   cardName,
   discard,
-  gain,
   hasKeyword,
   instance,
   isFriendly,
@@ -11,6 +10,7 @@ import {
   zoneOf,
 } from "../state";
 import type { EffectImpl } from "../types";
+import { gainWithRules } from "../passives";
 import { applyArrow } from "../upgrade";
 import { NO_PARAMS, effectKey, spendToGain, withExpansion } from "./registry";
 
@@ -54,7 +54,7 @@ const matchers: Matcher[] = [
           log(d.s, `${cardName(d.catalog, d.s, id)} est défaussée`);
           discard(d, id);
         }
-        gain(d.s, gains);
+        gainWithRules(d.catalog, d.s, gains);
       },
     };
   },
@@ -67,7 +67,7 @@ const matchers: Matcher[] = [
     return {
       params: () => [NO_PARAMS],
       apply: (d, card) => {
-        gain(d.s, gains);
+        gainWithRules(d.catalog, d.s, gains);
         const c = instance(d.s, card);
         c.orientation = applyArrow(c.orientation, "rotate");
         if (zoneOf(d.s, card) !== "discard") discard(d, card); // règle d'or 3

@@ -1,7 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { canRestartKingdom, computeScore } from "../../src/engine";
 import { isLegal } from "../../src/engine/actions";
-import { loadCatalog } from "../helpers/catalog";
+import { grandStarts, loadCatalog } from "../helpers/catalog";
+
+const GRAND_STARTS = await grandStarts();
 import { arrange, fk, legal, newGame, passUntil, run } from "../helpers/game";
 
 // Spec 4.4 : fin de manche, découvertes, parchemins, dernière manche et score.
@@ -76,7 +78,7 @@ describe("manches et découvertes", async () => {
     s = passUntil(catalog, s, (x) => x.phase === "gameOver");
     expect(s.phase).toBe("gameOver");
     // Partie terminée : seules les extensions restent possibles.
-    expect(legal(catalog, s)).toEqual([...[136, 137, 138].map((n) => ({ type: "startExpansion", card: fk(n) })), { type: "startGrandExpansion", expansion: "Merchants" }]);
+    expect(legal(catalog, s)).toEqual([...[136, 137, 138].map((n) => ({ type: "startExpansion", card: fk(n) })), ...GRAND_STARTS]);
     // Castle 12 + Royal Visit 2 (Wild Grass et Finishing Touch : 0).
     expect(computeScore(catalog, s).total).toBe(14);
   });

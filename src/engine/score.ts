@@ -48,9 +48,13 @@ function variableFame(catalog: Catalog, s: GameState, id: InstanceId, stage: Sta
   if (Object.values(t.stages).some((st) => st?.text.includes("All stages of this card are worth the same as the last stage."))) {
     return boxes(catalog, s, id, 4).reduce((sum, b) => sum + (b.written ?? 0), 0);
   }
-  if (text.includes("worth the highest marked {fame}")) return stage.fame + Math.max(0, ...own.filter((b) => b.marked).map((b) => b.fame ?? 0));
+  // Treasury : « worth the highest marked {fame} » ; Extended / Famed Treasury : « worth 50{fame} + the highest marked {fame} ».
+  if (text.includes("the highest marked {fame}")) return stage.fame + Math.max(0, ...own.filter((b) => b.marked).map((b) => b.fame ?? 0));
+  // Large Dungeon (Ridding the Woods) : le compte des prisonniers défaussés (compteur du stage).
+  const perTally = /worth (\d+)\{fame\} for each mark\./.exec(text);
+  if (perTally) return stage.fame + Number(perTally[1]) * (instance(s, id).tallies?.[String(stage.id)] ?? 0);
   if (text.includes("Worth 5{fame} for each {mark} on the other side.")) return 5 * boxes(catalog, s, id, 1).filter((b) => b.marked).length;
-  const perMark = /Worth \+?(-?\d+)\{fame\} (?:per|for every) \{mark\}/.exec(text);
+  const perMark = /Worth \+?(-?\d+)\{fame\} (?:per|for every|for each) \{mark\}/.exec(text);
   if (perMark) return stage.fame + Number(perMark[1]) * marks;
   if (text.includes("Worth -5{fame} for each unmarked box.")) return -5 * (own.length - marks);
   if (text.includes("Worth 2{fame} per person.")) return 2 * countPersons(catalog, s, kingdomCards(s));

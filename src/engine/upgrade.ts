@@ -21,6 +21,8 @@ const KEYWORDS: Record<string, string> = {
   building: "Building",
   buildings: "Building",
   seafaring: "Seafaring",
+  enemy: "Enemy",
+  enemies: "Enemy",
 };
 
 /**

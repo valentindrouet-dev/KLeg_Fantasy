@@ -72,3 +72,38 @@ describe("Merchants au hasard", async () => {
     }, GAME_TIMEOUT * 2);
   }
 });
+
+// Ridding the Woods jouée au hasard après Merchants : ennemis, prisonniers, conditions d'état et interdictions ne
+// bloquent jamais la partie, qui se termine sans erreur.
+describe("Ridding the Woods au hasard", async () => {
+  const catalog = await loadCatalog();
+  for (const seed of [31, 32, 33, 34, 35, 36]) {
+    it(`graine ${seed}`, () => {
+      const rand = mulberry(seed * 7919);
+      const play = (from: GameState): GameState => {
+        let s = from;
+        let steps = 0;
+        while (s.phase === "playing" && steps < 10000) {
+          const pool = getLegalActions(catalog, s).filter((a) => a.type !== "cancelChoice");
+          const weighted = pool.filter((a) => a.type !== "pass" || rand() < 0.15);
+          const list = weighted.length ? weighted : pool;
+          const pick = list[Math.floor(rand() * list.length)];
+          if (!pick) break;
+          s = applyAction(catalog, s, pick);
+          invariants(s);
+          steps++;
+        }
+        return s;
+      };
+      let s = play(newGame(catalog, seed));
+      expect(s.phase).toBe("gameOver");
+      s = play(applyAction(catalog, s, { type: "startGrandExpansion", expansion: "Merchants" }));
+      expect(s.phase).toBe("gameOver");
+      const before = Object.keys(s.cards).length;
+      s = play(applyAction(catalog, s, { type: "startGrandExpansion", expansion: "RiddingTheWoods" }));
+      expect(s.phase).toBe("gameOver");
+      expect(Object.keys(s.cards)).toHaveLength(before + 30);
+      expect(s.campaign?.played.at(-1)).toMatchObject({ expansion: "RiddingTheWoods", name: "Ridding the Woods" });
+    }, GAME_TIMEOUT * 3);
+  }
+});
