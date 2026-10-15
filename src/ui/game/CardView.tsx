@@ -235,6 +235,8 @@ function stickerIcon(st: StickerPlacement): { src: string | undefined; text: str
   if (st.keyword) return { src: iconImage(st.keyword.toLowerCase()), text: st.keyword };
   // Merchants : sticker 17 « Starts in play », sticker 18 « Place this at the bottom of your deck ».
   if (st.startsInPlay) return { src: iconImage("startsInPlay"), text: "17" };
+  // Adventures : onglet de Cerapter (sticker 53).
+  if (st.sticker === "53") return { src: iconImage("cerapterTab"), text: "53" };
   if (st.effect !== undefined) return { src: iconImage("bottomOfDeck"), text: st.sticker };
   return { src: iconImage("staysInPlay"), text: "∞" };
 }
@@ -246,19 +248,26 @@ function Stickers({ template, stage, stickers, half }: { template: CardTemplate;
   // texte des effets, comme le texte imprimé, pas dans la rangée des ressources.
   const here = stickers.filter((st) => st.stage === stage);
   const isText = (st: StickerPlacement) => Boolean(st.staysInPlay || st.startsInPlay || st.effect !== undefined);
+  // Cadres d'effet de Merlin (Adventures) : posés sur l'effet imprimé qu'ils remplacent.
+  const frames = here.filter((st) => st.effect !== undefined && st.replaces !== undefined);
   const banners: { key: string; small: boolean; content: ReactNode }[] = [];
   if (here.some((st) => st.staysInPlay)) banners.push({ key: "7", small: false, content: <><b className={styles.stayInfinity}>∞</b> Stays in play.</> });
   if (here.some((st) => st.startsInPlay)) banners.push({ key: "17", small: false, content: <><b className={styles.stayInfinity}>∞</b> Starts in play.</> });
-  for (const st of here.filter((x) => x.effect !== undefined)) banners.push({ key: `e${st.sticker}`, small: true, content: <IconText text={`{activated} ${st.effect ?? ""}`} /> });
+  for (const st of here.filter((x) => x.effect !== undefined && x.replaces === undefined)) banners.push({ key: `e${st.sticker}`, small: true, content: <IconText text={`{${st.effectType ?? "activated"}} ${st.effect ?? ""}`} /> });
   // Gloire (stickers 8, 10, 16) sur la ligne de la rosette de gloire ; ressources et mots-clés dans la rangée des ressources.
   const isFame = (st: StickerPlacement) => st.fame !== undefined && !st.resource;
   const own = [...here.filter((st) => !isText(st) && !isFame(st)), ...here.filter((st) => !isText(st) && isFame(st))];
-  if (own.length === 0 && banners.length === 0) return null;
+  if (own.length === 0 && banners.length === 0 && frames.length === 0) return null;
   const st0 = template.stages[String(stage) as "1"];
   const nFame = own.filter(isFame).length;
   const spots = [...stickerSpots(st0, own.length - nFame), ...fameStickerSpots(st0, nFame, fameSpot(template.expansion, template.serial, stage))];
   return (
     <>
+      {frames.map((st) => (
+        <EffectFrame key={`f${st.sticker}`} template={template} stage={stage} half={half} effect={st.replaces ?? ""}>
+          <IconText text={`{${st.effectType ?? "activated"}} ${st.effect ?? ""}`} />
+        </EffectFrame>
+      ))}
       {banners.map((b, i) => (
         <StayBanner key={b.key} template={template} stage={stage} half={half} index={i} small={b.small}>
           {b.content}
@@ -284,6 +293,31 @@ function Stickers({ template, stage, stickers, half }: { template: CardTemplate;
         );
       })}
     </>
+  );
+}
+
+/** Sticker qui recouvre un cadre d'effet (Merlin : « replace this effect frame ») : posé sur les lignes de cet effet. */
+function EffectFrame({ template, stage, half, effect, children }: { template: CardTemplate; stage: StageId; half: "top" | "bottom"; effect: string; children: ReactNode }) {
+  const lines = effectLines(template.expansion, template.serial, stage, effect) ?? [];
+  if (lines.length === 0) {
+    return (
+      <StayBanner template={template} stage={stage} half={half} index={0} small>
+        {children}
+      </StayBanner>
+    );
+  }
+  const top = Math.min(...lines.map((l) => l[0])) - 0.006;
+  const bottom = Math.max(...lines.map((l) => l[1])) + 0.006;
+  const left = Math.min(...lines.map((l) => l[2])) - 0.02;
+  const right = Math.max(...lines.map((l) => l[3])) + 0.02;
+  const [x, y] = half === "top" ? [left, top] : [1 - right, 1 - bottom];
+  return (
+    <span
+      className={`${styles.effectFrame} ${half === "bottom" ? styles.rotated : ""}`}
+      style={{ left: `${x * 100}%`, top: `${y * 100}%`, width: `${(right - left) * 100}%`, height: `${(bottom - top) * 100}%` }}
+    >
+      {children}
+    </span>
   );
 }
 

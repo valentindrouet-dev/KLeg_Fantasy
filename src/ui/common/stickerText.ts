@@ -18,6 +18,23 @@ export const STICKER_ICONS: Readonly<Record<string, string>> = {
   "16": "fame",
   "17": "startsInPlay",
   "18": "bottomOfDeck",
+  // Ridding the Woods et Feudal Kingdom Adventures.
+  "13c": "scorePathRid",
+  "13j": "scorePathFka",
+  "38": "blessed",
+  "53": "cerapterTab",
+  "54": "activated",
+  "55": "armored",
+  "56": "noble",
+  "57": "magical",
+  "86a": "passive",
+  "86b": "passive",
+  "87a": "activated",
+  "87b": "activated",
+  "88a": "activated",
+  "88b": "activated",
+  "89a": "activated",
+  "89b": "activated",
 };
 
 /** Sens d'un sticker, pour le libellé de son symbole. */
@@ -37,9 +54,25 @@ export const STICKER_LABELS: Readonly<Record<string, string>> = {
   "16": "gloire écrite",
   "17": "Starts in play",
   "18": "dessous du deck",
+  "13c": "chemin de score Ridding the Woods",
+  "13j": "chemin de score Adventures",
+  "38": "béni",
+  "53": "onglet de Cerapter",
+  "54": "jouer Cerapter",
+  "55": "armure",
+  "56": "noble",
+  "57": "magique",
+  "86a": "Authority",
+  "86b": "Friendship",
+  "87a": "Alchemy",
+  "87b": "Conjure",
+  "88a": "Fireball",
+  "88b": "Transform",
+  "89a": "Summon",
+  "89b": "Wonders",
 };
 
-const STICKER_PHRASE = /(stickers? )(\d+k?(?:\s*(?:\/|&|and|or|,)\s*\d+k?)*)/gi;
+const STICKER_PHRASE = /(stickers? )(\d+[a-z]?(?:\s*(?:\/|&|and|or|,)\s*\d+[a-z]?)*)/gi;
 
 /** Le texte en morceaux : texte simple, ou numéro de sticker (suivi de son symbole à l'affichage). */
 export function splitStickers(text: string): (string | { sticker: string })[] {
@@ -48,7 +81,7 @@ export function splitStickers(text: string): (string | { sticker: string })[] {
   for (const m of text.matchAll(STICKER_PHRASE)) {
     const start = m.index ?? 0;
     out.push(text.slice(last, start) + (m[1] ?? ""));
-    (m[2] ?? "").split(/(\d+k?)/).forEach((piece, j) => out.push(j % 2 === 0 ? piece : { sticker: piece }));
+    (m[2] ?? "").split(/(\d+[a-z]?)/).forEach((piece, j) => out.push(j % 2 === 0 ? piece : { sticker: piece }));
     last = start + m[0].length;
   }
   out.push(text.slice(last));

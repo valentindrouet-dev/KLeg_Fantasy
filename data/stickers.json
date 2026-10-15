@@ -1,10 +1,12 @@
 {
-  "source": "Planche officielle « Kingdom Legacy - Stickers v4.1 » (PDF fourni le 2026-10-02), page 1, deux premiers panneaux (icône en anneau de Feudal Kingdom). Panneau Merchants (icône de la balance), même page, ajouté le 2026-10-05. Les autres panneaux appartiennent à d'autres extensions.",
+  "source": "Planche officielle « Kingdom Legacy - Stickers v4.1 » (PDF fourni le 2026-10-02), page 1, deux premiers panneaux (icône en anneau de Feudal Kingdom). Panneau Merchants (icône de la balance), même page, ajouté le 2026-10-05. Les autres panneaux appartiennent à d'autres extensions. Panneaux Ridding the Woods (icône de l'arbre) et Feudal Kingdom Adventures (icône du blason), même page, ajoutés le 2026-10-15.",
   "to_verify": [
     "Planche Feudal Kingdom identifiée par son icône (anneau), commune aux deux premiers panneaux de la page 1, et recoupée avec les numéros cités par les cartes 24 à 138.",
     "Sticker 11 « Knight » : mot-clé ajouté à une personne (carte 86, Dubbing) ; sa forme d'étiquette laisse penser qu'il dépasse aussi de la carte comme un tab.",
     "Sticker 13k : 3 exemplaires « FK » pour le chemin de score (mini-extensions 136 à 138, spec 4.7).",
-    "Panneau Merchants : il contient aussi 5 stickers 1 ({coin}), 10 stickers 6 ({tradeGood}), 1 sticker 7 et 1 sticker 16, mêmes effets que ceux de Feudal Kingdom (non dupliqués ici). « Starts in play » = « Start each round with this card already in your play area. »"
+    "Panneau Merchants : il contient aussi 5 stickers 1 ({coin}), 10 stickers 6 ({tradeGood}), 1 sticker 7 et 1 sticker 16, mêmes effets que ceux de Feudal Kingdom (non dupliqués ici). « Starts in play » = « Start each round with this card already in your play area. »",
+    "Panneau Ridding the Woods : sticker 13c (chemin de score « Rid »), plus 2 stickers 16 et 6 stickers 10, mêmes effets que ceux de Feudal Kingdom (non dupliqués ici).",
+    "Panneau Adventures : sticker 13j (« FKA »), 5 stickers 5 et 1 sticker 16 (non dupliqués). 53 : onglet de Cerapter (deux icônes). 55 : armure ; 56 : couronne (noble) ; 57 : grimoire (magique) ; 38 : étoile (béni). 86a à 89b : cadres d'effet qui remplacent un effet de Merlin ; types d'effet lus sur leurs icônes (∞ passif, ✓ activé, éclair déclenché)."
   ],
   "stickers": [
     {
@@ -123,6 +125,131 @@
       "label": "Place this at the bottom of your deck",
       "quantity": 1,
       "text": "{activated} Place this at the bottom of your deck."
+    },
+    {
+      "id": "13c",
+      "expansion": "RiddingTheWoods",
+      "type": "scorePath",
+      "label": "Chemin de score Ridding the Woods",
+      "quantity": 1
+    },
+    {
+      "id": "13j",
+      "expansion": "FK_Adventures",
+      "type": "scorePath",
+      "label": "Chemin de score Adventures",
+      "quantity": 1
+    },
+    {
+      "id": "38",
+      "expansion": "FK_Adventures",
+      "type": "keyword",
+      "label": "Béni (The White Cowl)",
+      "quantity": 5,
+      "keyword": "Blessed"
+    },
+    {
+      "id": "53",
+      "expansion": "FK_Adventures",
+      "type": "tab",
+      "label": "Onglet de Cerapter",
+      "quantity": 1
+    },
+    {
+      "id": "54",
+      "expansion": "FK_Adventures",
+      "type": "effect",
+      "label": "Jouer Cerapter",
+      "quantity": 1,
+      "text": "{activated} Play Cerapter from anywhere."
+    },
+    {
+      "id": "55",
+      "expansion": "FK_Adventures",
+      "type": "keyword",
+      "label": "Armure (The Green Armor)",
+      "quantity": 1,
+      "keyword": "Armored"
+    },
+    {
+      "id": "56",
+      "expansion": "FK_Adventures",
+      "type": "keyword",
+      "label": "Noble (Prydwen)",
+      "quantity": 6,
+      "keyword": "Noble"
+    },
+    {
+      "id": "57",
+      "expansion": "FK_Adventures",
+      "type": "keyword",
+      "label": "Magique (Merlin)",
+      "quantity": 6,
+      "keyword": "Magical"
+    },
+    {
+      "id": "86a",
+      "expansion": "FK_Adventures",
+      "type": "effect",
+      "label": "Authority",
+      "quantity": 1,
+      "text": "{passive} Authority: Discard 1 person to gain any 1 resource."
+    },
+    {
+      "id": "86b",
+      "expansion": "FK_Adventures",
+      "type": "effect",
+      "label": "Friendship",
+      "quantity": 1,
+      "text": "{passive} Friendship: Other persons stay in play."
+    },
+    {
+      "id": "87a",
+      "expansion": "FK_Adventures",
+      "type": "effect",
+      "label": "Alchemy",
+      "quantity": 1,
+      "text": "{activated} Alchemy: Gain 6{coin}."
+    },
+    {
+      "id": "87b",
+      "expansion": "FK_Adventures",
+      "type": "effect",
+      "label": "Conjure",
+      "quantity": 1,
+      "text": "{activated} Conjure: Gain 3{metal} or 3{tradeGood}."
+    },
+    {
+      "id": "88a",
+      "expansion": "FK_Adventures",
+      "type": "effect",
+      "label": "Fireball",
+      "quantity": 1,
+      "text": "{activated} Fireball: Gain {sword}{sword}{sword}{sword}."
+    },
+    {
+      "id": "88b",
+      "expansion": "FK_Adventures",
+      "type": "effect",
+      "label": "Transform",
+      "quantity": 1,
+      "text": "{triggeredOptional} Transform: Discard instead of any other card in play."
+    },
+    {
+      "id": "89a",
+      "expansion": "FK_Adventures",
+      "type": "effect",
+      "label": "Summon",
+      "quantity": 1,
+      "text": "{activated} Summon: Play 1 magical card from discard pile."
+    },
+    {
+      "id": "89b",
+      "expansion": "FK_Adventures",
+      "type": "effect",
+      "label": "Wonders",
+      "quantity": 1,
+      "text": "{activated} Wonders: Gain any 1 resource per magical card in play."
     }
   ]
 }

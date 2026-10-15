@@ -25,7 +25,7 @@ describe("catalogue des stickers", async () => {
   it("chaque sticker cité par une carte de Feudal Kingdom ou de Merchants existe", () => {
     const cited = new Set<string>();
     for (const f of cards) {
-      if (!f.result.ok || !["FeudalKingdom", "Merchants"].includes(f.result.card.expansion)) continue;
+      if (!f.result.ok || !["FeudalKingdom", "Merchants", "RiddingTheWoods", "FK_Adventures"].includes(f.result.card.expansion)) continue;
       for (const st of Object.values(f.result.card.stages)) {
         for (const m of (st?.text ?? "").matchAll(/[Ss]ticker ((?:\d+[a-z]?(?:\s*(?:\/|&|and)\s*)?)+)/g)) {
           for (const id of (m[1] ?? "").split(/\s*(?:\/|&|and)\s*/)) if (id) cited.add(id.trim());

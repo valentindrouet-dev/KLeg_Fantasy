@@ -42,6 +42,23 @@ export function normalizeState(s: Draft["s"]): void {
 /** Extension des cartes citées par numéro dans l'effet en cours : celle de sa carte, sinon la boîte de base. */
 export const sourceExpansion = (d: Draft): string => d.expansion ?? d.s.config.expansion;
 
+/**
+ * Changeling (Adventures) : « When Changeling is (defeated or) destroyed, return all tormented persons to your discard
+ * pile. » Une personne tourmentée est libérée dès que son Changeling a quitté l'étape qui l'a tourmentée (vaincu,
+ * retourné, détruit, purgé).
+ */
+function releaseTormented(d: Draft): void {
+  for (const c of Object.values(d.s.cards)) {
+    const by = c.tormentedBy;
+    if (!by) continue;
+    const z = zoneOf(d.s, by.card);
+    if (!["destroyed", "purged", "box"].includes(z) && activeStage(d.catalog, d.s, by.card)?.id === by.stage) continue;
+    delete c.tormentedBy;
+    if (zoneOf(d.s, c.instanceId) === "permanent") moveTo(d.s, c.instanceId, "discard");
+    log(d.s, `${cardName(d.catalog, d.s, c.instanceId)} n'est plus tourmentée : elle rejoint la défausse`);
+  }
+}
+
 /** Note une découverte (numéro et instance). */
 export function recordDiscovery(s: GameState, id: InstanceId): void {
   const ids = (s.discoveredIds ??= s.discoveries.map((n) => cardId(s.config.expansion, n)));
@@ -100,6 +117,7 @@ export function runQueue(d: Draft): void {
 
 /** Met en file les conditions d'état vérifiées maintenant ; renvoie false s'il n'y en a aucune. */
 function queueChecks(d: Draft): boolean {
+  releaseTormented(d);
   const steps = [...d.s.zones.play, ...d.s.zones.permanent].flatMap((card) =>
     triggersOf(d, card, "check")
       .filter((script) => d.catalog.triggers.get(script)?.when?.(d, card, {}) ?? false)
@@ -151,6 +169,8 @@ export function triggersOf(d: Draft, card: InstanceId, timing: TriggerTiming): s
   const stage = activeStage(d.catalog, d.s, card);
   if (!stage) return [];
   const c = instance(d.s, card);
+  // Personne tourmentée par un Changeling (Adventures) : permanente mais inutilisable.
+  if (c.tormentedBy) return [];
   return stage.effects
     .filter((e) => !isEffectExhausted(d.catalog, d.s, card, stage.id, e))
     .map((e) => effectKey(c.templateId, stage.id, e.id))
@@ -290,6 +310,8 @@ function runEndTurn(d: Draft): void {
 /** Une carte reste-t-elle en jeu à la fin du tour ? (texte, sticker 7, effet « make … stay in play ») */
 export function staysInPlay(d: Draft, id: InstanceId): boolean {
   if ((d.s.keepInPlay ?? []).includes(id) || isStayInPlayCard(d, id)) return true;
+  // Merlin, sticker 86b « Friendship: Other persons stay in play. »
+  if (hasKeyword(d.catalog, d.s, id, "Person") && d.s.zones.play.some((m) => m !== id && friendshipOn(d, m))) return true;
   return landsStayInPlay(d.catalog, d.s) && hasKeyword(d.catalog, d.s, id, "Land");
 }
 
@@ -404,6 +426,12 @@ function shuffleDeck(d: Draft): void {
     moveTo(d.s, id, "play");
     log(d.s, `${cardName(d.catalog, d.s, id)} commence la manche en jeu`);
   }
+}
+
+/** Sticker 86b (Friendship) sur le stage visible d'une carte. */
+function friendshipOn(d: Draft, id: InstanceId): boolean {
+  const stage = activeStage(d.catalog, d.s, id);
+  return stage !== null && instance(d.s, id).stickers.some((st) => st.stage === stage.id && st.sticker === "86b");
 }
 
 /** Sticker 17 sur le stage visible. */
@@ -524,6 +552,8 @@ function placeDiscovered(d: Draft, id: InstanceId, seen: boolean): void {
   log(d.s, `Carte découverte : ${cardName(d.catalog, d.s, id)}`);
   // Carte à flèches rouges : toujours présentée, on y choisit sa face.
   if (!seen || template(d.catalog, instance(d.s, id).templateId).chooseSideOnDiscover) presentDiscovery(d);
+  // « When you discover this, also discover … » (Adventures) : avant la présentation, qui montre tout ensemble.
+  queueTriggers(d, "discovered", [id]);
 }
 
 /**

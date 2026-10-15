@@ -1,4 +1,4 @@
-import type { CardTemplate, Orientation, ResourceId, Side, StageId } from "../data/schema";
+import type { CardTemplate, EffectType, Orientation, ResourceId, Side, StageId } from "../data/schema";
 
 // Types du moteur (spec section 4). Tout l'état d'une partie est sérialisable en JSON :
 // une partie = configuration + liste d'actions (event sourcing, voir session.ts).
@@ -20,6 +20,8 @@ export type StickerPlacement = {
   staysInPlay?: boolean;
   startsInPlay?: boolean; // sticker 17 (Merchants) : la carte commence chaque manche en jeu
   effect?: string; // sticker 18 (Merchants) : effet activé ajouté à la carte (texte imprimé du sticker)
+  effectType?: EffectType; // type de cet effet (absent : activé) ; stickers 86a à 89b d'Adventures
+  replaces?: string; // effet de la carte que le sticker recouvre (Merlin : « replace this effect frame »)
 };
 
 export type CardInstance = {
@@ -36,6 +38,10 @@ export type CardInstance = {
   plays?: number; // nombre de fois où la carte est entrée en jeu (Stranger : « 2nd play »)
   customName?: string; // nom donné par le joueur (Stranger, #92 : « 1st play: Give her a name! »)
   tallies?: Record<string, number>; // compteurs (Export : marchandises dépensées), par stage
+  // Adventures : personne tourmentée par un Changeling (permanente, inutilisable) ; libérée quand il quitte cette étape.
+  tormentedBy?: { card: InstanceId; stage: StageId };
+  // Moments déjà vécus ce tour (« manche/tour ») : case cochée, première personne jouée (Lorelei, Nessie)…
+  turnMarks?: Record<string, string>;
 };
 
 export type ResourceCounts = Record<ResourceId, number>;
@@ -185,7 +191,7 @@ export type EffectParams = { targets: InstanceId[]; option: number | null; answe
  * Contexte de travail : le catalogue (statique) et un brouillon d'état qu'on peut muter. `expansion` : extension de la
  * carte dont l'effet s'applique, pour trouver les cartes citées par numéro (Merchants 19 n'est pas Feudal Kingdom 19).
  */
-export type Draft = { catalog: Catalog; s: GameState; expansion?: string };
+export type Draft = { catalog: Catalog; s: GameState; expansion?: string; source?: InstanceId };
 
 export type EffectImpl = {
   /** Jeux de paramètres légaux ; tableau vide = effet inutilisable maintenant. */
@@ -221,6 +227,7 @@ export type TriggerTiming =
   | "betweenRounds" // cartes permanentes, avant la découverte de la manche
   | "roundStart" // cartes permanentes, après les découvertes de la manche (« Start of Round »)
   | "enemyDefeated" // un ennemi vient d'être vaincu (ctx.cards : l'ennemi) ; cartes en jeu
+  | "discovered" // la carte vient d'être découverte (« When you discover this, also discover … »)
   | "check" // condition d'état (« If there are 2 enemies in play »), vérifiée quand plus rien n'est en attente
   | "manual"; // lancé explicitement par un autre effet (queueScript)
 

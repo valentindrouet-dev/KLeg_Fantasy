@@ -43,7 +43,7 @@ const hasFreeBox = (d: Draft, card: InstanceId): boolean => unmarkedBoxes(d, car
 const friendlyOthers = (d: Draft, self: InstanceId): InstanceId[] => otherInPlay(d, self, (id) => friendly(d, id));
 
 /** Coche la case suivante d'une piste de couleur (The Chase : verte, rouge) et applique son texte. */
-function markNextIn(d: Draft, card: InstanceId, group: string): boolean {
+export function markNextIn(d: Draft, card: InstanceId, group: string): boolean {
   const next = boxesOf(d.catalog, d.s, card).find((b) => b.group === group && !isMarked(d.s, card, b.stage, b.id));
   if (!next) return false;
   markBox(d, card, next.stage, next.id);
@@ -51,7 +51,7 @@ function markNextIn(d: Draft, card: InstanceId, group: string): boolean {
   return true;
 }
 
-const freeIn = (d: Draft, card: InstanceId, group: string): boolean =>
+export const freeIn = (d: Draft, card: InstanceId, group: string): boolean =>
   boxesOf(d.catalog, d.s, card).some((b) => b.group === group && !isMarked(d.s, card, b.stage, b.id));
 
 /** Coche jusqu'à n cases de gauche à droite, tant que la carte garde le même stage (une case peut la retourner). */

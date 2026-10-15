@@ -23,7 +23,14 @@ export function cardBadges(catalog: Catalog, s: GameState, id: InstanceId): stri
     const cost = same ? `${next.cost.length}{${r}}` : next.cost.map((x) => `{${x}}`).join("");
     // Coût au-dessus de la gloire (demande du 2026-10-03 : pastilles moins larges).
     out.push(next.fame !== undefined ? `${cost}\n→ {fame}${next.fame}` : cost);
-  } else if (tally) out.push(`{tradeGood} ${tally}`);
+  } else if (tally) {
+    // Compteurs : Export ({tradeGood}), Large Dungeon (prisonniers), Fiddler's Green (cartes maritimes perdues).
+    if (/prisoner/i.test(stage.text)) out.push(`Prisonniers : ${tally}`);
+    else if (/seafaring card is destroyed or purged/.test(stage.text)) out.push(`Maritimes perdues : ${tally}`);
+    else out.push(`{tradeGood} ${tally}`);
+  }
+  // Adventures : personne tourmentée par un Changeling.
+  if (c.tormentedBy) out.push("Tourmentée");
   // Cases cochées : dessinées sur la carte (croix), plus de compteur (demande du 2026-10-03).
   const written = Object.entries(c.written ?? {}).filter(([k]) => k.startsWith(`${stage.id}/`)).reduce((sum, [, n]) => sum + n, 0);
   if (written) out.push(`✎ {fame}${written}`);

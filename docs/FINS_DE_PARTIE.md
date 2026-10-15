@@ -9,7 +9,7 @@
 | **Royaume** | Une boîte de jeu virtuelle (140 cartes). C'est aussi la **campagne** : tout ce qui suit se passe dans le même royaume. |
 | **Partie de base** | Cartes 1 à 70, de la première manche jusqu'à la fin de la manche lancée par la carte 68. |
 | **Mini-extension** | Cartes 136 (Uprising…), 137 (The Water Mill…), 138 (Resistance…). Jouables après la partie de base, chacune une fois. |
-| **Grande extension** | Nouvelle boîte de cartes ajoutée au royaume. **Merchants** (cartes 00 à 25) est jouable depuis la v0.63, **Ridding the Woods** (00 à 29) depuis la v0.68. |
+| **Grande extension** | Nouvelle boîte de cartes ajoutée au royaume. **Merchants** (cartes 00 à 25) est jouable depuis la v0.63, **Ridding the Woods** (00 à 29) depuis la v0.68, **Feudal Kingdom Adventures** (00 à 28) depuis la v0.69. |
 | **Chemin de score** | Le score de la partie de base, puis le score après chaque mini-extension (sticker 13k dans le jeu). |
 
 ## 2. Ce qui existe
@@ -50,6 +50,14 @@ Décisions de règles : `docs/RULES_DECISIONS.md` (2026-10-05, extension Merchan
 5. Prisonniers : à chaque purge suivante (mini-extension, autre grande extension), jusqu'à 2 Prisonniers du royaume peuvent s'y ajouter.
 
 Décisions de règles : `docs/RULES_DECISIONS.md` (2026-10-15, extension Ridding the Woods).
+
+### Grande extension : Feudal Kingdom Adventures (v0.69)
+
+1. « Jouer » sur sa tuile (le chevalier au cheval blanc) ajoute ses 29 cartes à la boîte, puis purge 10 et 1 carte permanente.
+2. 3 manches : au début de chacune, les 2 cartes suivantes (01-06) sont découvertes, puis la carte des aventures propose de cocher un lieu pour découvrir son aventure.
+3. Après la 3e manche, le score rejoint le chemin de score (sticker 13j). Rien n'est détruit : la carte des aventures reste permanente et continuera de proposer ses lieux dans les extensions suivantes.
+
+Décisions de règles : `docs/RULES_DECISIONS.md` (2026-10-15, extension Adventures).
 
 ### Un royaume n'est jamais clôturé (v0.57)
 
@@ -92,7 +100,7 @@ Décisions de règles : `docs/RULES_DECISIONS.md` (2026-10-15, extension Ridding
 3. ~~Statut sur l'accueil~~ : fait en v0.57.
 4. ~~Date et durée de chaque étape~~ : fait en v0.57 (`Kingdom.milestones`). Les étapes finies avant n'ont ni date ni durée : elles ne sont pas inventées.
 5. **Points de sauvegarde nommés** (prévus par la spec 6.1). Ils ne sont pas faits ; voir la section 4 avant de les ajouter.
-6. **Grandes extensions.** Merchants (v0.63) et Ridding the Woods (v0.68) sont jouables. Feudal Kingdom Adventures est importée (cartes, images, traductions) : ses règles restent à écrire.
+6. **Grandes extensions.** Merchants (v0.63), Ridding the Woods (v0.68) et Feudal Kingdom Adventures (v0.69) sont jouables. Reste dans Adventures : Transform (sticker 88b) et l'équipement de Ring of Power.
 
 ## 4. Embranchements : recommencer une extension ?
 

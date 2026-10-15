@@ -57,6 +57,7 @@ export function usableEffects(catalog: Catalog, s: GameState, id: InstanceId): U
   const stage = activeStage(catalog, s, id);
   if (!stage) return [];
   const c = instance(s, id);
+  if (c.tormentedBy) return []; // tourmentée (Adventures) : inutilisable
   const printed = stage.effects.flatMap((effect) => {
     if (isEffectExhausted(catalog, s, id, stage.id, effect)) return [];
     const impl = catalog.effects.get(effectKey(c.templateId, stage.id, effect.id));
@@ -65,7 +66,7 @@ export function usableEffects(catalog: Catalog, s: GameState, id: InstanceId): U
   // Effets ajoutés par un sticker sur ce stage (sticker 18 de Merchants) : identifiant « sticker18 ».
   const stickers = c.stickers.flatMap((st): UsableEffect[] => {
     const impl = st.stage === stage.id && st.effect ? catalog.effects.get(stickerEffectKey(st.sticker)) : undefined;
-    return impl && st.effect ? [{ stage, effect: { id: `sticker${st.sticker}`, type: "activated", text: st.effect }, impl }] : [];
+    return impl && st.effect ? [{ stage, effect: { id: `sticker${st.sticker}`, type: st.effectType ?? "activated", text: st.effect }, impl }] : [];
   });
   return [...printed, ...stickers.filter((x, i) => stickers.findIndex((y) => y.effect.id === x.effect.id) === i)];
 }
@@ -194,8 +195,8 @@ export function applyAction(catalog: Catalog, state: GameState, action: Action):
 }
 
 /** La carte se défausse pour son action (production, effet) ; Impregnable Fortress peut défausser 2 murs à la place. */
-function discardSelf(d: Draft, card: InstanceId): void {
-  const sub = substituteScript(d, card);
+function discardSelf(d: Draft, card: InstanceId, reason: "produce" | "effect" = "effect"): void {
+  const sub = substituteScript(d, card, reason);
   if (sub) {
     queueScript(d, card, sub);
     return;
@@ -229,7 +230,7 @@ function execute(d: Draft, a: Action): void {
       const icons = producedIcons(productionGroups(catalog, s, a.card), a.choices);
       log(s, `${cardName(catalog, s, a.card)} produit ${formatIcons(icons)}`);
       queueTriggers(d, "produced", [a.card]);
-      discardSelf(d, a.card);
+      discardSelf(d, a.card, "produce");
       gainWithRules(catalog, s, icons);
       return;
     }

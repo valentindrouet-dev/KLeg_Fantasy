@@ -4,6 +4,7 @@ import { cardId } from "../data/schema";
 import { cardEffects, cardTriggers } from "./effects/cards";
 import { textEffects } from "./effects/textEffects";
 import { STICKER_EFFECTS, stickerEffectKey } from "./effects/merchants";
+import { ADVENTURE_STICKER_EFFECTS } from "./effects/adventures";
 import { runQueue } from "./flow";
 import { feudalKingdomParchments } from "./scripts/parchments";
 import { emptyResources, instance, log } from "./state";
@@ -21,7 +22,7 @@ export function createCatalog(templates: readonly CardTemplate[], resources: rea
     effects: new Map([
       ...textEffects(templates, resources),
       ...cardEffects(templates),
-      ...Object.entries(STICKER_EFFECTS).map(([n, make]): [string, EffectImpl] => [stickerEffectKey(n), make()]),
+      ...Object.entries({ ...STICKER_EFFECTS, ...ADVENTURE_STICKER_EFFECTS }).map(([n, make]): [string, EffectImpl] => [stickerEffectKey(n), make()]),
     ]),
     parchments: new Map([
       ...feudalKingdomParchments,

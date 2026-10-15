@@ -65,6 +65,11 @@ export const fameOf = (d: Draft, id: InstanceId): number => cardFame(d.catalog, 
 export function canBeDestroyed(d: Draft, id: InstanceId): boolean {
   const stage = activeStage(d.catalog, d.s, id);
   if (!stage || stage.cannotBeDestroyed) return false;
+  // Adventures : Young / Adept Apprentice, Morgan le Fey, tant que Merlin n'est pas détruit.
+  if (stage.effects.some((e) => /^Cannot be destroyed (unless|until) Merlin (has already been|is) destroyed\.$/.test(e.text))) {
+    const merlin = Object.values(d.s.cards).find((c) => template(d.catalog, c.templateId).stages["1"]?.name === "Merlin the Wise");
+    return merlin !== undefined && zoneOf(d.s, merlin.instanceId) === "destroyed";
+  }
   if (stage.effects.some((e) => e.text.startsWith("Cannot be destroyed unless Lord Nimrod has been destroyed"))) {
     const nimrod = Object.values(d.s.cards).find((c) => template(d.catalog, c.templateId).stages["4"]?.name === "Lord Nimrod");
     return nimrod !== undefined && zoneOf(d.s, nimrod.instanceId) === "destroyed";
@@ -144,9 +149,35 @@ export function discardCards(d: Draft, ids: readonly InstanceId[]): void {
 
 export function destroyCards(d: Draft, ids: readonly InstanceId[]): void {
   for (const id of ids) {
+    if (protectedFromNegative(d, id)) continue;
     log(d.s, `${cardName(d.catalog, d.s, id)} est détruite`);
     destroy(d, id);
   }
+}
+
+/**
+ * Adventures : une carte amie que l'effet d'une carte négative détruirait est sauvée par The Green Armor (personne en
+ * armure, sticker 55) ou par Garrisoned Border, qui cochent une case à la place (décision du 2026-10-15 : d'office).
+ */
+function protectedFromNegative(d: Draft, id: InstanceId): boolean {
+  const src = d.source;
+  if (src === undefined || src === id || !d.s.cards[src] || isFriendly(d.catalog, d.s, src) || !isFriendly(d.catalog, d.s, id)) return false;
+  const armored = instance(d.s, id).stickers.some((st) => st.keyword === "Armored");
+  const saver =
+    (armored ? d.s.zones.permanent.find((g) => stageName(d, g) === "The Green Armor" && unmarkedBoxes(d, g).length > 0) : undefined) ??
+    d.s.zones.permanent.find((g) => stageName(d, g) === "Garrisoned Border" && unmarkedBoxes(d, g).length > 0);
+  if (!saver) return false;
+  log(d.s, `${cardName(d.catalog, d.s, id)} est sauvée par ${cardName(d.catalog, d.s, saver)}`);
+  const next = unmarkedBoxes(d, saver)[0];
+  if (next) {
+    markBox(d, saver, next.stage, next.id);
+    // Dernière case ({destroy}) : la carte qui protège est détruite à son tour.
+    if (next.text?.includes("{destroy}")) {
+      log(d.s, `${cardName(d.catalog, d.s, saver)} est détruite`);
+      destroy(d, saver);
+    }
+  }
+  return true;
 }
 
 /** Personnes qu'on peut défausser, Healing Potion comprise (elle se reset à la place). */
@@ -229,6 +260,8 @@ export function markBox(d: Draft, id: InstanceId, stage: StageId, box: string): 
   const c = instance(d.s, id);
   if (c.checkedBoxes.includes(checkKey(stage, box))) return;
   c.checkedBoxes.push(checkKey(stage, box));
+  // Trading With Pixies : « If you haven't marked any {mark} this turn ».
+  c.turnMarks = { ...(c.turnMarks ?? {}), mark: `${d.s.round}/${d.s.turn}` };
   const b = boxesOf(d.catalog, d.s, id, stage).find((x) => x.id === box);
   log(d.s, `${cardName(d.catalog, d.s, id)} : case ${box} cochée`);
   if (b?.gain?.length) effectGain(d, b.gain);
@@ -247,3 +280,13 @@ export function queueScript(d: Draft, card: InstanceId, script: string): void {
 
 export const fameAtLeast = (d: Draft, id: InstanceId, n: number): boolean => fameOf(d, id) >= n;
 export const friendlyOrSelf = (d: Draft, id: InstanceId): boolean => friendly(d, id);
+
+// --- Moments du tour ---
+
+/** Ce moment (« mark », « firstPerson »…) a-t-il déjà eu lieu ce tour pour cette carte ? */
+export const doneThisTurn = (d: Draft, id: InstanceId, key: string): boolean => instance(d.s, id).turnMarks?.[key] === `${d.s.round}/${d.s.turn}`;
+
+export function setDoneThisTurn(d: Draft, id: InstanceId, key: string): void {
+  const c = instance(d.s, id);
+  c.turnMarks = { ...(c.turnMarks ?? {}), [key]: `${d.s.round}/${d.s.turn}` };
+}

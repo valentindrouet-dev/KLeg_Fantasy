@@ -166,6 +166,7 @@ describe("purge et mini-extensions", async () => {
       ["138", "available", null],
       ["Merchants", "available", null],
       ["RiddingTheWoods", "available", null],
+      ["FK_Adventures", "available", null],
     ]);
     s = purgeFirst(run(catalog, s, { type: "startExpansion", card: fk(137) }));
     expect(campaignStage(s)).toBe("expansion");

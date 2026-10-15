@@ -33,7 +33,7 @@ const T = {
 /** Effets actifs (non rayés) du stage visible d'une carte. */
 function activeTexts(catalog: Catalog, s: GameState, id: InstanceId): string[] {
   const stage = activeStage(catalog, s, id);
-  if (!stage) return [];
+  if (!stage || instance(s, id).tormentedBy) return [];
   const crossed = instance(s, id).crossedOutEffects;
   return stage.effects.filter((e) => !crossed.includes(`${stage.id}/${e.id}`)).map((e) => e.text);
 }

@@ -97,7 +97,7 @@ Phases P0 (données), P1 (moteur) et P2 (interface jouable) terminées. P3 en gr
 | Tests des fiches | `tests/data/cards.test.ts` | 142 tests |
 | Catalogue de stickers | `data/stickers.json` | fait (planche v4.1 : Feudal Kingdom et Merchants, dont 13e, 17 et 18) |
 | Extension Ridding the Woods (v0.68) | `data/cards/RiddingTheWoods/`, `src/engine/effects/ridding.ts`, `GRAND_EXPANSIONS` dans `src/engine/campaign.ts` | jouable : purge 8 « focus 2{wood} » + 2 permanentes, 5 manches de 5 découvertes, ennemis, prisonniers (ajoutés aux purges), conditions d'état (`check`), effets des 30 cartes, mesures des images ; décisions dans `docs/RULES_DECISIONS.md` |
-| Feudal Kingdom Adventures | `data/cards/FK_Adventures/`, `data/translations/FK_Adventures.fr.json` | importée (cartes, images, traductions), pas encore jouable : stickers 53-57, 38, 86-89 et règles à écrire |
+| Extension Feudal Kingdom Adventures (v0.69) | `data/cards/FK_Adventures/`, `src/engine/effects/adventures.ts`, `GRAND_EXPANSIONS` dans `src/engine/campaign.ts` | jouable : purge 10 + 1 permanente, 3 manches de 2 découvertes, carte des aventures (début de manche, aussi dans les extensions suivantes), tourment, protections, stickers 38, 53-57 et 86a-89b, effets des 29 cartes, mesures des images ; non automatisés : Transform (88b), équipement de Ring of Power ; décisions dans `docs/RULES_DECISIONS.md` |
 | Extension Merchants (v0.63) | `data/cards/Merchants/`, `src/engine/effects/merchants.ts`, `GRAND_EXPANSIONS` dans `src/engine/campaign.ts` | jouable : lancement après la partie de base, purge 7 + 2 permanentes, 4 manches menées par Merchants 01 puis 10, effets des 26 cartes, mesures des images ; décisions dans `docs/RULES_DECISIONS.md` |
 | Moteur de règles (P1) | `src/engine/` | fait : tours, manches, actions, découvertes, annulation, score ; effets de toutes les cartes 1 à 135 (v0.19) |
 | Partie en ligne de commande | `scripts/play.ts` (`npm run play`) | fait |
@@ -135,6 +135,7 @@ Versions installées : Node 24, Vite 8, React 19, TypeScript 7, Zod 4, Vitest 5.
 5. **Carte 0 et carte 139** : marquées parchemin par analogie visuelle ; elles ne sont jamais découvertes en jeu.
 6. **Merchants** : règles lues sur les cartes sans la FAQ du site (Turmeric, Hangover, Brigands, fin de l'extension…). À confronter à la FAQ : `docs/RULES_DECISIONS.md`, entrée du 2026-10-05.
 7. **Ridding the Woods** : règles lues sur les cartes sans la FAQ du site (Robbin' Leader, villes, Prisonniers à la purge, conditions d'état…). À confronter à la FAQ : `docs/RULES_DECISIONS.md`, entrée du 2026-10-15.
+8. **Adventures** : règles lues sur les cartes sans la FAQ du site (tourment, protections, Merlin, Morgan le Fey…). À confronter à la FAQ : `docs/RULES_DECISIONS.md`, entrée du 2026-10-15.
 
 ## 6. Ce qui n'est pas dans le dépôt
 

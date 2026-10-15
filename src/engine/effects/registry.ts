@@ -25,11 +25,15 @@ export function withExpansion<T extends object>(impl: T, expansion: string): T {
     const fn = value as (d: Draft, ...rest: unknown[]) => unknown;
     out[key] = (d: Draft, ...rest: unknown[]) => {
       const before = d.expansion;
+      const source = d.source;
       d.expansion = expansion;
+      // Carte dont l'effet s'applique (2e argument des fonctions d'effet) : Garrisoned Border, The Green Armor.
+      if (typeof rest[0] === "string") d.source = rest[0];
       try {
         return fn(d, ...rest);
       } finally {
         d.expansion = before;
+        d.source = source;
       }
     };
   }

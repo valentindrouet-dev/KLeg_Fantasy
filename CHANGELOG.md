@@ -3,6 +3,16 @@
 Chaque mise à jour publiée change de version (`package.json`, affichée dans l'appli en bas de l'écran « Mes royaumes »
 et dans la barre de la partie). Convention : `0.5.0` s'affiche **v0.05** ; un correctif `0.5.1` s'affiche **v0.05.1**.
 
+## v0.69 (15 octobre 2026)
+
+- **Nouvelle extension : Feudal Kingdom Adventures.** Elle se lance depuis la page de fin (tuile au chevalier). Ses 29 cartes s'ajoutent au royaume, rien n'est retiré.
+  - Purge 10, puis 1 carte permanente ; 3 manches, avec les 2 cartes suivantes de l'extension découvertes au début de chacune.
+  - **Carte des aventures** : au début de chaque manche (la première comprise), une fenêtre propose de cocher un lieu pour découvrir son aventure, ou rien. Elle reste permanente après l'extension et continue de proposer ses lieux dans les extensions suivantes : aucune carte d'Adventures n'est détruite à la fin.
+  - Les effets des 29 cartes sont automatisés : aventures à pistes (Pixies, Fountain of Youth, Lorelei, Nessie, Pagans, Uther, le pont…), Changeling et ses personnes tourmentées (permanentes mais inutilisables, badge « Tourmentée »), Garrisoned Border et The Green Armor qui sauvent une carte en cochant une case, Elixir of Eternal Life à la purge, Wheel of Fortune (production double), The Green Dragon, Jack-in-Irons, Ancient (le tour continue), Prydwen, Merlin et ses apprentis, Morgan le Fey, Focus Energy et Great Power…
+  - **Stickers d'Adventures** (planche officielle) : béni, armure, noble, magique, onglet de Cerapter, et les cadres d'effet de Merlin (Authority, Friendship, Alchemy, Conjure, Fireball, Summon, Wonders), posés sur l'effet qu'ils remplacent.
+  - Pas encore automatisés : Transform (sticker 88b) et l'équipement de Ring of Power, qui reste une carte ordinaire (voir `docs/RULES_DECISIONS.md`).
+- Les compteurs de Large Dungeon et Fiddler's Green s'affichent avec leur nom (plus avec une marchandise).
+
 ## v0.68 (15 octobre 2026)
 
 - **Nouvelle extension : Ridding the Woods.** Elle se lance depuis la page de fin, à côté de Merchants et des mini-extensions (tuile au dos de ses cartes). Ses 30 cartes s'ajoutent au royaume, rien n'est retiré.

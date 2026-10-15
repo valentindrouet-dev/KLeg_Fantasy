@@ -2,6 +2,7 @@ import { z } from "zod";
 import fkJson from "../../data/upgradeIcons/FeudalKingdom.json";
 import merchantsJson from "../../data/upgradeIcons/Merchants.json";
 import riddingJson from "../../data/upgradeIcons/RiddingTheWoods.json";
+import adventuresJson from "../../data/upgradeIcons/FK_Adventures.json";
 import type { StageId } from "./schema";
 
 // Position des icônes de coût des améliorations, mesurée sur les images (scripts/upgrade-spots.ts) : [gauche, haut,
@@ -10,7 +11,7 @@ import type { StageId } from "./schema";
 export type IconRect = readonly [number, number, number, number];
 
 const File = z.record(z.string(), z.array(z.tuple([z.number(), z.number(), z.number(), z.number()])));
-const files: Record<string, Record<string, IconRect[]>> = { FeudalKingdom: File.parse(fkJson), Merchants: File.parse(merchantsJson), RiddingTheWoods: File.parse(riddingJson) };
+const files: Record<string, Record<string, IconRect[]>> = { FeudalKingdom: File.parse(fkJson), Merchants: File.parse(merchantsJson), RiddingTheWoods: File.parse(riddingJson), FK_Adventures: File.parse(adventuresJson) };
 
 /** Icônes du coût d'une amélioration, ou undefined si elles n'ont pas été mesurées. */
 export function costIconRects(expansion: string, serial: number, stage: StageId, upgrade: string): IconRect[] | undefined {

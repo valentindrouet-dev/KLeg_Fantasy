@@ -64,13 +64,13 @@ function markThenReset(d: Draft, card: InstanceId): void {
 const hasFreeBox = (d: Draft, card: InstanceId): boolean => unmarkedBoxes(d, card).length > 0;
 
 /** Production d'une carte gagnée comme ressources : une question par groupe à « / » (réponses à partir de `from`). */
-function slashQuestion(d: Draft, target: InstanceId, a: Answer[], from: number): ChoiceRequest | null {
+export function slashQuestion(d: Draft, target: InstanceId, a: Answer[], from: number): ChoiceRequest | null {
   const slash = productionGroups(d.catalog, d.s, target).filter((g) => g.options.length > 1);
   const g = slash[a.length - from];
   return g ? askOption(`${cardName(d.catalog, d.s, target)} : quelle production ?`, g.options.map(iconText)) : null;
 }
 
-function gainProductionOf(d: Draft, target: InstanceId, a: Answer[], from: number): number {
+export function gainProductionOf(d: Draft, target: InstanceId, a: Answer[], from: number): number {
   const groups = productionGroups(d.catalog, d.s, target);
   let k = from;
   const choices = groups.map((g) => (g.options.length > 1 ? Math.max(0, optionOf(a[k++])) : 0));
@@ -184,10 +184,10 @@ function furSticker(n: string, arrow: "rotate" | "flip" | null): () => EffectImp
 
 // --- Turmeric : utiliser l'effet {activated} ou {time} d'une personne en jeu ---
 
-type Borrowed = { effect: string; type: EffectType; text: string; oneTime: boolean; stage: StageId; impl: EffectImpl };
+export type Borrowed = { effect: string; type: EffectType; text: string; oneTime: boolean; stage: StageId; impl: EffectImpl };
 
 /** Effets {activated} et {time} d'une personne qu'on peut utiliser maintenant. */
-function borrowable(d: Draft, person: InstanceId): Borrowed[] {
+export function borrowable(d: Draft, person: InstanceId): Borrowed[] {
   return usableEffects(d.catalog, d.s, person).flatMap(({ stage, effect: e, impl }): Borrowed[] => {
     if (e.type !== "activated" && e.type !== "time") return [];
     if (e.type === "time" && timeBlockedFor(d.catalog, d.s, person)) return [];
@@ -197,12 +197,12 @@ function borrowable(d: Draft, person: InstanceId): Borrowed[] {
 }
 
 /** Paramètres de l'effet emprunté : ses questions (`ask`), sinon un choix parmi ses paramètres s'il y en a plusieurs. */
-const asksInner = (d: Draft, person: InstanceId, b: Borrowed): boolean => {
+export const asksInner = (d: Draft, person: InstanceId, b: Borrowed): boolean => {
   const ps = b.impl.params(d, person);
   return b.impl.ask !== undefined && ps.length >= 1 && ps.every((p) => p.targets.length === 0 && p.option === null);
 };
 
-function paramLabel(d: Draft, person: InstanceId, b: Borrowed, p: EffectParams): string {
+export function paramLabel(d: Draft, person: InstanceId, b: Borrowed, p: EffectParams): string {
   const labels = b.impl.labels?.(d, person);
   if (p.option !== null && labels?.[p.option]) return labels[p.option] ?? "";
   const gains = b.impl.gains?.(d);

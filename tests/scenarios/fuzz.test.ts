@@ -107,3 +107,38 @@ describe("Ridding the Woods au hasard", async () => {
     }, GAME_TIMEOUT * 3);
   }
 });
+
+// Adventures jouée au hasard, puis Ridding the Woods (la carte des aventures continue de proposer ses lieux) : tourment,
+// protections, carte des aventures et effets à cases ne bloquent jamais la partie.
+describe("Adventures au hasard", async () => {
+  const catalog = await loadCatalog();
+  for (const seed of [41, 42, 43, 44, 45, 46]) {
+    it(`graine ${seed}`, () => {
+      const rand = mulberry(seed * 6007);
+      const play = (from: GameState): GameState => {
+        let s = from;
+        let steps = 0;
+        while (s.phase === "playing" && steps < 10000) {
+          const pool = getLegalActions(catalog, s).filter((a) => a.type !== "cancelChoice");
+          const weighted = pool.filter((a) => a.type !== "pass" || rand() < 0.15);
+          const list = weighted.length ? weighted : pool;
+          const pick = list[Math.floor(rand() * list.length)];
+          if (!pick) break;
+          s = applyAction(catalog, s, pick);
+          invariants(s);
+          steps++;
+        }
+        return s;
+      };
+      let s = play(newGame(catalog, seed));
+      expect(s.phase).toBe("gameOver");
+      const before = Object.keys(s.cards).length;
+      s = play(applyAction(catalog, s, { type: "startGrandExpansion", expansion: "FK_Adventures" }));
+      expect(s.phase).toBe("gameOver");
+      expect(Object.keys(s.cards)).toHaveLength(before + 29);
+      expect(s.campaign?.played.at(-1)).toMatchObject({ expansion: "FK_Adventures", name: "Adventures" });
+      s = play(applyAction(catalog, s, { type: "startGrandExpansion", expansion: "RiddingTheWoods" }));
+      expect(s.phase).toBe("gameOver");
+    }, GAME_TIMEOUT * 3);
+  }
+});

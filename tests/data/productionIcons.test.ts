@@ -4,7 +4,7 @@ import { loadCatalog } from "../helpers/catalog";
 
 // Icônes de production mesurées (scripts/production-spots.ts) : une position par icône imprimée de chaque étape qui
 // produit, pour dessiner la croix d'une production rayée.
-const INTEGRATED = ["FeudalKingdom", "Merchants", "RiddingTheWoods"];
+const INTEGRATED = ["FeudalKingdom", "Merchants", "RiddingTheWoods", "FK_Adventures"];
 
 describe("icônes de production mesurées", async () => {
   const catalog = await loadCatalog();

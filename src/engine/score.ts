@@ -51,6 +51,9 @@ function variableFame(catalog: Catalog, s: GameState, id: InstanceId, stage: Sta
   // Treasury : « worth the highest marked {fame} » ; Extended / Famed Treasury : « worth 50{fame} + the highest marked {fame} ».
   if (text.includes("the highest marked {fame}")) return stage.fame + Math.max(0, ...own.filter((b) => b.marked).map((b) => b.fame ?? 0));
   // Large Dungeon (Ridding the Woods) : le compte des prisonniers défaussés (compteur du stage).
+  // Fiddler's Green (Adventures) : 5 par marque, 50 au plus.
+  const capped = /Worth (\d+)\{fame\} per mark here \(max (\d+)\{fame\}\)/.exec(text);
+  if (capped) return Math.min(Number(capped[2]), Number(capped[1]) * (instance(s, id).tallies?.[String(stage.id)] ?? 0));
   const perTally = /worth (\d+)\{fame\} for each mark\./.exec(text);
   if (perTally) return stage.fame + Number(perTally[1]) * (instance(s, id).tallies?.[String(stage.id)] ?? 0);
   if (text.includes("Worth 5{fame} for each {mark} on the other side.")) return 5 * boxes(catalog, s, id, 1).filter((b) => b.marked).length;

@@ -1,12 +1,12 @@
-import { cardId, type ResourceId } from "../data/schema";
+import { cardId, type CardTemplate, type ResourceId } from "../data/schema";
 import { askCards, askCardsOrNone, cardsOf } from "./choice";
 import { discoveredSerials } from "./exhausted";
 import { pushFront, recordDiscovery } from "./flow";
-import { canBeDestroyed, destroyCards, friendly, isKind, kingdom, queueScript, turnCard } from "./ops";
+import { canBeDestroyed, destroyCards, friendly, isKind, kingdom, markBox, queueScript, turnCard, unmarkedBoxes } from "./ops";
 import { crossOutProduction, productionCount } from "./production";
 import { shuffle } from "./rng";
 import { cardFame, computeScore } from "./score";
-import { activeStage, cardName, instance, log, moveTo, template, zoneOf } from "./state";
+import { activeStage, cardName, hasKeyword, instance, log, lostSeafaring, moveTo, template, zoneOf } from "./state";
 import type { Campaign, CardInstance, Catalog, ChoiceRequest, Draft, FlowStep, GameState, InstanceId, TriggerImpl } from "./types";
 
 // Après la partie de base (spec 4.7) : mini-extensions 136, 137, 138. Chacune : purge 12, purge d'une carte
@@ -42,6 +42,7 @@ export type GrandRules = {
 export const GRAND_EXPANSIONS: Record<string, GrandRules> = {
   Merchants: { name: "Merchants", packet: 7, permanents: 2, guide: 1, rounds: 4, scorePath: "13e", cover: 5 },
   RiddingTheWoods: { name: "Ridding the Woods", packet: 8, permanents: 2, focus: { resource: "wood", count: 2 }, rounds: 5, perRound: 5, upTo: 25, scorePath: "13c", cover: 10 },
+  FK_Adventures: { name: "Adventures", packet: 10, permanents: 1, rounds: 3, perRound: 2, upTo: 6, scorePath: "13j", cover: 3, keepAll: true },
 };
 /** Nom affiché d'une grande extension (« Ridding the Woods »). */
 export const grandName = (id: string): string => GRAND_EXPANSIONS[id]?.name ?? id;
@@ -99,7 +100,7 @@ export function startGrandExpansion(d: Draft, expansion: string): void {
   if (camp.base === null) camp.base = computeScore(d.catalog, d.s).total;
   for (const t of [...d.catalog.templates.values()].filter((x) => x.expansion === expansion).sort((a, b) => a.serial - b.serial)) {
     if (d.s.cards[t.id]) continue;
-    d.s.cards[t.id] = { instanceId: t.id, templateId: t.id, serial: t.serial, orientation: { side: "front", rotation: 0 }, stickers: [], checkedBoxes: [], crossedOutEffects: [], crossedOutProduction: [] };
+    d.s.cards[t.id] = { instanceId: t.id, templateId: t.id, serial: t.serial, orientation: { side: "front", rotation: 0 }, stickers: [], checkedBoxes: [...preChecked(t)], crossedOutEffects: [], crossedOutProduction: [] };
     d.s.zones.box.push(t.id);
   }
   // Sans carte guide (Ridding the Woods), l'extension est menée par son parchemin 00 (détruit après lecture).
@@ -119,6 +120,11 @@ export function startGrandExpansion(d: Draft, expansion: string): void {
   d.s.revealCount += 1;
   log(d.s, `Extension : ${rules.name}`);
   pushFront(d, { kind: "discover", card: cardId(expansion, 0) }, { kind: "nextRound" });
+}
+
+/** Cases imprimées déjà cochées (Morgan le Fey : la première de ses 9 cases). */
+function preChecked(t: CardTemplate): string[] {
+  return Object.values(t.stages).flatMap((st) => (st?.name === "Morgan le Fey" && st.checkboxes[0] ? [`${st.id}/${st.checkboxes[0].id}`] : []));
 }
 
 /** Parchemin 00 d'une grande extension, après lecture : purge, puis découverte de la carte guide (permanente). */
@@ -280,7 +286,9 @@ export function purgeFame(d: Draft, id: InstanceId, together = 1): number {
   const perProduction = /When purged, this is worth (\d+)\{fame\} for each production on it\./.exec(text);
   const whenPurged = /This is worth (-?\d+)\{fame\} when purged\./.exec(text);
   const base = perProduction ? Number(perProduction[1]) * productionCount(d.catalog, d.s, id) : whenPurged ? Number(whenPurged[1]) : cardFame(d.catalog, d.s, id);
-  return base + (bonus ? Number(bonus[1]) * marks : 0) + (perOther ? Number(perOther[1]) * Math.max(0, together - 1) : 0);
+  // Invisibility Cloak (Adventures) : « When purged, this is worth double {fame}. »
+  const double = stage?.effects.some((e) => e.text === "When purged, this is worth double {fame}.") ? 2 : 1;
+  return double * base + (bonus ? Number(bonus[1]) * marks : 0) + (perOther ? Number(perOther[1]) * Math.max(0, together - 1) : 0);
 }
 
 /** Prisonniers du royaume (Ridding the Woods) : « After selecting cards for a purge, add up to 2 Prisoners to that purge. » */
@@ -290,6 +298,24 @@ function prisoners(d: Draft): InstanceId[] {
     const stage = activeStage(d.catalog, d.s, id);
     const crossed = instance(d.s, id).crossedOutEffects;
     return stage?.effects.some((e) => e.text === PRISONER_TEXT && !crossed.includes(`${stage.id}/${e.id}`)) ?? false;
+  });
+}
+
+/**
+ * Cartes permanentes d'Adventures qui sauvent des cartes d'une purge en cochant une case chacune : Garrisoned Border
+ * (toute carte), Elixir of Eternal Life (personnes), The Green Armor (la personne en armure, sticker 55).
+ */
+type Protector = { card: InstanceId; keep: (id: InstanceId) => boolean };
+function protectors(d: Draft, chosen: readonly InstanceId[]): Protector[] {
+  const kinds: Record<string, (id: InstanceId) => boolean> = {
+    "Garrisoned Border": () => true,
+    "Elixir of Eternal Life": (id) => hasKeyword(d.catalog, d.s, id, "Person"),
+    "The Green Armor": (id) => instance(d.s, id).stickers.some((st) => st.keyword === "Armored"),
+  };
+  return d.s.zones.permanent.flatMap((card): Protector[] => {
+    const keep = kinds[activeStage(d.catalog, d.s, card)?.name ?? ""];
+    if (!keep || chosen.includes(card)) return [];
+    return unmarkedBoxes(d, card).length > 0 && chosen.some((id) => id !== card && keep(id)) ? [{ card, keep }] : [];
   });
 }
 
@@ -337,11 +363,18 @@ const purgeTrigger = (size: number, permanents: number, focus?: { resource: Reso
     }
     const chosen = answers.slice(0, packets + 1).flatMap(cardsOf);
     const savers = chosen.filter((id) => saves(d, id) > 0);
-    const saver = savers[i - from];
-    if (!saver) return null;
     const saved = answers.slice(from).flatMap(cardsOf);
-    const options = chosen.filter((id) => id !== saver && !saved.includes(id));
-    return askCards(`${cardName(d.catalog, d.s, saver)} : cartes sauvées de la purge (jusqu'à ${saves(d, saver)})`, options, 0, saves(d, saver));
+    const saver = savers[i - from];
+    if (saver) {
+      const options = chosen.filter((id) => id !== saver && !saved.includes(id));
+      return askCards(`${cardName(d.catalog, d.s, saver)} : cartes sauvées de la purge (jusqu'à ${saves(d, saver)})`, options, 0, saves(d, saver));
+    }
+    const all = [...chosen, ...(from > packets + 1 ? cardsOf(answers[packets + 1]) : [])];
+    const prot = protectors(d, all)[i - from - savers.length];
+    if (!prot) return null;
+    const room = unmarkedBoxes(d, prot.card).length;
+    const options = all.filter((id) => !saved.includes(id) && prot.keep(id));
+    return askCardsOrNone(`${cardName(d.catalog, d.s, prot.card)} : cartes sauvées de la purge (1 case cochée chacune, jusqu'à ${room})`, options, 1, room, "Aucune");
   },
   run: (d, _card, answers) => {
     const packets = packetCount(d);
@@ -349,11 +382,23 @@ const purgeTrigger = (size: number, permanents: number, focus?: { resource: Reso
     const chosen = [...answers.slice(0, packets + 1).flatMap(cardsOf), ...(from > packets + 1 ? cardsOf(answers[packets + 1]) : [])];
     const saved = new Set(answers.slice(from).flatMap(cardsOf));
     const purged = chosen.filter((id) => !saved.has(id));
+    // Sauvetages d'Adventures : une case cochée par carte sauvée (la dernière case détruit la carte qui protège).
+    const nSavers = answers.slice(0, packets + 1).flatMap(cardsOf).filter((id) => saves(d, id) > 0).length;
+    protectors(d, chosen).forEach((prot, k) => {
+      for (const id of cardsOf(answers[from + nSavers + k])) {
+        const next = unmarkedBoxes(d, prot.card)[0];
+        if (!next) break;
+        markBox(d, prot.card, next.stage, next.id);
+        log(d.s, `${cardName(d.catalog, d.s, id)} est sauvée par ${cardName(d.catalog, d.s, prot.card)}`);
+        if (next.text?.includes("{destroy}")) moveTo(d.s, prot.card, "destroyed");
+      }
+    });
     let fame = 0;
     for (const id of purged) {
       const f = purgeFame(d, id, purged.length);
       fame += f;
       log(d.s, `${cardName(d.catalog, d.s, id)} est purgée (${f} {fame})`);
+      lostSeafaring(d, id);
       moveTo(d.s, id, "purged");
     }
     for (const id of saved) log(d.s, `${cardName(d.catalog, d.s, id)} est sauvée de la purge`);

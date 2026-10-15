@@ -144,3 +144,27 @@ Lecture des cartes 00 à 29, sans la FAQ du site (inaccessible d'ici). Chaque po
 - **Large Dungeon** : compteur des prisonniers défaussés, 2 {fame} chacun. **Tax Collector** : -1 {fame} par case.
 - **Treasury** (Feudal Kingdom 26 et Ridding the Woods 28) : Extended / Famed Treasury vaut 50 + la plus haute case cochée (la plus haute case n'était pas comptée avant la v0.68).
 - **Cartes** : Ridding the Woods 00 à 29.
+
+## 2026-10-15 : extension Feudal Kingdom Adventures (à confirmer avec la FAQ du site)
+
+Lecture des cartes 00 à 28 et de la planche de stickers (panneau au blason), sans la FAQ du site. Chaque point peut être revu sur simple demande.
+
+- **Lancement** : les 29 cartes s'ajoutent à la boîte, rien n'est retiré. Parchemin 00, purge 10, puis 1 carte permanente.
+- **Manches** : 3 manches. Au début de chacune, les 2 cartes suivantes de l'extension (01 à 06) sont découvertes, puis la carte des aventures (01) propose de cocher un lieu pour découvrir son aventure, la première manche comprise. Le choix se fait dans une fenêtre qui montre la carte (« Ne rien cocher » possible) : la carte permanente est trop petite pour y toucher un lieu.
+- **Fin** : le score rejoint le chemin de score (sticker 13j). Aucune carte de l'extension n'est détruite : celles restées dans la boîte y restent, la carte des aventures les découvrira plus tard. Elle continue de proposer ses lieux à chaque début de manche, dans les extensions suivantes.
+- **Tourment** (Changeling) : la personne passe dans les permanentes ; elle compte pour la gloire, mais ne produit pas et n'a plus d'effet. Elle rejoint la défausse dès que son Changeling quitte l'étape qui l'a tourmentée (vaincu, retourné, détruit, purgé).
+- **Protections** (Garrisoned Border, The Green Armor) : quand l'effet d'une carte négative détruirait une carte amie, la protection coche une case à la place, d'office (pas de fenêtre) ; l'armure passe avant Garrisoned Border pour la personne qui la porte. La dernière case ({destroy}) détruit la carte qui protège.
+- **Purge** : Garrisoned Border (toute carte), Elixir of Eternal Life (personnes) et The Green Armor (la personne en armure) proposent chacune de sauver des cartes choisies, une case par carte. Invisibility Cloak vaut le double de sa gloire à la purge. Fiddler's Green compte les cartes maritimes détruites ou purgées (5 {fame} chacune, 50 au plus).
+- **Trading With Pixies** : chaque usage dépense 7 ressources, hors {sword}, prises d'office parmi les plus nombreuses. « If you haven't marked any {mark} this turn » : une case cochée ce tour-ci, sur cette carte.
+- **Wheel of Fortune** : la carte du dessous du deck est bloquée sous elle (libérée avec elle en fin de tour) ; les cartes qui partagent un mot-clé avec elle ont chaque production en double.
+- **Lorelei, Stealing from Nessie** : « the first person (or seafaring card) you play each turn » ; si plusieurs arrivent ensemble, on choisit. Les cartes bloquées par Nessie le restent d'un tour et d'une manche à l'autre ; elles rejoignent la défausse quand Nessie est vaincue ou détruite.
+- **The Green Dragon** : se cacher (case verte, tant qu'il en reste) ou l'affronter ; chaque étape qu'on peut faire est obligatoire, dans l'ordre. Étape 3 : une carte amie en jeu (erratum du site).
+- **Ancient** : le défausser coche une case et le tour continue ; les autres effets « End of Turn » attendent la vraie fin du tour.
+- **Prydwen** : quand une carte noble (sticker 56) produit, on peut défausser Prydwen à sa place (Oui / Non).
+- **Merlin** : « Add sticker 86a / 86b to replace this effect frame » : on choisit le sticker, qui recouvre ce cadre d'effet sur l'étape ; l'effet imprimé est remplacé. Authority (passif), Alchemy, Conjure, Fireball, Summon et Wonders sont automatisés ; Friendship : les autres personnes restent en jeu tant que Merlin y est. **Transform** (88b, « Discard instead of any other card in play ») n'est pas automatisé : le mode développeur permet de l'appliquer à la main.
+- **Apprentis et Morgan le Fey** : en jeu avec Merlin, l'apprenti les défausse tous les deux et coche une case. Morgan : la première de ses 9 cases est imprimée cochée ; en jeu avec Merlin, une fois par tour, cocher une case ou détruire les deux. Ni les apprentis ni Morgan ne peuvent être détruits tant que Merlin ne l'est pas.
+- **Ring of Power** (« Equip Person ») : l'équipement d'une personne n'est pas modélisé ; l'anneau est une carte ordinaire (sa production, sa gloire, « Stays in play »).
+- **The White Cowl** : la carte bénie reste en jeu ; on gagne sa production ou on utilise un de ses effets {activated}.
+- **Brazen Oracle** : « Upgrade that person for free » améliore la personne défaussée, sans payer, et finit le tour.
+- **Cerapter** : le sticker 53 marque Cerapter ; le sticker 54 donne à une personne « Play Cerapter from anywhere » (deck, défausse, bloquée).
+- **Cartes** : Adventures 00 à 28.

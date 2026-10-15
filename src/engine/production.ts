@@ -1,5 +1,5 @@
 import type { ProductionGroup, ResourceId } from "../data/schema";
-import { activeStage, hasKeyword, instance, stageIdAt, template } from "./state";
+import { activeStage, hasKeyword, instance, keywordsOf, stageIdAt, template } from "./state";
 import { coinMalus, productionBonus, surplusActive } from "./passives";
 import type { Catalog, GameState, InstanceId, StickerPlacement } from "./types";
 
@@ -27,8 +27,23 @@ export function productionGroups(catalog: Catalog, s: GameState, id: InstanceId)
     .filter((st) => st.stage === stage.id && st.resource !== undefined)
     .map((st, i): ProductionGroup => ({ id: `sticker${i}`, options: [[st.resource as ResourceId]] }));
   const bonus = productionBonus(catalog, s, id).map((o, i): ProductionGroup => ({ id: `bonus${i}`, options: [o] }));
-  const groups = withoutCoins([...printed, ...stickers, ...bonus], coinMalus(catalog, s));
+  const own = [...printed, ...stickers, ...bonus];
+  // Wheel of Fortune (Adventures) : production double si la carte partage un mot-clé avec la carte bloquée.
+  const all = wheelDoubles(catalog, s, id) ? [...own, ...own.map((g): ProductionGroup => ({ id: `${g.id}x2`, options: g.options }))] : own;
+  const groups = withoutCoins(all, coinMalus(catalog, s));
   return surplusActive(catalog, s) && hasKeyword(catalog, s, id, "Land") ? groups.map(withSurplus) : groups;
+}
+
+export const WHEEL_TEXT = "All cards sharing any keyword with the blocked card have double production.";
+
+function wheelDoubles(catalog: Catalog, s: GameState, id: InstanceId): boolean {
+  const mine = keywordsOf(catalog, s, id).map((k) => k.toLowerCase());
+  if (mine.length === 0) return false;
+  return s.zones.play.some((w) => {
+    const stage = activeStage(catalog, s, w);
+    if (!stage?.effects.some((e) => e.text === WHEEL_TEXT)) return false;
+    return (s.blocks?.[w] ?? []).some((b) => keywordsOf(catalog, s, b).some((k) => mine.includes(k.toLowerCase())));
+  });
 }
 
 /** Surplus : chaque {coin} d'une terre peut devenir {tradeGood} ; options dédoublonnées. */

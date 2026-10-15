@@ -1,4 +1,4 @@
-import type { CardTemplate, Checkbox, ResourceId, StageId } from "../../data/schema";
+import type { CardTemplate, Checkbox, EffectType, ResourceId, StageId } from "../../data/schema";
 import { askBox, askCards, askCardsOrNone, askOption, askPersons, askResources, boxOf, cardsOf, optionOf, resourcesOf } from "../choice";
 import { boxCardsBySerial, discardFromDeck, discoverNormally, discoverSerials, offerDiscovery, playCard, queueTriggers, staysInPlay } from "../flow";
 import {
@@ -52,6 +52,7 @@ import { FORTRESS_TEXT } from "./substitutes";
 import { EXPANSION_EFFECTS, EXPANSION_TRIGGERS } from "./expansions";
 import { MERCHANTS_EFFECTS, MERCHANTS_TRIGGERS, merchantsPattern } from "./merchants";
 import { RIDDING_EFFECTS, RIDDING_TRIGGERS, riddingPattern, robbinDefeated } from "./ridding";
+import { ADVENTURE_EFFECTS, ADVENTURE_TRIGGERS, ANYTIME_TEXTS, adventurePattern } from "./adventures";
 
 // Effets des cartes de Feudal Kingdom (cartes 11 à 135), reconnus à leur texte imprimé exact : toutes les copies
 // d'une carte en profitent. Les questions au joueur passent par `ask` (une à la fois, avant tout paiement), puis
@@ -154,7 +155,7 @@ const trackCards = (d: Draft, except: InstanceId | null): InstanceId[] =>
 export const STICKER_18_EFFECT = "Place this at the bottom of your deck.";
 
 /** Stickers de la planche cités par numéro sur les cartes. */
-export const STICKER_DEF: Record<string, { resource?: ResourceId; fame?: number; staysInPlay?: boolean; keyword?: string; startsInPlay?: boolean; effect?: string }> = {
+export const STICKER_DEF: Record<string, { resource?: ResourceId; fame?: number; staysInPlay?: boolean; keyword?: string; startsInPlay?: boolean; effect?: string; effectType?: EffectType }> = {
   "1": { resource: "coin" },
   "2": { resource: "wood" },
   "3": { resource: "stone" },
@@ -168,6 +169,21 @@ export const STICKER_DEF: Record<string, { resource?: ResourceId; fame?: number;
   // Planche Merchants.
   "17": { startsInPlay: true },
   "18": { effect: STICKER_18_EFFECT },
+  // Feudal Kingdom Adventures (planche au blason) : mots-clés, onglet de Cerapter, cadres d'effet de Merlin.
+  "38": { keyword: "Blessed" },
+  "53": {},
+  "54": { effect: "Play Cerapter from anywhere." },
+  "55": { keyword: "Armored" },
+  "56": { keyword: "Noble" },
+  "57": { keyword: "Magical" },
+  "86a": { effect: "Authority: Discard 1 person to gain any 1 resource.", effectType: "passive" },
+  "86b": { effect: "Friendship: Other persons stay in play.", effectType: "passive" },
+  "87a": { effect: "Alchemy: Gain 6{coin}." },
+  "87b": { effect: "Conjure: Gain 3{metal} or 3{tradeGood}." },
+  "88a": { effect: "Fireball: Gain {sword}{sword}{sword}{sword}." },
+  "88b": { effect: "Transform: Discard instead of any other card in play.", effectType: "triggeredOptional" },
+  "89a": { effect: "Summon: Play 1 magical card from discard pile." },
+  "89b": { effect: "Wonders: Gain any 1 resource per magical card in play." },
 };
 
 export function placeSticker(d: Draft, card: InstanceId, n: string): void {
@@ -417,7 +433,7 @@ const distinctBoxes = (d: Draft, card: InstanceId, without: string | null) =>
  * (réponse { box }, demande du 2026-10-03) ; les options, une par contenu, restent pour les parties enregistrées.
  * Les pistes « from left to right » restent dans l'ordre (markNext).
  */
-function freeMark(count: 1 | 2, cost: ResourceId[]): EffectImpl {
+export function freeMark(count: 1 | 2, cost: ResourceId[]): EffectImpl {
   /** Case choisie par une réponse : la case touchée, ou la première case libre de l'option. */
   const picked = (d: Draft, card: InstanceId, ans: Answer | undefined, without: string | null) => {
     const box = boxOf(ans);
@@ -962,8 +978,15 @@ export function cardEffects(templates: Iterable<CardTemplate>): Map<string, Effe
       if (!stage) continue;
       const sid = Number(key) as StageId;
       for (const e of stage.effects) {
-        if (e.type === "triggeredForced" || e.type === "triggeredOptional") continue;
-        const expansion = EXPANSION_EFFECTS[e.text] ?? MERCHANTS_EFFECTS[e.text] ?? merchantsPattern(e.text) ?? RIDDING_EFFECTS[e.text] ?? riddingPattern(e.text);
+        if ((e.type === "triggeredForced" || e.type === "triggeredOptional") && !ANYTIME_TEXTS.has(e.text)) continue;
+        const expansion =
+          EXPANSION_EFFECTS[e.text] ??
+          MERCHANTS_EFFECTS[e.text] ??
+          merchantsPattern(e.text) ??
+          RIDDING_EFFECTS[e.text] ??
+          riddingPattern(e.text) ??
+          ADVENTURE_EFFECTS[e.text] ??
+          adventurePattern(e.text);
         let factory: Factory | undefined = EXACT[e.text] ?? (expansion ? () => expansion() : undefined);
         if (!factory) {
           for (const [re, make] of PATTERNS) {
@@ -1458,7 +1481,7 @@ export function cardTriggers(templates: Iterable<CardTemplate>): Map<string, Tri
       if (!stage) continue;
       const sid = Number(key) as StageId;
       for (const e of stage.effects) {
-        const make = TRIGGERS[e.text] ?? EXPANSION_TRIGGERS[e.text] ?? MERCHANTS_TRIGGERS[e.text] ?? RIDDING_TRIGGERS[e.text];
+        const make = TRIGGERS[e.text] ?? EXPANSION_TRIGGERS[e.text] ?? MERCHANTS_TRIGGERS[e.text] ?? RIDDING_TRIGGERS[e.text] ?? ADVENTURE_TRIGGERS[e.text];
         const impl = make?.() ?? stayTrigger(e.text) ?? playCountTrigger(e.text);
         if (impl) out.set(effectKey(t.id, sid, e.id), withExpansion(impl, t.expansion));
       }

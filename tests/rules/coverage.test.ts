@@ -37,12 +37,25 @@ const RULES_ELSEWHERE = new Set([
   "You may not use {sword} except to upgrade cards.",
   "When advancing, you play 2 additional cards.",
   "After selecting cards for a purge, add up to 2 Prisoners to that purge.",
+  // Adventures : state.destroy et purge (Fiddler's Green), ops.destroyCards et purge (protections), flow.ts (tourment),
+  // production.ts (Wheel of Fortune), ops.canBeDestroyed, purgeFame (Invisibility Cloak).
+  "Whenever a seafaring card is destroyed or purged, keep track here.",
+  "Whenever a card is destroyed by an effect on a negative card or in a purge, you may mark 1 {mark} here instead.",
+  "Whenever a person is purged, mark 1 {mark} below to prevent it.",
+  "Mark 1 {mark} to prevent the armored person from being destroyed in a purge or by an effect on a negative card.",
+  "When Changeling is destroyed, return all tormented persons to your discard pile.",
+  "When Changeling is defeated or destroyed, return all tormented persons to your discard pile.",
+  "All cards sharing any keyword with the blocked card have double production.",
+  "When purged, this is worth double {fame}.",
+  "Cannot be destroyed.",
+  "Cannot be destroyed unless Merlin has already been destroyed.",
+  "Cannot be destroyed until Merlin is destroyed.",
 ]);
 // Purge (campaign.ts) : Aethan Estate.
 const PURGE = /^When you purge this card/;
 
 // Extensions dont les effets sont automatisés ; les autres s'y ajoutent une fois faites.
-const INTEGRATED = ["FeudalKingdom", "Merchants", "RiddingTheWoods"];
+const INTEGRATED = ["FeudalKingdom", "Merchants", "RiddingTheWoods", "FK_Adventures"];
 
 describe("couverture des effets", async () => {
   const catalog = await loadCatalog();

@@ -157,7 +157,22 @@ export function discard(d: Draft, id: InstanceId): void {
 }
 
 export function destroy(d: Draft, id: InstanceId): void {
+  if (["deck", "play", "discard", "permanent", "blocked"].includes(zoneOf(d.s, id))) lostSeafaring(d, id);
   moveTo(d.s, id, "destroyed");
+}
+
+/** Fiddler's Green (Adventures) : « Whenever a seafaring card is destroyed or purged, keep track here. » */
+export const FIDDLERS_GREEN = "Whenever a seafaring card is destroyed or purged, keep track here.";
+export function lostSeafaring(d: Draft, id: InstanceId): void {
+  if (!hasKeyword(d.catalog, d.s, id, "Seafaring")) return;
+  for (const g of d.s.zones.permanent) {
+    const stage = activeStage(d.catalog, d.s, g);
+    if (!stage?.effects.some((e) => e.text === FIDDLERS_GREEN)) continue;
+    const c = instance(d.s, g);
+    const key = String(stage.id);
+    c.tallies = { ...(c.tallies ?? {}), [key]: (c.tallies?.[key] ?? 0) + 1 };
+    log(d.s, `${cardName(d.catalog, d.s, g)} : ${c.tallies[key]} carte(s) maritime(s) perdue(s)`);
+  }
 }
 
 export function log(s: GameState, text: string): void {
