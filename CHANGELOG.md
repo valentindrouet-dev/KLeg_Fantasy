@@ -3,6 +3,10 @@
 Chaque mise à jour publiée change de version (`package.json`, affichée dans l'appli en bas de l'écran « Mes royaumes »
 et dans la barre de la partie). Convention : `0.5.0` s'affiche **v0.05** ; un correctif `0.5.1` s'affiche **v0.05.1**.
 
+## v0.69.1 (15 octobre 2026)
+
+- La carte des aventures (Adventures 01) s'affiche à l'horizontale, comme elle est imprimée, sur ses deux faces : dans la fenêtre des nouvelles cartes, parmi les permanentes et dans les questions. Les touchers sur la carte restent justes.
+
 ## v0.69 (15 octobre 2026)
 
 - **Nouvelle extension : Feudal Kingdom Adventures.** Elle se lance depuis la page de fin (tuile au chevalier). Ses 29 cartes s'ajoutent au royaume, rien n'est retiré.

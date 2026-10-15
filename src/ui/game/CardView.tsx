@@ -488,6 +488,26 @@ function Face({
   );
 }
 
+/**
+ * Cartes imprimées en paysage (demande du 2026-10-15) : la carte des aventures (Adventures 01) se lit à l'horizontale.
+ * Sa face est tournée d'un quart de tour (sens horaire au recto, antihoraire au verso) et réduite pour tenir dans la
+ * place d'une carte ; les touchers sont ramenés aux coordonnées de la carte.
+ */
+const LANDSCAPE: Readonly<Record<string, Partial<Record<"front" | "back", 90 | -90>>>> = {
+  "FK_Adventures-001": { front: 90, back: -90 },
+};
+const CARD_RATIO = 373 / 520;
+
+/** Point touché sur la carte affichée en paysage → point sur la carte (portrait, celle des mesures). */
+function unturn(p: TapPoint, turn: 90 | -90 | undefined): TapPoint {
+  if (!turn) return p;
+  const vx = (p.x - 0.5) * CARD_RATIO; // en hauteurs de carte
+  const vy = p.y - 0.5;
+  const [dx, dy] = turn === 90 ? [vy / CARD_RATIO, -vx / CARD_RATIO] : [-vy / CARD_RATIO, vx / CARD_RATIO];
+  const clamp = (v: number) => Math.min(1, Math.max(0, v));
+  return { x: clamp(0.5 + dx / CARD_RATIO), y: clamp(0.5 + dy) };
+}
+
 export function CardView(props: Props) {
   const { id, template, orientation, label, width, selected, engaged, targetable, dimBottom, flagged, onTwoFinger, dimmed, badge, onTap, onLongPress, zoneLabel, anim, half, note, exhausted, shake, picked, boxes, pickBoxes, pickCosts, goal } =
     props;
@@ -516,7 +536,12 @@ export function CardView(props: Props) {
   const onSwipe = markId && !anim ? () => toggleUnwanted(markId) : undefined;
   // Demi-carte : les positions touchées sont ramenées à la carte entière (zones cliquables inchangées).
   const yScale = half ? 0.5 : 1;
-  const press = usePress(onTap ? (p) => onTap({ ...p, y: p.y * yScale }) : () => {}, onLongPress ? (p) => onLongPress({ ...p, y: p.y * yScale }) : undefined, onTwoFinger, onSwipe);
+  const turn = LANDSCAPE[template.id]?.[orientation.side];
+  const toCard = (p: TapPoint): TapPoint => {
+    const q = unturn(p, turn);
+    return { ...q, y: q.y * yScale };
+  };
+  const press = usePress(onTap ? (p) => onTap(toCard(p)) : () => {}, onLongPress ? (p) => onLongPress(toCard(p)) : undefined, onTwoFinger, onSwipe);
   const [hover, setHover] = useState<Hover | null>(null);
   const [clicked, setClicked] = useState(false); // pas de bulle après un clic, jusqu'à la sortie du pointeur
   const interactive = Boolean(onTap || onLongPress || onSwipe) && !anim;
@@ -544,7 +569,19 @@ export function CardView(props: Props) {
     picked && styles.picked,
     onSwipe && styles.swipeable,
     unwanted && styles.unwanted,
+    turn && styles.landscapeCard,
   ].filter(Boolean);
+  const faces =
+    anim?.kind === "flip" ? (
+      // Retournement : deux faces dos à dos, la carte pivote d'un seul mouvement.
+      <div className={styles.flipInner}>
+        <Face template={template} orientation={orientation} label={label} stickers={stickers} exhausted={exhausted} boxes={boxes} pickBoxes={pickBoxes} crossedCosts={crossedCosts} pickCosts={pickCosts} goal={goal} fameNow={fameNow} customName={customName} crossedProduction={crossedProduction} written={written} />
+        <Face template={template} orientation={anim.to} label={label} className={styles.backFace} stickers={stickers} exhausted={exhausted} boxes={boxes} pickBoxes={pickBoxes} crossedCosts={crossedCosts} pickCosts={pickCosts} goal={goal} crossedProduction={crossedProduction} written={written} />
+      </div>
+    ) : (
+      // Pendant une rotation, la carte n'est plus grisée (sinon la moitié grisée passe en haut).
+      <Face template={template} orientation={orientation} label={label} dimBottom={dimBottom && !anim && !half} stickers={stickers} exhausted={exhausted} boxes={boxes} pickBoxes={pickBoxes} crossedCosts={crossedCosts} pickCosts={pickCosts} goal={goal} fameNow={fameNow} customName={customName} crossedProduction={crossedProduction} written={written} />
+    );
 
   return (
     <div
@@ -570,8 +607,7 @@ export function CardView(props: Props) {
         if (interactive) press.onPointerMove(e);
         if (e.pointerType === "touch" || anim || clicked) return;
         const r = e.currentTarget.getBoundingClientRect();
-        const x = (e.clientX - r.left) / r.width;
-        const y = ((e.clientY - r.top) / r.height) * yScale;
+        const { x, y } = toCard({ x: (e.clientX - r.left) / r.width, y: (e.clientY - r.top) / r.height });
         setHover({ zone: zoneAtCard(x, y, fullImage), half: y < 0.5 ? "top" : "bottom", x: e.clientX, y: e.clientY });
       }}
       onPointerLeave={(e) => {
@@ -580,17 +616,14 @@ export function CardView(props: Props) {
         if (e.pointerType !== "touch") setHover(null);
       }}
     >
-      {anim?.kind === "flip" ? (
-        // Retournement : deux faces dos à dos, la carte pivote d'un seul mouvement.
-        <div className={styles.flipInner}>
-          <Face template={template} orientation={orientation} label={label} stickers={stickers} exhausted={exhausted} boxes={boxes} pickBoxes={pickBoxes} crossedCosts={crossedCosts} pickCosts={pickCosts} goal={goal} fameNow={fameNow} customName={customName} crossedProduction={crossedProduction} written={written} />
-          <Face template={template} orientation={anim.to} label={label} className={styles.backFace} stickers={stickers} exhausted={exhausted} boxes={boxes} pickBoxes={pickBoxes} crossedCosts={crossedCosts} pickCosts={pickCosts} goal={goal} crossedProduction={crossedProduction} written={written} />
+      {turn ? (
+        <div className={styles.landscapeFace} style={{ transform: `rotate(${turn}deg) scale(${CARD_RATIO})` }}>
+          {faces}
         </div>
       ) : (
-        // Pendant une rotation, la carte n'est plus grisée (sinon la moitié grisée passe en haut).
-        <Face template={template} orientation={orientation} label={label} dimBottom={dimBottom && !anim && !half} stickers={stickers} exhausted={exhausted} boxes={boxes} pickBoxes={pickBoxes} crossedCosts={crossedCosts} pickCosts={pickCosts} goal={goal} fameNow={fameNow} customName={customName} crossedProduction={crossedProduction} written={written} />
+        faces
       )}
-      {rect && !anim && (
+      {rect && !anim && !turn && (
         <span
           className={styles.zoneHighlight}
           style={{

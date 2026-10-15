@@ -143,6 +143,20 @@
   transform: rotate(180deg);
 }
 
+/* Carte imprimée en paysage (carte des aventures) : la face tournée d'un quart de tour tient dans la place d'une carte. */
+.landscapeCard {
+  background: transparent;
+  box-shadow: none;
+}
+
+.landscapeFace {
+  position: absolute;
+  inset: 0;
+  border-radius: 4.5% / 3.2%;
+  box-shadow: 0 2px 6px rgb(0 0 0 / 0.25);
+  transform-origin: center;
+}
+
 .interactive {
   cursor: pointer;
 }
