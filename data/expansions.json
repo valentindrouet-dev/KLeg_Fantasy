@@ -15,6 +15,22 @@
       "serialFrom": 0,
       "serialTo": 25,
       "sourceUrl": "https://www.kingdomlegacygame.com/expansions/Merchants"
+    },
+    {
+      "id": "RiddingTheWoods",
+      "name": "Ridding the Woods",
+      "kind": "grand",
+      "serialFrom": 0,
+      "serialTo": 29,
+      "sourceUrl": "https://www.kingdomlegacygame.com/expansions/RiddingTheWoods"
+    },
+    {
+      "id": "FK_Adventures",
+      "name": "Feudal Kingdom Adventures",
+      "kind": "grand",
+      "serialFrom": 0,
+      "serialTo": 28,
+      "sourceUrl": "https://www.kingdomlegacygame.com/expansions/FK_Adventures"
     }
   ]
 }

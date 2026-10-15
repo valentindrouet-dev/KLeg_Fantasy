@@ -1,0 +1,175 @@
+{
+  "id": "FK_Adventures-010",
+  "expansion": "FK_Adventures",
+  "serial": 10,
+  "origin": "official",
+  "images": {
+    "front": "FK_Adventures/FK_Adventure_Cards_Page_21.webp",
+    "back": "FK_Adventures/FK_Adventure_Cards_Page_22.webp"
+  },
+  "orientationToStage": {
+    "front-0": 1,
+    "front-180": null,
+    "back-0": 4,
+    "back-180": 3
+  },
+  "isParchment": false,
+  "chooseSideOnDiscover": false,
+  "stages": {
+    "1": {
+      "id": 1,
+      "name": "Lorelei",
+      "keywords": [
+        "Enemy",
+        "Adventure"
+      ],
+      "category": "negative",
+      "negative": true,
+      "permanent": true,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "triggeredForced",
+          "text": "When you discover this, also discover 2 ship wrecks (18 & 19)."
+        },
+        {
+          "id": "e2",
+          "type": "triggeredForced",
+          "text": "Discard the first person you play each turn."
+        },
+        {
+          "id": "e3",
+          "type": "passive",
+          "text": "Discard any number of persons / seafaring cards to mark that many {mark}. When complete, {flip}."
+        }
+      ],
+      "checkboxes": [
+        {
+          "id": "c1"
+        },
+        {
+          "id": "c2"
+        },
+        {
+          "id": "c3"
+        },
+        {
+          "id": "c4"
+        },
+        {
+          "id": "c5"
+        },
+        {
+          "id": "c6"
+        },
+        {
+          "id": "c7"
+        },
+        {
+          "id": "c8"
+        },
+        {
+          "id": "c9"
+        },
+        {
+          "id": "c10"
+        },
+        {
+          "id": "c11"
+        },
+        {
+          "id": "c12"
+        },
+        {
+          "id": "c13"
+        },
+        {
+          "id": "c14"
+        },
+        {
+          "id": "c15"
+        },
+        {
+          "id": "c16"
+        }
+      ],
+      "staysInPlay": false,
+      "text": "{triggeredForced} When you discover this, also discover 2 ship wrecks (18 & 19). {triggeredForced} Discard the first person you play each turn. {passive} Discard any number of persons / seafaring cards to mark that many {mark}. When complete, {flip}.",
+      "siteKeywords": [
+        "Forced Triggered Effect",
+        "Discover",
+        "Passive Effect",
+        "Permanent"
+      ],
+      "helpText": "Note that even though this card is an enemy, it does not have the word \"defeat\" on it, so you can not use cards that let you defeat an enemy to flip it. Corner case: If you use the <a href=\"/cards/FeudalKingdom/76\">Skilled Ally</a>, a card who is both a person and a seafaring card, to mark [mark] here, it is still only counted as 1 card. SPOILER: This card leads to <a href=\"/cards/FK_Adventures/18\">this </a>and <a href=\"/cards/FK_Adventures/19\">this</a>."
+    },
+    "3": {
+      "id": 3,
+      "name": "Cave of 7 Sleepers",
+      "keywords": [
+        "Land"
+      ],
+      "category": "land",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "destroy",
+          "text": "Discard 2 persons to discover an Ancient (20) AND a ship (21)."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "{destroy} Discard 2 persons to discover an Ancient (20) AND a ship (21).",
+      "siteKeywords": [
+        "Destroy Effect",
+        "Discover"
+      ],
+      "helpText": "SPOILER: This card leads to <a href=\"/cards/FK_Adventures/20\">this </a>and <a href=\"/cards/FK_Adventures/21\">this</a>."
+    },
+    "4": {
+      "id": 4,
+      "name": "Mysterious Cave",
+      "keywords": [
+        "Land"
+      ],
+      "category": "land",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [],
+      "upgrades": [
+        {
+          "id": "u1",
+          "cost": [],
+          "arrow": "rotate",
+          "toStage": 3,
+          "otherCost": "1 Seafaring 2 Persons"
+        }
+      ],
+      "effects": [],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "",
+      "siteKeywords": [],
+      "helpText": "Note that a card can never be discarded for multiple effects. So, even if you have a card with both the \"person\" and \"seafaring\" keyword (like the <a href=\"/cards/FeudalKingdom/76\">Skilled Ally</a>), it can still only be discarded to pay for 1 of these upgrade costs. Corner Case: The card <a href=\"/cards/FeudalKingdom/73\">Miners</a>, that can be counted as 2 persons, can however be used to pay for both persons needed here, since it is 1 card discarded for 1 effect, but the effect is concidered to be 2 persons instead of 1."
+    }
+  },
+  "description": "This is 1 of the 10 adventures you can choose on your <a href=\"/cards/FK_Adventures/1\">Adventure Map</a>. She's a distraction, no doubt, and she seems to be really eager to prevent you from getting past her. What is she hiding in there...?",
+  "source": {
+    "url": "https://www.kingdomlegacygame.com/cards/FK_Adventures/10",
+    "scrapedAt": "2026-10-05T18:32:23.864Z"
+  },
+  "confidence": 0.9,
+  "to_verify": [
+    "Lorelei : 16 cases (2 rangées de 8), relues sur agrandissement ; pas de mot « defeat » : aucune instruction de défaite (confirmé par le site).",
+    "Mysterious Cave : coût d'amélioration « 1 Seafaring, 2 Persons », saisi dans otherCost."
+  ]
+}

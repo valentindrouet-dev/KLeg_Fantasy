@@ -1,0 +1,172 @@
+{
+  "id": "RiddingTheWoods-025",
+  "expansion": "RiddingTheWoods",
+  "serial": 25,
+  "origin": "official",
+  "images": {
+    "front": "RiddingTheWoods/RtW_Cards_Sida_51.webp",
+    "back": "RiddingTheWoods/RtW_Cards_Sida_52.webp"
+  },
+  "orientationToStage": {
+    "front-0": 1,
+    "front-180": 2,
+    "back-0": 4,
+    "back-180": 3
+  },
+  "isParchment": false,
+  "chooseSideOnDiscover": false,
+  "stages": {
+    "1": {
+      "id": 1,
+      "name": "Hilltop",
+      "keywords": [
+        "Land"
+      ],
+      "category": "land",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [
+        {
+          "id": "p1",
+          "options": [
+            [
+              "coin"
+            ]
+          ]
+        }
+      ],
+      "upgrades": [
+        {
+          "id": "u1",
+          "cost": [
+            "stone",
+            "stone",
+            "stone"
+          ],
+          "arrow": "rotate",
+          "toStage": 2
+        }
+      ],
+      "effects": [],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "",
+      "siteKeywords": []
+    },
+    "2": {
+      "id": 2,
+      "name": "Hill Monument",
+      "keywords": [
+        "Land"
+      ],
+      "category": "land",
+      "negative": false,
+      "permanent": false,
+      "fame": 4,
+      "production": [
+        {
+          "id": "p1",
+          "options": [
+            [
+              "coin"
+            ]
+          ]
+        }
+      ],
+      "upgrades": [
+        {
+          "id": "u1",
+          "cost": [
+            "stone",
+            "stone",
+            "stone",
+            "stone",
+            "stone",
+            "stone"
+          ],
+          "arrow": "flip",
+          "toStage": 3
+        }
+      ],
+      "effects": [],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "",
+      "siteKeywords": []
+    },
+    "3": {
+      "id": 3,
+      "name": "Hill Megalith",
+      "keywords": [
+        "Land"
+      ],
+      "category": "land",
+      "negative": false,
+      "permanent": false,
+      "fame": 10,
+      "production": [
+        {
+          "id": "p1",
+          "options": [
+            [
+              "coin"
+            ]
+          ]
+        }
+      ],
+      "upgrades": [
+        {
+          "id": "u1",
+          "cost": [],
+          "arrow": "rotate",
+          "toStage": 4
+        }
+      ],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "time",
+          "text": "Spend {tradeGood}{tradeGood}{tradeGood}{tradeGood} to discover the Keeper of Secrets (26)."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "{time} Spend {tradeGood}{tradeGood}{tradeGood}{tradeGood} to discover the Keeper of Secrets (26).",
+      "siteKeywords": []
+    },
+    "4": {
+      "id": 4,
+      "name": "Ceremony",
+      "keywords": [
+        "Event"
+      ],
+      "category": "other",
+      "negative": false,
+      "permanent": false,
+      "fame": 10,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "activated",
+          "text": "Discard 5 friendly cards from play. Add sticker 10 to 1 of them. Then {rotate}."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "{activated} Discard 5 friendly cards from play. Add sticker 10 to 1 of them. Then {rotate}.",
+      "siteKeywords": []
+    }
+  },
+  "description": "This is a card from the Ridding the Woods expansion.",
+  "source": {
+    "url": "https://www.kingdomlegacygame.com/cards/RiddingTheWoods/25",
+    "scrapedAt": "2026-10-05T18:30:08.742Z"
+  },
+  "confidence": 0.9,
+  "to_verify": [
+    "Hill Megalith : amélioration gratuite (boîte sans icône) vers Ceremony."
+  ]
+}

@@ -1,0 +1,142 @@
+{
+  "id": "FK_Adventures-011",
+  "expansion": "FK_Adventures",
+  "serial": 11,
+  "origin": "official",
+  "images": {
+    "front": "FK_Adventures/FK_Adventure_Cards_Page_23.webp",
+    "back": "FK_Adventures/FK_Adventure_Cards_Page_24.webp"
+  },
+  "orientationToStage": {
+    "front-0": 1,
+    "front-180": null,
+    "back-0": 4,
+    "back-180": null
+  },
+  "isParchment": false,
+  "chooseSideOnDiscover": false,
+  "stages": {
+    "1": {
+      "id": 1,
+      "name": "Stealing from Nessie",
+      "keywords": [
+        "Adventure"
+      ],
+      "category": "other",
+      "negative": false,
+      "permanent": true,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "triggeredForced",
+          "text": "Blocks the first seafaring card or person played each turn, getting more and more blocked cards."
+        },
+        {
+          "id": "e2",
+          "type": "time",
+          "text": "Discard 2 persons / seafaring cards to mark 1 {mark}. When complete, defeat ({flip})."
+        },
+        {
+          "id": "e3",
+          "type": "triggeredForced",
+          "text": "End of Round: Destroy 1 blocked card."
+        },
+        {
+          "id": "e4",
+          "type": "passive",
+          "text": "You may destroy this at any time."
+        }
+      ],
+      "checkboxes": [
+        {
+          "id": "c1"
+        },
+        {
+          "id": "c2"
+        },
+        {
+          "id": "c3"
+        },
+        {
+          "id": "c4"
+        },
+        {
+          "id": "c5"
+        },
+        {
+          "id": "c6"
+        }
+      ],
+      "staysInPlay": false,
+      "text": "{triggeredForced} Blocks the first seafaring card or person played each turn, getting more and more blocked cards. {time} Discard 2 persons / seafaring cards to mark 1 {mark}. When complete, defeat ({flip}). {triggeredForced} End of Round: Destroy 1 blocked card. {passive} You may destroy this at any time.",
+      "siteKeywords": [
+        "Permanent",
+        "Forced Triggered Effect",
+        "Block",
+        "Time Effect",
+        "Defeat",
+        "End of Round",
+        "Passive Effect"
+      ],
+      "helpText": "This cards Time Effect can be uses with any combination of persons and/or seafaring cards, like 1 of each type or 2 of one type. Note that a card can never be discarded for multiple effects. So, even if you have a card with both the \"person\" and \"seafaring\" keyword (like the <a href=\"/cards/FeudalKingdom/76\">Skilled Ally</a>), it can still only be discarded to pay for 1 of these costs. Corner Case: The card <a href=\"/cards/FeudalKingdom/73\">Miners</a>, that can be counted as 2 persons, can however be used to pay for both persons needed here, since it is 1 card discarded for 1 effect, but the effect is concidered to be 2 persons instead of 1. Remember that you can always use this cards Passive Effect to release the blocked cards and destroy Nessie, but that means that you'll never lay your hands on her treasure..."
+    },
+    "4": {
+      "id": 4,
+      "name": "Philosopher's Stone",
+      "keywords": [
+        "Artifact",
+        "Item"
+      ],
+      "category": "other",
+      "negative": false,
+      "permanent": false,
+      "fame": 20,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "passive",
+          "text": "Cannot be destroyed."
+        },
+        {
+          "id": "e2",
+          "type": "activated",
+          "text": "Destroy 1 person and mark {mark} to shuffle all cards from your discard pile into your deck."
+        }
+      ],
+      "checkboxes": [
+        {
+          "id": "c1"
+        },
+        {
+          "id": "c2"
+        },
+        {
+          "id": "c3"
+        }
+      ],
+      "staysInPlay": false,
+      "cannotBeDestroyed": true,
+      "text": "{passive} Cannot be destroyed. {activated} Destroy 1 person and mark {mark} to shuffle all cards from your discard pile into your deck.",
+      "siteKeywords": [
+        "Passive Effect",
+        "Activated Effect"
+      ],
+      "helpText": "Note that this cards Activated Effect cannot be used if there are no cards in your deck (because in that case, you are not considered to have a deck at all). Since you discard this card to carry out this effect, this card is also part of your discard pile when you shuffle it into your deck."
+    }
+  },
+  "description": "This is 1 of the 10 adventures you can choose on your <a href=\"/cards/FK_Adventures/1\">Adventure Map</a>. The Philosopher's Stone, an artifact of immense power, guarded by Nessie, a monster of immense power. Remember that you can always flee from Nessie if you see that it costs you too much, but doing so means that this treasure will be lost forever...",
+  "source": {
+    "url": "https://www.kingdomlegacygame.com/cards/FK_Adventures/11",
+    "scrapedAt": "2026-10-05T18:32:27.175Z"
+  },
+  "confidence": 0.9,
+  "to_verify": [
+    "Bandeau rose « Adventure - Permanent » : category=other, mot-clé Adventure.",
+    "Stealing from Nessie : le texte dit « defeat » mais la carte n'a pas le mot-clé Enemy : aucune instruction de défaite enregistrée."
+  ]
+}

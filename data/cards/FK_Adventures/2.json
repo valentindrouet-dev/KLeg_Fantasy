@@ -1,0 +1,180 @@
+{
+  "id": "FK_Adventures-002",
+  "expansion": "FK_Adventures",
+  "serial": 2,
+  "origin": "official",
+  "images": {
+    "front": "FK_Adventures/FK_Adventure_Cards_Page_05.webp",
+    "back": "FK_Adventures/FK_Adventure_Cards_Page_06.webp"
+  },
+  "orientationToStage": {
+    "front-0": 1,
+    "front-180": 2,
+    "back-0": 4,
+    "back-180": 3
+  },
+  "isParchment": false,
+  "chooseSideOnDiscover": false,
+  "stages": {
+    "1": {
+      "id": 1,
+      "name": "Rumors",
+      "keywords": [
+        "Event"
+      ],
+      "category": "other",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [],
+      "upgrades": [
+        {
+          "id": "u1",
+          "cost": [],
+          "arrow": "rotate",
+          "toStage": 2,
+          "otherCost": "1 Seafaring"
+        }
+      ],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "triggeredForced",
+          "text": "When played, discard 1 person."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "{triggeredForced} When played, discard 1 person.",
+      "siteKeywords": [
+        "Forced Triggered Effect"
+      ]
+    },
+    "2": {
+      "id": 2,
+      "name": "Investigation",
+      "keywords": [
+        "Event",
+        "Seafaring"
+      ],
+      "category": "other",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [],
+      "upgrades": [
+        {
+          "id": "u1",
+          "cost": [
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin"
+          ],
+          "arrow": "flip",
+          "toStage": 3
+        }
+      ],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "triggeredForced",
+          "text": "When played, discard 1 person."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "{triggeredForced} When played, discard 1 person.",
+      "siteKeywords": [
+        "Forced Triggered Effect"
+      ]
+    },
+    "3": {
+      "id": 3,
+      "name": "Last Voyage",
+      "keywords": [
+        "Event",
+        "Seafaring"
+      ],
+      "category": "other",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "activated",
+          "text": "Discard 1 seafaring card to mark 1 {mark}. When complete, {rotate}."
+        }
+      ],
+      "checkboxes": [
+        {
+          "id": "c1"
+        },
+        {
+          "id": "c2"
+        },
+        {
+          "id": "c3"
+        },
+        {
+          "id": "c4"
+        },
+        {
+          "id": "c5"
+        },
+        {
+          "id": "c6"
+        }
+      ],
+      "staysInPlay": false,
+      "text": "{activated} Discard 1 seafaring card to mark 1 {mark}. When complete, {rotate}.",
+      "siteKeywords": [
+        "Activated Effect"
+      ]
+    },
+    "4": {
+      "id": 4,
+      "name": "Fiddler's Green",
+      "keywords": [
+        "Land"
+      ],
+      "category": "land",
+      "negative": false,
+      "permanent": true,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "triggeredOptional",
+          "text": "Whenever a seafaring card is destroyed or purged, keep track here."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "fameVariable": true,
+      "text": "{triggeredOptional} Whenever a seafaring card is destroyed or purged, keep track here. {asterisk}Worth 5{fame} per mark here (max 50{fame}).",
+      "siteKeywords": [
+        "Permanent",
+        "Triggered Optional Effect"
+      ],
+      "helpText": "<b>If you're playing Distant Lands</b>, this card cannot be used to count the seafaring cards purged at the end of the expansion. This was previously allowed, but has now been ruled to not work. Fiddler's Green is joined to the main kingdom before the purge is performed, so it is not active when you perform the purge."
+    }
+  },
+  "description": "Concidering the rumors, investigating them, and embarking on a long journey will lead you to find every sailors dream of the afterlife: Fiddler's Green.",
+  "source": {
+    "url": "https://www.kingdomlegacygame.com/cards/FK_Adventures/2",
+    "scrapedAt": "2026-10-05T18:31:57.466Z"
+  },
+  "confidence": 0.9,
+  "to_verify": [
+    "Rumors : coût d'amélioration « 1 Seafaring », saisi dans otherCost.",
+    "Fiddler's Green : zone libre « Lost Seafaring Cards » (compteur), non modélisée par des cases ; gloire variable, 5 par marque, 50 au maximum."
+  ]
+}

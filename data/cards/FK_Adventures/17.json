@@ -1,0 +1,109 @@
+{
+  "id": "FK_Adventures-017",
+  "expansion": "FK_Adventures",
+  "serial": 17,
+  "origin": "official",
+  "images": {
+    "front": "FK_Adventures/FK_Adventure_Cards_Page_35.webp",
+    "back": "FK_Adventures/FK_Adventure_Cards_Page_36.webp"
+  },
+  "orientationToStage": {
+    "front-0": 1,
+    "front-180": null,
+    "back-0": 4,
+    "back-180": null
+  },
+  "isParchment": false,
+  "chooseSideOnDiscover": false,
+  "stages": {
+    "1": {
+      "id": 1,
+      "name": "Eustace the Pirate Monk",
+      "keywords": [
+        "Enemy"
+      ],
+      "category": "negative",
+      "negative": true,
+      "permanent": false,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "triggeredForced",
+          "text": "When played, discard 1 friendly card with production and cross out 1 production on it."
+        },
+        {
+          "id": "e2",
+          "type": "activated",
+          "text": "Spend {sword}{sword}{sword} to mark 1 {mark}. When complete, defeat ({flip})."
+        }
+      ],
+      "checkboxes": [
+        {
+          "id": "c1"
+        },
+        {
+          "id": "c2"
+        },
+        {
+          "id": "c3"
+        },
+        {
+          "id": "c4"
+        }
+      ],
+      "staysInPlay": false,
+      "defeat": {
+        "kind": "checkbox",
+        "cost": [
+          "sword",
+          "sword",
+          "sword"
+        ],
+        "text": "Spend {sword}{sword}{sword} to mark 1 {mark}. When complete, defeat ({flip})."
+      },
+      "text": "{triggeredForced} When played, discard 1 friendly card with production and cross out 1 production on it. {activated} Spend {sword}{sword}{sword} to mark 1 {mark}. When complete, defeat ({flip}).",
+      "siteKeywords": [
+        "Forced Triggered Effect",
+        "Activated Effect",
+        "Defeat"
+      ]
+    },
+    "4": {
+      "id": 4,
+      "name": "Eustace the Mercenary Monk",
+      "keywords": [
+        "Person"
+      ],
+      "category": "person",
+      "negative": false,
+      "permanent": false,
+      "fame": 5,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "activated",
+          "text": "Spend up to 3 resources to gain that many {sword}."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": true,
+      "text": "{passive} Stays in play. {activated} Spend up to 3 resources to gain that many {sword}.",
+      "siteKeywords": [
+        "Stays in play",
+        "Activated Effect"
+      ]
+    }
+  },
+  "description": "This is the guardian of the <a href=\"/cards/FK_Adventures/8\">Fountain of Youth</a>. Or so he claims. To earn his respect and friendship, you have to defeat him in a fair duel. He seems to have a different idea of what \"fair\" means, though...",
+  "source": {
+    "url": "https://www.kingdomlegacygame.com/cards/FK_Adventures/17",
+    "scrapedAt": "2026-10-05T18:32:46.972Z"
+  },
+  "confidence": 0.95,
+  "to_verify": []
+}

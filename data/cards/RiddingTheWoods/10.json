@@ -1,0 +1,98 @@
+{
+  "id": "RiddingTheWoods-010",
+  "expansion": "RiddingTheWoods",
+  "serial": 10,
+  "origin": "official",
+  "images": {
+    "front": "RiddingTheWoods/RtW_Cards_Sida_21.webp",
+    "back": "RiddingTheWoods/RtW_Cards_Sida_22.webp"
+  },
+  "orientationToStage": {
+    "front-0": 1,
+    "front-180": null,
+    "back-0": null,
+    "back-180": null
+  },
+  "isParchment": false,
+  "chooseSideOnDiscover": false,
+  "stages": {
+    "1": {
+      "id": 1,
+      "name": "Tax Collector",
+      "keywords": [
+        "Person"
+      ],
+      "category": "person",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [
+        {
+          "id": "p1",
+          "options": [
+            [
+              "coin",
+              "coin",
+              "coin",
+              "coin"
+            ]
+          ]
+        }
+      ],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "triggeredForced",
+          "text": "When you produce with this, mark 1 {mark}."
+        }
+      ],
+      "checkboxes": [
+        {
+          "id": "c1"
+        },
+        {
+          "id": "c2"
+        },
+        {
+          "id": "c3"
+        },
+        {
+          "id": "c4"
+        },
+        {
+          "id": "c5"
+        },
+        {
+          "id": "c6"
+        },
+        {
+          "id": "c7"
+        },
+        {
+          "id": "c8"
+        },
+        {
+          "id": "c9"
+        },
+        {
+          "id": "c10"
+        }
+      ],
+      "staysInPlay": false,
+      "fameVariable": true,
+      "text": "{triggeredForced} When you produce with this, mark 1 {mark}. {asterisk}Worth -1{fame} for each {mark}.",
+      "siteKeywords": []
+    }
+  },
+  "description": "This is a card from the Ridding the Woods expansion.",
+  "source": {
+    "url": "https://www.kingdomlegacygame.com/cards/RiddingTheWoods/10",
+    "scrapedAt": "2026-10-05T18:29:00.793Z"
+  },
+  "confidence": 0.9,
+  "to_verify": [
+    "Le verso est le dos de carte générique : aucun stage.",
+    "10 cases comptées sur l'image."
+  ]
+}

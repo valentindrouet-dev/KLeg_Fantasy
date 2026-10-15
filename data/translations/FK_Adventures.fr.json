@@ -1,0 +1,296 @@
+{
+ "FK_Adventures-000": {
+  "1": {
+   "name": "Bienvenue",
+   "text": "BIENVENUE dans Feudal Kingdom - Adventures. Si tu as une question sur les cartes ou les règles, scanne le QR code ou va sur www.kingdomlegacygame.com. Cette extension demande un Feudal Kingdom. Avant de commencer : fais une purge 10 et purge aussi 1 carte permanente. Après la purge, {flip}."
+  },
+  "4": {
+   "name": "",
+   "text": "Joue 3 manches. Au début de chaque manche, découvre les 2 cartes suivantes de cette extension (cartes 01-06). La première est une carte permanente : la carte des aventures. Au début de chaque manche, la première comprise, tu peux cocher 1 aventure sur la carte pour découvrir la carte correspondante de cette extension. Tu peux améliorer la carte vers son autre face pour 5 aventures de plus. Note le niveau de difficulté à côté de chaque aventure : plus il est haut, plus des cartes risquent d'être détruites. Une fois terminé : ajoute le sticker 13j au chemin de score de ta boîte et écris ton nouveau score. Chaque royaume ne peut jouer Adventures qu'une fois, mais il faudra bien des manches après cette extension pour explorer toutes les aventures."
+  }
+ },
+ "FK_Adventures-001": {
+  "1": {
+   "name": "Carte des aventures",
+   "text": "Permanente. {triggeredOptional} Début de manche : coche un lieu pour découvrir sa carte."
+  },
+  "4": {
+   "name": "Carte des aventures",
+   "text": "Permanente. {triggeredOptional} Début de manche : coche un lieu pour découvrir sa carte."
+  }
+ },
+ "FK_Adventures-002": {
+  "1": {
+   "name": "Rumeurs",
+   "text": "{triggeredForced} Quand elle est jouée, défausse 1 personne."
+  },
+  "2": {
+   "name": "Enquête",
+   "text": "{triggeredForced} Quand elle est jouée, défausse 1 personne."
+  },
+  "3": {
+   "name": "Dernier voyage",
+   "text": "{activated} Défausse 1 carte maritime pour cocher 1 {mark}. Une fois complète, {rotate}."
+  },
+  "4": {
+   "name": "Fiddler's Green",
+   "text": "{triggeredOptional} Chaque fois qu'une carte maritime est détruite ou purgée, note-le ici. {asterisk}Vaut 5{fame} par marque (50{fame} au maximum)."
+  }
+ },
+ "FK_Adventures-003": {
+  "1": {
+   "name": "Changelin",
+   "text": "{triggeredForced} Quand elle est jouée : tourmente 1 personne en jeu : elle devient permanente mais ne peut plus être utilisée. {activated} Dépense {sword}{sword}{sword} pour cocher 1 {mark}. Une fois complète, vaincs-la ({destroy} et découvre 25). {triggeredForced} Quand le Changelin est détruit, remets toutes les personnes tourmentées dans ta défausse."
+  }
+ },
+ "FK_Adventures-004": {
+  "1": {
+   "name": "Merlin le Sage",
+   "text": "{triggeredForced} Quand elle est jouée, découvre Apprentice (27). {activated} Rends magique 1 bâtiment ou objet en jeu (sticker 57). {activated} Ajoute le sticker 86a / 86b pour remplacer ce cadre d'effet. {activated} Ajoute le sticker 87a / 87b pour remplacer ce cadre d'effet."
+  },
+  "4": {
+   "name": "Merlin le Puissant",
+   "text": "{activated} Découvre Focus Energy (28). {activated} Ajoute le sticker 88a / 88b pour remplacer ce cadre d'effet. {activated} Ajoute le sticker 89a / 89b pour remplacer ce cadre d'effet."
+  }
+ },
+ "FK_Adventures-005": {
+  "1": {
+   "name": "Thulé",
+   "text": ""
+  },
+  "4": {
+   "name": "Frontière en garnison",
+   "text": "{triggeredOptional} Chaque fois qu'une carte est détruite par l'effet d'une carte négative ou dans une purge, tu peux cocher 1 {mark} ici à la place."
+  }
+ },
+ "FK_Adventures-006": {
+  "1": {
+   "name": "Vaisseau fantôme",
+   "text": "{triggeredForced} Quand elle est jouée, défausse la carte du dessous de ton deck. {activated} Dépense {sword}{sword}{sword}{sword} pour vaincre ({destroy})."
+  },
+  "4": {
+   "name": "Roue de la fortune",
+   "text": "{triggeredForced} Quand elle est jouée, bloque la carte du dessous de ton deck. {passive} Toutes les cartes qui partagent un mot-clé avec la carte bloquée ont une production double."
+  }
+ },
+ "FK_Adventures-007": {
+  "1": {
+   "name": "Commerce avec les lutins",
+   "text": "{passive} Dépense autant de ressources que tu veux, sauf des {sword}, pour cocher 1 {mark} par tranche de 7 ressources dépensées. Une fois complète, {flip}. {triggeredForced} Fin du tour : si tu n'as coché aucune {mark} ce tour-ci, détruis 1 carte amie de ta défausse."
+  },
+  "4": {
+   "name": "Cape d'invisibilité",
+   "text": "{triggeredOptional} Quand elle est purgée, elle vaut le double de {fame}. {activated} Coche 1 {mark} ci-dessous pour défausser toutes les cartes négatives en jeu et dans ton deck, puis remélange le deck."
+  }
+ },
+ "FK_Adventures-008": {
+  "1": {
+   "name": "Fontaine de jouvence",
+   "text": "{triggeredForced} Quand tu la découvres, découvre aussi Eustace (17). {passive} Défausse 2 personnes et dépense 3 ressources du même type pour cocher 1 {mark}. Une fois complète, {flip}."
+  },
+  "4": {
+   "name": "Élixir de vie éternelle",
+   "text": "{triggeredOptional} Chaque fois qu'une personne est purgée, coche 1 {mark} ci-dessous pour l'empêcher."
+  }
+ },
+ "FK_Adventures-009": {
+  "1": {
+   "name": "Jack-in-Irons",
+   "text": "{passive} Dépense {sword}{sword}{sword} pour le combattre (coche 1 {mark} rouge). {time} Dépense {wood}{wood}{wood} / {stone}{stone}{stone} pour le piéger (coche 1 {mark} vert). {triggeredForced} Quand la piste rouge OU verte est complète, vaincs-le ({flip}). {triggeredForced} Fin de manche : détruis 1 personne ou 2 autres cartes amies."
+  },
+  "4": {
+   "name": "Cerapter",
+   "text": "{triggeredOptional} Fin du tour : défausse cette carte pour garder jusqu'à 3 cartes en jeu. {activated} Gagne 2 ressources au choix. {activated} Attache-le (sticker 53) et ajoute le sticker 54 à 1 personne en jeu."
+  }
+ },
+ "FK_Adventures-010": {
+  "1": {
+   "name": "Lorelei",
+   "text": "{triggeredForced} Quand tu la découvres, découvre aussi 2 épaves (18 & 19). {triggeredForced} Défausse la première personne que tu joues à chaque tour. {passive} Défausse autant de personnes / cartes maritimes que tu veux pour cocher autant de {mark}. Une fois complète, {flip}."
+  },
+  "3": {
+   "name": "Grotte des 7 dormants",
+   "text": "{destroy} Défausse 2 personnes pour découvrir un Ancien (20) ET un navire (21)."
+  },
+  "4": {
+   "name": "Grotte mystérieuse",
+   "text": ""
+  }
+ },
+ "FK_Adventures-011": {
+  "1": {
+   "name": "Voler Nessie",
+   "text": "{triggeredForced} Bloque la première carte maritime ou personne jouée à chaque tour, et bloque ainsi de plus en plus de cartes. {time} Défausse 2 personnes / cartes maritimes pour cocher 1 {mark}. Une fois complète, vaincs ({flip}). {triggeredForced} Fin de manche : détruis 1 carte bloquée. {passive} Tu peux détruire cette carte à tout moment."
+  },
+  "4": {
+   "name": "Pierre philosophale",
+   "text": "{passive} Ne peut pas être détruite. {activated} Détruis 1 personne et coche {mark} pour mélanger toutes les cartes de ta défausse dans ton deck."
+  }
+ },
+ "FK_Adventures-012": {
+  "1": {
+   "name": "Combattre les païens",
+   "text": "{passive} Dépense {sword}{sword} pour cocher 1 {mark}. Une fois complète, {flip}. {triggeredForced} Fin de manche : raye toutes les productions de {sword} sur 1 carte qui produit des {sword}."
+  },
+  "4": {
+   "name": "Oracle d'airain",
+   "text": "{activated} Défausse 1 personne pour choisir 1 : * Gagne 2 ressources au choix. * Améliore cette personne gratuitement (ce qui finit ton tour)."
+  }
+ },
+ "FK_Adventures-013": {
+  "1": {
+   "name": "Le joueur de flûte",
+   "text": "{triggeredForced} Quand elle est jouée, bloque 1 personne. {triggeredForced} Fin du tour : détruis la personne bloquée OU dépense {coin}{coin}{coin}{coin} pour cocher 1 {mark} (de gauche à droite)."
+  },
+  "4": {
+   "name": "Hamelin",
+   "text": "{triggeredForced} Chaque fois qu'une carte négative ({negative}) est en jeu, défausse cette carte."
+  }
+ },
+ "FK_Adventures-014": {
+  "1": {
+   "name": "Le dragon vert",
+   "text": "{triggeredForced} Quand elle est jouée, coche 1 {mark} sur le vert pour te cacher, ou affronte le dragon en faisant ces 3 choses dans l'ordre (passe celles que tu ne peux pas faire) : 1) Défausse 3 cartes amies pour cocher 1 {mark}. 2) Raye 1 production sur 1 carte amie et défausse-la pour cocher 1 {mark}. 3) Détruis 1 carte amie pour cocher 1 {mark}. Quand la piste blanche est complète, {flip}."
+  },
+  "4": {
+   "name": "Princesse délivrée",
+   "text": "{activated} Gagne 2 ressources au choix."
+  }
+ },
+ "FK_Adventures-015": {
+  "1": {
+   "name": "À la recherche du tombeau d'Uther",
+   "text": "{triggeredForced} Quand tu la découvres, découvre aussi 3 hommes sauvages (22, 23 & 24). {passive} Défausse 3 personnes pour cocher 1 {mark}. Une fois complète, {flip}."
+  },
+  "4": {
+   "name": "L'armure verte",
+   "text": "{triggeredOptional} À tout moment, ajoute 1 armure (sticker 55) à 1 personne en jeu ou dans la défausse. {triggeredOptional} Coche 1 {mark} pour empêcher la personne en armure d'être détruite dans une purge ou par l'effet d'une carte négative."
+  }
+ },
+ "FK_Adventures-016": {
+  "1": {
+   "name": "Construire le pont",
+   "text": "{passive} Dépense les ressources pour cocher 1 {mark}. Une fois complète, {rotate}."
+  },
+  "2": {
+   "name": "Reprendre la relique",
+   "text": "{passive} Dépense {sword}{sword} pour cocher 1 {mark}. Une fois complète, {flip}."
+  },
+  "3": {
+   "name": "Le capuchon blanc",
+   "text": "{activated} Bénis (sticker 38) 1 carte amie en jeu. {activated} Choisis une carte bénie en jeu et gagne sa production comme ressources ou utilise 1 de ses effets {activated}."
+  }
+ },
+ "FK_Adventures-017": {
+  "1": {
+   "name": "Eustache le moine pirate",
+   "text": "{triggeredForced} Quand elle est jouée, défausse 1 carte amie qui produit et raye-lui 1 production. {activated} Dépense {sword}{sword}{sword} pour cocher 1 {mark}. Une fois complète, vaincs-le ({flip})."
+  },
+  "4": {
+   "name": "Eustache le moine mercenaire",
+   "text": "{passive} Reste en jeu. {activated} Dépense jusqu'à 3 ressources pour gagner autant de {sword}."
+  }
+ },
+ "FK_Adventures-018": {
+  "1": {
+   "name": "Épave",
+   "text": "{activated} Coche 1-2 {mark}. Une fois complète, {destroy}."
+  }
+ },
+ "FK_Adventures-019": {
+  "1": {
+   "name": "Épave",
+   "text": "{activated} Coche 1-2 {mark}. Une fois complète, {destroy}."
+  }
+ },
+ "FK_Adventures-020": {
+  "1": {
+   "name": "Ancien",
+   "text": "{triggeredOptional} Fin du tour : défausse cette carte et coche 1 {mark} pour empêcher la fin du tour."
+  }
+ },
+ "FK_Adventures-021": {
+  "1": {
+   "name": "Le Hollandais volant",
+   "text": "{triggeredForced} Quand elle est jouée, défausse 1 autre navire en jeu. Ajoute ici 1 sticker de ressource correspondant à 1 production du navire défaussé, s'il en a. Si cette carte produit maintenant 6 ressources ou plus, {oneTime}."
+  },
+  "4": {
+   "name": "Prydwen",
+   "text": "{triggeredOptional} Quand tu produis avec une carte noble, défausse cette carte à la place. {activated} Rends noble 1 carte amie en jeu (sticker 56)."
+  }
+ },
+ "FK_Adventures-022": {
+  "1": {
+   "name": "Homme sauvage",
+   "text": "{triggeredForced} Quand elle est jouée, défausse toutes les personnes. {activated} Dépense {sword}{sword}{sword} pour vaincre ({flip})."
+  },
+  "4": {
+   "name": "Homme sauvage",
+   "text": "{triggeredForced} Quand elle est jouée, défausse toutes les personnes. {activated} Dépense {sword}{sword}{sword} pour vaincre ({destroy})."
+  }
+ },
+ "FK_Adventures-023": {
+  "1": {
+   "name": "Homme sauvage",
+   "text": "{triggeredForced} Quand elle est jouée, défausse toutes les personnes. {activated} Dépense {sword}{sword}{sword} pour vaincre ({flip})."
+  },
+  "4": {
+   "name": "Homme sauvage",
+   "text": "{triggeredForced} Quand elle est jouée, défausse toutes les personnes. {activated} Dépense {sword}{sword}{sword} pour vaincre ({destroy})."
+  }
+ },
+ "FK_Adventures-024": {
+  "1": {
+   "name": "Homme sauvage",
+   "text": "{triggeredForced} Quand elle est jouée, défausse toutes les personnes. {activated} Dépense {sword}{sword}{sword} pour vaincre ({flip})."
+  },
+  "4": {
+   "name": "Homme sauvage",
+   "text": "{triggeredForced} Quand elle est jouée, défausse toutes les personnes. {activated} Dépense {sword}{sword}{sword} pour vaincre ({destroy})."
+  }
+ },
+ "FK_Adventures-025": {
+  "1": {
+   "name": "Changelin",
+   "text": "{triggeredForced} Quand elle est jouée : tourmente 1 personne en jeu : elle devient permanente mais ne peut plus être utilisée. {activated} Dépense {sword}{sword}{sword} pour cocher 1 {mark}. Une fois complète, vaincs-la ({flip}). {triggeredForced} Quand le Changelin est vaincu ou détruit, remets toutes les personnes tourmentées dans ta défausse."
+  },
+  "4": {
+   "name": "Changelin",
+   "text": "{triggeredForced} Quand elle est jouée : tourmente 1 personne en jeu : elle devient permanente mais ne peut plus être utilisée. {activated} Dépense {sword}{sword}{sword} pour cocher 1 {mark}. Une fois complète, vaincs-la ({destroy} et ajoute 1 sticker de ressource au choix à 1 carte amie). {triggeredForced} Quand le Changelin est détruit, remets toutes les personnes tourmentées dans ta défausse."
+  }
+ },
+ "FK_Adventures-026": {
+  "1": {
+   "name": "Anneau de pouvoir",
+   "text": "{passive} Reste en jeu."
+  },
+  "4": {
+   "name": "Anneau de pouvoir excessif",
+   "text": "{passive} Reste en jeu."
+  }
+ },
+ "FK_Adventures-027": {
+  "1": {
+   "name": "Jeune apprenti",
+   "text": "{passive} Ne peut pas être détruit tant que Merlin n'a pas été détruit. {triggeredForced} S'il est en jeu avec Merlin, défausse-les tous les deux et coche 1 {mark}. Une fois complète, {rotate}."
+  },
+  "2": {
+   "name": "Apprenti habile",
+   "text": "{time} Découvre Ring (26). {passive} Ne peut pas être détruit tant que Merlin n'a pas été détruit. {triggeredForced} S'il est en jeu avec Merlin, défausse-les tous les deux et coche 1 {mark}. Une fois complète, {flip}."
+  },
+  "3": {
+   "name": "Morgane la fée",
+   "text": "{passive} Ne peut pas être détruite tant que Merlin n'est pas détruit. {triggeredForced} Quand elle est jouée, défausse la carte du dessus de ton deck pour chaque {mark} ici. {triggeredForced} Si elle est un jour en jeu avec Merlin, coche 1 {mark} ou détruis-les tous les deux. {time} Dépense {sword}{sword}{sword}{sword}{sword} pour vaincre ({destroy}, seulement si Merlin est détruit)."
+  }
+ },
+ "FK_Adventures-028": {
+  "1": {
+   "name": "Concentrer l'énergie",
+   "text": "{activated} Défausse Merlin le Puissant, coche 1 {mark} et raye 1 production sur 1 carte en jeu pour ajouter le sticker correspondant à 1 carte amie magique en jeu. Une fois complète, {flip}."
+  },
+  "4": {
+   "name": "Grand pouvoir",
+   "text": "Cette carte est permanente. {time} Défausse le nombre de cartes magiques imprimé pour chaque case pour augmenter ton pouvoir : coche 1 {mark} de gauche à droite. Cette carte vaut la plus haute {fame} cochée."
+  }
+ }
+}

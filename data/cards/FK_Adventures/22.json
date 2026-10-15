@@ -1,0 +1,112 @@
+{
+  "id": "FK_Adventures-022",
+  "expansion": "FK_Adventures",
+  "serial": 22,
+  "origin": "official",
+  "images": {
+    "front": "FK_Adventures/FK_Adventure_Cards_Page_45.webp",
+    "back": "FK_Adventures/FK_Adventure_Cards_Page_46.webp"
+  },
+  "orientationToStage": {
+    "front-0": 1,
+    "front-180": null,
+    "back-0": 4,
+    "back-180": null
+  },
+  "isParchment": false,
+  "chooseSideOnDiscover": false,
+  "stages": {
+    "1": {
+      "id": 1,
+      "name": "Wild Man",
+      "keywords": [
+        "Enemy"
+      ],
+      "category": "negative",
+      "negative": true,
+      "permanent": false,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "triggeredForced",
+          "text": "When played, discard all persons."
+        },
+        {
+          "id": "e2",
+          "type": "activated",
+          "text": "Spend {sword}{sword}{sword} to defeat ({flip})."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "defeat": {
+        "kind": "turn",
+        "cost": [
+          "sword",
+          "sword",
+          "sword"
+        ],
+        "text": "Spend {sword}{sword}{sword} to defeat ({flip})."
+      },
+      "text": "{triggeredForced} When played, discard all persons. {activated} Spend {sword}{sword}{sword} to defeat ({flip}).",
+      "siteKeywords": [
+        "Forced Triggered Effect",
+        "Activated Effect",
+        "Defeat"
+      ]
+    },
+    "4": {
+      "id": 4,
+      "name": "Wild Man",
+      "keywords": [
+        "Enemy"
+      ],
+      "category": "negative",
+      "negative": true,
+      "permanent": false,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "triggeredForced",
+          "text": "When played, discard all persons."
+        },
+        {
+          "id": "e2",
+          "type": "activated",
+          "text": "Spend {sword}{sword}{sword} to defeat ({destroy})."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "defeat": {
+        "kind": "destroy",
+        "cost": [
+          "sword",
+          "sword",
+          "sword"
+        ],
+        "text": "Spend {sword}{sword}{sword} to defeat ({destroy})."
+      },
+      "text": "{triggeredForced} When played, discard all persons. {activated} Spend {sword}{sword}{sword} to defeat ({destroy}).",
+      "siteKeywords": [
+        "Forced Triggered Effect",
+        "Activated Effect",
+        "Defeat",
+        "Destroy"
+      ]
+    }
+  },
+  "description": "One of the reasons not to visit this <a href=\"/cards/FK_Adventures/15\">island</a>.",
+  "source": {
+    "url": "https://www.kingdomlegacygame.com/cards/FK_Adventures/22",
+    "scrapedAt": "2026-10-05T18:33:03.480Z"
+  },
+  "confidence": 0.95,
+  "to_verify": []
+}

@@ -1,0 +1,141 @@
+{
+  "id": "FK_Adventures-001",
+  "expansion": "FK_Adventures",
+  "serial": 1,
+  "origin": "official",
+  "images": {
+    "front": "FK_Adventures/FK_Adventure_Cards_Page_03.webp",
+    "back": "FK_Adventures/FK_Adventure_Cards_Page_04.webp"
+  },
+  "orientationToStage": {
+    "front-0": 1,
+    "front-180": null,
+    "back-0": 4,
+    "back-180": null
+  },
+  "isParchment": false,
+  "chooseSideOnDiscover": false,
+  "stages": {
+    "1": {
+      "id": 1,
+      "name": "Adventure Map",
+      "keywords": [],
+      "category": "none",
+      "negative": false,
+      "permanent": true,
+      "fame": 0,
+      "production": [],
+      "upgrades": [
+        {
+          "id": "u1",
+          "cost": [
+            "sword",
+            "sword"
+          ],
+          "arrow": "flip",
+          "toStage": 4
+        }
+      ],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "triggeredOptional",
+          "text": "Start of Round: mark a location to discover that card."
+        }
+      ],
+      "checkboxes": [
+        {
+          "id": "c1",
+          "text": "Discover The Pixies (07)."
+        },
+        {
+          "id": "c2",
+          "text": "Discover Fountain of Youth (08)."
+        },
+        {
+          "id": "c3",
+          "text": "Discover Free the Village (09)."
+        },
+        {
+          "id": "c4",
+          "text": "Discover Siren's Cave (10)."
+        },
+        {
+          "id": "c5",
+          "text": "Discover Stealing from Nessie (11)."
+        }
+      ],
+      "staysInPlay": false,
+      "text": "Permanent. {triggeredOptional} Start of Round: mark a location to discover that card.",
+      "siteKeywords": [
+        "Permanent"
+      ]
+    },
+    "4": {
+      "id": 4,
+      "name": "Adventure Map",
+      "keywords": [],
+      "category": "none",
+      "negative": false,
+      "permanent": true,
+      "fame": 0,
+      "production": [],
+      "upgrades": [
+        {
+          "id": "u1",
+          "cost": [
+            "sword",
+            "sword"
+          ],
+          "arrow": "flip",
+          "toStage": 1
+        }
+      ],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "triggeredOptional",
+          "text": "Start of Round: mark a location to discover that card."
+        }
+      ],
+      "checkboxes": [
+        {
+          "id": "c1",
+          "text": "Discover War on the Pagans (12)."
+        },
+        {
+          "id": "c2",
+          "text": "Discover The Scourge of Hamelin (13)."
+        },
+        {
+          "id": "c3",
+          "text": "Discover Path of St George (14)."
+        },
+        {
+          "id": "c4",
+          "text": "Discover Uther's Tomb (15)."
+        },
+        {
+          "id": "c5",
+          "text": "Discover Relic Hunt (16)."
+        }
+      ],
+      "staysInPlay": false,
+      "text": "Permanent. {triggeredOptional} Start of Round: mark a location to discover that card.",
+      "siteKeywords": [
+        "Permanent"
+      ]
+    }
+  },
+  "description": "This is the Adventure Map card of Feudal Kingdom. Each side contains 5 adventures you can mark. Between rounds (including before the first round of this expansion), you may mark 1 adventure to discover that card.\n\nThis means that it will take at least 10 rounds of play to discover all 10 adventures. Note that the card can be upgraded during the round .\n\nThe red arrows convey the threat level of each adventure. Level 3 and level 4 adventures will normally have the potential of destroying one or more cards of your kingdom unless dealt with properly and swiftly. If you are worried, keep to the easier adventures.<br><b>NOTE</b>: You may discover 1 adventure each round. Since Adventures is only 3 rounds, most of these adventures will be encountered while you are playing later expansions after Adventures.",
+  "source": {
+    "url": "https://www.kingdomlegacygame.com/cards/FK_Adventures/1",
+    "scrapedAt": "2026-10-05T18:31:54.170Z"
+  },
+  "confidence": 0.8,
+  "to_verify": [
+    "Carte au format paysage, sans nom imprimé : « Adventure Map » repris de la description du site.",
+    "Les 5 lieux de chaque face sont modélisés comme 5 cases à cocher ; les niveaux de danger (chevrons rouges, 1 à 4) ne sont pas saisis.",
+    "Amélioration : 2 épées, flèche lue comme un retournement (carte imprimée de côté) : à vérifier."
+  ]
+}

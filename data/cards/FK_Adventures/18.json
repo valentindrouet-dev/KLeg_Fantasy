@@ -1,0 +1,162 @@
+{
+  "id": "FK_Adventures-018",
+  "expansion": "FK_Adventures",
+  "serial": 18,
+  "origin": "official",
+  "images": {
+    "front": "FK_Adventures/FK_Adventure_Cards_Page_37.webp",
+    "back": "FK_Adventures/FK_Adventure_Cards_Page_38.webp"
+  },
+  "orientationToStage": {
+    "front-0": 1,
+    "front-180": null,
+    "back-0": null,
+    "back-180": null
+  },
+  "isParchment": false,
+  "chooseSideOnDiscover": false,
+  "stages": {
+    "1": {
+      "id": 1,
+      "name": "Ship Wreck",
+      "keywords": [
+        "Structure"
+      ],
+      "category": "other",
+      "negative": false,
+      "permanent": false,
+      "fame": -5,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "activated",
+          "text": "Mark 1-2 {mark}. When complete, {destroy}."
+        }
+      ],
+      "checkboxes": [
+        {
+          "id": "c1",
+          "gain": [
+            "coin"
+          ]
+        },
+        {
+          "id": "c2",
+          "gain": [
+            "wood"
+          ]
+        },
+        {
+          "id": "c3",
+          "gain": [
+            "wood"
+          ]
+        },
+        {
+          "id": "c4",
+          "gain": [
+            "metal"
+          ]
+        },
+        {
+          "id": "c5",
+          "gain": [
+            "coin",
+            "coin"
+          ]
+        },
+        {
+          "id": "c6",
+          "gain": [
+            "metal",
+            "metal"
+          ]
+        },
+        {
+          "id": "c7",
+          "gain": [
+            "tradeGood",
+            "tradeGood"
+          ]
+        },
+        {
+          "id": "c8",
+          "gain": [
+            "tradeGood",
+            "tradeGood"
+          ]
+        },
+        {
+          "id": "c9",
+          "gain": [
+            "coin"
+          ]
+        },
+        {
+          "id": "c10",
+          "gain": [
+            "wood"
+          ]
+        },
+        {
+          "id": "c11",
+          "gain": [
+            "wood"
+          ]
+        },
+        {
+          "id": "c12",
+          "gain": [
+            "metal"
+          ]
+        },
+        {
+          "id": "c13",
+          "gain": [
+            "wood",
+            "wood"
+          ]
+        },
+        {
+          "id": "c14",
+          "gain": [
+            "wood",
+            "wood"
+          ]
+        },
+        {
+          "id": "c15",
+          "gain": [
+            "tradeGood",
+            "tradeGood"
+          ]
+        },
+        {
+          "id": "c16",
+          "gain": [
+            "sword",
+            "sword"
+          ]
+        }
+      ],
+      "staysInPlay": false,
+      "text": "{activated} Mark 1-2 {mark}. When complete, {destroy}.",
+      "siteKeywords": [
+        "Activated Effect",
+        "Destroy"
+      ]
+    }
+  },
+  "description": "This seems to be the remains of <a href=\"/cards/FK_Adventures/10\">Loreleis </a>earlier trespassers. Disturbing, but rewarding.",
+  "source": {
+    "url": "https://www.kingdomlegacygame.com/cards/FK_Adventures/18",
+    "scrapedAt": "2026-10-05T18:32:50.281Z"
+  },
+  "confidence": 0.9,
+  "to_verify": [
+    "Le verso est le dos de carte générique : aucun stage.",
+    "16 cases relues sur agrandissement (2 rangées de 8)."
+  ]
+}

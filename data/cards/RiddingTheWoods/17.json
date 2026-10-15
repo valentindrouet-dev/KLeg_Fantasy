@@ -1,0 +1,171 @@
+{
+  "id": "RiddingTheWoods-017",
+  "expansion": "RiddingTheWoods",
+  "serial": 17,
+  "origin": "official",
+  "images": {
+    "front": "RiddingTheWoods/RtW_Cards_Sida_35.webp",
+    "back": "RiddingTheWoods/RtW_Cards_Sida_36.webp"
+  },
+  "orientationToStage": {
+    "front-0": 1,
+    "front-180": 2,
+    "back-0": 4,
+    "back-180": 3
+  },
+  "isParchment": false,
+  "chooseSideOnDiscover": false,
+  "stages": {
+    "1": {
+      "id": 1,
+      "name": "Large Robber Camp",
+      "keywords": [
+        "Land",
+        "Enemy"
+      ],
+      "category": "negative",
+      "negative": true,
+      "permanent": false,
+      "fame": 0,
+      "production": [],
+      "upgrades": [
+        {
+          "id": "u1",
+          "cost": [
+            "sword",
+            "sword",
+            "sword",
+            "sword"
+          ],
+          "arrow": "rotate",
+          "toStage": 2
+        }
+      ],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "passive",
+          "text": "You may not use {sword} except to upgrade cards."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "{passive} You may not use {sword} except to upgrade cards.",
+      "siteKeywords": []
+    },
+    "2": {
+      "id": 2,
+      "name": "Small Robber Camp",
+      "keywords": [
+        "Land",
+        "Enemy"
+      ],
+      "category": "negative",
+      "negative": true,
+      "permanent": false,
+      "fame": 0,
+      "production": [],
+      "upgrades": [
+        {
+          "id": "u1",
+          "cost": [
+            "sword",
+            "sword",
+            "sword"
+          ],
+          "arrow": "flip",
+          "toStage": 3
+        }
+      ],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "passive",
+          "text": "You may not use {sword} except to upgrade cards."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "{passive} You may not use {sword} except to upgrade cards.",
+      "siteKeywords": []
+    },
+    "3": {
+      "id": 3,
+      "name": "Empty Camp",
+      "keywords": [
+        "Land"
+      ],
+      "category": "land",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [
+        {
+          "id": "p1",
+          "options": [
+            [
+              "wood"
+            ]
+          ]
+        }
+      ],
+      "upgrades": [
+        {
+          "id": "u1",
+          "cost": [
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin"
+          ],
+          "arrow": "rotate",
+          "toStage": 4
+        }
+      ],
+      "effects": [],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "",
+      "siteKeywords": []
+    },
+    "4": {
+      "id": 4,
+      "name": "Cliffy Forest",
+      "keywords": [
+        "Land"
+      ],
+      "category": "land",
+      "negative": false,
+      "permanent": false,
+      "fame": 3,
+      "production": [
+        {
+          "id": "p1",
+          "options": [
+            [
+              "stone",
+              "wood"
+            ]
+          ]
+        }
+      ],
+      "upgrades": [],
+      "effects": [],
+      "checkboxes": [],
+      "staysInPlay": true,
+      "text": "{passive} Stays in play.",
+      "siteKeywords": []
+    }
+  },
+  "description": "This is a card from the Ridding the Woods expansion.",
+  "source": {
+    "url": "https://www.kingdomlegacygame.com/cards/RiddingTheWoods/17",
+    "scrapedAt": "2026-10-05T18:29:23.889Z"
+  },
+  "confidence": 0.9,
+  "to_verify": [
+    "Bandeau bicolore avec rouge (Land - Enemy) : category=negative, non amie."
+  ]
+}

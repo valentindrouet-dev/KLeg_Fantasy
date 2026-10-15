@@ -1,0 +1,115 @@
+{
+  "id": "FK_Adventures-012",
+  "expansion": "FK_Adventures",
+  "serial": 12,
+  "origin": "official",
+  "images": {
+    "front": "FK_Adventures/FK_Adventure_Cards_Page_25.webp",
+    "back": "FK_Adventures/FK_Adventure_Cards_Page_26.webp"
+  },
+  "orientationToStage": {
+    "front-0": 1,
+    "front-180": null,
+    "back-0": 4,
+    "back-180": null
+  },
+  "isParchment": false,
+  "chooseSideOnDiscover": false,
+  "stages": {
+    "1": {
+      "id": 1,
+      "name": "Battling the Pagans",
+      "keywords": [
+        "Adventure"
+      ],
+      "category": "other",
+      "negative": false,
+      "permanent": true,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "passive",
+          "text": "Spend {sword}{sword} to mark 1 {mark}. When complete, {flip}."
+        },
+        {
+          "id": "e2",
+          "type": "triggeredForced",
+          "text": "End of Round: Cross out all {sword} production on 1 card with {sword} production."
+        }
+      ],
+      "checkboxes": [
+        {
+          "id": "c1"
+        },
+        {
+          "id": "c2"
+        },
+        {
+          "id": "c3"
+        },
+        {
+          "id": "c4"
+        },
+        {
+          "id": "c5"
+        },
+        {
+          "id": "c6"
+        },
+        {
+          "id": "c7"
+        },
+        {
+          "id": "c8"
+        }
+      ],
+      "staysInPlay": false,
+      "text": "{passive} Spend {sword}{sword} to mark 1 {mark}. When complete, {flip}. {triggeredForced} End of Round: Cross out all {sword} production on 1 card with {sword} production.",
+      "siteKeywords": [
+        "Permanent",
+        "Passive Effect",
+        "Forced Triggered Effect",
+        "End of Round"
+      ]
+    },
+    "4": {
+      "id": 4,
+      "name": "Brazen Oracle",
+      "keywords": [
+        "Item"
+      ],
+      "category": "other",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "activated",
+          "text": "Discard 1 person to choose 1: * Gain any 2 resources. * Upgrade that person for free (ending your turn)."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "{activated} Discard 1 person to choose 1: * Gain any 2 resources. * Upgrade that person for free (ending your turn).",
+      "siteKeywords": [
+        "Activated Effect"
+      ],
+      "helpText": "Note that to upgrade a person, it must have a brown upgrade box that you use, even though all costs indicated there are ignored. This means you cannot rotate or flip a card to any other orientation than those indicated, using this effect. Note also that this is an upgrade, which means your turn ends when you perform it. "
+    }
+  },
+  "description": "This is 1 of the 10 adventures you can choose on your <a href=\"/cards/FK_Adventures/1\">Adventure Map</a>. Righteousness must prevail! And of course, you are the righteous one in this conflict. You're just seeking an innocent Brazen Oracle to wor... consult.",
+  "source": {
+    "url": "https://www.kingdomlegacygame.com/cards/FK_Adventures/12",
+    "scrapedAt": "2026-10-05T18:32:30.486Z"
+  },
+  "confidence": 0.9,
+  "to_verify": [
+    "Bandeau rose « Adventure - Permanent » : category=other, mot-clé Adventure."
+  ]
+}

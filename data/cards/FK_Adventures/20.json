@@ -1,0 +1,95 @@
+{
+  "id": "FK_Adventures-020",
+  "expansion": "FK_Adventures",
+  "serial": 20,
+  "origin": "official",
+  "images": {
+    "front": "FK_Adventures/FK_Adventure_Cards_Page_41.webp",
+    "back": "FK_Adventures/FK_Adventure_Cards_Page_42.webp"
+  },
+  "orientationToStage": {
+    "front-0": 1,
+    "front-180": null,
+    "back-0": null,
+    "back-180": null
+  },
+  "isParchment": false,
+  "chooseSideOnDiscover": false,
+  "stages": {
+    "1": {
+      "id": 1,
+      "name": "Ancient",
+      "keywords": [
+        "Person",
+        "Mage"
+      ],
+      "category": "person",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "triggeredOptional",
+          "text": "End of Turn: Discard and mark 1 {mark} to prevent the turn from ending."
+        }
+      ],
+      "checkboxes": [
+        {
+          "id": "c1"
+        },
+        {
+          "id": "c2"
+        },
+        {
+          "id": "c3"
+        },
+        {
+          "id": "c4"
+        },
+        {
+          "id": "c5"
+        },
+        {
+          "id": "c6"
+        },
+        {
+          "id": "c7"
+        },
+        {
+          "id": "c8"
+        },
+        {
+          "id": "c9"
+        },
+        {
+          "id": "c10"
+        },
+        {
+          "id": "c11"
+        },
+        {
+          "id": "c12"
+        }
+      ],
+      "staysInPlay": false,
+      "text": "{triggeredOptional} End of Turn: Discard and mark 1 {mark} to prevent the turn from ending.",
+      "siteKeywords": [
+        "Triggered Optional Effect"
+      ],
+      "helpText": "Note that this cards Triggered Optional Effect can be used for any reason the turn would otherwise end (such as upgrading, using a Time Effect etc). "
+    }
+  },
+  "description": "This man seems to be the reason Lorelei is so protective of her <a href=\"/cards/FK_Adventures/10\">cave</a>. What kind of value could such an old man possibly have, you wonder...",
+  "source": {
+    "url": "https://www.kingdomlegacygame.com/cards/FK_Adventures/20",
+    "scrapedAt": "2026-10-05T18:32:56.869Z"
+  },
+  "confidence": 0.9,
+  "to_verify": [
+    "Le verso est le dos de carte générique : aucun stage.",
+    "12 cases (2 rangées de 6) comptées sur l'image."
+  ]
+}

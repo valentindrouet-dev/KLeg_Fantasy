@@ -1,0 +1,136 @@
+{
+  "id": "RiddingTheWoods-023",
+  "expansion": "RiddingTheWoods",
+  "serial": 23,
+  "origin": "official",
+  "images": {
+    "front": "RiddingTheWoods/RtW_Cards_Sida_47.webp",
+    "back": "RiddingTheWoods/RtW_Cards_Sida_48.webp"
+  },
+  "orientationToStage": {
+    "front-0": 1,
+    "front-180": null,
+    "back-0": 4,
+    "back-180": null
+  },
+  "isParchment": false,
+  "chooseSideOnDiscover": false,
+  "stages": {
+    "1": {
+      "id": 1,
+      "name": "Old Oak Tree",
+      "keywords": [
+        "Land"
+      ],
+      "category": "negative",
+      "negative": true,
+      "permanent": false,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "triggeredForced",
+          "text": "When played, play 1 enemy from discard pile."
+        },
+        {
+          "id": "e2",
+          "type": "activated",
+          "text": "Spend {metal}{metal} to mark 1 {mark} from left to right."
+        }
+      ],
+      "checkboxes": [
+        {
+          "id": "c1"
+        },
+        {
+          "id": "c2"
+        },
+        {
+          "id": "c3"
+        },
+        {
+          "id": "c4",
+          "text": "{flip}"
+        }
+      ],
+      "staysInPlay": false,
+      "text": "{triggeredForced} When played, play 1 enemy from discard pile. {activated} Spend {metal}{metal} to mark 1 {mark} from left to right.",
+      "siteKeywords": [],
+      "helpText": "Note that this land is also negative, it cannot be purged. However, it is not an enemy."
+    },
+    "4": {
+      "id": 4,
+      "name": "Stump",
+      "keywords": [
+        "Land"
+      ],
+      "category": "land",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "activated",
+          "text": "Mark 1 {mark}."
+        }
+      ],
+      "checkboxes": [
+        {
+          "id": "c1",
+          "gain": [
+            "wood",
+            "wood"
+          ]
+        },
+        {
+          "id": "c2",
+          "gain": [
+            "wood",
+            "wood"
+          ]
+        },
+        {
+          "id": "c3",
+          "gain": [
+            "wood",
+            "wood"
+          ]
+        },
+        {
+          "id": "c4",
+          "gain": [
+            "wood",
+            "wood",
+            "wood"
+          ]
+        },
+        {
+          "id": "c5",
+          "gain": [
+            "wood",
+            "wood",
+            "wood"
+          ]
+        }
+      ],
+      "staysInPlay": false,
+      "text": "{activated} Mark 1 {mark}.",
+      "siteKeywords": []
+    }
+  },
+  "description": "This is a card from the Ridding the Woods expansion.",
+  "source": {
+    "url": "https://www.kingdomlegacygame.com/cards/RiddingTheWoods/23",
+    "scrapedAt": "2026-10-05T18:30:02.129Z"
+  },
+  "confidence": 0.9,
+  "to_verify": [
+    "Old Oak Tree : bandeau rouge et vert, mot-clé « Land » seul : carte négative (non purgeable) mais pas un ennemi, d'après le site.",
+    "Stump : 5 cases relues sur agrandissement (2, 2, 2, 3, 3 bois)."
+  ]
+}

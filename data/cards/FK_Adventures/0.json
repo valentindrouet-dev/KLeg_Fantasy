@@ -1,0 +1,69 @@
+{
+  "id": "FK_Adventures-000",
+  "expansion": "FK_Adventures",
+  "serial": 0,
+  "origin": "official",
+  "images": {
+    "front": "FK_Adventures/FK_Adventure_Cards_Page_01.webp",
+    "back": "FK_Adventures/FK_Adventure_Cards_Page_02.webp"
+  },
+  "orientationToStage": {
+    "front-0": 1,
+    "front-180": null,
+    "back-0": 4,
+    "back-180": null
+  },
+  "isParchment": true,
+  "chooseSideOnDiscover": false,
+  "stages": {
+    "1": {
+      "id": 1,
+      "name": "Welcome",
+      "keywords": [],
+      "category": "none",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "triggeredForced",
+          "text": "This expansion requires a Feudal Kingdom. Before starting, perform a purge 10 and also purge 1 permanent card. After the purge, {flip}."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "WELCOME to Feudal Kingdom - Adventures. If you have questions about the cards or rules, scan the QR code or visit www.kingdomlegacygame.com for answers. This expansion requires a Feudal Kingdom. Before starting, perform a purge 10 and also purge 1 permanent card. After the purge, {flip}.",
+      "siteKeywords": []
+    },
+    "4": {
+      "id": 4,
+      "name": "",
+      "keywords": [],
+      "category": "none",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "Play 3 rounds. At the start of each round, discover the next 2 cards from this expansion (cards 01-06). The first card is a permanent map card. At the start of each round, including the first one, you may mark 1 adventure on the map to discover the corresponding card from this expansion. Note that you can upgrade the map to the other side for 5 additional adventures. Also note the difficulty level beside each adventure, where a higher level means there is a higher risk of cards being destroyed. When you are done, add sticker 13j to the score path on your box and fill in your new score. Each kingdom may only play Adventures once, but it will take many rounds after this expansion to explore all adventures.",
+      "siteKeywords": [],
+      "helpText": "NOTE: You may select an adventure before starting the first round of this expansion."
+    }
+  },
+  "description": "This is the cover card for the Feudal Kingdom Adventures Expansion. It is a parchment card. Follow its instructions, and when you are done with it, destroy it. For all intents and purposes, this is not considered a card at all. Especially not when you have destroyed it.",
+  "source": {
+    "url": "https://www.kingdomlegacygame.com/cards/FK_Adventures/0",
+    "scrapedAt": "2026-10-05T18:31:51.029Z"
+  },
+  "confidence": 0.9,
+  "to_verify": [
+    "Instructions de parchemin : classées triggeredForced (à appliquer à la découverte, puis détruire la carte) ; le site ne donne pas de type d'effet.",
+    "Règles de l'extension : purge 10 + 1 permanente, 3 manches, 2 découvertes par manche (cartes 1 à 6), sticker 13j."
+  ]
+}

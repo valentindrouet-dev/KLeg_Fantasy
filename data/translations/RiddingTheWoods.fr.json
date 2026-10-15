@@ -1,0 +1,378 @@
+{
+ "RiddingTheWoods-000": {
+  "1": {
+   "name": "Bienvenue",
+   "text": "BIENVENUE dans Ridding the Woods. Avant de commencer : fais une purge 8 (focus 2{wood}) et purge aussi 2 cartes permanentes. (« focus 2{wood} » : tu dois choisir des cartes qui produisent du {wood}, si possible, jusqu'à en avoir choisi 2. Ensuite, la purge continue normalement.) Après la purge, {flip}."
+  },
+  "4": {
+   "name": "",
+   "text": "Joue 5 manches avec les règles normales. Au début de chaque manche, découvre 5 cartes de cette extension (au lieu de 2). Une fois terminé : ajoute le sticker 13c au chemin de score de ta boîte et écris ton nouveau score. Les cartes 26-28 sont des cartes à découvrir : place-les au fond de ta boîte."
+  }
+ },
+ "RiddingTheWoods-001": {
+  "1": {
+   "name": "Une certaine dame",
+   "text": "{triggeredForced} Coche 1 {mark} pour chaque ennemi en jeu avec cette carte. Une fois Ridding the Woods terminée, {oneTime}."
+  },
+  "4": {
+   "name": "Dame brigande",
+   "text": "{triggeredForced} Quand elle est jouée, raye 1 production de {coin} sur 1 carte en jeu. Si tu le fais, coche 1 {mark} de gauche à droite."
+  }
+ },
+ "RiddingTheWoods-002": {
+  "1": {
+   "name": "Chef des voleurs",
+   "text": "{passive} Tu ne peux pas gagner d'autres ressources que des {sword}. {activated} Dépense {sword}{sword}{sword} pour vaincre (coche 1 {mark} de gauche à droite). Une fois complète : si tu as Une certaine dame, détruis-la où qu'elle soit (remélange le deck si elle y était) et {flip}. Sinon, détruis cette carte."
+  },
+  "4": {
+   "name": "Sanglots",
+   "text": "{triggeredForced} Quand tu avances, tu joues 2 cartes de plus. {asterisk}Vaut -4{fame} quand elle est purgée."
+  }
+ },
+ "RiddingTheWoods-003": {
+  "1": {
+   "name": "Bandit",
+   "text": "{triggeredForced} Quand elle est jouée, défausse toutes les cartes qui produisent du {wood}. {time} Dépense {sword}{sword}{sword} pour vaincre ({flip}). (Peut être {flip} par un Missionary.)"
+  },
+  "4": {
+   "name": "Prisonnier",
+   "text": "{triggeredForced} Si 2 ennemis sont en jeu, {flip}. {passive} Après avoir choisi les cartes d'une purge, ajoute jusqu'à 2 Prisonniers à cette purge."
+  }
+ },
+ "RiddingTheWoods-004": {
+  "1": {
+   "name": "Forêt des voleurs",
+   "text": "{triggeredForced} Quand elle est jouée, joue Robbin' Leader depuis la défausse."
+  },
+  "2": {
+   "name": "Forêt peu sûre",
+   "text": "{triggeredOptional} Quand tu vaincs un ennemi, dépense {coin}{coin}{coin}{coin}{sword}{sword} pour {flip}. (Rappel : tu dois avoir ces ressources avant de vaincre l'ennemi.)"
+  },
+  "3": {
+   "name": "Forêt calme",
+   "text": ""
+  },
+  "4": {
+   "name": "Forêt paisible",
+   "text": "{passive} Reste en jeu."
+  }
+ },
+ "RiddingTheWoods-005": {
+  "1": {
+   "name": "Ville terrifiée",
+   "text": "{triggeredForced} Quand un ennemi est joué, défausse 3 cartes amies."
+  },
+  "2": {
+   "name": "Ville inquiète",
+   "text": "{triggeredForced} Quand un ennemi est joué, défausse 2 cartes amies."
+  },
+  "3": {
+   "name": "Ville gardée",
+   "text": "{activated} Dépense {wood}{wood}{wood}{wood} pour découvrir Outpost (29)."
+  },
+  "4": {
+   "name": "________",
+   "text": "{time} Découvre Sheriff (27)."
+  }
+ },
+ "RiddingTheWoods-006": {
+  "1": {
+   "name": "Bandit",
+   "text": "{triggeredForced} Quand elle est jouée, défausse toutes les cartes qui produisent du {wood}. {time} Dépense {sword}{sword}{sword} pour vaincre ({flip}). (Peut être {flip} par un Missionary.)"
+  },
+  "4": {
+   "name": "Prisonnier",
+   "text": "{triggeredForced} Si 2 ennemis sont en jeu, {flip}. {passive} Après avoir choisi les cartes d'une purge, ajoute jusqu'à 2 Prisonniers à cette purge."
+  }
+ },
+ "RiddingTheWoods-007": {
+  "1": {
+   "name": "Énorme brigand",
+   "text": "{passive} Tu ne peux pas avancer. {activated} Défausse 4 personnes pour vaincre ({flip})."
+  },
+  "4": {
+   "name": "Prisonnier",
+   "text": "{triggeredForced} Si 2 ennemis sont en jeu, {flip}. {passive} Après avoir choisi les cartes d'une purge, ajoute jusqu'à 2 Prisonniers à cette purge."
+  }
+ },
+ "RiddingTheWoods-008": {
+  "1": {
+   "name": "Grand camp de brigands",
+   "text": "{passive} Tu ne peux utiliser de {sword} que pour améliorer des cartes."
+  },
+  "2": {
+   "name": "Petit camp de brigands",
+   "text": "{passive} Tu ne peux utiliser de {sword} que pour améliorer des cartes."
+  },
+  "3": {
+   "name": "Camp vide",
+   "text": ""
+  },
+  "4": {
+   "name": "Forêt riche",
+   "text": "{passive} Reste en jeu."
+  }
+ },
+ "RiddingTheWoods-009": {
+  "1": {
+   "name": "Terrain du fort",
+   "text": ""
+  },
+  "2": {
+   "name": "Mur",
+   "text": "{passive} Reste en jeu."
+  },
+  "3": {
+   "name": "Grand cachot",
+   "text": "{passive} Défausse 1 prisonnier et note ci-dessous combien tu en as défaussé. {asterisk}Cette carte vaut 2{fame} par marque."
+  },
+  "4": {
+   "name": "Petit cachot",
+   "text": "{activated} Défausse autant de prisonniers que tu veux pour cocher 1 {mark} de gauche à droite pour chacun."
+  }
+ },
+ "RiddingTheWoods-010": {
+  "1": {
+   "name": "Percepteur",
+   "text": "{triggeredForced} Quand tu produis avec cette carte, coche 1 {mark}. {asterisk}Vaut -1{fame} par {mark}."
+  }
+ },
+ "RiddingTheWoods-011": {
+  "1": {
+   "name": "Brigand vétéran",
+   "text": "{triggeredForced} Quand elle est jouée, défausse toutes les cartes qui produisent des {coin}. {activated} Dépense {sword}{sword}{sword}{sword}{sword} pour vaincre ({flip})."
+  },
+  "4": {
+   "name": "Prisonnier",
+   "text": "{triggeredForced} Si 2 ennemis sont en jeu, {flip}. {passive} Après avoir choisi les cartes d'une purge, ajoute jusqu'à 2 Prisonniers à cette purge."
+  }
+ },
+ "RiddingTheWoods-012": {
+  "1": {
+   "name": "Concours de tir à l'arc",
+   "text": "{activated} Coche 1 {mark} de gauche à droite pour jouer 1 ennemi depuis la défausse."
+  },
+  "4": {
+   "name": "Appât et piège",
+   "text": "{activated} Si tu as une dame en jeu, joue 1 ennemi depuis la défausse, puis gagne {sword}{sword}."
+  }
+ },
+ "RiddingTheWoods-013": {
+  "1": {
+   "name": "Garde médiocre",
+   "text": "{triggeredForced} S'il n'y a aucun ennemi en jeu, défausse cette carte."
+  },
+  "2": {
+   "name": "Garde impatient",
+   "text": "{triggeredForced} S'il n'y a aucun ennemi en jeu, défausse cette carte."
+  },
+  "3": {
+   "name": "Garde",
+   "text": ""
+  },
+  "4": {
+   "name": "Chevalier courageux",
+   "text": "{triggeredForced} Quand elle est jouée, joue 1 ennemi depuis la défausse."
+  }
+ },
+ "RiddingTheWoods-014": {
+  "1": {
+   "name": "Chariot du trésor",
+   "text": "{triggeredForced} Quand elle est jouée, si un ennemi est en jeu, raye 1 production ici. {triggeredForced} Quand un ennemi est joué, raye 1 production ici. {asterisk}Quand elle est purgée, vaut 5{fame} par production restante."
+  }
+ },
+ "RiddingTheWoods-015": {
+  "1": {
+   "name": "Prince puissant",
+   "text": "{passive} Dépense {coin}{coin}{coin} pour rayer 1 {coin} du coût d'amélioration. {triggeredForced} Quand elle est jouée, gagne 2 ressources au choix. (Rappel : les ressources sont perdues quand une nouvelle carte entre en jeu.)"
+  },
+  "4": {
+   "name": "Prince ________",
+   "text": "{triggeredForced} Quand elle est jouée, gagne 3 ressources au choix. (Rappel : les ressources sont perdues quand une nouvelle carte entre en jeu.) {time} Découvre Treasury (28)."
+  }
+ },
+ "RiddingTheWoods-016": {
+  "1": {
+   "name": "Grand camp de brigands",
+   "text": "{passive} Tu ne peux utiliser de {sword} que pour améliorer des cartes."
+  },
+  "2": {
+   "name": "Petit camp de brigands",
+   "text": "{passive} Tu ne peux utiliser de {sword} que pour améliorer des cartes."
+  },
+  "3": {
+   "name": "Camp vide",
+   "text": ""
+  },
+  "4": {
+   "name": "Forêt dense",
+   "text": ""
+  }
+ },
+ "RiddingTheWoods-017": {
+  "1": {
+   "name": "Grand camp de brigands",
+   "text": "{passive} Tu ne peux utiliser de {sword} que pour améliorer des cartes."
+  },
+  "2": {
+   "name": "Petit camp de brigands",
+   "text": "{passive} Tu ne peux utiliser de {sword} que pour améliorer des cartes."
+  },
+  "3": {
+   "name": "Camp vide",
+   "text": ""
+  },
+  "4": {
+   "name": "Forêt escarpée",
+   "text": "{passive} Reste en jeu."
+  }
+ },
+ "RiddingTheWoods-018": {
+  "1": {
+   "name": "Brigand saboteur",
+   "text": "{triggeredForced} Quand elle est jouée, raye 1 production au choix sur 1 bâtiment en jeu. {time} Dépense {sword}{sword}{sword} pour vaincre ({flip})."
+  },
+  "4": {
+   "name": "Prisonnier",
+   "text": "{triggeredForced} Si 2 ennemis sont en jeu, {flip}. {passive} Après avoir choisi les cartes d'une purge, ajoute jusqu'à 2 Prisonniers à cette purge."
+  }
+ },
+ "RiddingTheWoods-019": {
+  "1": {
+   "name": "Moine rebelle",
+   "text": "{triggeredForced} Quand elle est jouée, bloque 3 cartes amies au choix. {time} Dépense {tradeGood}{tradeGood}{tradeGood}{tradeGood} pour {flip}."
+  },
+  "4": {
+   "name": "Prisonnier",
+   "text": "{triggeredForced} Si 2 ennemis sont en jeu, {flip}. {passive} Après avoir choisi les cartes d'une purge, ajoute jusqu'à 2 Prisonniers à cette purge."
+  }
+ },
+ "RiddingTheWoods-020": {
+  "1": {
+   "name": "Barde du peuple",
+   "text": "{triggeredForced} Quand elle est jouée, joue 1 ennemi depuis la défausse."
+  },
+  "4": {
+   "name": "Barde obéissant",
+   "text": "{activated} Coche 1 {mark} pour jouer 1 événement depuis la défausse. {asterisk}Vaut 2{fame} par {mark}."
+  }
+ },
+ "RiddingTheWoods-021": {
+  "1": {
+   "name": "Libérateur",
+   "text": "{triggeredForced} Quand elle est jouée, joue 1 Prisonnier depuis la défausse. {time} Dépense {metal}{metal}{metal} pour vaincre ({flip})."
+  },
+  "4": {
+   "name": "Prisonnier",
+   "text": "{triggeredForced} Si 2 ennemis sont en jeu, {flip}. {passive} Après avoir choisi les cartes d'une purge, ajoute jusqu'à 2 Prisonniers à cette purge."
+  }
+ },
+ "RiddingTheWoods-022": {
+  "1": {
+   "name": "Libérateur",
+   "text": "{triggeredForced} Quand elle est jouée, joue 1 Prisonnier depuis la défausse. {time} Dépense {metal}{metal}{metal} pour vaincre ({flip})."
+  },
+  "4": {
+   "name": "Prisonnier",
+   "text": "{triggeredForced} Si 2 ennemis sont en jeu, {flip}. {passive} Après avoir choisi les cartes d'une purge, ajoute jusqu'à 2 Prisonniers à cette purge."
+  }
+ },
+ "RiddingTheWoods-023": {
+  "1": {
+   "name": "Vieux chêne",
+   "text": "{triggeredForced} Quand elle est jouée, joue 1 ennemi depuis la défausse. {activated} Dépense {metal}{metal} pour cocher 1 {mark} de gauche à droite."
+  },
+  "4": {
+   "name": "Souche",
+   "text": "{activated} Coche 1 {mark}."
+  }
+ },
+ "RiddingTheWoods-024": {
+  "1": {
+   "name": "Camp des druides",
+   "text": "{triggeredForced} Quand elle est jouée, défausse toutes les cartes qui restent en jeu."
+  },
+  "2": {
+   "name": "Sanctuaire des druides",
+   "text": "{triggeredForced} Quand elle est jouée, défausse toutes les cartes qui restent en jeu. {triggeredForced} Quand elle est améliorée, ajoute le sticker 6 à 2 cartes amies en jeu."
+  },
+  "3": {
+   "name": "Forêt isolée",
+   "text": "{triggeredForced} Quand elle est jouée, défausse 1 carte qui reste en jeu."
+  },
+  "4": {
+   "name": "Forêt chantante",
+   "text": ""
+  }
+ },
+ "RiddingTheWoods-025": {
+  "1": {
+   "name": "Sommet de colline",
+   "text": ""
+  },
+  "2": {
+   "name": "Monument de la colline",
+   "text": ""
+  },
+  "3": {
+   "name": "Mégalithe de la colline",
+   "text": "{time} Dépense {tradeGood}{tradeGood}{tradeGood}{tradeGood} pour découvrir le Keeper of Secrets (26)."
+  },
+  "4": {
+   "name": "Cérémonie",
+   "text": "{activated} Défausse 5 cartes amies en jeu. Ajoute le sticker 10 à 1 d'entre elles. Puis {rotate}."
+  }
+ },
+ "RiddingTheWoods-026": {
+  "1": {
+   "name": "Gardien des secrets",
+   "text": "{triggeredForced} Quand elle est jouée, défausse toutes les autres cartes en jeu, puis {rotate}."
+  },
+  "2": {
+   "name": "La poursuite",
+   "text": "{activated} Défausse 6 cartes amies pour cocher 1 {mark} vert de gauche à droite. {triggeredForced} Fin du tour : coche 1 {mark} rouge."
+  },
+  "3": {
+   "name": "Connecteur d'éther",
+   "text": "Cette carte ne peut pas être détruite."
+  }
+ },
+ "RiddingTheWoods-027": {
+  "1": {
+   "name": "Shérif",
+   "text": "{passive} Dépense {tradeGood}{tradeGood}{tradeGood} pour rayer 1 {tradeGood} du coût d'amélioration. {activated} Défausse 1 terre pour gagner 2 ressources au choix."
+  },
+  "4": {
+   "name": "Shérif redouté",
+   "text": "{passive} Défausse 1 terre pour gagner 2 ressources au choix. (Rappel : les effets {passive} s'utilisent autant de fois qu'on veut sans défausser la carte.)"
+  }
+ },
+ "RiddingTheWoods-028": {
+  "1": {
+   "name": "Trésor",
+   "text": "Cette carte est permanente. {time} Dépense les {coin} ci-dessous pour remplir ton trésor : coche 1 {mark} de gauche à droite. Cette carte vaut la plus haute {fame} cochée."
+  },
+  "4": {
+   "name": "Trésor célèbre",
+   "text": "Cette carte est permanente. {time} Dépense les {coin} ci-dessous pour remplir ton trésor : coche 1 {mark} de gauche à droite. Cette carte vaut 50{fame} + la plus haute {fame} cochée."
+  }
+ },
+ "RiddingTheWoods-029": {
+  "1": {
+   "name": "Construction d'un avant-poste",
+   "text": ""
+  },
+  "2": {
+   "name": "Palissades",
+   "text": "{triggeredOptional} Fin du tour : défausse cette carte pour garder 2 terres en jeu."
+  },
+  "3": {
+   "name": "Avant-poste forestier",
+   "text": "{triggeredOptional} Fin du tour : défausse cette carte pour garder 3 terres en jeu."
+  },
+  "4": {
+   "name": "Avant-poste fortifié",
+   "text": "{triggeredOptional} Fin du tour : défausse cette carte pour garder toutes les terres en jeu. {asterisk}Vaut +2{fame} pour chaque autre carte purgée en même temps."
+  }
+ }
+}

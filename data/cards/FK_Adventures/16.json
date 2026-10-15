@@ -1,0 +1,199 @@
+{
+  "id": "FK_Adventures-016",
+  "expansion": "FK_Adventures",
+  "serial": 16,
+  "origin": "official",
+  "images": {
+    "front": "FK_Adventures/FK_Adventure_Cards_Page_33.webp",
+    "back": "FK_Adventures/FK_Adventure_Cards_Page_34.webp"
+  },
+  "orientationToStage": {
+    "front-0": 1,
+    "front-180": 2,
+    "back-0": null,
+    "back-180": 3
+  },
+  "isParchment": false,
+  "chooseSideOnDiscover": false,
+  "stages": {
+    "1": {
+      "id": 1,
+      "name": "Building the Bridge",
+      "keywords": [
+        "Adventure"
+      ],
+      "category": "other",
+      "negative": false,
+      "permanent": true,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "passive",
+          "text": "Spend the resources to mark 1 {mark}. When complete, {rotate}."
+        }
+      ],
+      "checkboxes": [
+        {
+          "id": "c1",
+          "cost": [
+            "wood",
+            "wood",
+            "wood",
+            "wood",
+            "wood"
+          ]
+        },
+        {
+          "id": "c2",
+          "cost": [
+            "wood",
+            "wood",
+            "wood",
+            "wood",
+            "wood"
+          ]
+        },
+        {
+          "id": "c3",
+          "cost": [
+            "stone",
+            "stone",
+            "stone"
+          ]
+        },
+        {
+          "id": "c4",
+          "cost": [
+            "stone",
+            "stone",
+            "stone"
+          ]
+        },
+        {
+          "id": "c5",
+          "cost": [
+            "stone",
+            "stone",
+            "stone",
+            "stone"
+          ]
+        },
+        {
+          "id": "c6",
+          "cost": [
+            "stone",
+            "stone",
+            "stone",
+            "stone"
+          ]
+        }
+      ],
+      "staysInPlay": false,
+      "text": "{passive} Spend the resources to mark 1 {mark}. When complete, {rotate}.",
+      "siteKeywords": [
+        "Permanent",
+        "Passive Effect"
+      ],
+      "helpText": "Note that the resource costs indicated are applied to both the boxes on their right, so there are 2 boxes for each resource cost."
+    },
+    "2": {
+      "id": 2,
+      "name": "Reclaiming the Relic",
+      "keywords": [
+        "Event"
+      ],
+      "category": "other",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "passive",
+          "text": "Spend {sword}{sword} to mark 1 {mark}. When complete, {flip}."
+        }
+      ],
+      "checkboxes": [
+        {
+          "id": "c1"
+        },
+        {
+          "id": "c2"
+        },
+        {
+          "id": "c3"
+        },
+        {
+          "id": "c4"
+        },
+        {
+          "id": "c5"
+        },
+        {
+          "id": "c6"
+        },
+        {
+          "id": "c7"
+        },
+        {
+          "id": "c8"
+        }
+      ],
+      "staysInPlay": false,
+      "text": "{passive} Spend {sword}{sword} to mark 1 {mark}. When complete, {flip}.",
+      "siteKeywords": [
+        "Passive Effect"
+      ]
+    },
+    "3": {
+      "id": 3,
+      "name": "The White Cowl",
+      "keywords": [
+        "Item"
+      ],
+      "category": "other",
+      "negative": false,
+      "permanent": false,
+      "fame": 6,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "activated",
+          "text": "Bless (sticker 38) 1 friendly card in play."
+        },
+        {
+          "id": "e2",
+          "type": "activated",
+          "text": "Choose a blessed card in play and gain its production as resources or use 1 of its {activated} effects."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "{activated} Bless (sticker 38) 1 friendly card in play. {activated} Choose a blessed card in play and gain its production as resources or use 1 of its {activated} effects.",
+      "siteKeywords": [
+        "Activated Effect"
+      ],
+      "helpText": "Note that permanent cards are never concidered to be in play."
+    }
+  },
+  "description": "This is 1 of the 10 adventures you can choose on your <a href=\"/cards/FK_Adventures/1\">Adventure Map</a>. It takes some work, but this enterprise is sanctioned by the church.",
+  "source": {
+    "url": "https://www.kingdomlegacygame.com/cards/FK_Adventures/16",
+    "scrapedAt": "2026-10-05T18:32:43.685Z"
+  },
+  "confidence": 0.85,
+  "to_verify": [
+    "Bandeau rose « Adventure - Permanent » : category=other, mot-clé Adventure.",
+    "Stickers propres à l'extension (53 à 57, 38, 86 à 89) : à ajouter au catalogue de stickers.",
+    "Building the Bridge : 6 cases, 2 par coût (5 bois, 3 pierres, 4 pierres), d'après l'aide du site.",
+    "Reclaiming the Relic : bandeau « Event » sans mention Permanent, alors que le stage 1 de la même carte est permanent : à vérifier.",
+    "Le verso ne porte qu'un stage (The White Cowl), imprimé tête en bas : placé en back-180."
+  ]
+}

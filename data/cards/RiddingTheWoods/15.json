@@ -1,0 +1,116 @@
+{
+  "id": "RiddingTheWoods-015",
+  "expansion": "RiddingTheWoods",
+  "serial": 15,
+  "origin": "official",
+  "images": {
+    "front": "RiddingTheWoods/RtW_Cards_Sida_31.webp",
+    "back": "RiddingTheWoods/RtW_Cards_Sida_32.webp"
+  },
+  "orientationToStage": {
+    "front-0": 1,
+    "front-180": null,
+    "back-0": 4,
+    "back-180": null
+  },
+  "isParchment": false,
+  "chooseSideOnDiscover": false,
+  "stages": {
+    "1": {
+      "id": 1,
+      "name": "Powerful Prince",
+      "keywords": [
+        "Person"
+      ],
+      "category": "person",
+      "negative": false,
+      "permanent": false,
+      "fame": -5,
+      "production": [],
+      "upgrades": [
+        {
+          "id": "u1",
+          "cost": [
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin",
+            "coin"
+          ],
+          "arrow": "flip",
+          "toStage": 4
+        }
+      ],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "passive",
+          "text": "Spend {coin}{coin}{coin} to cross out 1 {coin} from the upgrade cost."
+        },
+        {
+          "id": "e2",
+          "type": "triggeredForced",
+          "text": "When played, gain any 2 resources."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "{passive} Spend {coin}{coin}{coin} to cross out 1 {coin} from the upgrade cost. {triggeredForced} When played, gain any 2 resources. (Reminder: resources are lost when a new card enters play.)",
+      "siteKeywords": [],
+      "helpText": "This prince can never get enough gold! He demands 18 gold to upgrade, but you may spend 3 gold at a time to reduce this cost. Note that this is a passive effect, you may spend 9 gold in one go to cross out 3 cost icons."
+    },
+    "4": {
+      "id": 4,
+      "name": "Prince ________",
+      "keywords": [
+        "Person"
+      ],
+      "category": "person",
+      "negative": false,
+      "permanent": false,
+      "fame": -12,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "triggeredForced",
+          "text": "When played, gain any 3 resources."
+        },
+        {
+          "id": "e2",
+          "type": "time",
+          "text": "Discover Treasury (28)."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "{triggeredForced} When played, gain any 3 resources. (Reminder: resources are lost when a new card enters play.) {time} Discover Treasury (28).",
+      "siteKeywords": [],
+      "helpText": "At any time, give him a name!<br>\nWhen he is played, gain any 3 resources. Note that resources are lost when a new card enters your play area, so if you want to use these resources, you need to find a use for them before playing more cards."
+    }
+  },
+  "description": "This is a card from the Ridding the Woods expansion.",
+  "source": {
+    "url": "https://www.kingdomlegacygame.com/cards/RiddingTheWoods/15",
+    "scrapedAt": "2026-10-05T18:29:17.499Z"
+  },
+  "confidence": 0.9,
+  "to_verify": [
+    "Powerful Prince : 18 pièces dans le coût d'amélioration (6 rangées de 3), confirmé par l'aide du site.",
+    "Prince ________ : nom à compléter par le joueur."
+  ]
+}

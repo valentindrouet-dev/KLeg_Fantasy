@@ -1,0 +1,98 @@
+{
+  "id": "RiddingTheWoods-011",
+  "expansion": "RiddingTheWoods",
+  "serial": 11,
+  "origin": "official",
+  "images": {
+    "front": "RiddingTheWoods/RtW_Cards_Sida_23.webp",
+    "back": "RiddingTheWoods/RtW_Cards_Sida_24.webp"
+  },
+  "orientationToStage": {
+    "front-0": 1,
+    "front-180": null,
+    "back-0": 4,
+    "back-180": null
+  },
+  "isParchment": false,
+  "chooseSideOnDiscover": false,
+  "stages": {
+    "1": {
+      "id": 1,
+      "name": "Robber Veteran",
+      "keywords": [
+        "Enemy"
+      ],
+      "category": "negative",
+      "negative": true,
+      "permanent": false,
+      "fame": -2,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "triggeredForced",
+          "text": "When played, discard all cards with {coin} production."
+        },
+        {
+          "id": "e2",
+          "type": "activated",
+          "text": "Spend {sword}{sword}{sword}{sword}{sword} to defeat ({flip})."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "defeat": {
+        "kind": "turn",
+        "cost": [
+          "sword",
+          "sword",
+          "sword",
+          "sword",
+          "sword"
+        ],
+        "text": "Spend {sword}{sword}{sword}{sword}{sword} to defeat ({flip})."
+      },
+      "text": "{triggeredForced} When played, discard all cards with {coin} production. {activated} Spend {sword}{sword}{sword}{sword}{sword} to defeat ({flip}).",
+      "siteKeywords": []
+    },
+    "4": {
+      "id": 4,
+      "name": "Prisoner",
+      "keywords": [
+        "State"
+      ],
+      "category": "negative",
+      "negative": true,
+      "permanent": false,
+      "fame": 2,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "triggeredForced",
+          "text": "If there are 2 enemies in play, {flip}."
+        },
+        {
+          "id": "e2",
+          "type": "passive",
+          "text": "After selecting cards for a purge, add up to 2 Prisoners to that purge."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "{triggeredForced} If there are 2 enemies in play, {flip}. {passive} After selecting cards for a purge, add up to 2 Prisoners to that purge.",
+      "siteKeywords": []
+    }
+  },
+  "description": "This is a card from the Ridding the Woods expansion.",
+  "source": {
+    "url": "https://www.kingdomlegacygame.com/cards/RiddingTheWoods/11",
+    "scrapedAt": "2026-10-05T18:29:04.091Z"
+  },
+  "confidence": 0.9,
+  "to_verify": [
+    "Prisoner : bandeau rouge, mot-clé « State » (carte négative d'après le site, mais pas un ennemi)."
+  ]
+}

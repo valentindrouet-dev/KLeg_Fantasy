@@ -1,0 +1,133 @@
+{
+  "id": "RiddingTheWoods-026",
+  "expansion": "RiddingTheWoods",
+  "serial": 26,
+  "origin": "official",
+  "images": {
+    "front": "RiddingTheWoods/RtW_Cards_Sida_53.webp",
+    "back": "RiddingTheWoods/RtW_Cards_Sida_54.webp"
+  },
+  "orientationToStage": {
+    "front-0": 1,
+    "front-180": 2,
+    "back-0": null,
+    "back-180": 3
+  },
+  "isParchment": false,
+  "chooseSideOnDiscover": false,
+  "stages": {
+    "1": {
+      "id": 1,
+      "name": "Keeper of Secrets",
+      "keywords": [
+        "Enemy"
+      ],
+      "category": "negative",
+      "negative": true,
+      "permanent": false,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "triggeredForced",
+          "text": "When played, discard all other cards in play, then {rotate}."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "{triggeredForced} When played, discard all other cards in play, then {rotate}.",
+      "siteKeywords": []
+    },
+    "2": {
+      "id": 2,
+      "name": "The Chase",
+      "keywords": [
+        "Event"
+      ],
+      "category": "negative",
+      "negative": true,
+      "permanent": false,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "activated",
+          "text": "Discard 6 friendly cards to mark 1 green {mark} from left to right."
+        },
+        {
+          "id": "e2",
+          "type": "triggeredForced",
+          "text": "End of Turn: Mark 1 red {mark}."
+        }
+      ],
+      "checkboxes": [
+        {
+          "id": "c1",
+          "group": "green"
+        },
+        {
+          "id": "c2",
+          "group": "green"
+        },
+        {
+          "id": "c3",
+          "group": "green",
+          "text": "{flip}"
+        },
+        {
+          "id": "c4",
+          "group": "red"
+        },
+        {
+          "id": "c5",
+          "group": "red"
+        },
+        {
+          "id": "c6",
+          "group": "red",
+          "text": "{destroy}"
+        }
+      ],
+      "staysInPlay": false,
+      "text": "{activated} Discard 6 friendly cards to mark 1 green {mark} from left to right. {triggeredForced} End of Turn: Mark 1 red {mark}.",
+      "siteKeywords": [],
+      "helpText": "You need to chase him down! Discard 6 friendly cards to mark 1X on the green track. Since this is an activated effect, this card is discarded when you do, so that you don't have to perform the end of turn effect, where you must otherwise mark 1X on the red track. If the red track is completed, you lose this card forever."
+    },
+    "3": {
+      "id": 3,
+      "name": "Ether Connector",
+      "keywords": [
+        "Artifact"
+      ],
+      "category": "other",
+      "negative": false,
+      "permanent": true,
+      "fame": 10,
+      "production": [],
+      "upgrades": [],
+      "effects": [],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "cannotBeDestroyed": true,
+      "flavor": "The effect of this magical artifact is yet to be discovered.",
+      "text": "This card cannot be destroyed.",
+      "siteKeywords": []
+    }
+  },
+  "description": "This is a card from the Ridding the Woods expansion.",
+  "source": {
+    "url": "https://www.kingdomlegacygame.com/cards/RiddingTheWoods/26",
+    "scrapedAt": "2026-10-05T18:30:12.030Z"
+  },
+  "confidence": 0.85,
+  "to_verify": [
+    "The Chase : bandeau rouge avec mot-clé « Event » : category=negative.",
+    "The Chase : deux pistes de 3 cases, verte (la 3e retourne la carte) et rouge (la 3e la détruit) ; la couleur est portée par le champ group.",
+    "Le verso ne porte qu'un stage (Ether Connector), imprimé tête en bas : placé en back-180.",
+    "Ether Connector : permanente, indestructible (imprimé) ; cannotBePurged non posé (non imprimé)."
+  ]
+}

@@ -1,0 +1,132 @@
+{
+  "id": "FK_Adventures-008",
+  "expansion": "FK_Adventures",
+  "serial": 8,
+  "origin": "official",
+  "images": {
+    "front": "FK_Adventures/FK_Adventure_Cards_Page_17.webp",
+    "back": "FK_Adventures/FK_Adventure_Cards_Page_18.webp"
+  },
+  "orientationToStage": {
+    "front-0": 1,
+    "front-180": null,
+    "back-0": 4,
+    "back-180": null
+  },
+  "isParchment": false,
+  "chooseSideOnDiscover": false,
+  "stages": {
+    "1": {
+      "id": 1,
+      "name": "Fountain of Youth",
+      "keywords": [
+        "Adventure"
+      ],
+      "category": "other",
+      "negative": false,
+      "permanent": true,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "triggeredForced",
+          "text": "When you discover this, also discover Eustace (17)."
+        },
+        {
+          "id": "e2",
+          "type": "passive",
+          "text": "Discard 2 persons and spend 3 resources of the same kind to mark 1 {mark}. When complete, {flip}."
+        }
+      ],
+      "checkboxes": [
+        {
+          "id": "c1"
+        },
+        {
+          "id": "c2"
+        },
+        {
+          "id": "c3"
+        },
+        {
+          "id": "c4"
+        },
+        {
+          "id": "c5"
+        },
+        {
+          "id": "c6"
+        },
+        {
+          "id": "c7"
+        },
+        {
+          "id": "c8"
+        }
+      ],
+      "staysInPlay": false,
+      "text": "{triggeredForced} When you discover this, also discover Eustace (17). {passive} Discard 2 persons and spend 3 resources of the same kind to mark 1 {mark}. When complete, {flip}.",
+      "siteKeywords": [
+        "Permanent",
+        "Forced Triggered Effect",
+        "Discover",
+        "Passive Effect"
+      ],
+      "helpText": "SPOILER: This card leads to <a href=\"/cards/FK_Adventures/17\">this</a>."
+    },
+    "4": {
+      "id": 4,
+      "name": "Elixir of Eternal Life",
+      "keywords": [
+        "Item"
+      ],
+      "category": "other",
+      "negative": false,
+      "permanent": true,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "triggeredOptional",
+          "text": "Whenever a person is purged, mark 1 {mark} below to prevent it."
+        }
+      ],
+      "checkboxes": [
+        {
+          "id": "c1"
+        },
+        {
+          "id": "c2"
+        },
+        {
+          "id": "c3"
+        },
+        {
+          "id": "c4",
+          "text": "{destroy}"
+        }
+      ],
+      "staysInPlay": false,
+      "text": "{triggeredOptional} Whenever a person is purged, mark 1 {mark} below to prevent it.",
+      "siteKeywords": [
+        "Permanent",
+        "Triggered Optional Effect",
+        "Destroy"
+      ]
+    }
+  },
+  "description": "This is 1 of the 10 adventures you can choose on your <a href=\"/cards/FK_Adventures/1\">Adventure Map</a>. It's a great and costly enterprise to search for this legendary fountain, and there's a guardian trying to thwart your efforts.",
+  "source": {
+    "url": "https://www.kingdomlegacygame.com/cards/FK_Adventures/8",
+    "scrapedAt": "2026-10-05T18:32:17.260Z"
+  },
+  "confidence": 0.9,
+  "to_verify": [
+    "Bandeau rose « Adventure - Permanent » : category=other, mot-clé Adventure.",
+    "Fountain of Youth : 8 cases comptées sur l'image."
+  ]
+}

@@ -1,0 +1,144 @@
+{
+  "id": "FK_Adventures-004",
+  "expansion": "FK_Adventures",
+  "serial": 4,
+  "origin": "official",
+  "images": {
+    "front": "FK_Adventures/FK_Adventure_Cards_Page_09.webp",
+    "back": "FK_Adventures/FK_Adventure_Cards_Page_10.webp"
+  },
+  "orientationToStage": {
+    "front-0": 1,
+    "front-180": null,
+    "back-0": 4,
+    "back-180": null
+  },
+  "isParchment": false,
+  "chooseSideOnDiscover": false,
+  "stages": {
+    "1": {
+      "id": 1,
+      "name": "Merlin the Wise",
+      "keywords": [
+        "Person",
+        "Elder",
+        "Mage"
+      ],
+      "category": "person",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [],
+      "upgrades": [
+        {
+          "id": "u1",
+          "cost": [],
+          "arrow": "flip",
+          "toStage": 4
+        }
+      ],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "triggeredForced",
+          "text": "When played, discover Apprentice (27)."
+        },
+        {
+          "id": "e2",
+          "type": "activated",
+          "text": "Make 1 building or item in play magical (sticker 57)."
+        },
+        {
+          "id": "e3",
+          "type": "activated",
+          "text": "Add sticker 86a / 86b to replace this effect frame."
+        },
+        {
+          "id": "e4",
+          "type": "activated",
+          "text": "Add sticker 87a / 87b to replace this effect frame."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "{triggeredForced} When played, discover Apprentice (27). {activated} Make 1 building or item in play magical (sticker 57). {activated} Add sticker 86a / 86b to replace this effect frame. {activated} Add sticker 87a / 87b to replace this effect frame.",
+      "siteKeywords": [
+        "Forced Triggered Effect",
+        "Discover",
+        "Activated Effect"
+      ],
+      "helpText": "Remember that when you use an Activated Effect, the card is discarded. So you can't use more than 1 of these effects at the same time. Note that 2 of these effects add stickers that replace the effect frame, thereby preventing you from ever having more than 1 of the 2 stickers you choose between. SPOILER: This card leads to <a href=\"/cards/FK_Adventures/27\">this</a>."
+    },
+    "4": {
+      "id": 4,
+      "name": "Merlin the Powerful",
+      "keywords": [
+        "Person",
+        "Elder",
+        "Mage"
+      ],
+      "category": "person",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [
+        {
+          "id": "p1",
+          "options": [
+            [
+              "metal"
+            ],
+            [
+              "sword"
+            ]
+          ]
+        }
+      ],
+      "upgrades": [
+        {
+          "id": "u1",
+          "cost": [],
+          "arrow": "flip",
+          "toStage": 1
+        }
+      ],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "activated",
+          "text": "Discover Focus Energy (28)."
+        },
+        {
+          "id": "e2",
+          "type": "activated",
+          "text": "Add sticker 88a / 88b to replace this effect frame."
+        },
+        {
+          "id": "e3",
+          "type": "activated",
+          "text": "Add sticker 89a / 89b to replace this effect frame."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "{activated} Discover Focus Energy (28). {activated} Add sticker 88a / 88b to replace this effect frame. {activated} Add sticker 89a / 89b to replace this effect frame.",
+      "siteKeywords": [
+        "Variable Production",
+        "Activated Effect",
+        "Discover"
+      ],
+      "helpText": "Remember that when you use an Activated Effect, the card is discarded. So you can't use more than 1 of these effects at the same time. Note that 2 of these effects add stickers that replace the effect frame, thereby preventing you from ever having more than 1 of the 2 stickers you choose between. SPOILER: This card leads to <a href=\"/cards/FK_Adventures/28\">this</a>."
+    }
+  },
+  "description": "This wizard can do practically anything, but not at the same time. So, what will you use him for? Note that references to \"Merlin\" can apply to either side of this card, while \"Merlin the Powerful\" only applies to stage 4 of this card.",
+  "source": {
+    "url": "https://www.kingdomlegacygame.com/cards/FK_Adventures/4",
+    "scrapedAt": "2026-10-05T18:32:04.075Z"
+  },
+  "confidence": 0.85,
+  "to_verify": [
+    "Stickers propres à l'extension (53 à 57, 38, 86 à 89) : à ajouter au catalogue de stickers.",
+    "Améliorations gratuites dans les deux sens (boîte sans icône).",
+    "Les stickers 86 à 89 remplacent le cadre d'effet correspondant : effets évolutifs, à scripter."
+  ]
+}

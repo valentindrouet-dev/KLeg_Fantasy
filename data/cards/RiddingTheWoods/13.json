@@ -1,0 +1,189 @@
+{
+  "id": "RiddingTheWoods-013",
+  "expansion": "RiddingTheWoods",
+  "serial": 13,
+  "origin": "official",
+  "images": {
+    "front": "RiddingTheWoods/RtW_Cards_Sida_27.webp",
+    "back": "RiddingTheWoods/RtW_Cards_Sida_28.webp"
+  },
+  "orientationToStage": {
+    "front-0": 1,
+    "front-180": 2,
+    "back-0": 4,
+    "back-180": 3
+  },
+  "isParchment": false,
+  "chooseSideOnDiscover": false,
+  "stages": {
+    "1": {
+      "id": 1,
+      "name": "Lousy Guard",
+      "keywords": [
+        "Person"
+      ],
+      "category": "person",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [
+        {
+          "id": "p1",
+          "options": [
+            [
+              "sword"
+            ]
+          ]
+        }
+      ],
+      "upgrades": [
+        {
+          "id": "u1",
+          "cost": [
+            "metal",
+            "metal"
+          ],
+          "arrow": "rotate",
+          "toStage": 2
+        }
+      ],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "triggeredForced",
+          "text": "If there is no enemy in play, discard this."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "{triggeredForced} If there is no enemy in play, discard this.",
+      "siteKeywords": [],
+      "helpText": "Whenever this is in play without an enemy, discard him."
+    },
+    "2": {
+      "id": 2,
+      "name": "Impatient Guard",
+      "keywords": [
+        "Person"
+      ],
+      "category": "person",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [
+        {
+          "id": "p1",
+          "options": [
+            [
+              "sword"
+            ]
+          ]
+        }
+      ],
+      "upgrades": [
+        {
+          "id": "u1",
+          "cost": [
+            "sword",
+            "sword",
+            "sword"
+          ],
+          "arrow": "flip",
+          "toStage": 3
+        }
+      ],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "triggeredForced",
+          "text": "If there is no enemy in play, discard this."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "{triggeredForced} If there is no enemy in play, discard this.",
+      "siteKeywords": []
+    },
+    "3": {
+      "id": 3,
+      "name": "Guard",
+      "keywords": [
+        "Person"
+      ],
+      "category": "person",
+      "negative": false,
+      "permanent": false,
+      "fame": 3,
+      "production": [
+        {
+          "id": "p1",
+          "options": [
+            [
+              "sword"
+            ]
+          ]
+        }
+      ],
+      "upgrades": [
+        {
+          "id": "u1",
+          "cost": [],
+          "arrow": "rotate",
+          "toStage": 4,
+          "otherCost": "1 enemy"
+        }
+      ],
+      "effects": [],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "",
+      "siteKeywords": [],
+      "helpText": "To upgrade this, you must discard 1 enemy. This is an unusual upgrade cost, which may even save you from the effect of that enemy."
+    },
+    "4": {
+      "id": 4,
+      "name": "Brave Knight",
+      "keywords": [
+        "Person",
+        "Knight"
+      ],
+      "category": "person",
+      "negative": false,
+      "permanent": false,
+      "fame": 13,
+      "production": [
+        {
+          "id": "p1",
+          "options": [
+            [
+              "sword",
+              "sword"
+            ]
+          ]
+        }
+      ],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "triggeredForced",
+          "text": "When played, play 1 enemy from discard pile."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "{triggeredForced} When played, play 1 enemy from discard pile.",
+      "siteKeywords": [],
+      "helpText": "Note that this is a forced triggered effect. When this is played, you MUST play 1 enemy from discard pile, if possible. This guard is strong and courageous, but might be a little bit too bold at times...."
+    }
+  },
+  "description": "This is a card from the Ridding the Woods expansion.",
+  "source": {
+    "url": "https://www.kingdomlegacygame.com/cards/RiddingTheWoods/13",
+    "scrapedAt": "2026-10-05T18:29:10.678Z"
+  },
+  "confidence": 0.9,
+  "to_verify": [
+    "Guard : coût d'amélioration « 1 enemy » (défausser 1 ennemi d'après le site), saisi dans otherCost."
+  ]
+}

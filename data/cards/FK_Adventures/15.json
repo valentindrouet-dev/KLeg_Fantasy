@@ -1,0 +1,128 @@
+{
+  "id": "FK_Adventures-015",
+  "expansion": "FK_Adventures",
+  "serial": 15,
+  "origin": "official",
+  "images": {
+    "front": "FK_Adventures/FK_Adventure_Cards_Page_31.webp",
+    "back": "FK_Adventures/FK_Adventure_Cards_Page_32.webp"
+  },
+  "orientationToStage": {
+    "front-0": 1,
+    "front-180": null,
+    "back-0": 4,
+    "back-180": null
+  },
+  "isParchment": false,
+  "chooseSideOnDiscover": false,
+  "stages": {
+    "1": {
+      "id": 1,
+      "name": "Search for Uther's Tomb",
+      "keywords": [
+        "Adventure"
+      ],
+      "category": "other",
+      "negative": false,
+      "permanent": true,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "triggeredForced",
+          "text": "When discovered, also discover 3 Wild Men (22, 23 & 24)."
+        },
+        {
+          "id": "e2",
+          "type": "passive",
+          "text": "Discard 3 persons to mark 1 {mark}. When complete, {flip}."
+        }
+      ],
+      "checkboxes": [
+        {
+          "id": "c1"
+        },
+        {
+          "id": "c2"
+        },
+        {
+          "id": "c3"
+        },
+        {
+          "id": "c4"
+        },
+        {
+          "id": "c5"
+        },
+        {
+          "id": "c6"
+        }
+      ],
+      "staysInPlay": false,
+      "text": "{triggeredForced} When discovered, also discover 3 Wild Men (22, 23 & 24). {passive} Discard 3 persons to mark 1 {mark}. When complete, {flip}.",
+      "siteKeywords": [
+        "Permanent",
+        "Forced Triggered Effect",
+        "Discover",
+        "Passive Effect"
+      ],
+      "helpText": "SPOILER: This card leads to <a href=\"/cards/FK_Adventures/22\">this</a>, <a href=\"/cards/FK_Adventures/23\">this </a>and <a href=\"/cards/FK_Adventures/24\">this</a>."
+    },
+    "4": {
+      "id": 4,
+      "name": "The Green Armor",
+      "keywords": [
+        "Item"
+      ],
+      "category": "other",
+      "negative": false,
+      "permanent": true,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "triggeredOptional",
+          "text": "At any time, add 1 armor (sticker 55) to 1 person in play or discard pile."
+        },
+        {
+          "id": "e2",
+          "type": "triggeredOptional",
+          "text": "Mark 1 {mark} to prevent the armored person from being destroyed in a purge or by an effect on a negative card."
+        }
+      ],
+      "checkboxes": [
+        {
+          "id": "c1"
+        },
+        {
+          "id": "c2"
+        },
+        {
+          "id": "c3",
+          "text": "{destroy}"
+        }
+      ],
+      "staysInPlay": false,
+      "text": "{triggeredOptional} At any time, add 1 armor (sticker 55) to 1 person in play or discard pile. {triggeredOptional} Mark 1 {mark} to prevent the armored person from being destroyed in a purge or by an effect on a negative card.",
+      "siteKeywords": [
+        "Permanent",
+        "Triggered Optional Effect"
+      ],
+      "helpText": "Note that destroying this card is not optional, even though it is part of a Triggered Optional Effect. To use the effect and mark [mark] is optional, but if you do, you have to perform the whole effect. If you mark the last [mark], you have to destroy this card at once."
+    }
+  },
+  "description": "This is 1 of the 10 adventures you can choose on your <a href=\"/cards/FK_Adventures/1\">Adventure Map</a>. This rough island with hostile inhabitants is rumored to be the resting place of one of your great ancestors. And you can't really see what need he could possibly have for an enchanted armor now. ",
+  "source": {
+    "url": "https://www.kingdomlegacygame.com/cards/FK_Adventures/15",
+    "scrapedAt": "2026-10-05T18:32:40.373Z"
+  },
+  "confidence": 0.9,
+  "to_verify": [
+    "Bandeau rose « Adventure - Permanent » : category=other, mot-clé Adventure.",
+    "Stickers propres à l'extension (53 à 57, 38, 86 à 89) : à ajouter au catalogue de stickers."
+  ]
+}

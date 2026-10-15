@@ -1,0 +1,120 @@
+{
+  "id": "RiddingTheWoods-002",
+  "expansion": "RiddingTheWoods",
+  "serial": 2,
+  "origin": "official",
+  "images": {
+    "front": "RiddingTheWoods/RtW_Cards_Sida_05.webp",
+    "back": "RiddingTheWoods/RtW_Cards_Sida_06.webp"
+  },
+  "orientationToStage": {
+    "front-0": 1,
+    "front-180": null,
+    "back-0": 4,
+    "back-180": null
+  },
+  "isParchment": false,
+  "chooseSideOnDiscover": false,
+  "stages": {
+    "1": {
+      "id": 1,
+      "name": "Robbin' Leader",
+      "keywords": [
+        "Enemy"
+      ],
+      "category": "negative",
+      "negative": true,
+      "permanent": false,
+      "fame": -5,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "passive",
+          "text": "You cannot gain other resources than {sword}."
+        },
+        {
+          "id": "e2",
+          "type": "activated",
+          "text": "Spend {sword}{sword}{sword} to defeat (mark 1 {mark} from left to right). When complete: If you have A Certain Lady, destroy her from anywhere (reshuffle the deck if she was there) and {flip}. Otherwise, destroy this."
+        }
+      ],
+      "checkboxes": [
+        {
+          "id": "c1"
+        },
+        {
+          "id": "c2"
+        },
+        {
+          "id": "c3"
+        },
+        {
+          "id": "c4"
+        },
+        {
+          "id": "c5"
+        },
+        {
+          "id": "c6"
+        },
+        {
+          "id": "c7"
+        },
+        {
+          "id": "c8"
+        }
+      ],
+      "staysInPlay": false,
+      "defeat": {
+        "kind": "checkbox",
+        "cost": [
+          "sword",
+          "sword",
+          "sword"
+        ],
+        "text": "Spend {sword}{sword}{sword} to defeat (mark 1 {mark} from left to right). When complete: If you have A Certain Lady, destroy her from anywhere (reshuffle the deck if she was there) and {flip}. Otherwise, destroy this."
+      },
+      "text": "{passive} You cannot gain other resources than {sword}. {activated} Spend {sword}{sword}{sword} to defeat (mark 1 {mark} from left to right). When complete: If you have A Certain Lady, destroy her from anywhere (reshuffle the deck if she was there) and {flip}. Otherwise, destroy this.",
+      "siteKeywords": [],
+      "helpText": "This scoundrel is sabotaging your production, while also seducing the heart of a lady in your court.\n\n<br><br>Note that <b>defeating</b> Robbin' Leader only marks 1 X on the card. You need to <b>defeat</b> him many times to get rid of him, and when you do, your lady will be very sad..."
+    },
+    "4": {
+      "id": 4,
+      "name": "Sobbing",
+      "keywords": [
+        "State"
+      ],
+      "category": "other",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "triggeredForced",
+          "text": "When advancing, you play 2 additional cards."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "fameVariable": true,
+      "text": "{triggeredForced} When advancing, you play 2 additional cards. {asterisk}This is worth -4{fame} when purged.",
+      "siteKeywords": [],
+      "helpText": "When you <b>advance</b> (decide to play 2 additional cards), you play 2 additional cards as long as this is in play."
+    }
+  },
+  "description": "This is a card from the Ridding the Woods expansion.",
+  "source": {
+    "url": "https://www.kingdomlegacygame.com/cards/RiddingTheWoods/2",
+    "scrapedAt": "2026-10-05T18:28:34.366Z"
+  },
+  "confidence": 0.9,
+  "to_verify": [
+    "Robbin' Leader : 8 cases comptées sur l'image.",
+    "Sobbing : gloire « * » : -4 seulement à la purge."
+  ]
+}

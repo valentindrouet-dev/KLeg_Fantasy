@@ -1,0 +1,70 @@
+{
+  "id": "RiddingTheWoods-000",
+  "expansion": "RiddingTheWoods",
+  "serial": 0,
+  "origin": "official",
+  "images": {
+    "front": "RiddingTheWoods/RtW_Cards_Sida_01.webp",
+    "back": "RiddingTheWoods/RtW_Cards_Sida_02.webp"
+  },
+  "orientationToStage": {
+    "front-0": 1,
+    "front-180": null,
+    "back-0": 4,
+    "back-180": null
+  },
+  "isParchment": true,
+  "chooseSideOnDiscover": false,
+  "stages": {
+    "1": {
+      "id": 1,
+      "name": "Welcome",
+      "keywords": [],
+      "category": "none",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "triggeredForced",
+          "text": "Before your start: Perform a purge 8 (focus 2{wood}) and purge 2 permanent cards. After the purge, {flip}."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "WELCOME to Ridding the Woods. Before your start: Perform a purge 8 (focus 2{wood}) and purge 2 permanent cards. (\"focus 2{wood}\" means that you must choose cards with {wood} production, if possible, until you have selected 2 such cards. Then the purge selection continues as normal.) After the purge, {flip}.",
+      "siteKeywords": []
+    },
+    "4": {
+      "id": 4,
+      "name": "",
+      "keywords": [],
+      "category": "none",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "Play 5 rounds with normal rules. At the start of each round, discover 5 cards from this expansion (instead of 2). When you are done, add sticker 13c to the score path on your box and fill in your new score. Cards 26-28 are discoverable cards, add them to the back of your box.",
+      "siteKeywords": [],
+      "helpText": "<b><i>ERRATA: </i></b> Card 29 is also a discoverable card, but was missed in this count."
+    }
+  },
+  "description": "<b><i>ERRATA: </i></b> Card 29 is also a discoverable card, but was missed in this count.",
+  "source": {
+    "url": "https://www.kingdomlegacygame.com/cards/RiddingTheWoods/0",
+    "scrapedAt": "2026-10-05T18:28:27.873Z"
+  },
+  "confidence": 0.9,
+  "to_verify": [
+    "Instructions de parchemin : classées triggeredForced (à appliquer à la découverte, puis détruire la carte) ; le site ne donne pas de type d'effet.",
+    "Règles de l'extension : purge 8 (focus 2 bois) + 2 permanentes, 5 manches, 5 découvertes par manche, sticker 13c. La carte 29 est aussi une carte découvrable (erratum du site).",
+    "Erratum du site (stage 4) : "
+  ]
+}

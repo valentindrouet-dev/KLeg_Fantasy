@@ -96,6 +96,7 @@ export const CheckboxSchema = z.strictObject({
   fame: z.number().int().optional(), // gloire imprimée dans la case
   threshold: z.number().int().optional(), // seuil à atteindre pour cocher (Export)
   text: z.string().optional(), // effet associé à la case
+  group: z.string().min(1).optional(), // piste de la case quand la carte en a plusieurs (couleur : « red », « green »…)
 });
 export type Checkbox = z.infer<typeof CheckboxSchema>;
 

@@ -1,0 +1,100 @@
+{
+  "id": "FK_Adventures-005",
+  "expansion": "FK_Adventures",
+  "serial": 5,
+  "origin": "official",
+  "images": {
+    "front": "FK_Adventures/FK_Adventure_Cards_Page_11.webp",
+    "back": "FK_Adventures/FK_Adventure_Cards_Page_12.webp"
+  },
+  "orientationToStage": {
+    "front-0": 1,
+    "front-180": null,
+    "back-0": 4,
+    "back-180": null
+  },
+  "isParchment": false,
+  "chooseSideOnDiscover": true,
+  "stages": {
+    "1": {
+      "id": 1,
+      "name": "Thule",
+      "keywords": [
+        "Land"
+      ],
+      "category": "land",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [
+        {
+          "id": "p1",
+          "options": [
+            [
+              "coin",
+              "wood",
+              "stone",
+              "metal",
+              "sword",
+              "tradeGood"
+            ]
+          ]
+        }
+      ],
+      "upgrades": [],
+      "effects": [],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "",
+      "siteKeywords": []
+    },
+    "4": {
+      "id": 4,
+      "name": "Garrisoned Border",
+      "keywords": [
+        "State"
+      ],
+      "category": "other",
+      "negative": false,
+      "permanent": true,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "triggeredOptional",
+          "text": "Whenever a card is destroyed by an effect on a negative card or in a purge, you may mark 1 {mark} here instead."
+        }
+      ],
+      "checkboxes": [
+        {
+          "id": "c1"
+        },
+        {
+          "id": "c2",
+          "text": "{destroy}"
+        }
+      ],
+      "staysInPlay": false,
+      "text": "{triggeredOptional} Whenever a card is destroyed by an effect on a negative card or in a purge, you may mark 1 {mark} here instead.",
+      "siteKeywords": [
+        "Permanent",
+        "Triggered Optional Effect"
+      ],
+      "helpText": "<b><i>VERSION NOTE:</i></b> The Garrisoned Border no longer gives 5 fame and also is destroyed when using it a second time.<p>\nNote that this effect also applies during a purge. If you use it to prevent a card from being purged, you do not get the [vp] from that card during the purge."
+    }
+  },
+  "description": "<b><i>VERSION NOTE:</i></b> The Garrisoned Border no longer gives 5 fame and also is destroyed when using it a second time.",
+  "source": {
+    "url": "https://www.kingdomlegacygame.com/cards/FK_Adventures/5",
+    "scrapedAt": "2026-10-05T18:32:07.360Z"
+  },
+  "confidence": 0.9,
+  "to_verify": [
+    "Thule : 6 icônes de production sans « / » : produit les 6 ressources.",
+    "Garrisoned Border : 2 cases, la seconde porte une icône de destruction.",
+    "Note de version du site (stage 4) : ",
+    "Note de version du site : "
+  ]
+}

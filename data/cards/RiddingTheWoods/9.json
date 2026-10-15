@@ -1,0 +1,160 @@
+{
+  "id": "RiddingTheWoods-009",
+  "expansion": "RiddingTheWoods",
+  "serial": 9,
+  "origin": "official",
+  "images": {
+    "front": "RiddingTheWoods/RtW_Cards_Sida_19.webp",
+    "back": "RiddingTheWoods/RtW_Cards_Sida_20.webp"
+  },
+  "orientationToStage": {
+    "front-0": 1,
+    "front-180": 2,
+    "back-0": 4,
+    "back-180": 3
+  },
+  "isParchment": false,
+  "chooseSideOnDiscover": false,
+  "stages": {
+    "1": {
+      "id": 1,
+      "name": "Fort Grounds",
+      "keywords": [
+        "Land"
+      ],
+      "category": "land",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [],
+      "upgrades": [
+        {
+          "id": "u1",
+          "cost": [
+            "stone",
+            "stone"
+          ],
+          "arrow": "flip",
+          "toStage": 4
+        },
+        {
+          "id": "u2",
+          "cost": [
+            "stone",
+            "stone",
+            "stone",
+            "stone"
+          ],
+          "arrow": "rotate",
+          "toStage": 2
+        }
+      ],
+      "effects": [],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "text": "",
+      "siteKeywords": []
+    },
+    "2": {
+      "id": 2,
+      "name": "Wall",
+      "keywords": [
+        "Building"
+      ],
+      "category": "building",
+      "negative": false,
+      "permanent": false,
+      "fame": 3,
+      "production": [
+        {
+          "id": "p1",
+          "options": [
+            [
+              "sword"
+            ]
+          ]
+        }
+      ],
+      "upgrades": [],
+      "effects": [],
+      "checkboxes": [],
+      "staysInPlay": true,
+      "text": "{passive} Stays in play.",
+      "siteKeywords": []
+    },
+    "3": {
+      "id": 3,
+      "name": "Large Dungeon",
+      "keywords": [
+        "Building"
+      ],
+      "category": "building",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "passive",
+          "text": "Discard 1 prisoner and keep track of how many you have discarded below."
+        }
+      ],
+      "checkboxes": [],
+      "staysInPlay": false,
+      "fameVariable": true,
+      "text": "{passive} Discard 1 prisoner and keep track of how many you have discarded below. {asterisk}This card is worth 2{fame} for each mark.",
+      "siteKeywords": [],
+      "helpText": "This passive effect lets you repeatedly discard prisoners from play to gain fame. There is no upper limit to how much fame this card can give, so if you run out of space, be creative!"
+    },
+    "4": {
+      "id": 4,
+      "name": "Small Dungeon",
+      "keywords": [
+        "Building"
+      ],
+      "category": "building",
+      "negative": false,
+      "permanent": false,
+      "fame": 0,
+      "production": [],
+      "upgrades": [],
+      "effects": [
+        {
+          "id": "e1",
+          "type": "activated",
+          "text": "Discard any number of prisoners to mark 1 {mark} from left to right for each."
+        }
+      ],
+      "checkboxes": [
+        {
+          "id": "c1"
+        },
+        {
+          "id": "c2"
+        },
+        {
+          "id": "c3"
+        },
+        {
+          "id": "c4",
+          "text": "{rotate}"
+        }
+      ],
+      "staysInPlay": false,
+      "text": "{activated} Discard any number of prisoners to mark 1 {mark} from left to right for each.",
+      "siteKeywords": []
+    }
+  },
+  "description": "This is a card from the Ridding the Woods expansion.",
+  "source": {
+    "url": "https://www.kingdomlegacygame.com/cards/RiddingTheWoods/9",
+    "scrapedAt": "2026-10-05T18:28:57.504Z"
+  },
+  "confidence": 0.9,
+  "to_verify": [
+    "Large Dungeon : compteur libre (lignes de pointage), non modélisé par des cases ; gloire variable 2 par marque.",
+    "Small Dungeon : 3 cases vides puis une flèche de rotation (vers Large Dungeon)."
+  ]
+}
